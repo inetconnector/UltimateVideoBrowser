@@ -86,6 +86,27 @@
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
                 </CollectionView.ItemsLayout>
 
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="12"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Margin="24">
+                        <Image Source="empty-state.svg"
+                               HeightRequest="180"
+                               WidthRequest="240"
+                               HorizontalOptions="Center" />
+                        <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="{DynamicResource OnSurface}"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
+                               FontSize="13"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame BackgroundColor="{DynamicResource Surface}"
@@ -96,7 +117,7 @@
                             <Grid RowDefinitions="160,Auto,Auto" Padding="8">
                                 <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
                                       HeightRequest="160">
-                                    <Image Source="{Binding ThumbnailPath}"
+                                    <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video-placeholder.svg}"
                                            Aspect="AspectFill" />
                                 </Grid>
 

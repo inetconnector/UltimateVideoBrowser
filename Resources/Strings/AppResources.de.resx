@@ -59,6 +59,11 @@
   </data>
   <data name="OkButton" xml:space="preserve">
     <value>OK</value>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Noch keine Videos</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Füge eine Quelle hinzu oder aktualisiere, um deine Bibliothek zu durchsuchen.</value>
   </data>
   <data name="SourcesPageTitle" xml:space="preserve">
     <value>Quellen</value>
