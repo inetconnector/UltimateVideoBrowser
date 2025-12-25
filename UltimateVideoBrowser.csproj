@@ -39,6 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
+    <MauiImage Include="Resources\Images\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <MauiXaml Update="**\*.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
