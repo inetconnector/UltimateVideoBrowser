@@ -1,7 +1,9 @@
+using Android.Graphics;
 using UltimateVideoBrowser.Models;
 
 #if ANDROID && !WINDOWS
 using Android.Media;
+
 #elif WINDOWS
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
@@ -12,7 +14,7 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class ThumbnailService
 {
-    readonly string cacheDir;
+    private readonly string cacheDir;
 
     public ThumbnailService()
     {
@@ -42,8 +44,8 @@ public sealed class ThumbnailService
                 using var retriever = new MediaMetadataRetriever();
                 if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
                 {
-                    var uri = Android.Net.Uri.Parse(item.Path);
-                    retriever.SetDataSource(Android.App.Application.Context, uri);
+                    var uri = Uri.Parse(item.Path);
+                    retriever.SetDataSource(Application.Context, uri);
                 }
                 else
                 {
@@ -51,13 +53,13 @@ public sealed class ThumbnailService
                 }
 
                 // pick ~10% of duration, fallback to 1 second
-                var tUs = Math.Max(1_000_000L, (item.DurationMs * 1000L) / 10L);
+                var tUs = Math.Max(1_000_000L, item.DurationMs * 1000L / 10L);
                 using var bmp = retriever.GetFrameAtTime(tUs, Option.ClosestSync);
                 if (bmp == null)
                     return null;
 
                 using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                bmp.Compress(Android.Graphics.Bitmap.CompressFormat.Jpeg, 82, fs);
+                bmp.Compress(Bitmap.CompressFormat.Jpeg, 82, fs);
                 return thumbPath;
             }
             catch
@@ -89,17 +91,18 @@ public sealed class ThumbnailService
 #endif
     }
 
-    static string MakeSafeFileName(string input)
+    private static string MakeSafeFileName(string input)
     {
         // Hash-like safe filename
         unchecked
         {
-            ulong hash = 1469598103934665603UL;
+            var hash = 1469598103934665603UL;
             foreach (var ch in input)
             {
                 hash ^= ch;
                 hash *= 1099511628211UL;
             }
+
             return hash.ToString("X");
         }
     }

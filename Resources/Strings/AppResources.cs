@@ -5,10 +5,8 @@ namespace UltimateVideoBrowser.Resources.Strings;
 
 public static class AppResources
 {
-    static readonly ResourceManager ResourceManager = new("UltimateVideoBrowser.Resources.Strings.AppResources", typeof(AppResources).Assembly);
-
-    static string GetString(string key, string fallback)
-        => ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? fallback;
+    private static readonly ResourceManager ResourceManager =
+        new("UltimateVideoBrowser.Resources.Strings.AppResources", typeof(AppResources).Assembly);
 
     public static string AppTitle => GetString(nameof(AppTitle), "Ultimate Video Browser");
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Videos");
@@ -23,13 +21,22 @@ public static class AppResources
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
     public static string PermissionTitle => GetString(nameof(PermissionTitle), "Access required");
-    public static string PermissionMessage => GetString(nameof(PermissionMessage), "Allow access to your videos so we can index and play them.");
+
+    public static string PermissionMessage => GetString(nameof(PermissionMessage),
+        "Allow access to your videos so we can index and play them.");
+
     public static string PermissionOk => GetString(nameof(PermissionOk), "Grant access");
     public static string OkButton => GetString(nameof(OkButton), "OK");
     public static string EmptyStateTitle => GetString(nameof(EmptyStateTitle), "No videos yet");
-    public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage), "Add a source or refresh to start browsing your library.");
+
+    public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage),
+        "Add a source or refresh to start browsing your library.");
+
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
-    public static string SourcesPageHeader => GetString(nameof(SourcesPageHeader), "Sources (local folders / synced shares)");
+
+    public static string SourcesPageHeader =>
+        GetString(nameof(SourcesPageHeader), "Sources (local folders / synced shares)");
+
     public static string AddSourceButton => GetString(nameof(AddSourceButton), "Add folder");
     public static string RemoveSourceButton => GetString(nameof(RemoveSourceButton), "Remove");
     public static string RemoveSourceTitle => GetString(nameof(RemoveSourceTitle), "Remove source?");
@@ -41,15 +48,31 @@ public static class AppResources
     public static string NewSourceCancel => GetString(nameof(NewSourceCancel), "Cancel");
     public static string NewSourceDefaultName => GetString(nameof(NewSourceDefaultName), "New source");
     public static string SourceExistsTitle => GetString(nameof(SourceExistsTitle), "Already added");
-    public static string SourceExistsMessage => GetString(nameof(SourceExistsMessage), "This folder is already in your sources.");
-    public static string AddPathHelper => GetString(nameof(AddPathHelper), "Have a network share or local path? Add it directly.");
+
+    public static string SourceExistsMessage =>
+        GetString(nameof(SourceExistsMessage), "This folder is already in your sources.");
+
+    public static string AddPathHelper =>
+        GetString(nameof(AddPathHelper), "Have a network share or local path? Add it directly.");
+
     public static string AddPathButton => GetString(nameof(AddPathButton), "Add path");
     public static string AddPathTitle => GetString(nameof(AddPathTitle), "Add path");
-    public static string AddPathPrompt => GetString(nameof(AddPathPrompt), "Enter a local folder or network share path.");
+
+    public static string AddPathPrompt =>
+        GetString(nameof(AddPathPrompt), "Enter a local folder or network share path.");
+
     public static string PathInvalidTitle => GetString(nameof(PathInvalidTitle), "Path not found");
-    public static string PathInvalidMessage => GetString(nameof(PathInvalidMessage), "We couldn't find that folder. Please check the path.");
+
+    public static string PathInvalidMessage => GetString(nameof(PathInvalidMessage),
+        "We couldn't find that folder. Please check the path.");
+
     public static string Enabled => GetString(nameof(Enabled), "Enabled");
     public static string Disabled => GetString(nameof(Disabled), "Disabled");
     public static string AllDeviceVideos => GetString(nameof(AllDeviceVideos), "All device videos");
     public static string DeviceLibraryPath => GetString(nameof(DeviceLibraryPath), "Device media library");
+
+    private static string GetString(string key, string fallback)
+    {
+        return ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? fallback;
+    }
 }

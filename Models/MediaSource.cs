@@ -1,14 +1,13 @@
 using SQLite;
+using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Models;
 
 public class MediaSource
 {
-    [PrimaryKey]
-    public string Id { get; set; } = "";
+    [PrimaryKey] public string Id { get; set; } = "";
 
-    [Indexed]
-    public string DisplayName { get; set; } = "";
+    [Indexed] public string DisplayName { get; set; } = "";
 
     public string LocalFolderPath { get; set; } = "";
 
@@ -16,12 +15,11 @@ public class MediaSource
 
     public long LastIndexedUtcSeconds { get; set; } = 0;
 
-    [Ignore]
-    public bool IsSystemSource => Id == "device_all";
+    [Ignore] public bool IsSystemSource => Id == "device_all";
 
     [Ignore]
     public string DisplayPath
         => string.IsNullOrWhiteSpace(LocalFolderPath)
-            ? UltimateVideoBrowser.Resources.Strings.AppResources.DeviceLibraryPath
+            ? AppResources.DeviceLibraryPath
             : LocalFolderPath;
 }

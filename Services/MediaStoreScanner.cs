@@ -1,7 +1,9 @@
+using AndroidX.DocumentFile.Provider;
 using UltimateVideoBrowser.Models;
 
 #if ANDROID && !WINDOWS
 using Android.Provider;
+
 #elif WINDOWS
 using Windows.Storage;
 #endif
@@ -16,10 +18,8 @@ public sealed class MediaStoreScanner
         var rootPath = source.LocalFolderPath ?? "";
 #if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
-        {
             // On Android 9 we can read file paths from MediaStore DATA column.
             return Task.Run(() => ScanMediaStore(sourceId));
-        }
 
         return Task.Run(() => ScanAndroidFolder(rootPath, sourceId));
 #elif WINDOWS
@@ -94,14 +94,16 @@ public sealed class MediaStoreScanner
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
     };
 
-    static bool IsVideoFileName(string? name)
-        => !string.IsNullOrWhiteSpace(name)
-           && VideoExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase);
+    private static bool IsVideoFileName(string? name)
+    {
+        return !string.IsNullOrWhiteSpace(name)
+               && VideoExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase);
+    }
 
-    static List<VideoItem> ScanMediaStore(string? sourceId)
+    private static List<VideoItem> ScanMediaStore(string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Android.App.Application.Context;
+        var ctx = Application.Context;
         var resolver = ctx.ContentResolver;
 
         string[] projection =
@@ -146,7 +148,7 @@ public sealed class MediaStoreScanner
         return list;
     }
 
-    static List<VideoItem> ScanAndroidFolder(string rootPath, string? sourceId)
+    private static List<VideoItem> ScanAndroidFolder(string rootPath, string? sourceId)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
             return ScanAndroidTreeUri(rootPath, sourceId);
@@ -154,12 +156,12 @@ public sealed class MediaStoreScanner
         return ScanAndroidFileSystem(rootPath, sourceId);
     }
 
-    static List<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId)
+    private static List<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Android.App.Application.Context;
-        var uri = Android.Net.Uri.Parse(rootPath);
-        var root = AndroidX.DocumentFile.Provider.DocumentFile.FromTreeUri(ctx, uri);
+        var ctx = Application.Context;
+        var uri = Uri.Parse(rootPath);
+        var root = DocumentFile.FromTreeUri(ctx, uri);
 
         if (root == null)
             return list;
@@ -168,7 +170,7 @@ public sealed class MediaStoreScanner
         return list;
     }
 
-    static void TraverseDocumentTree(AndroidX.DocumentFile.Provider.DocumentFile doc, List<VideoItem> list, string? sourceId)
+    private static void TraverseDocumentTree(DocumentFile doc, List<VideoItem> list, string? sourceId)
     {
         foreach (var child in doc.ListFiles())
         {
@@ -195,7 +197,7 @@ public sealed class MediaStoreScanner
         }
     }
 
-    static List<VideoItem> ScanAndroidFileSystem(string rootPath, string? sourceId)
+    private static List<VideoItem> ScanAndroidFileSystem(string rootPath, string? sourceId)
     {
         var list = new List<VideoItem>();
         if (!Directory.Exists(rootPath))
@@ -205,7 +207,6 @@ public sealed class MediaStoreScanner
         {
             foreach (var path in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
                          .Where(p => IsVideoFileName(p)))
-            {
                 list.Add(new VideoItem
                 {
                     Path = path,
@@ -214,7 +215,6 @@ public sealed class MediaStoreScanner
                     DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     SourceId = sourceId
                 });
-            }
         }
         catch
         {
