@@ -1,5 +1,6 @@
 using AndroidX.DocumentFile.Provider;
 using UltimateVideoBrowser.Models;
+using IOPath = System.IO.Path;
 
 #if ANDROID && !WINDOWS
 using Android.Provider;
@@ -103,7 +104,7 @@ public sealed class MediaStoreScanner
     private static List<VideoItem> ScanMediaStore(string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Application.Context;
+        var ctx = Platform.AppContext;
         var resolver = ctx.ContentResolver;
 
         string[] projection =
@@ -138,7 +139,7 @@ public sealed class MediaStoreScanner
             list.Add(new VideoItem
             {
                 Path = path,
-                Name = cursor.GetString(nameCol) ?? Path.GetFileName(path),
+                Name = cursor.GetString(nameCol) ?? IOPath.GetFileName(path),
                 DurationMs = cursor.IsNull(durCol) ? 0 : cursor.GetLong(durCol),
                 DateAddedSeconds = cursor.IsNull(addCol) ? 0 : cursor.GetLong(addCol),
                 SourceId = sourceId
@@ -159,9 +160,9 @@ public sealed class MediaStoreScanner
     private static List<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Application.Context;
-        var uri = Uri.Parse(rootPath);
-        var root = DocumentFile.FromTreeUri(ctx, uri);
+        var ctx = Platform.AppContext;
+        var uri = global::Android.Net.Uri.Parse(rootPath);
+        var root = AndroidX.DocumentFile.Provider.DocumentFile.FromTreeUri(ctx, uri);
 
         if (root == null)
             return list;
@@ -210,7 +211,7 @@ public sealed class MediaStoreScanner
                 list.Add(new VideoItem
                 {
                     Path = path,
-                    Name = Path.GetFileName(path),
+                    Name = IOPath.GetFileName(path),
                     DurationMs = 0,
                     DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     SourceId = sourceId

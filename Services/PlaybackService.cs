@@ -15,9 +15,9 @@ public sealed class PlaybackService
     {
 #if ANDROID && !WINDOWS
         var intent = new Intent(Intent.ActionView);
-        intent.SetDataAndType(Uri.Parse(item.Path), "video/*");
+        intent.SetDataAndType(global::Android.Net.Uri.Parse(item.Path), "video/*");
         intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);
-        Application.Context.StartActivity(intent);
+        Platform.AppContext.StartActivity(intent);
 #elif WINDOWS
         _ = Launcher.OpenAsync(new OpenFileRequest("Play video", new ReadOnlyFile(item.Path)));
 #else
