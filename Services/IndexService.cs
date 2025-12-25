@@ -13,36 +13,45 @@ public sealed class IndexService
         this.scanner = scanner;
     }
 
-    public async Task<int> IndexDeviceMediaStoreAsync(string? sourceId, IProgress<int>? progress, CancellationToken ct)
+    public async Task<int> IndexSourcesAsync(IEnumerable<MediaSource> sources, IProgress<IndexProgress>? progress, CancellationToken ct)
     {
-        // Incremental by Path (primary key)
-        var scanned = await scanner.ScanAllVideosAsync(sourceId);
         var inserted = 0;
 
-        foreach (var v in scanned)
+        foreach (var source in sources)
         {
             ct.ThrowIfCancellationRequested();
 
-            var exists = await db.Db.FindAsync<VideoItem>(v.Path);
-            if (exists == null)
-            {
-                await db.Db.InsertAsync(v);
-                inserted++;
-            }
-            else
-            {
-                // Update name/duration if changed (cheap)
-                if (exists.Name != v.Name || exists.DurationMs != v.DurationMs || exists.SourceId != v.SourceId)
-                {
-                    exists.Name = v.Name;
-                    exists.DurationMs = v.DurationMs;
-                    exists.SourceId = v.SourceId;
-                    exists.DateAddedSeconds = v.DateAddedSeconds;
-                    await db.Db.UpdateAsync(exists);
-                }
-            }
+            var scanned = await scanner.ScanSourceAsync(source);
+            var processed = 0;
+            var total = scanned.Count;
+            progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName));
 
-            progress?.Report(inserted);
+            foreach (var v in scanned)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                var exists = await db.Db.FindAsync<VideoItem>(v.Path);
+                if (exists == null)
+                {
+                    await db.Db.InsertAsync(v);
+                    inserted++;
+                }
+                else
+                {
+                    // Update name/duration if changed (cheap)
+                    if (exists.Name != v.Name || exists.DurationMs != v.DurationMs || exists.SourceId != v.SourceId)
+                    {
+                        exists.Name = v.Name;
+                        exists.DurationMs = v.DurationMs;
+                        exists.SourceId = v.SourceId;
+                        exists.DateAddedSeconds = v.DateAddedSeconds;
+                        await db.Db.UpdateAsync(exists);
+                    }
+                }
+
+                processed++;
+                progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName));
+            }
         }
 
         return inserted;

@@ -7,7 +7,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
         <!-- Top bar -->
         <Grid Padding="12" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
             <Label Text="{x:Static strings:AppResources.AppTitle}"
@@ -31,8 +31,36 @@
                     Margin="8,0,0,0" />
         </Grid>
 
+        <!-- Permission notice -->
+        <Grid Grid.Row="1"
+              Padding="12"
+              IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
+            <Frame BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="12"
+                   Padding="12"
+                   HasShadow="False">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{x:Static strings:AppResources.PermissionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.PermissionMessage}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="12" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.PermissionOk}"
+                            Command="{Binding RequestPermissionCommand}"
+                            BackgroundColor="{DynamicResource Accent}"
+                            TextColor="{DynamicResource OnAccent}"
+                            CornerRadius="10"
+                            Padding="12,8" />
+                </Grid>
+            </Frame>
+        </Grid>
+
         <!-- Search + Sort -->
-        <Grid Grid.Row="1" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
+        <Grid Grid.Row="2" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
@@ -50,7 +78,7 @@
         </Grid>
 
         <!-- Grid -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <CollectionView ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None">
@@ -110,9 +138,11 @@
                         <Label Text="{x:Static strings:AppResources.Indexing}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{Binding IndexStatus}"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Label Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <ActivityIndicator IsRunning="True" />
+                        <ProgressBar Progress="{Binding IndexRatio}" />
                     </VerticalStackLayout>
                 </Frame>
             </Grid>

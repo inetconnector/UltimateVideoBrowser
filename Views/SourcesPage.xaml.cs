@@ -16,6 +16,6 @@ public partial class SourcesPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await vm.LoadAsync();
+        await vm.InitializeAsync();
     }
 }

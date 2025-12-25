@@ -40,7 +40,15 @@ public sealed class ThumbnailService
                 ct.ThrowIfCancellationRequested();
 
                 using var retriever = new MediaMetadataRetriever();
-                retriever.SetDataSource(item.Path);
+                if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+                {
+                    var uri = Android.Net.Uri.Parse(item.Path);
+                    retriever.SetDataSource(Android.App.Application.Context, uri);
+                }
+                else
+                {
+                    retriever.SetDataSource(item.Path);
+                }
 
                 // pick ~10% of duration, fallback to 1 second
                 var tUs = Math.Max(1_000_000L, (item.DurationMs * 1000L) / 10L);
