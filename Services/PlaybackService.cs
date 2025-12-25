@@ -2,6 +2,8 @@ using UltimateVideoBrowser.Models;
 
 #if ANDROID
 using Android.Content;
+#elif WINDOWS
+using Microsoft.Maui.Storage;
 #endif
 
 namespace UltimateVideoBrowser.Services;
@@ -15,6 +17,8 @@ public sealed class PlaybackService
         intent.SetDataAndType(Android.Net.Uri.Parse(item.Path), "video/*");
         intent.AddFlags(ActivityFlags.NewTask);
         Android.App.Application.Context.StartActivity(intent);
+#elif WINDOWS
+        _ = Launcher.OpenAsync(new OpenFileRequest("Play video", new ReadOnlyFile(item.Path)));
 #else
         _ = item;
 #endif
