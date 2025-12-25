@@ -8,20 +8,25 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SourcesViewModel : ObservableObject
 {
+    private readonly IDialogService dialogService;
     private readonly IFolderPickerService folderPickerService;
     private readonly PermissionService permissionService;
-    private readonly SourceService sourceService;
+    private readonly ISourceService sourceService;
     [ObservableProperty] private bool hasMediaPermission;
 
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private bool supportsManualPath;
 
-    public SourcesViewModel(SourceService sourceService, PermissionService permissionService,
-        IFolderPickerService folderPickerService)
+    public SourcesViewModel(
+        ISourceService sourceService,
+        PermissionService permissionService,
+        IFolderPickerService folderPickerService,
+        IDialogService dialogService)
     {
         this.sourceService = sourceService;
         this.permissionService = permissionService;
         this.folderPickerService = folderPickerService;
+        this.dialogService = dialogService;
         SupportsManualPath = DeviceInfo.Platform == DevicePlatform.WinUI;
     }
 
@@ -73,7 +78,9 @@ public partial class SourcesViewModel : ObservableObject
         var path = result.Path.Trim();
         if (!Directory.Exists(path))
         {
-            await Shell.Current.DisplayAlert(AppResources.PathInvalidTitle, AppResources.PathInvalidMessage,
+            await dialogService.DisplayAlertAsync(
+                AppResources.PathInvalidTitle,
+                AppResources.PathInvalidMessage,
                 AppResources.OkButton);
             return;
         }
@@ -81,7 +88,9 @@ public partial class SourcesViewModel : ObservableObject
         var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == path);
         if (existing != null)
         {
-            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage,
+            await dialogService.DisplayAlertAsync(
+                AppResources.SourceExistsTitle,
+                AppResources.SourceExistsMessage,
                 AppResources.OkButton);
             return;
         }
@@ -90,7 +99,7 @@ public partial class SourcesViewModel : ObservableObject
             ? AppResources.NewSourceDefaultName
             : result.DisplayName;
 
-        var displayName = await Shell.Current.DisplayPromptAsync(
+        var displayName = await dialogService.DisplayPromptAsync(
             AppResources.NewSourceTitle,
             AppResources.NewSourcePrompt,
             AppResources.NewSourceConfirm,
@@ -121,7 +130,7 @@ public partial class SourcesViewModel : ObservableObject
         if (src.IsSystemSource)
             return;
 
-        var ok = await Shell.Current.DisplayAlert(
+        var ok = await dialogService.DisplayAlertAsync(
             AppResources.RemoveSourceTitle,
             string.Format(AppResources.RemoveSourceMessage, src.DisplayName),
             AppResources.RemoveSourceConfirm,
