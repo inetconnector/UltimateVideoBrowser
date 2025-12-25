@@ -109,16 +109,16 @@
     <value>Dieser Ordner ist bereits als Quelle hinterlegt.</value>
   </data>
   <data name="AddPathHelper" xml:space="preserve">
-    <value>Netzwerkfreigabe oder lokaler Pfad? Direkt hinzufügen.</value>
+    <value>Lokalen Ordner oder Netzwerkfreigabe auswählen.</value>
   </data>
   <data name="AddPathButton" xml:space="preserve">
-    <value>Pfad hinzufügen</value>
+    <value>Ordner auswählen</value>
   </data>
   <data name="AddPathTitle" xml:space="preserve">
-    <value>Pfad hinzufügen</value>
+    <value>Ordner auswählen</value>
   </data>
   <data name="AddPathPrompt" xml:space="preserve">
-    <value>Lokalen Ordner oder Netzwerkpfad eingeben.</value>
+    <value>Lokalen Ordner oder Netzwerkfreigabe auswählen.</value>
   </data>
   <data name="PathInvalidTitle" xml:space="preserve">
     <value>Pfad nicht gefunden</value>

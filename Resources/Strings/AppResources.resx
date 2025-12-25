@@ -109,16 +109,16 @@
     <value>This folder is already in your sources.</value>
   </data>
   <data name="AddPathHelper" xml:space="preserve">
-    <value>Have a network share or local path? Add it directly.</value>
+    <value>Select a local folder or network share.</value>
   </data>
   <data name="AddPathButton" xml:space="preserve">
-    <value>Add path</value>
+    <value>Browse folder</value>
   </data>
   <data name="AddPathTitle" xml:space="preserve">
-    <value>Add path</value>
+    <value>Select folder</value>
   </data>
   <data name="AddPathPrompt" xml:space="preserve">
-    <value>Enter a local folder or network share path.</value>
+    <value>Select a local folder or network share.</value>
   </data>
   <data name="PathInvalidTitle" xml:space="preserve">
     <value>Path not found</value>
