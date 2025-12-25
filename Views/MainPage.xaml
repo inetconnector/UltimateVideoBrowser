@@ -7,32 +7,110 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
         <!-- Top bar -->
-        <Grid Padding="12" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
-            <Label Text="{x:Static strings:AppResources.AppTitle}"
-                   FontAttributes="Bold"
-                   FontSize="16"
-                   TextColor="{DynamicResource OnSurface}" />
+        <Grid Padding="16,14" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Frame Padding="6"
+                       BackgroundColor="{DynamicResource Surface2}"
+                       CornerRadius="12"
+                       BorderColor="{DynamicResource BorderSubtle}"
+                       HeightRequest="40"
+                       WidthRequest="40"
+                       HorizontalOptions="Start">
+                    <Image Source="app_logo.svg"
+                           HeightRequest="24"
+                           WidthRequest="24"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Frame>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="{x:Static strings:AppResources.AppTitle}"
+                           FontAttributes="Bold"
+                           FontSize="18"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.MainPageTitle}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
             <Button Grid.Column="1"
                     Text="{x:Static strings:AppResources.SourcesButton}"
+                    ImageSource="icon_sources.svg"
+                    ContentLayout="Left,8"
                     Command="{Binding OpenSourcesCommand}"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
-                    CornerRadius="10"
                     Padding="12,8" />
             <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.ReindexButton}"
+                    ImageSource="icon_reindex.svg"
+                    ContentLayout="Left,8"
                     Command="{Binding RunIndexCommand}"
                     BackgroundColor="{DynamicResource Accent}"
                     TextColor="{DynamicResource OnAccent}"
-                    CornerRadius="10"
                     Padding="12,8"
                     Margin="8,0,0,0" />
         </Grid>
 
+        <!-- Hero -->
+        <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
+            <Frame CornerRadius="20"
+                   Padding="16"
+                   BorderColor="{DynamicResource BorderSubtle}">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{DynamicResource Surface2}" Offset="0.0" />
+                        <GradientStop Color="{DynamicResource AccentGlow}" Offset="0.6" />
+                        <GradientStop Color="{DynamicResource Surface3}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.SearchPlaceholder}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{x:Static strings:AppResources.AppTitle}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <HorizontalStackLayout Spacing="8">
+                            <Frame BackgroundColor="{DynamicResource Surface3}"
+                                   CornerRadius="999"
+                                   Padding="10,4"
+                                   BorderColor="{DynamicResource BorderSubtle}">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Image Source="chip_collection.svg" HeightRequest="14" WidthRequest="14" />
+                                    <Label Text="{x:Static strings:AppResources.SourcesButton}"
+                                           FontSize="11"
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                </HorizontalStackLayout>
+                            </Frame>
+                            <Frame BackgroundColor="{DynamicResource Surface3}"
+                                   CornerRadius="999"
+                                   Padding="10,4"
+                                   BorderColor="{DynamicResource BorderSubtle}">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Image Source="chip_spark.svg" HeightRequest="14" WidthRequest="14" />
+                                    <Label Text="{x:Static strings:AppResources.SortTitle}"
+                                           FontSize="11"
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                    <Image Grid.Column="1"
+                           Source="hero_video.svg"
+                           HeightRequest="120"
+                           WidthRequest="140"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+        </Grid>
+
         <!-- Permission notice -->
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="2"
               Padding="12"
               IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
             <Frame BackgroundColor="{DynamicResource Surface}"
@@ -60,7 +138,7 @@
         </Grid>
 
         <!-- Search + Sort -->
-        <Grid Grid.Row="2" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
+        <Grid Grid.Row="3" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
@@ -78,7 +156,7 @@
         </Grid>
 
         <!-- Grid -->
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
             <CollectionView ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None">
@@ -91,7 +169,7 @@
                                          HorizontalOptions="Center"
                                          VerticalOptions="Center"
                                          Margin="24">
-                        <Image Source="empty-state.svg"
+                        <Image Source="empty_state.svg"
                                HeightRequest="180"
                                WidthRequest="240"
                                HorizontalOptions="Center" />
@@ -110,16 +188,24 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="14"
+                               CornerRadius="16"
                                Margin="8"
                                Padding="0"
-                               HasShadow="False">
-                            <Grid RowDefinitions="160,Auto,Auto" Padding="8">
+                               BorderColor="{DynamicResource BorderSubtle}">
+                            <Grid RowDefinitions="170,Auto,Auto" Padding="10">
                                 <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
-                                      HeightRequest="160">
+                                      HeightRequest="170">
                                     <Image
-                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video-placeholder.svg}"
+                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                         Aspect="AspectFill" />
+                                    <Frame BackgroundColor="#CC0E0F14"
+                                           CornerRadius="999"
+                                           Padding="6"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="End"
+                                           Margin="8">
+                                        <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
+                                    </Frame>
                                 </Grid>
 
                                 <Label Grid.Row="1"
@@ -127,13 +213,22 @@
                                        TextColor="{DynamicResource OnSurface}"
                                        FontSize="13"
                                        LineBreakMode="TailTruncation"
-                                       Margin="0,8,0,0" />
+                                       Margin="0,10,0,0" />
 
-                                <Label Grid.Row="2"
-                                       Text="{Binding DurationText}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       FontSize="11"
-                                       Margin="0,2,0,0" />
+                                <Frame Grid.Row="2"
+                                       BackgroundColor="{DynamicResource Surface2}"
+                                       BorderColor="{DynamicResource BorderSubtle}"
+                                       CornerRadius="8"
+                                       Padding="8,4"
+                                       HorizontalOptions="Start"
+                                       Margin="0,6,0,2">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                        <Label Text="{Binding DurationText}"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               FontSize="11" />
+                                    </HorizontalStackLayout>
+                                </Frame>
 
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer
