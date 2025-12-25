@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using UltimateVideoBrowser.Platforms.Android;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;

@@ -1,9 +1,9 @@
-using AndroidX.DocumentFile.Provider;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
 #if ANDROID && !WINDOWS
 using Android.Provider;
+using AndroidX.DocumentFile.Provider;
 
 #elif WINDOWS
 using Windows.Storage;

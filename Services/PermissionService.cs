@@ -1,5 +1,7 @@
+#if ANDROID && !WINDOWS
 using Android;
 using Android.OS;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
