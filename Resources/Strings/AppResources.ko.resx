@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>궁극의 비디오 브라우저</value>
+  </data>
+  <data name="MainPageTitle" xml:space="preserve">
+    <value>동영상</value>
+  </data>
+  <data name="SourcesButton" xml:space="preserve">
+    <value>소스</value>
+  </data>
+  <data name="ReindexButton" xml:space="preserve">
+    <value>재색인</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>동영상 검색...</value>
+  </data>
+  <data name="SortTitle" xml:space="preserve">
+    <value>정렬</value>
+  </data>
+  <data name="SortName" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="SortDate" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="SortDuration" xml:space="preserve">
+    <value>길이</value>
+  </data>
+  <data name="Indexing" xml:space="preserve">
+    <value>색인 중...</value>
+  </data>
+  <data name="NewItemsFormat" xml:space="preserve">
+    <value>새 항목: {0}</value>
+  </data>
+  <data name="SourcesPageTitle" xml:space="preserve">
+    <value>소스</value>
+  </data>
+  <data name="SourcesPageHeader" xml:space="preserve">
+    <value>소스(로컬 폴더 / 동기화된 공유)</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>비활성화</value>
+  </data>
+  <data name="AllDeviceVideos" xml:space="preserve">
+    <value>기기의 모든 동영상</value>
+  </data>
+</root>

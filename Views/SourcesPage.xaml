@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.SourcesPage"
              BackgroundColor="{DynamicResource AppBg}"
-             Title="Sources">
+             Title="{x:Static strings:AppResources.SourcesPageTitle}">
 
     <Grid RowDefinitions="Auto,*" Padding="12">
-        <Label Text="Sources (local folders / synced shares)"
+        <Label Text="{x:Static strings:AppResources.SourcesPageHeader}"
                TextColor="{DynamicResource OnSurface}"
                FontAttributes="Bold"
                FontSize="16" />

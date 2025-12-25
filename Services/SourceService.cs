@@ -1,4 +1,5 @@
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Services;
 
@@ -24,7 +25,7 @@ public sealed class SourceService
         var src = new MediaSource
         {
             Id = "device_all",
-            DisplayName = "All device videos",
+            DisplayName = AppResources.AllDeviceVideos,
             LocalFolderPath = "",
             IsEnabled = true,
             LastIndexedUtcSeconds = 0

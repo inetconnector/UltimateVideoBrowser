@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
@@ -19,10 +20,10 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] string searchText = "";
     [ObservableProperty] bool isIndexing;
     [ObservableProperty] int indexedCount;
-    [ObservableProperty] string sortKey = "name";
     [ObservableProperty] string activeSourceId = "device_all";
+    [ObservableProperty] SortOption? selectedSortOption;
 
-    public IReadOnlyList<string> SortOptions { get; } = new[] { "name", "date", "duration" };
+    public IReadOnlyList<SortOption> SortOptions { get; }
 
     public MainViewModel(
         SourceService sourceService,
@@ -36,6 +37,14 @@ public partial class MainViewModel : ObservableObject
         this.thumbnailService = thumbnailService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;
+
+        SortOptions = new[]
+        {
+            new SortOption("name", AppResources.SortName),
+            new SortOption("date", AppResources.SortDate),
+            new SortOption("duration", AppResources.SortDuration),
+        };
+        SelectedSortOption = SortOptions.FirstOrDefault();
     }
 
     public async Task InitializeAsync()
@@ -57,7 +66,8 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task RefreshAsync()
     {
-        Videos = await indexService.QueryAsync(SearchText, ActiveSourceId, SortKey);
+        var sortKey = SelectedSortOption?.Key ?? "name";
+        Videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey);
         StartThumbnailPipeline();
     }
 

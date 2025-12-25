@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Peramban Video Utama</value>
+  </data>
+  <data name="MainPageTitle" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SourcesButton" xml:space="preserve">
+    <value>Sumber</value>
+  </data>
+  <data name="ReindexButton" xml:space="preserve">
+    <value>Indeks ulang</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Cari video...</value>
+  </data>
+  <data name="SortTitle" xml:space="preserve">
+    <value>Urutkan</value>
+  </data>
+  <data name="SortName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="SortDate" xml:space="preserve">
+    <value>Tanggal</value>
+  </data>
+  <data name="SortDuration" xml:space="preserve">
+    <value>Durasi</value>
+  </data>
+  <data name="Indexing" xml:space="preserve">
+    <value>Mengindeks...</value>
+  </data>
+  <data name="NewItemsFormat" xml:space="preserve">
+    <value>Item baru: {0}</value>
+  </data>
+  <data name="SourcesPageTitle" xml:space="preserve">
+    <value>Sumber</value>
+  </data>
+  <data name="SourcesPageHeader" xml:space="preserve">
+    <value>Sumber (folder lokal / berbagi tersinkron)</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Diaktifkan</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Dinonaktifkan</value>
+  </data>
+  <data name="AllDeviceVideos" xml:space="preserve">
+    <value>Semua video perangkat</value>
+  </data>
+</root>
