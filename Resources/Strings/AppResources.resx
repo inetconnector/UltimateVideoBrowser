@@ -45,6 +45,12 @@
   <data name="NewItemsFormat" xml:space="preserve">
     <value>New items: {0}</value>
   </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>No videos yet</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Add a source or refresh to start browsing your library.</value>
+  </data>
   <data name="SourcesPageTitle" xml:space="preserve">
     <value>Sources</value>
   </data>
