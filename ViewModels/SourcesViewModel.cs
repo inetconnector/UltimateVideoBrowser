@@ -49,10 +49,36 @@ public partial class SourcesViewModel : ObservableObject
     public async Task AddSourceAsync()
     {
         var result = await folderPickerService.PickFolderAsync();
-        if (result == null || string.IsNullOrWhiteSpace(result.Path))
+        if (result == null)
             return;
 
-        var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == result.Path);
+        await AddSourceFromPickAsync(result);
+    }
+
+    [RelayCommand]
+    public async Task AddPathAsync()
+    {
+        var result = await folderPickerService.PickFolderAsync();
+        if (result == null)
+            return;
+
+        await AddSourceFromPickAsync(result);
+    }
+
+    private async Task AddSourceFromPickAsync(FolderPickResult result)
+    {
+        if (string.IsNullOrWhiteSpace(result.Path))
+            return;
+
+        var path = result.Path.Trim();
+        if (!Directory.Exists(path))
+        {
+            await Shell.Current.DisplayAlert(AppResources.PathInvalidTitle, AppResources.PathInvalidMessage,
+                AppResources.OkButton);
+            return;
+        }
+
+        var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == path);
         if (existing != null)
         {
             await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage,
@@ -80,74 +106,7 @@ public partial class SourcesViewModel : ObservableObject
         {
             Id = Guid.NewGuid().ToString("N"),
             DisplayName = displayName.Trim(),
-            LocalFolderPath = result.Path,
-            IsEnabled = true,
-            LastIndexedUtcSeconds = 0
-        };
-
-        await sourceService.UpsertAsync(src);
-        await InitializeAsync();
-    }
-
-    [RelayCommand]
-    public async Task AddPathAsync()
-    {
-            var page = Application.Current?.MainPage;
-            var path = page == null ? null : await page.DisplayPromptAsync(
-            AppResources.AddPathTitle,
-            AppResources.AddPathPrompt,
-            AppResources.NewSourceConfirm,
-            AppResources.NewSourceCancel,
-            "");
-
-        if (string.IsNullOrWhiteSpace(path))
-            return;
-
-        if (!Directory.Exists(path))
-        {
-            await Shell.Current.DisplayAlert(AppResources.PathInvalidTitle, AppResources.PathInvalidMessage,
-                AppResources.OkButton);
-            return;
-        }
-
-        var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == path);
-        if (existing != null)
-        {
-            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage,
-                AppResources.OkButton);
-            return;
-        }
-
-        var name = Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-        if (string.IsNullOrWhiteSpace(name))
-            name = path;
-
-        var displayName = page == null
-            ? await Application.Current.MainPage.DisplayPromptAsync(
-                AppResources.NewSourceTitle,
-                AppResources.NewSourcePrompt,
-                AppResources.NewSourceConfirm,
-                AppResources.NewSourceCancel,
-                name,
-                60,
-                Keyboard.Text)
-            : await page.DisplayPromptAsync(
-                AppResources.NewSourceTitle,
-                AppResources.NewSourcePrompt,
-                AppResources.NewSourceConfirm,
-                AppResources.NewSourceCancel,
-                name,
-                60,
-                Keyboard.Text);
-
-        if (string.IsNullOrWhiteSpace(displayName))
-            return;
-
-        var src = new MediaSource
-        {
-            Id = Guid.NewGuid().ToString("N"),
-            DisplayName = displayName.Trim(),
-            LocalFolderPath = path.Trim(),
+            LocalFolderPath = path,
             IsEnabled = true,
             LastIndexedUtcSeconds = 0
         };
