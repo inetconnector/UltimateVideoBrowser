@@ -1,5 +1,8 @@
-using Android.Provider;
 using UltimateVideoBrowser.Models;
+
+#if ANDROID
+using Android.Provider;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
@@ -7,6 +10,7 @@ public sealed class MediaStoreScanner
 {
     public Task<List<VideoItem>> ScanAllVideosAsync(string? sourceId = null)
     {
+#if ANDROID
         // On Android 9 we can read file paths from MediaStore DATA column.
         return Task.Run(() =>
         {
@@ -55,5 +59,9 @@ public sealed class MediaStoreScanner
 
             return list;
         });
+#else
+        _ = sourceId;
+        return Task.FromResult(new List<VideoItem>());
+#endif
     }
 }

@@ -1,5 +1,8 @@
-using Android.Media;
 using UltimateVideoBrowser.Models;
+
+#if ANDROID
+using Android.Media;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
@@ -25,6 +28,7 @@ public sealed class ThumbnailService
         if (File.Exists(thumbPath))
             return thumbPath;
 
+#if ANDROID
         return await Task.Run(() =>
         {
             try
@@ -49,6 +53,11 @@ public sealed class ThumbnailService
                 return null;
             }
         }, ct);
+#else
+        _ = item;
+        _ = ct;
+        return await Task.FromResult<string?>(null);
+#endif
     }
 
     static string MakeSafeFileName(string input)
