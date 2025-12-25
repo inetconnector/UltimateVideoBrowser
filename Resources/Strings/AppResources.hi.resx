@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>परम वीडियो ब्राउज़र</value>
+  </data>
+  <data name="MainPageTitle" xml:space="preserve">
+    <value>वीडियो</value>
+  </data>
+  <data name="SourcesButton" xml:space="preserve">
+    <value>स्रोत</value>
+  </data>
+  <data name="ReindexButton" xml:space="preserve">
+    <value>पुनः अनुक्रमित करें</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>वीडियो खोजें...</value>
+  </data>
+  <data name="SortTitle" xml:space="preserve">
+    <value>क्रमबद्ध करें</value>
+  </data>
+  <data name="SortName" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="SortDate" xml:space="preserve">
+    <value>तारीख</value>
+  </data>
+  <data name="SortDuration" xml:space="preserve">
+    <value>अवधि</value>
+  </data>
+  <data name="Indexing" xml:space="preserve">
+    <value>अनुक्रमित हो रहा है...</value>
+  </data>
+  <data name="NewItemsFormat" xml:space="preserve">
+    <value>नए आइटम: {0}</value>
+  </data>
+  <data name="SourcesPageTitle" xml:space="preserve">
+    <value>स्रोत</value>
+  </data>
+  <data name="SourcesPageHeader" xml:space="preserve">
+    <value>स्रोत (स्थानीय फ़ोल्डर / सिंक किए गए साझा)</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>सक्रिय</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>निष्क्रिय</value>
+  </data>
+  <data name="AllDeviceVideos" xml:space="preserve">
+    <value>डिवाइस के सभी वीडियो</value>
+  </data>
+</root>

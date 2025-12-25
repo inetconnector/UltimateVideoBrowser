@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Navigator video suprem</value>
+  </data>
+  <data name="MainPageTitle" xml:space="preserve">
+    <value>Videoclipuri</value>
+  </data>
+  <data name="SourcesButton" xml:space="preserve">
+    <value>Surse</value>
+  </data>
+  <data name="ReindexButton" xml:space="preserve">
+    <value>Reindexează</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Caută videoclipuri...</value>
+  </data>
+  <data name="SortTitle" xml:space="preserve">
+    <value>Sortează</value>
+  </data>
+  <data name="SortName" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="SortDate" xml:space="preserve">
+    <value>Dată</value>
+  </data>
+  <data name="SortDuration" xml:space="preserve">
+    <value>Durată</value>
+  </data>
+  <data name="Indexing" xml:space="preserve">
+    <value>Indexare...</value>
+  </data>
+  <data name="NewItemsFormat" xml:space="preserve">
+    <value>Elemente noi: {0}</value>
+  </data>
+  <data name="SourcesPageTitle" xml:space="preserve">
+    <value>Surse</value>
+  </data>
+  <data name="SourcesPageHeader" xml:space="preserve">
+    <value>Surse (foldere locale / partajări sincronizate)</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Activat</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Dezactivat</value>
+  </data>
+  <data name="AllDeviceVideos" xml:space="preserve">
+    <value>Toate videoclipurile de pe dispozitiv</value>
+  </data>
+</root>

@@ -2,26 +2,27 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UltimateVideoBrowser.Views"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
-             Title="Videos">
+             Title="{x:Static strings:AppResources.MainPageTitle}">
 
     <Grid RowDefinitions="Auto,Auto,*">
         <!-- Top bar -->
         <Grid Padding="12" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
-            <Label Text="Ultimate Video Browser"
+            <Label Text="{x:Static strings:AppResources.AppTitle}"
                    FontAttributes="Bold"
                    FontSize="16"
                    TextColor="{DynamicResource OnSurface}" />
             <Button Grid.Column="1"
-                    Text="Sources"
+                    Text="{x:Static strings:AppResources.SourcesButton}"
                     Command="{Binding OpenSourcesCommand}"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
                     CornerRadius="10"
                     Padding="12,8" />
             <Button Grid.Column="2"
-                    Text="Reindex"
+                    Text="{x:Static strings:AppResources.ReindexButton}"
                     Command="{Binding RunIndexCommand}"
                     BackgroundColor="{DynamicResource Accent}"
                     TextColor="{DynamicResource OnAccent}"
@@ -32,7 +33,7 @@
 
         <!-- Search + Sort -->
         <Grid Grid.Row="1" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
-            <SearchBar Placeholder="Search videos..."
+            <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
                        BackgroundColor="{DynamicResource Surface2}"
@@ -40,8 +41,9 @@
                        PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
             <Picker Grid.Column="1"
                     ItemsSource="{Binding SortOptions}"
-                    SelectedItem="{Binding SortKey}"
-                    Title="Sort"
+                    ItemDisplayBinding="{Binding Display}"
+                    SelectedItem="{Binding SelectedSortOption}"
+                    Title="{x:Static strings:AppResources.SortTitle}"
                     TextColor="{DynamicResource OnSurface}"
                     BackgroundColor="{DynamicResource Surface2}"
                     Margin="8,0,0,0" />
@@ -105,10 +107,10 @@
                        VerticalOptions="Center"
                        HasShadow="False">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="Indexing..."
+                        <Label Text="{x:Static strings:AppResources.Indexing}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
-                        <Label Text="{Binding IndexedCount, StringFormat='New items: {0}'}"
+                        <Label Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                         <ActivityIndicator IsRunning="True" />
                     </VerticalStackLayout>
