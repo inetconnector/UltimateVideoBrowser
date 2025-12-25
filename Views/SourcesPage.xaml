@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
@@ -94,13 +95,14 @@
                             <HorizontalStackLayout Grid.Column="1"
                                                    Spacing="8"
                                                    HorizontalOptions="End">
-                                <Button Text="{Binding IsEnabled, Converter={StaticResource BoolToEnabledTextConverter}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleCommand}"
-                                        CommandParameter="{Binding .}"
-                                        BackgroundColor="{DynamicResource Surface2}"
-                                        TextColor="{DynamicResource OnSurface}"
-                                        CornerRadius="12"
-                                        Padding="12,8" />
+                                <Button
+                                    Text="{Binding IsEnabled, Converter={StaticResource BoolToEnabledTextConverter}}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    TextColor="{DynamicResource OnSurface}"
+                                    CornerRadius="12"
+                                    Padding="12,8" />
                                 <Button Text="{x:Static strings:AppResources.RemoveSourceButton}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveCommand}"
                                         CommandParameter="{Binding .}"

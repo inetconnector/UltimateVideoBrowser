@@ -5,7 +5,7 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class SourceService
 {
-    readonly AppDb db;
+    private readonly AppDb db;
 
     public SourceService(AppDb db)
     {
@@ -13,7 +13,9 @@ public sealed class SourceService
     }
 
     public Task<List<MediaSource>> GetSourcesAsync()
-        => db.Db.Table<MediaSource>().OrderBy(s => s.DisplayName).ToListAsync();
+    {
+        return db.Db.Table<MediaSource>().OrderBy(s => s.DisplayName).ToListAsync();
+    }
 
     public async Task EnsureDefaultSourceAsync()
     {
@@ -33,7 +35,13 @@ public sealed class SourceService
         await db.Db.InsertAsync(src);
     }
 
-    public Task UpsertAsync(MediaSource src) => db.Db.InsertOrReplaceAsync(src);
+    public Task UpsertAsync(MediaSource src)
+    {
+        return db.Db.InsertOrReplaceAsync(src);
+    }
 
-    public Task DeleteAsync(MediaSource src) => db.Db.DeleteAsync(src);
+    public Task DeleteAsync(MediaSource src)
+    {
+        return db.Db.DeleteAsync(src);
+    }
 }

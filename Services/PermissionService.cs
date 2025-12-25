@@ -1,3 +1,6 @@
+using Android;
+using Android.OS;
+
 namespace UltimateVideoBrowser.Services;
 
 public sealed class PermissionService
@@ -24,13 +27,13 @@ public sealed class PermissionService
     }
 
 #if ANDROID
-    static async Task<bool> IsMediaPermissionGrantedAsync()
+    private static async Task<bool> IsMediaPermissionGrantedAsync()
     {
         var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
         if (status == PermissionStatus.Granted)
             return true;
 
-        if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
             var mediaStatus = await Permissions.CheckStatusAsync<MediaVideoPermission>();
             return mediaStatus == PermissionStatus.Granted;
@@ -39,9 +42,9 @@ public sealed class PermissionService
         return false;
     }
 
-    static async Task<bool> RequestMediaPermissionAsync()
+    private static async Task<bool> RequestMediaPermissionAsync()
     {
-        if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
             var mediaStatus = await Permissions.RequestAsync<MediaVideoPermission>();
             return mediaStatus == PermissionStatus.Granted;
@@ -51,12 +54,12 @@ public sealed class PermissionService
         return status == PermissionStatus.Granted;
     }
 
-    sealed class MediaVideoPermission : Permissions.BasePlatformPermission
+    private sealed class MediaVideoPermission : Permissions.BasePlatformPermission
     {
         public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
             new[]
             {
-                (Android.Manifest.Permission.ReadMediaVideo, true)
+                (Manifest.Permission.ReadMediaVideo, true)
             };
     }
 #endif

@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
+using UltimateVideoBrowser.Platforms.Android;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
+using UltimateVideoBrowser.Views;
 
 namespace UltimateVideoBrowser;
 
@@ -27,7 +29,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<SourceService>();
         builder.Services.AddSingleton<PlaybackService>();
 #if ANDROID
-        builder.Services.AddSingleton<IFolderPickerService, UltimateVideoBrowser.Platforms.Android.FolderPickerService>();
+        builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #elif WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, UltimateVideoBrowser.Platforms.Windows.FolderPickerService>();
 #endif
@@ -37,8 +39,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<SourcesViewModel>();
 
         // Pages
-        builder.Services.AddSingleton<Views.MainPage>();
-        builder.Services.AddSingleton<Views.SourcesPage>();
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<SourcesPage>();
 
         return builder.Build();
     }

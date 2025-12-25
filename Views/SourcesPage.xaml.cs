@@ -4,7 +4,7 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class SourcesPage : ContentPage
 {
-    readonly SourcesViewModel vm;
+    private readonly SourcesViewModel vm;
 
     public SourcesPage(SourcesViewModel vm)
     {

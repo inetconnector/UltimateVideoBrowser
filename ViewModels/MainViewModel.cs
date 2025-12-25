@@ -8,27 +8,25 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    readonly SourceService sourceService;
-    readonly IndexService indexService;
-    readonly ThumbnailService thumbnailService;
-    readonly PlaybackService playbackService;
-    readonly PermissionService permissionService;
+    private readonly IndexService indexService;
+    private readonly PermissionService permissionService;
+    private readonly PlaybackService playbackService;
+    private readonly SourceService sourceService;
+    private readonly ThumbnailService thumbnailService;
+    [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private bool hasMediaPermission = true;
+    [ObservableProperty] private int indexedCount;
+    [ObservableProperty] private int indexProcessed;
+    [ObservableProperty] private double indexRatio;
+    [ObservableProperty] private string indexStatus = "";
+    [ObservableProperty] private int indexTotal;
+    [ObservableProperty] private bool isIndexing;
+    [ObservableProperty] private string searchText = "";
+    [ObservableProperty] private SortOption? selectedSortOption;
 
-    CancellationTokenSource? thumbCts;
+    private CancellationTokenSource? thumbCts;
 
-    [ObservableProperty] List<VideoItem> videos = new();
-    [ObservableProperty] string searchText = "";
-    [ObservableProperty] bool isIndexing;
-    [ObservableProperty] int indexedCount;
-    [ObservableProperty] int indexProcessed;
-    [ObservableProperty] int indexTotal;
-    [ObservableProperty] double indexRatio;
-    [ObservableProperty] string indexStatus = "";
-    [ObservableProperty] bool hasMediaPermission = true;
-    [ObservableProperty] string activeSourceId = "";
-    [ObservableProperty] SortOption? selectedSortOption;
-
-    public IReadOnlyList<SortOption> SortOptions { get; }
+    [ObservableProperty] private List<VideoItem> videos = new();
 
     public MainViewModel(
         SourceService sourceService,
@@ -47,10 +45,12 @@ public partial class MainViewModel : ObservableObject
         {
             new SortOption("name", AppResources.SortName),
             new SortOption("date", AppResources.SortDate),
-            new SortOption("duration", AppResources.SortDuration),
+            new SortOption("duration", AppResources.SortDuration)
         };
         SelectedSortOption = SortOptions.FirstOrDefault();
     }
+
+    public IReadOnlyList<SortOption> SortOptions { get; }
 
     public async Task InitializeAsync()
     {
@@ -60,7 +60,7 @@ public partial class MainViewModel : ObservableObject
 
         if (!HasMediaPermission)
         {
-            Videos = new();
+            Videos = new List<VideoItem>();
             return;
         }
 
@@ -86,7 +86,8 @@ public partial class MainViewModel : ObservableObject
         if (!HasMediaPermission)
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
-                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage, AppResources.OkButton));
+                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage,
+                    AppResources.OkButton));
             return;
         }
 
@@ -123,7 +124,10 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void Play(VideoItem item) => playbackService.Play(item);
+    public void Play(VideoItem item)
+    {
+        playbackService.Play(item);
+    }
 
     [RelayCommand]
     public async Task RequestPermissionAsync()
@@ -133,7 +137,7 @@ public partial class MainViewModel : ObservableObject
             await RunIndexAsync();
     }
 
-    void StartThumbnailPipeline()
+    private void StartThumbnailPipeline()
     {
         thumbCts?.Cancel();
         thumbCts?.Dispose();

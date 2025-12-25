@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 
@@ -6,7 +7,7 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class MainPage : ContentPage
 {
-    readonly MainViewModel vm;
+    private readonly MainViewModel vm;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
@@ -22,11 +23,13 @@ public partial class MainPage : ContentPage
         await ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
     }
 
-    sealed class MainPageBinding : BindableObject
+    private sealed class MainPageBinding : BindableObject
     {
-        readonly MainViewModel vm;
-        readonly DeviceModeService deviceMode;
-        readonly Page page;
+        private readonly DeviceModeService deviceMode;
+        private readonly Page page;
+        private readonly MainViewModel vm;
+
+        private int gridSpan = 3;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -78,17 +81,24 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand RequestPermissionCommand { get; }
         public IRelayCommand PlayCommand { get; }
 
-        int gridSpan = 3;
         public int GridSpan
         {
             get => gridSpan;
-            set { gridSpan = value; OnPropertyChanged(); }
+            set
+            {
+                gridSpan = value;
+                OnPropertyChanged();
+            }
         }
 
         public string SearchText
         {
             get => vm.SearchText;
-            set { vm.SearchText = value; OnPropertyChanged(); }
+            set
+            {
+                vm.SearchText = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool IsIndexing => vm.IsIndexing;
@@ -114,11 +124,11 @@ public partial class MainPage : ContentPage
             }
         }
 
-        public List<Models.VideoItem> Videos => vm.Videos;
+        public List<VideoItem> Videos => vm.Videos;
 
-        async Task OpenSourcesAsync()
+        private async Task OpenSourcesAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<Views.SourcesPage>()!);
+            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SourcesPage>()!);
         }
 
         public Task ApplyGridSpanAsync()
@@ -130,7 +140,7 @@ public partial class MainPage : ContentPage
             if (width <= 0)
                 width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 
-            var targetTile = mode == UiMode.Tv ? 260 : (mode == UiMode.Tablet ? 220 : 180);
+            var targetTile = mode == UiMode.Tv ? 260 : mode == UiMode.Tablet ? 220 : 180;
             var span = Math.Max(2, (int)(width / targetTile));
 
             GridSpan = Math.Min(8, span);

@@ -4,17 +4,14 @@ namespace UltimateVideoBrowser.Models;
 
 public class VideoItem
 {
-    [PrimaryKey]
-    public string Path { get; set; } = "";
+    [PrimaryKey] public string Path { get; set; } = "";
 
-    [Indexed]
-    public string Name { get; set; } = "";
+    [Indexed] public string Name { get; set; } = "";
 
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
 
-    [Indexed]
-    public string? SourceId { get; set; }
+    [Indexed] public string? SourceId { get; set; }
 
     public string? ThumbnailPath { get; set; }
 
