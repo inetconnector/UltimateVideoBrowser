@@ -1,8 +1,7 @@
 using UltimateVideoBrowser.Models;
-using Uri = Android.Net.Uri;
 #if ANDROID && !WINDOWS
 using Android.Content;
-
+using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Microsoft.Maui.Storage;
 #endif

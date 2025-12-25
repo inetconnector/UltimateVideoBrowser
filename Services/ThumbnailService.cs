@@ -1,10 +1,10 @@
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
-using Uri = Android.Net.Uri;
 
 #if ANDROID && !WINDOWS
 using Android.Graphics;
 using Android.Media;
+using Uri = Android.Net.Uri;
 
 #elif WINDOWS
 using System.Runtime.InteropServices.WindowsRuntime;
