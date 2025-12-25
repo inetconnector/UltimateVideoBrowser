@@ -8,15 +8,16 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SourcesViewModel : ObservableObject
 {
-    readonly SourceService sourceService;
-    readonly PermissionService permissionService;
-    readonly IFolderPickerService folderPickerService;
+    private readonly IFolderPickerService folderPickerService;
+    private readonly PermissionService permissionService;
+    private readonly SourceService sourceService;
+    [ObservableProperty] private bool hasMediaPermission;
 
-    [ObservableProperty] List<MediaSource> sources = new();
-    [ObservableProperty] bool hasMediaPermission;
-    [ObservableProperty] bool supportsManualPath;
+    [ObservableProperty] private List<MediaSource> sources = new();
+    [ObservableProperty] private bool supportsManualPath;
 
-    public SourcesViewModel(SourceService sourceService, PermissionService permissionService, IFolderPickerService folderPickerService)
+    public SourcesViewModel(SourceService sourceService, PermissionService permissionService,
+        IFolderPickerService folderPickerService)
     {
         this.sourceService = sourceService;
         this.permissionService = permissionService;
@@ -54,7 +55,8 @@ public partial class SourcesViewModel : ObservableObject
         var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == result.Path);
         if (existing != null)
         {
-            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage, AppResources.OkButton);
+            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage,
+                AppResources.OkButton);
             return;
         }
 
@@ -68,8 +70,8 @@ public partial class SourcesViewModel : ObservableObject
             AppResources.NewSourceConfirm,
             AppResources.NewSourceCancel,
             suggestedName,
-            maxLength: 60,
-            keyboard: Keyboard.Text);
+            60,
+            Keyboard.Text);
 
         if (string.IsNullOrWhiteSpace(displayName))
             return;
@@ -102,14 +104,16 @@ public partial class SourcesViewModel : ObservableObject
 
         if (!Directory.Exists(path))
         {
-            await Shell.Current.DisplayAlert(AppResources.PathInvalidTitle, AppResources.PathInvalidMessage, AppResources.OkButton);
+            await Shell.Current.DisplayAlert(AppResources.PathInvalidTitle, AppResources.PathInvalidMessage,
+                AppResources.OkButton);
             return;
         }
 
         var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == path);
         if (existing != null)
         {
-            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage, AppResources.OkButton);
+            await Shell.Current.DisplayAlert(AppResources.SourceExistsTitle, AppResources.SourceExistsMessage,
+                AppResources.OkButton);
             return;
         }
 
@@ -123,8 +127,8 @@ public partial class SourcesViewModel : ObservableObject
             AppResources.NewSourceConfirm,
             AppResources.NewSourceCancel,
             name,
-            maxLength: 60,
-            keyboard: Keyboard.Text);
+            60,
+            Keyboard.Text);
 
         if (string.IsNullOrWhiteSpace(displayName))
             return;

@@ -7,8 +7,8 @@ namespace UltimateVideoBrowser.Platforms.Android;
 
 public sealed class FolderPickerService : IFolderPickerService
 {
-    const int RequestCode = 9021;
-    static TaskCompletionSource<FolderPickResult?>? pending;
+    private const int RequestCode = 9021;
+    private static TaskCompletionSource<FolderPickResult?>? pending;
 
     public Task<FolderPickResult?> PickFolderAsync(CancellationToken ct = default)
     {
@@ -56,7 +56,8 @@ public sealed class FolderPickerService : IFolderPickerService
         var activity = Platform.CurrentActivity;
         if (activity != null)
         {
-            var flags = data.Flags & (ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantPersistableUriPermission);
+            var flags = data.Flags &
+                        (ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantPersistableUriPermission);
             try
             {
                 activity.ContentResolver?.TakePersistableUriPermission(uri, flags);
@@ -67,7 +68,9 @@ public sealed class FolderPickerService : IFolderPickerService
             }
         }
 
-        var name = activity == null ? uri.LastPathSegment ?? "Folder" : DocumentFile.FromTreeUri(activity, uri)?.Name ?? uri.LastPathSegment ?? "Folder";
+        var name = activity == null
+            ? uri.LastPathSegment ?? "Folder"
+            : DocumentFile.FromTreeUri(activity, uri)?.Name ?? uri.LastPathSegment ?? "Folder";
         tcs.TrySetResult(new FolderPickResult(uri.ToString(), name));
     }
 }

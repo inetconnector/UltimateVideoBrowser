@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:UltimateVideoBrowser.Views"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
@@ -117,8 +117,9 @@
                             <Grid RowDefinitions="160,Auto,Auto" Padding="8">
                                 <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
                                       HeightRequest="160">
-                                    <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video-placeholder.svg}"
-                                           Aspect="AspectFill" />
+                                    <Image
+                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video-placeholder.svg}"
+                                        Aspect="AspectFill" />
                                 </Grid>
 
                                 <Label Grid.Row="1"
@@ -161,8 +162,9 @@
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{Binding IndexStatus}"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Label Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
-                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label
+                            Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
+                            TextColor="{DynamicResource OnSurfaceMuted}" />
                         <ProgressBar Progress="{Binding IndexRatio}" />
                     </VerticalStackLayout>
                 </Frame>

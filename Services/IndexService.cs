@@ -4,8 +4,8 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class IndexService
 {
-    readonly AppDb db;
-    readonly MediaStoreScanner scanner;
+    private readonly AppDb db;
+    private readonly MediaStoreScanner scanner;
 
     public IndexService(AppDb db, MediaStoreScanner scanner)
     {
@@ -13,7 +13,8 @@ public sealed class IndexService
         this.scanner = scanner;
     }
 
-    public async Task<int> IndexSourcesAsync(IEnumerable<MediaSource> sources, IProgress<IndexProgress>? progress, CancellationToken ct)
+    public async Task<int> IndexSourcesAsync(IEnumerable<MediaSource> sources, IProgress<IndexProgress>? progress,
+        CancellationToken ct)
     {
         var inserted = 0;
 

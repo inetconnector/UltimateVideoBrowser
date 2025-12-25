@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
+using UltimateVideoBrowser.Platforms.Android;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
+using UltimateVideoBrowser.Views;
 
 namespace UltimateVideoBrowser;
 
@@ -37,8 +39,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<SourcesViewModel>();
 
         // Pages
-        builder.Services.AddSingleton<Views.MainPage>();
-        builder.Services.AddSingleton<Views.SourcesPage>();
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<SourcesPage>();
 
         return builder.Build();
     }
