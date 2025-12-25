@@ -1,7 +1,6 @@
 using UltimateVideoBrowser.Models;
-using Application = Android.App.Application;
-using Uri = Android.Net.Uri;
-#if ANDROID
+
+#if ANDROID && !WINDOWS
 using Android.Content;
 
 #elif WINDOWS
@@ -14,7 +13,7 @@ public sealed class PlaybackService
 {
     public void Play(VideoItem item)
     {
-#if ANDROID
+#if ANDROID && !WINDOWS
         var intent = new Intent(Intent.ActionView);
         intent.SetDataAndType(Uri.Parse(item.Path), "video/*");
         intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);

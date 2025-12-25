@@ -28,8 +28,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IndexService>();
         builder.Services.AddSingleton<SourceService>();
         builder.Services.AddSingleton<PlaybackService>();
-#if ANDROID
-        builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
+#if ANDROID && !WINDOWS
+        builder.Services.AddSingleton<IFolderPickerService, UltimateVideoBrowser.Platforms.Android.FolderPickerService>();
 #elif WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, UltimateVideoBrowser.Platforms.Windows.FolderPickerService>();
 #endif

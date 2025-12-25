@@ -1,9 +1,7 @@
 using Android.Graphics;
 using UltimateVideoBrowser.Models;
-using Application = Android.App.Application;
-using Path = System.IO.Path;
-using Uri = Android.Net.Uri;
-#if ANDROID
+
+#if ANDROID && !WINDOWS
 using Android.Media;
 
 #elif WINDOWS
@@ -36,7 +34,7 @@ public sealed class ThumbnailService
         if (File.Exists(thumbPath))
             return thumbPath;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
         return await Task.Run(() =>
         {
             try

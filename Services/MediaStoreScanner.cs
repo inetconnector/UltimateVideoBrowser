@@ -1,8 +1,7 @@
 using AndroidX.DocumentFile.Provider;
 using UltimateVideoBrowser.Models;
-using Application = Android.App.Application;
-using Uri = Android.Net.Uri;
-#if ANDROID
+
+#if ANDROID && !WINDOWS
 using Android.Provider;
 
 #elif WINDOWS
@@ -17,7 +16,7 @@ public sealed class MediaStoreScanner
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";
-#if ANDROID
+#if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
             // On Android 9 we can read file paths from MediaStore DATA column.
             return Task.Run(() => ScanMediaStore(sourceId));
@@ -89,8 +88,8 @@ public sealed class MediaStoreScanner
     }
 #endif
 
-#if ANDROID
-    private static readonly string[] VideoExtensions =
+#if ANDROID && !WINDOWS
+    static readonly string[] VideoExtensions =
     {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
     };
