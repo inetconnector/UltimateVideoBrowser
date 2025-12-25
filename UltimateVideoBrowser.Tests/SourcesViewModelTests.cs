@@ -51,9 +51,10 @@ public sealed class SourcesViewModelTests
             this.result = result;
         }
 
-        public Task<FolderPickResult?> PickFolderAsync(CancellationToken ct = default)
+        public Task<IReadOnlyList<FolderPickResult>> PickFoldersAsync(CancellationToken ct = default)
         {
-            return Task.FromResult(result);
+            return Task.FromResult<IReadOnlyList<FolderPickResult>>(
+                result == null ? Array.Empty<FolderPickResult>() : new[] { result });
         }
     }
 

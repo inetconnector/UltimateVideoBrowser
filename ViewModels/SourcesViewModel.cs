@@ -53,21 +53,27 @@ public partial class SourcesViewModel : ObservableObject
     [RelayCommand]
     public async Task AddSourceAsync()
     {
-        var result = await folderPickerService.PickFolderAsync();
-        if (result == null)
+        var results = await folderPickerService.PickFoldersAsync();
+        if (results.Count == 0)
             return;
 
-        await AddSourceFromPickAsync(result);
+        foreach (var result in results)
+        {
+            await AddSourceFromPickAsync(result);
+        }
     }
 
     [RelayCommand]
     public async Task AddPathAsync()
     {
-        var result = await folderPickerService.PickFolderAsync();
-        if (result == null)
+        var results = await folderPickerService.PickFoldersAsync();
+        if (results.Count == 0)
             return;
 
-        await AddSourceFromPickAsync(result);
+        foreach (var result in results)
+        {
+            await AddSourceFromPickAsync(result);
+        }
     }
 
     private async Task AddSourceFromPickAsync(FolderPickResult result)

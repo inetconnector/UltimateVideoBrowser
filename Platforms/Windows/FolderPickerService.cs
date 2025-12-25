@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.Maui.Platform;
 using UltimateVideoBrowser.Services;
 using Windows.Storage.Pickers;
@@ -6,23 +8,25 @@ namespace UltimateVideoBrowser.Platforms.Windows;
 
 public sealed class FolderPickerService : IFolderPickerService
 {
-    public async Task<FolderPickResult?> PickFolderAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<FolderPickResult>> PickFoldersAsync(CancellationToken ct = default)
     {
         var picker = new FolderPicker();
         picker.FileTypeFilter.Add("*");
 
         var window = Application.Current?.Windows.FirstOrDefault()?.Handler?.PlatformView as MauiWinUIWindow;
         if (window == null)
-            return null;
+            return Array.Empty<FolderPickResult>();
 
         WinRT.Interop.InitializeWithWindow.Initialize(picker, window.WindowHandle);
 
-        var folder = await picker.PickSingleFolderAsync();
+        var folders = await picker.PickMultipleFoldersAsync();
         ct.ThrowIfCancellationRequested();
 
-        if (folder == null)
-            return null;
+        if (folders == null || folders.Count == 0)
+            return Array.Empty<FolderPickResult>();
 
-        return new FolderPickResult(folder.Path, folder.DisplayName);
+        return folders
+            .Select(folder => new FolderPickResult(folder.Path, folder.DisplayName))
+            .ToList();
     }
 }

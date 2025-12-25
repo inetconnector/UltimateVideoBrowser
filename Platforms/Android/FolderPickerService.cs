@@ -8,18 +8,18 @@ namespace UltimateVideoBrowser.Platforms.Android;
 public sealed class FolderPickerService : IFolderPickerService
 {
     private const int RequestCode = 9021;
-    private static TaskCompletionSource<FolderPickResult?>? pending;
+    private static TaskCompletionSource<IReadOnlyList<FolderPickResult>>? pending;
 
-    public Task<FolderPickResult?> PickFolderAsync(CancellationToken ct = default)
+    public Task<IReadOnlyList<FolderPickResult>> PickFoldersAsync(CancellationToken ct = default)
     {
         if (pending != null)
             return pending.Task;
 
         var activity = Platform.CurrentActivity;
         if (activity == null)
-            return Task.FromResult<FolderPickResult?>(null);
+            return Task.FromResult<IReadOnlyList<FolderPickResult>>(Array.Empty<FolderPickResult>());
 
-        pending = new TaskCompletionSource<FolderPickResult?>();
+        pending = new TaskCompletionSource<IReadOnlyList<FolderPickResult>>();
         ct.Register(() =>
         {
             pending?.TrySetCanceled();
@@ -48,7 +48,7 @@ public sealed class FolderPickerService : IFolderPickerService
 
         if (resultCode != Result.Ok || data?.Data == null)
         {
-            tcs.TrySetResult(null);
+            tcs.TrySetResult(Array.Empty<FolderPickResult>());
             return;
         }
 
@@ -71,6 +71,6 @@ public sealed class FolderPickerService : IFolderPickerService
         var name = activity == null
             ? uri.LastPathSegment ?? "Folder"
             : DocumentFile.FromTreeUri(activity, uri)?.Name ?? uri.LastPathSegment ?? "Folder";
-        tcs.TrySetResult(new FolderPickResult(uri.ToString(), name));
+        tcs.TrySetResult(new[] { new FolderPickResult(uri.ToString(), name) });
     }
 }
