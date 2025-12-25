@@ -1,6 +1,6 @@
 using UltimateVideoBrowser.Models;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
 using Android.Media;
 #elif WINDOWS
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -32,7 +32,7 @@ public sealed class ThumbnailService
         if (File.Exists(thumbPath))
             return thumbPath;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
         return await Task.Run(() =>
         {
             try

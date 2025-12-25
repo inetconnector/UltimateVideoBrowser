@@ -1,6 +1,6 @@
 using UltimateVideoBrowser.Models;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
 using Android.Content;
 #elif WINDOWS
 using Microsoft.Maui.Storage;
@@ -12,7 +12,7 @@ public sealed class PlaybackService
 {
     public void Play(VideoItem item)
     {
-#if ANDROID
+#if ANDROID && !WINDOWS
         var intent = new Intent(Intent.ActionView);
         intent.SetDataAndType(Android.Net.Uri.Parse(item.Path), "video/*");
         intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);

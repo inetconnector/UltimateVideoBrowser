@@ -1,6 +1,6 @@
 using UltimateVideoBrowser.Models;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
 using Android.Provider;
 #elif WINDOWS
 using Windows.Storage;
@@ -14,7 +14,7 @@ public sealed class MediaStoreScanner
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";
-#if ANDROID
+#if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
         {
             // On Android 9 we can read file paths from MediaStore DATA column.
@@ -88,7 +88,7 @@ public sealed class MediaStoreScanner
     }
 #endif
 
-#if ANDROID
+#if ANDROID && !WINDOWS
     static readonly string[] VideoExtensions =
     {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
