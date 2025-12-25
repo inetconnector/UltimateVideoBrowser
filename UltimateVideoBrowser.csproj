@@ -34,6 +34,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.0.1.10" />
+  </ItemGroup>
+
   <ItemGroup>
     <MauiIcon Include="Resources\AppIcon\appicon.svg" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
