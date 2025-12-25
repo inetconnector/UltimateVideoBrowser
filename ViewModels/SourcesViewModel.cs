@@ -92,7 +92,8 @@ public partial class SourcesViewModel : ObservableObject
     [RelayCommand]
     public async Task AddPathAsync()
     {
-        var path = await Shell.Current.DisplayPromptAsync(
+            var page = Application.Current?.MainPage;
+            var path = page == null ? null : await page.DisplayPromptAsync(
             AppResources.AddPathTitle,
             AppResources.AddPathPrompt,
             AppResources.NewSourceConfirm,
@@ -121,14 +122,23 @@ public partial class SourcesViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(name))
             name = path;
 
-        var displayName = await Shell.Current.DisplayPromptAsync(
-            AppResources.NewSourceTitle,
-            AppResources.NewSourcePrompt,
-            AppResources.NewSourceConfirm,
-            AppResources.NewSourceCancel,
-            name,
-            60,
-            Keyboard.Text);
+        var displayName = page == null
+            ? await Application.Current.MainPage.DisplayPromptAsync(
+                AppResources.NewSourceTitle,
+                AppResources.NewSourcePrompt,
+                AppResources.NewSourceConfirm,
+                AppResources.NewSourceCancel,
+                name,
+                60,
+                Keyboard.Text)
+            : await page.DisplayPromptAsync(
+                AppResources.NewSourceTitle,
+                AppResources.NewSourcePrompt,
+                AppResources.NewSourceConfirm,
+                AppResources.NewSourceCancel,
+                name,
+                60,
+                Keyboard.Text);
 
         if (string.IsNullOrWhiteSpace(displayName))
             return;
