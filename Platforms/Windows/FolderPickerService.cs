@@ -18,7 +18,7 @@ public sealed class FolderPickerService : IFolderPickerService
 
         WinRT.Interop.InitializeWithWindow.Initialize(picker, window.WindowHandle);
 
-        var folder = await picker.PickSingleFolderAsync();
+        var folders = await picker.PickMultipleFoldersAsync();
         ct.ThrowIfCancellationRequested();
 
         if (folder == null)
