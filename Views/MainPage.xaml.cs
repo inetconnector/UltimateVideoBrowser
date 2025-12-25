@@ -38,11 +38,44 @@ public partial class MainPage : ContentPage
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
             PlayCommand = vm.PlayCommand;
+            RequestPermissionCommand = vm.RequestPermissionCommand;
+
+            vm.PropertyChanged += (_, args) =>
+            {
+                switch (args.PropertyName)
+                {
+                    case nameof(MainViewModel.IsIndexing):
+                        OnPropertyChanged(nameof(IsIndexing));
+                        break;
+                    case nameof(MainViewModel.IndexedCount):
+                        OnPropertyChanged(nameof(IndexedCount));
+                        break;
+                    case nameof(MainViewModel.IndexProcessed):
+                        OnPropertyChanged(nameof(IndexProcessed));
+                        break;
+                    case nameof(MainViewModel.IndexTotal):
+                        OnPropertyChanged(nameof(IndexTotal));
+                        break;
+                    case nameof(MainViewModel.IndexRatio):
+                        OnPropertyChanged(nameof(IndexRatio));
+                        break;
+                    case nameof(MainViewModel.IndexStatus):
+                        OnPropertyChanged(nameof(IndexStatus));
+                        break;
+                    case nameof(MainViewModel.HasMediaPermission):
+                        OnPropertyChanged(nameof(HasMediaPermission));
+                        break;
+                    case nameof(MainViewModel.Videos):
+                        OnPropertyChanged(nameof(Videos));
+                        break;
+                }
+            };
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
+        public IAsyncRelayCommand RequestPermissionCommand { get; }
         public IRelayCommand PlayCommand { get; }
 
         int gridSpan = 3;
@@ -60,6 +93,11 @@ public partial class MainPage : ContentPage
 
         public bool IsIndexing => vm.IsIndexing;
         public int IndexedCount => vm.IndexedCount;
+        public int IndexProcessed => vm.IndexProcessed;
+        public int IndexTotal => vm.IndexTotal;
+        public double IndexRatio => vm.IndexRatio;
+        public string IndexStatus => vm.IndexStatus;
+        public bool HasMediaPermission => vm.HasMediaPermission;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
 
         public SortOption? SelectedSortOption
