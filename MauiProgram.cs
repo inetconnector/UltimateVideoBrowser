@@ -28,7 +28,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<MediaStoreScanner>();
         builder.Services.AddSingleton<ThumbnailService>();
         builder.Services.AddSingleton<IndexService>();
-        builder.Services.AddSingleton<SourceService>();
+        builder.Services.AddSingleton<ISourceService, SourceService>();
+        builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();

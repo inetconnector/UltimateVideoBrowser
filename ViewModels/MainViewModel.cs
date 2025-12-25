@@ -11,7 +11,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IndexService indexService;
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
-    private readonly SourceService sourceService;
+    private readonly ISourceService sourceService;
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private bool hasMediaPermission = true;
@@ -29,7 +29,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private List<VideoItem> videos = new();
 
     public MainViewModel(
-        SourceService sourceService,
+        ISourceService sourceService,
         IndexService indexService,
         ThumbnailService thumbnailService,
         PlaybackService playbackService,

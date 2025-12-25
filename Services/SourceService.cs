@@ -3,7 +3,7 @@ using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Services;
 
-public sealed class SourceService
+public sealed class SourceService : ISourceService
 {
     private readonly AppDb db;
 
