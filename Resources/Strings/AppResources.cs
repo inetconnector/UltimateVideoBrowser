@@ -21,6 +21,8 @@ public static class AppResources
     public static string SortDuration => GetString(nameof(SortDuration), "Duration");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
+    public static string EmptyStateTitle => GetString(nameof(EmptyStateTitle), "No videos yet");
+    public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage), "Add a source or refresh to start browsing your library.");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
     public static string SourcesPageHeader => GetString(nameof(SourcesPageHeader), "Sources (local folders / synced shares)");
     public static string Enabled => GetString(nameof(Enabled), "Enabled");

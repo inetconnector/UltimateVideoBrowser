@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="splash" x1="80" y1="56" x2="448" y2="456" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E1B4B"/>
+      <stop offset="0.5" stop-color="#312E81"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="card" x1="172" y1="168" x2="340" y2="344" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#splash)"/>
+  <rect x="132" y="156" width="248" height="200" rx="40" fill="url(#card)"/>
+  <rect x="156" y="182" width="44" height="44" rx="12" fill="#0F172A" fill-opacity="0.2"/>
+  <rect x="214" y="182" width="44" height="44" rx="12" fill="#0F172A" fill-opacity="0.2"/>
+  <rect x="272" y="182" width="44" height="44" rx="12" fill="#0F172A" fill-opacity="0.2"/>
+  <rect x="330" y="182" width="44" height="44" rx="12" fill="#0F172A" fill-opacity="0.2"/>
+  <path d="M226 216C226 208.163 234.163 203.326 241.5 207.5L302.5 244.5C309.5 248.836 309.5 259.164 302.5 263.5L241.5 300.5C234.163 304.674 226 299.837 226 292V216Z" fill="#FFFFFF" fill-opacity="0.92"/>
+</svg>
