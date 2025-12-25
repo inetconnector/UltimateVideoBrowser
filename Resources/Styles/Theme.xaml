@@ -5,7 +5,6 @@
     xmlns:conv="clr-namespace:UltimateVideoBrowser.Converters">
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
-    <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
 
     <Style TargetType="Button">
         <Setter Property="FontSize" Value="13" />

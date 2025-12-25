@@ -1,6 +1,7 @@
 using UltimateVideoBrowser.Models;
+using IOPath = System.IO.Path;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
 using Android.Provider;
 #elif WINDOWS
 using Windows.Storage;
@@ -14,7 +15,7 @@ public sealed class MediaStoreScanner
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";
-#if ANDROID
+#if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
         {
             // On Android 9 we can read file paths from MediaStore DATA column.
@@ -88,7 +89,7 @@ public sealed class MediaStoreScanner
     }
 #endif
 
-#if ANDROID
+#if ANDROID && !WINDOWS
     static readonly string[] VideoExtensions =
     {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
@@ -101,7 +102,7 @@ public sealed class MediaStoreScanner
     static List<VideoItem> ScanMediaStore(string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Android.App.Application.Context;
+        var ctx = Platform.AppContext;
         var resolver = ctx.ContentResolver;
 
         string[] projection =
@@ -136,7 +137,7 @@ public sealed class MediaStoreScanner
             list.Add(new VideoItem
             {
                 Path = path,
-                Name = cursor.GetString(nameCol) ?? Path.GetFileName(path),
+                Name = cursor.GetString(nameCol) ?? IOPath.GetFileName(path),
                 DurationMs = cursor.IsNull(durCol) ? 0 : cursor.GetLong(durCol),
                 DateAddedSeconds = cursor.IsNull(addCol) ? 0 : cursor.GetLong(addCol),
                 SourceId = sourceId
@@ -157,8 +158,8 @@ public sealed class MediaStoreScanner
     static List<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId)
     {
         var list = new List<VideoItem>();
-        var ctx = Android.App.Application.Context;
-        var uri = Android.Net.Uri.Parse(rootPath);
+        var ctx = Platform.AppContext;
+        var uri = global::Android.Net.Uri.Parse(rootPath);
         var root = AndroidX.DocumentFile.Provider.DocumentFile.FromTreeUri(ctx, uri);
 
         if (root == null)
@@ -209,7 +210,7 @@ public sealed class MediaStoreScanner
                 list.Add(new VideoItem
                 {
                     Path = path,
-                    Name = Path.GetFileName(path),
+                    Name = IOPath.GetFileName(path),
                     DurationMs = 0,
                     DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     SourceId = sourceId

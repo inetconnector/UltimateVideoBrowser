@@ -4,7 +4,7 @@ public sealed class PermissionService
 {
     public Task<bool> CheckMediaReadAsync()
     {
-#if ANDROID
+#if ANDROID && !WINDOWS
         return IsMediaPermissionGrantedAsync();
 #else
         return Task.FromResult(true);
@@ -13,7 +13,7 @@ public sealed class PermissionService
 
     public async Task<bool> EnsureMediaReadAsync()
     {
-#if ANDROID
+#if ANDROID && !WINDOWS
         if (await IsMediaPermissionGrantedAsync())
             return true;
 
@@ -23,7 +23,7 @@ public sealed class PermissionService
 #endif
     }
 
-#if ANDROID
+#if ANDROID && !WINDOWS
     static async Task<bool> IsMediaPermissionGrantedAsync()
     {
         var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();

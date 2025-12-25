@@ -1,6 +1,7 @@
 using UltimateVideoBrowser.Models;
+using IOPath = System.IO.Path;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
 using Android.Media;
 #elif WINDOWS
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -16,14 +17,14 @@ public sealed class ThumbnailService
 
     public ThumbnailService()
     {
-        cacheDir = Path.Combine(FileSystem.CacheDirectory, "thumbs");
+        cacheDir = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
         Directory.CreateDirectory(cacheDir);
     }
 
     public string GetThumbnailPath(VideoItem item)
     {
         var safe = MakeSafeFileName(item.Path);
-        return Path.Combine(cacheDir, safe + ".jpg");
+        return IOPath.Combine(cacheDir, safe + ".jpg");
     }
 
     public async Task<string?> EnsureThumbnailAsync(VideoItem item, CancellationToken ct)
@@ -32,7 +33,7 @@ public sealed class ThumbnailService
         if (File.Exists(thumbPath))
             return thumbPath;
 
-#if ANDROID
+#if ANDROID && !WINDOWS
         return await Task.Run(() =>
         {
             try
@@ -42,8 +43,8 @@ public sealed class ThumbnailService
                 using var retriever = new MediaMetadataRetriever();
                 if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
                 {
-                    var uri = Android.Net.Uri.Parse(item.Path);
-                    retriever.SetDataSource(Android.App.Application.Context, uri);
+                    var uri = global::Android.Net.Uri.Parse(item.Path);
+                    retriever.SetDataSource(Platform.AppContext, uri);
                 }
                 else
                 {
