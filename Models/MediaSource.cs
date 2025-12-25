@@ -15,4 +15,13 @@ public class MediaSource
     public bool IsEnabled { get; set; } = true;
 
     public long LastIndexedUtcSeconds { get; set; } = 0;
+
+    [Ignore]
+    public bool IsSystemSource => Id == "device_all";
+
+    [Ignore]
+    public string DisplayPath
+        => string.IsNullOrWhiteSpace(LocalFolderPath)
+            ? UltimateVideoBrowser.Resources.Strings.AppResources.DeviceLibraryPath
+            : LocalFolderPath;
 }

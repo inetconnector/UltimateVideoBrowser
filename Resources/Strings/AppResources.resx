@@ -42,9 +42,23 @@
   <data name="Indexing" xml:space="preserve">
     <value>Indexing...</value>
   </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Indexing {0} • {1}/{2}</value>
+  </data>
   <data name="NewItemsFormat" xml:space="preserve">
     <value>New items: {0}</value>
   </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Access required</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Allow access to your videos so we can index and play them.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Grant access</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
   <data name="EmptyStateTitle" xml:space="preserve">
     <value>No videos yet</value>
   </data>
@@ -57,6 +71,60 @@
   <data name="SourcesPageHeader" xml:space="preserve">
     <value>Sources (local folders / synced shares)</value>
   </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Add folder</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>Remove source?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>Remove “{0}” from sources?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Source name</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>New source</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Already added</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>This folder is already in your sources.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Have a network share or local path? Add it directly.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Add path</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Add path</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Enter a local folder or network share path.</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Path not found</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>We couldn't find that folder. Please check the path.</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
@@ -65,5 +133,8 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>All device videos</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Device media library</value>
   </data>
 </root>

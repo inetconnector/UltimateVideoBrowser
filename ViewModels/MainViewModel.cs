@@ -20,7 +20,12 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] string searchText = "";
     [ObservableProperty] bool isIndexing;
     [ObservableProperty] int indexedCount;
-    [ObservableProperty] string activeSourceId = "device_all";
+    [ObservableProperty] int indexProcessed;
+    [ObservableProperty] int indexTotal;
+    [ObservableProperty] double indexRatio;
+    [ObservableProperty] string indexStatus = "";
+    [ObservableProperty] bool hasMediaPermission = true;
+    [ObservableProperty] string activeSourceId = "";
     [ObservableProperty] SortOption? selectedSortOption;
 
     public IReadOnlyList<SortOption> SortOptions { get; }
@@ -51,8 +56,9 @@ public partial class MainViewModel : ObservableObject
     {
         await sourceService.EnsureDefaultSourceAsync();
 
-        var ok = await permissionService.EnsureMediaReadAsync();
-        if (!ok)
+        HasMediaPermission = await permissionService.CheckMediaReadAsync();
+
+        if (!HasMediaPermission)
         {
             Videos = new();
             return;
@@ -76,24 +82,56 @@ public partial class MainViewModel : ObservableObject
     {
         if (IsIndexing) return;
 
+        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        if (!HasMediaPermission)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage, AppResources.OkButton));
+            return;
+        }
+
         IsIndexing = true;
         IndexedCount = 0;
+        IndexProcessed = 0;
+        IndexTotal = 0;
+        IndexRatio = 0;
+        IndexStatus = AppResources.Indexing;
 
         try
         {
-            var progress = new Progress<int>(i => IndexedCount = i);
+            var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
+            var progress = new Progress<IndexProgress>(p =>
+            {
+                IndexProcessed = p.Processed;
+                IndexTotal = p.Total;
+                IndexRatio = p.Ratio;
+                IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
+                IndexedCount = p.Inserted;
+            });
             using var cts = new CancellationTokenSource();
 
-            await indexService.IndexDeviceMediaStoreAsync(ActiveSourceId, progress, cts.Token);
+            await indexService.IndexSourcesAsync(sources, progress, cts.Token);
         }
         finally
         {
             IsIndexing = false;
+            IndexStatus = "";
+            IndexRatio = 0;
         }
+
+        await RefreshAsync();
     }
 
     [RelayCommand]
     public void Play(VideoItem item) => playbackService.Play(item);
+
+    [RelayCommand]
+    public async Task RequestPermissionAsync()
+    {
+        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        if (HasMediaPermission)
+            await RunIndexAsync();
+    }
 
     void StartThumbnailPipeline()
     {
