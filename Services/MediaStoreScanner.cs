@@ -1,6 +1,7 @@
 using AndroidX.DocumentFile.Provider;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
+using Uri = Android.Net.Uri;
 
 #if ANDROID && !WINDOWS
 using Android.Provider;
@@ -90,7 +91,7 @@ public sealed class MediaStoreScanner
 #endif
 
 #if ANDROID && !WINDOWS
-    static readonly string[] VideoExtensions =
+    private static readonly string[] VideoExtensions =
     {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
     };
@@ -161,8 +162,8 @@ public sealed class MediaStoreScanner
     {
         var list = new List<VideoItem>();
         var ctx = Platform.AppContext;
-        var uri = global::Android.Net.Uri.Parse(rootPath);
-        var root = AndroidX.DocumentFile.Provider.DocumentFile.FromTreeUri(ctx, uri);
+        var uri = Uri.Parse(rootPath);
+        var root = DocumentFile.FromTreeUri(ctx, uri);
 
         if (root == null)
             return list;

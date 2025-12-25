@@ -27,7 +27,7 @@ public sealed class PermissionService
     }
 
 #if ANDROID && !WINDOWS
-    static async Task<bool> IsMediaPermissionGrantedAsync()
+    private static async Task<bool> IsMediaPermissionGrantedAsync()
     {
         var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
         if (status == PermissionStatus.Granted)

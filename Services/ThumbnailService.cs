@@ -1,6 +1,7 @@
 using Android.Graphics;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
+using Uri = Android.Net.Uri;
 
 #if ANDROID && !WINDOWS
 using Android.Media;
@@ -45,7 +46,7 @@ public sealed class ThumbnailService
                 using var retriever = new MediaMetadataRetriever();
                 if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
                 {
-                    var uri = global::Android.Net.Uri.Parse(item.Path);
+                    var uri = Uri.Parse(item.Path);
                     retriever.SetDataSource(Platform.AppContext, uri);
                 }
                 else
