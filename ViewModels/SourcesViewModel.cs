@@ -53,27 +53,50 @@ public partial class SourcesViewModel : ObservableObject
     [RelayCommand]
     public async Task AddSourceAsync()
     {
-        var result = await folderPickerService.PickFolderAsync();
-        if (result == null)
-            return;
-
-        await AddSourceFromPickAsync(result);
+        await AddSourcesAsync();
     }
 
     [RelayCommand]
     public async Task AddPathAsync()
     {
-        var result = await folderPickerService.PickFolderAsync();
-        if (result == null)
-            return;
-
-        await AddSourceFromPickAsync(result);
+        await AddSourcesAsync();
     }
 
-    private async Task AddSourceFromPickAsync(FolderPickResult result)
+    private async Task AddSourcesAsync()
+    {
+        while (true)
+        {
+            var results = await folderPickerService.PickFoldersAsync();
+            if (results.Count == 0)
+                return;
+
+            var addedAny = false;
+            foreach (var result in results)
+            {
+                if (await AddSourceFromPickAsync(result))
+                {
+                    addedAny = true;
+                }
+            }
+
+            if (!addedAny)
+                return;
+
+            var addMore = await dialogService.DisplayAlertAsync(
+                AppResources.AddAnotherFolderTitle,
+                AppResources.AddAnotherFolderMessage,
+                AppResources.AddAnotherFolderConfirm,
+                AppResources.AddAnotherFolderCancel);
+
+            if (!addMore)
+                return;
+        }
+    }
+
+    private async Task<bool> AddSourceFromPickAsync(FolderPickResult result)
     {
         if (string.IsNullOrWhiteSpace(result.Path))
-            return;
+            return false;
 
         var path = result.Path.Trim();
         if (!Directory.Exists(path))
@@ -82,7 +105,7 @@ public partial class SourcesViewModel : ObservableObject
                 AppResources.PathInvalidTitle,
                 AppResources.PathInvalidMessage,
                 AppResources.OkButton);
-            return;
+            return false;
         }
 
         var existing = (await sourceService.GetSourcesAsync()).FirstOrDefault(s => s.LocalFolderPath == path);
@@ -92,7 +115,7 @@ public partial class SourcesViewModel : ObservableObject
                 AppResources.SourceExistsTitle,
                 AppResources.SourceExistsMessage,
                 AppResources.OkButton);
-            return;
+            return false;
         }
 
         var suggestedName = string.IsNullOrWhiteSpace(result.DisplayName)
@@ -109,7 +132,7 @@ public partial class SourcesViewModel : ObservableObject
             Keyboard.Text);
 
         if (string.IsNullOrWhiteSpace(displayName))
-            return;
+            return false;
 
         var src = new MediaSource
         {
@@ -122,6 +145,7 @@ public partial class SourcesViewModel : ObservableObject
 
         await sourceService.UpsertAsync(src);
         await InitializeAsync();
+        return true;
     }
 
     [RelayCommand]
