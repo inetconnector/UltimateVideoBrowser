@@ -1,8 +1,8 @@
-using Android.Graphics;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
 #if ANDROID && !WINDOWS
+using Android.Graphics;
 using Android.Media;
 
 #elif WINDOWS
