@@ -1,5 +1,12 @@
-using Android.Media;
 using UltimateVideoBrowser.Models;
+
+#if ANDROID
+using Android.Media;
+#elif WINDOWS
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Storage;
+using Windows.Storage.FileProperties;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
@@ -25,6 +32,7 @@ public sealed class ThumbnailService
         if (File.Exists(thumbPath))
             return thumbPath;
 
+#if ANDROID
         return await Task.Run(() =>
         {
             try
@@ -49,6 +57,28 @@ public sealed class ThumbnailService
                 return null;
             }
         }, ct);
+#elif WINDOWS
+        try
+        {
+            var file = await StorageFile.GetFileFromPathAsync(item.Path);
+            using var thumb = await file.GetThumbnailAsync(ThumbnailMode.VideosView, 320);
+            if (thumb == null || thumb.Size == 0)
+                return null;
+
+            using var input = thumb.AsStreamForRead();
+            using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
+            await input.CopyToAsync(fs, ct);
+            return thumbPath;
+        }
+        catch
+        {
+            return null;
+        }
+#else
+        _ = item;
+        _ = ct;
+        return await Task.FromResult<string?>(null);
+#endif
     }
 
     static string MakeSafeFileName(string input)

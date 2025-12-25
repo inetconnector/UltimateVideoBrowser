@@ -60,12 +60,20 @@ public partial class MainPage : ContentPage
 
         public bool IsIndexing => vm.IsIndexing;
         public int IndexedCount => vm.IndexedCount;
-        public List<string> SortOptions => vm.SortOptions.ToList();
+        public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
 
-        public string SortKey
+        public SortOption? SelectedSortOption
         {
-            get => vm.SortKey;
-            set { vm.SortKey = value; OnPropertyChanged(); _ = vm.RefreshAsync(); }
+            get => vm.SelectedSortOption;
+            set
+            {
+                if (vm.SelectedSortOption == value)
+                    return;
+
+                vm.SelectedSortOption = value;
+                OnPropertyChanged();
+                _ = vm.RefreshAsync();
+            }
         }
 
         public List<Models.VideoItem> Videos => vm.Videos;

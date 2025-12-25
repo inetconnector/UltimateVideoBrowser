@@ -1,5 +1,10 @@
-using Android.Provider;
 using UltimateVideoBrowser.Models;
+
+#if ANDROID
+using Android.Provider;
+#elif WINDOWS
+using Windows.Storage;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
@@ -7,6 +12,7 @@ public sealed class MediaStoreScanner
 {
     public Task<List<VideoItem>> ScanAllVideosAsync(string? sourceId = null)
     {
+#if ANDROID
         // On Android 9 we can read file paths from MediaStore DATA column.
         return Task.Run(() =>
         {
@@ -55,5 +61,59 @@ public sealed class MediaStoreScanner
 
             return list;
         });
+#elif WINDOWS
+        return ScanWindowsAsync(sourceId);
+#else
+        _ = sourceId;
+        return Task.FromResult(new List<VideoItem>());
+#endif
     }
+
+#if WINDOWS
+    static readonly string[] VideoExtensions =
+    {
+        ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
+    };
+
+    static bool IsVideoFile(string path)
+        => VideoExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
+
+    static async Task<List<VideoItem>> ScanWindowsAsync(string? sourceId)
+    {
+        var list = new List<VideoItem>();
+        var root = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+
+        if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root))
+            return list;
+
+        foreach (var path in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories)
+                     .Where(IsVideoFile))
+        {
+            var info = new FileInfo(path);
+            var durationMs = 0L;
+
+            try
+            {
+                var file = await StorageFile.GetFileFromPathAsync(path);
+                var props = await file.Properties.GetVideoPropertiesAsync();
+                durationMs = (long)props.Duration.TotalMilliseconds;
+            }
+            catch
+            {
+                durationMs = 0;
+            }
+
+            list.Add(new VideoItem
+            {
+                Path = path,
+                Name = Path.GetFileName(path),
+                DurationMs = durationMs,
+                DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
+                SourceId = sourceId
+            });
+        }
+
+        return list;
+    }
+#endif
 }
