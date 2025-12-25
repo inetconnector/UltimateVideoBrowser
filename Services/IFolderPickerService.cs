@@ -2,7 +2,7 @@ namespace UltimateVideoBrowser.Services;
 
 public interface IFolderPickerService
 {
-    Task<FolderPickResult?> PickFolderAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<FolderPickResult>> PickFoldersAsync(CancellationToken ct = default);
 }
 
 public sealed record FolderPickResult(string Path, string DisplayName);
