@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Microsoft.Maui.Platform;
 using UltimateVideoBrowser.Services;
 using Windows.Storage.Pickers;
@@ -22,11 +21,9 @@ public sealed class FolderPickerService : IFolderPickerService
         var folders = await picker.PickMultipleFoldersAsync();
         ct.ThrowIfCancellationRequested();
 
-        if (folders == null || folders.Count == 0)
+        if (folder == null)
             return Array.Empty<FolderPickResult>();
 
-        return folders
-            .Select(folder => new FolderPickResult(folder.Path, folder.DisplayName))
-            .ToList();
+        return new[] { new FolderPickResult(folder.Path, folder.DisplayName) };
     }
 }

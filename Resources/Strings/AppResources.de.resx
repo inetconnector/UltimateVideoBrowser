@@ -120,6 +120,18 @@
   <data name="AddPathPrompt" xml:space="preserve">
     <value>Lokalen Ordner oder Netzwerkfreigabe auswählen.</value>
   </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Weiteren Ordner hinzufügen?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Möchtest du einen weiteren Ordner hinzufügen?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Weiterer Ordner</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
   <data name="PathInvalidTitle" xml:space="preserve">
     <value>Pfad nicht gefunden</value>
   </data>

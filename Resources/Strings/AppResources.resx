@@ -120,6 +120,18 @@
   <data name="AddPathPrompt" xml:space="preserve">
     <value>Select a local folder or network share.</value>
   </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Add another folder?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Would you like to add another folder?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Add another</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Done</value>
+  </data>
   <data name="PathInvalidTitle" xml:space="preserve">
     <value>Path not found</value>
   </data>

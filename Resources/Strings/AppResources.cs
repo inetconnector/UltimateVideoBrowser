@@ -18,7 +18,7 @@ public static class AppResources
     public static string SortDate => GetString(nameof(SortDate), "Date");
     public static string SortDuration => GetString(nameof(SortDuration), "Duration");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
-    public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
+    public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} â€¢ {1}/{2}");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
     public static string PermissionTitle => GetString(nameof(PermissionTitle), "Access required");
 
@@ -40,7 +40,7 @@ public static class AppResources
     public static string AddSourceButton => GetString(nameof(AddSourceButton), "Add folder");
     public static string RemoveSourceButton => GetString(nameof(RemoveSourceButton), "Remove");
     public static string RemoveSourceTitle => GetString(nameof(RemoveSourceTitle), "Remove source?");
-    public static string RemoveSourceMessage => GetString(nameof(RemoveSourceMessage), "Remove “{0}” from sources?");
+    public static string RemoveSourceMessage => GetString(nameof(RemoveSourceMessage), "Remove â€œ{0}â€ from sources?");
     public static string RemoveSourceConfirm => GetString(nameof(RemoveSourceConfirm), "Remove");
     public static string NewSourceTitle => GetString(nameof(NewSourceTitle), "Add source");
     public static string NewSourcePrompt => GetString(nameof(NewSourcePrompt), "Source name");
@@ -60,6 +60,14 @@ public static class AppResources
 
     public static string AddPathPrompt =>
         GetString(nameof(AddPathPrompt), "Enter a local folder or network share path.");
+
+    public static string AddAnotherFolderTitle => GetString(nameof(AddAnotherFolderTitle), "Add another folder?");
+
+    public static string AddAnotherFolderMessage =>
+        GetString(nameof(AddAnotherFolderMessage), "Would you like to add another folder?");
+
+    public static string AddAnotherFolderConfirm => GetString(nameof(AddAnotherFolderConfirm), "Add another");
+    public static string AddAnotherFolderCancel => GetString(nameof(AddAnotherFolderCancel), "Done");
 
     public static string PathInvalidTitle => GetString(nameof(PathInvalidTitle), "Path not found");
 
