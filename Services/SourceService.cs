@@ -1,0 +1,38 @@
+using UltimateVideoBrowser.Models;
+
+namespace UltimateVideoBrowser.Services;
+
+public sealed class SourceService
+{
+    readonly AppDb db;
+
+    public SourceService(AppDb db)
+    {
+        this.db = db;
+    }
+
+    public Task<List<MediaSource>> GetSourcesAsync()
+        => db.Db.Table<MediaSource>().OrderBy(s => s.DisplayName).ToListAsync();
+
+    public async Task EnsureDefaultSourceAsync()
+    {
+        var existing = await db.Db.Table<MediaSource>().FirstOrDefaultAsync();
+        if (existing != null)
+            return;
+
+        // Default "All device videos" virtual source (empty path = MediaStore)
+        var src = new MediaSource
+        {
+            Id = "device_all",
+            DisplayName = "All device videos",
+            LocalFolderPath = "",
+            IsEnabled = true,
+            LastIndexedUtcSeconds = 0
+        };
+        await db.Db.InsertAsync(src);
+    }
+
+    public Task UpsertAsync(MediaSource src) => db.Db.InsertOrReplaceAsync(src);
+
+    public Task DeleteAsync(MediaSource src) => db.Db.DeleteAsync(src);
+}

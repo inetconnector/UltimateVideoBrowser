@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.example.ultimatevideobrowser">
+
+  <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="34" />
+
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+  <application android:label="Ultimate Video Browser"
+               android:allowBackup="true"
+               android:usesCleartextTraffic="false">
+    <activity android:name="crc64e1fb321e9f0c0b0f.MainActivity"
+              android:exported="true"
+              android:launchMode="singleTask"
+              android:configChanges="orientation|screenSize|uiMode|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>
