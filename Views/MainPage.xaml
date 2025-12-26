@@ -231,7 +231,14 @@
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">
                         <VisualState.StateTriggers>
-                            <OnIdiom Phone="True" />
+                            <OnIdiom x:TypeArguments="StateTriggerBase">
+                                <OnIdiom.Phone>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Phone>
+                                <OnIdiom.Default>
+                                    <StateTrigger IsActive="False" />
+                                </OnIdiom.Default>
+                            </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*" />
@@ -245,7 +252,20 @@
                     </VisualState>
                     <VisualState x:Name="Wide">
                         <VisualState.StateTriggers>
-                            <OnIdiom Tablet="True" Desktop="True" TV="True" />
+                            <OnIdiom x:TypeArguments="StateTriggerBase">
+                                <OnIdiom.Tablet>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Tablet>
+                                <OnIdiom.Desktop>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Desktop>
+                                <OnIdiom.TV>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.TV>
+                                <OnIdiom.Default>
+                                    <StateTrigger IsActive="False" />
+                                </OnIdiom.Default>
+                            </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,96" />
