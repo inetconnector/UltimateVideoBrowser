@@ -14,7 +14,7 @@
                     Clicked="OnBackClicked"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
-                    CornerRadius="10"
+                    CornerRadius="999"
                     Padding="12,8" />
             <Label Grid.Column="1"
                    Text="{x:Static strings:AppResources.SettingsPageHeader}"

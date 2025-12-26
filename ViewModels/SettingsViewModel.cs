@@ -37,9 +37,7 @@ public partial class SettingsViewModel : ObservableObject
 
     private static void ApplyTheme(string themeKey)
     {
-        var theme = themeKey == "light" ? AppTheme.Light : AppTheme.Dark;
-        if (Application.Current != null)
-            Application.Current.UserAppTheme = theme;
+        App.ApplyThemePreference(themeKey);
     }
 
     public sealed record ThemeOption(string Key, string Display);

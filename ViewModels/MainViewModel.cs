@@ -155,19 +155,22 @@ public partial class MainViewModel : ObservableObject
             var lastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
-                IndexProcessed = p.Processed;
-                IndexTotal = p.Total;
-                IndexRatio = p.Ratio;
-                IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
-                UpdateIndexLocation(p.SourceName, p.CurrentPath);
-                IndexedCount = p.Inserted;
-                if (p.Inserted > lastInserted &&
-                    DateTime.UtcNow - lastRefresh > TimeSpan.FromMilliseconds(400))
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    lastInserted = p.Inserted;
-                    lastRefresh = DateTime.UtcNow;
-                    _ = RefreshAsync();
-                }
+                    IndexProcessed = p.Processed;
+                    IndexTotal = p.Total;
+                    IndexRatio = p.Ratio;
+                    IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
+                    UpdateIndexLocation(p.SourceName, p.CurrentPath);
+                    IndexedCount = p.Inserted;
+                    if (p.Inserted > lastInserted &&
+                        DateTime.UtcNow - lastRefresh > TimeSpan.FromMilliseconds(400))
+                    {
+                        lastInserted = p.Inserted;
+                        lastRefresh = DateTime.UtcNow;
+                        _ = RefreshAsync();
+                    }
+                });
             });
             using var cts = new CancellationTokenSource();
 

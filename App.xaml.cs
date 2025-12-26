@@ -31,7 +31,7 @@ public partial class App : Application
         return pref is "" or "system" or "auto" or "default";
     }
 
-    private static void ApplyThemePreference(string themePreference)
+    public static void ApplyThemePreference(string themePreference)
     {
         if (Current == null)
             return;

@@ -9,7 +9,11 @@
 
     <Style TargetType="Button">
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="CornerRadius" Value="999" />
+    </Style>
+
+    <Style TargetType="ImageButton">
+        <Setter Property="CornerRadius" Value="999" />
     </Style>
 
     <Style TargetType="Frame">

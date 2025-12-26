@@ -8,7 +8,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto">
         <!-- Top bar -->
         <Grid Padding="16,14" ColumnDefinitions="*,Auto,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
@@ -37,7 +37,7 @@
             </HorizontalStackLayout>
             <controls:IconTextButton Grid.Column="1"
                                      Text="{x:Static strings:AppResources.SourcesButton}"
-                                     ImageSource="icon_sources.svg"
+                                     ImageSource="{AppThemeBinding Light=icon_sources_light.svg, Dark=icon_sources.svg}"
                                      Command="{Binding OpenSourcesCommand}"
                                      BackgroundColor="{DynamicResource Surface2}"
                                      TextColor="{DynamicResource OnSurface}"
@@ -47,12 +47,12 @@
                     Command="{Binding OpenSettingsCommand}"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
-                    CornerRadius="12"
+                    CornerRadius="999"
                     Padding="12,8"
                     Margin="8,0,0,0" />
             <controls:IconTextButton Grid.Column="3"
                                      Text="{x:Static strings:AppResources.ReindexButton}"
-                                     ImageSource="icon_reindex.svg"
+                                     ImageSource="{AppThemeBinding Light=icon_reindex_light.svg, Dark=icon_reindex.svg}"
                                      Command="{Binding RunIndexCommand}"
                                      BackgroundColor="{DynamicResource Accent}"
                                      TextColor="{DynamicResource OnAccent}"
@@ -101,7 +101,9 @@
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
                                 <HorizontalStackLayout Spacing="6">
-                                    <Image Source="chip_spark.svg" HeightRequest="14" WidthRequest="14" />
+                                    <Image Source="{AppThemeBinding Light=chip_spark_light.svg, Dark=chip_spark.svg}"
+                                           HeightRequest="14"
+                                           WidthRequest="14" />
                                     <Label Text="{x:Static strings:AppResources.SortTitle}"
                                            FontSize="11"
                                            TextColor="{DynamicResource OnSurfaceMuted}" />
@@ -128,51 +130,57 @@
             <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
-                       Padding="12"
+                       Padding="10"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
+                    <VerticalStackLayout Spacing="4">
+                        <Image Source="{AppThemeBinding Light=icon_play_light.svg, Dark=icon_play.svg}"
+                               HeightRequest="18"
+                               WidthRequest="18" />
                         <Label Text="{Binding VideoCount}"
-                               FontSize="20"
+                               FontSize="18"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
-                               FontSize="12"
+                               FontSize="11"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                     </VerticalStackLayout>
                 </Frame>
                 <Frame Grid.Column="1"
                        BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
-                       Padding="12"
+                       Padding="10"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
+                    <VerticalStackLayout Spacing="4">
+                        <Image Source="{AppThemeBinding Light=icon_sources_light.svg, Dark=icon_sources.svg}"
+                               HeightRequest="18"
+                               WidthRequest="18" />
                         <Label Text="{Binding EnabledSourceCount}"
-                               FontSize="20"
+                               FontSize="18"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{x:Static strings:AppResources.HighlightsSourcesLabel}"
-                               FontSize="12"
+                               FontSize="11"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Label Text="{Binding SourcesSummary}"
-                               FontSize="11"
+                               FontSize="10"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                     </VerticalStackLayout>
                 </Frame>
                 <Frame Grid.Column="2"
                        BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
-                       Padding="12"
+                       Padding="10"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <VerticalStackLayout Spacing="6">
-                        <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
+                    <VerticalStackLayout Spacing="4">
+                        <Image Source="{AppThemeBinding Light=chip_spark_light.svg, Dark=chip_spark.svg}"
+                               HeightRequest="18"
+                               WidthRequest="18" />
                         <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
-                               FontSize="13"
+                               FontSize="12"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{x:Static strings:AppResources.HighlightsTipText}"
-                               FontSize="11"
+                               FontSize="10"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                     </VerticalStackLayout>
                 </Frame>
@@ -201,7 +209,7 @@
                                     Command="{Binding RequestPermissionCommand}"
                                     BackgroundColor="{DynamicResource Accent}"
                                     TextColor="{DynamicResource OnAccent}"
-                                    CornerRadius="12"
+                                    CornerRadius="999"
                                     Padding="12,8" />
                 </Grid>
             </Frame>
@@ -418,7 +426,9 @@
                                        HorizontalOptions="Start"
                                        Margin="0,6,0,2">
                                     <HorizontalStackLayout Spacing="6">
-                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                        <Image Source="{AppThemeBinding Light=chip_clock_light.svg, Dark=chip_clock.svg}"
+                                               HeightRequest="12"
+                                               WidthRequest="12" />
                                         <Label Text="{Binding DurationText}"
                                                TextColor="{DynamicResource OnSurfaceMuted}"
                                                FontSize="11" />
@@ -430,7 +440,7 @@
                                              Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
                                              CommandParameter="{Binding .}"
                                              BackgroundColor="{DynamicResource Accent}"
-                                             CornerRadius="12"
+                                             CornerRadius="999"
                                              Padding="10"
                                              Margin="0,4,0,8"
                                              HeightRequest="40"
@@ -448,49 +458,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <!-- Indexing banner -->
-            <Frame Grid.ColumnSpan="2"
-                   IsVisible="{Binding ShowIndexingBanner}"
-                   BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="12"
-                   BorderColor="{DynamicResource BorderSubtle}"
-                   Padding="12"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Start"
-                   Margin="16,12"
-                   HasShadow="False">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                    <Label Text="{x:Static strings:AppResources.Indexing}"
-                           FontAttributes="Bold"
-                           TextColor="{DynamicResource OnSurface}" />
-                    <Button Grid.Column="1"
-                            Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
-                            Command="{Binding ShowIndexOverlayCommand}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}"
-                            Padding="10,6"
-                            CornerRadius="12" />
-                    <Label Grid.Row="1"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexStatus}"
-                           FontSize="12"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <Label Grid.Row="2"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <Label Grid.Row="3"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <ProgressBar Grid.Row="4"
-                                 Grid.ColumnSpan="2"
-                                 Progress="{Binding IndexRatio}" />
-                </Grid>
-            </Frame>
 
             <!-- Indexing overlay -->
             <Grid Grid.ColumnSpan="2"
@@ -524,10 +491,52 @@
                                 BackgroundColor="{DynamicResource Surface2}"
                                 TextColor="{DynamicResource OnSurface}"
                                 Padding="12,8"
-                                CornerRadius="12" />
+                                CornerRadius="999" />
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
         </Grid>
+
+        <!-- Indexing banner -->
+        <Frame Grid.Row="6"
+               IsVisible="{Binding ShowIndexingBanner}"
+               BackgroundColor="{DynamicResource Surface}"
+               CornerRadius="12"
+               BorderColor="{DynamicResource BorderSubtle}"
+               Padding="12"
+               HorizontalOptions="Center"
+               Margin="16,8,16,16"
+               HasShadow="False">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label Text="{x:Static strings:AppResources.Indexing}"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}" />
+                <Button Grid.Column="1"
+                        Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
+                        Command="{Binding ShowIndexOverlayCommand}"
+                        BackgroundColor="{DynamicResource Surface2}"
+                        TextColor="{DynamicResource OnSurface}"
+                        Padding="10,6"
+                        CornerRadius="999" />
+                <Label Grid.Row="1"
+                       Grid.ColumnSpan="2"
+                       Text="{Binding IndexStatus}"
+                       FontSize="12"
+                       TextColor="{DynamicResource OnSurfaceMuted}" />
+                <Label Grid.Row="2"
+                       Grid.ColumnSpan="2"
+                       Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                       FontSize="11"
+                       TextColor="{DynamicResource OnSurfaceMuted}" />
+                <Label Grid.Row="3"
+                       Grid.ColumnSpan="2"
+                       Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                       FontSize="11"
+                       TextColor="{DynamicResource OnSurfaceMuted}" />
+                <ProgressBar Grid.Row="4"
+                             Grid.ColumnSpan="2"
+                             Progress="{Binding IndexRatio}" />
+            </Grid>
+        </Frame>
     </Grid>
 </ContentPage>
