@@ -4,6 +4,9 @@ namespace UltimateVideoBrowser;
 
 public partial class App : Application
 {
+    private const string LightDictionary = "Resources/Styles/Colors.Light.xaml";
+    private const string DarkDictionary = "Resources/Styles/Colors.Dark.xaml";
+
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
