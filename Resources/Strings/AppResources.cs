@@ -101,6 +101,8 @@ public static class AppResources
 
     public static string Enabled => GetString(nameof(Enabled), "Enabled");
     public static string Disabled => GetString(nameof(Disabled), "Disabled");
+    public static string ThemeLight => GetString(nameof(ThemeLight), "Light");
+    public static string ThemeDark => GetString(nameof(ThemeDark), "Dark");
     public static string AllDeviceVideos => GetString(nameof(AllDeviceVideos), "All device videos");
     public static string DeviceLibraryPath => GetString(nameof(DeviceLibraryPath), "Device media library");
 

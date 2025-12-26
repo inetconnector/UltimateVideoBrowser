@@ -4,16 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Color x:Key="AppBg">{AppThemeBinding Light=#F6F7FB, Dark=#0E0F14}</Color>
-    <Color x:Key="Surface">{AppThemeBinding Light=#FFFFFF, Dark=#181B22}</Color>
-    <Color x:Key="Surface2">{AppThemeBinding Light=#EEF1F7, Dark=#232734}</Color>
-    <Color x:Key="Surface3">{AppThemeBinding Light=#E3E8F4, Dark=#2D3242}</Color>
-    <Color x:Key="BorderSubtle">{AppThemeBinding Light=#D8DEE9, Dark=#30364A}</Color>
-    <Color x:Key="OnSurface">{AppThemeBinding Light=#0C1222, Dark=#F7F9FF}</Color>
-    <Color x:Key="OnSurfaceMuted">{AppThemeBinding Light=#5B6577, Dark=#A6AFBE}</Color>
+    <OnAppTheme x:Key="AppBg" x:TypeArguments="Color" Light="#F6F7FB" Dark="#0E0F14" />
+    <OnAppTheme x:Key="Surface" x:TypeArguments="Color" Light="#FFFFFF" Dark="#181B22" />
+    <OnAppTheme x:Key="Surface2" x:TypeArguments="Color" Light="#EEF1F7" Dark="#232734" />
+    <OnAppTheme x:Key="Surface3" x:TypeArguments="Color" Light="#E3E8F4" Dark="#2D3242" />
+    <OnAppTheme x:Key="BorderSubtle" x:TypeArguments="Color" Light="#D8DEE9" Dark="#30364A" />
+    <OnAppTheme x:Key="OnSurface" x:TypeArguments="Color" Light="#0C1222" Dark="#F7F9FF" />
+    <OnAppTheme x:Key="OnSurfaceMuted" x:TypeArguments="Color" Light="#5B6577" Dark="#A6AFBE" />
 
-    <Color x:Key="Accent">{AppThemeBinding Light=#2E6BFF, Dark=#6C8BFF}</Color>
-    <Color x:Key="AccentStrong">{AppThemeBinding Light=#1C4FD8, Dark=#8D5BFF}</Color>
-    <Color x:Key="AccentGlow">{AppThemeBinding Light=#D6E4FF, Dark=#2C3D6B}</Color>
-    <Color x:Key="OnAccent">{AppThemeBinding Light=#FFFFFF, Dark=#FFFFFF}</Color>
+    <OnAppTheme x:Key="Accent" x:TypeArguments="Color" Light="#2E6BFF" Dark="#6C8BFF" />
+    <OnAppTheme x:Key="AccentStrong" x:TypeArguments="Color" Light="#1C4FD8" Dark="#8D5BFF" />
+    <OnAppTheme x:Key="AccentGlow" x:TypeArguments="Color" Light="#D6E4FF" Dark="#2C3D6B" />
+    <OnAppTheme x:Key="OnAccent" x:TypeArguments="Color" Light="#FFFFFF" Dark="#FFFFFF" />
 </ResourceDictionary>
