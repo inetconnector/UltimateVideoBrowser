@@ -26,6 +26,11 @@ public static class AppResources
     public static string SortDuration => GetString(nameof(SortDuration), "Duration");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
+    public static string IndexingShowDetailsButton =>
+        GetString(nameof(IndexingShowDetailsButton), "Show details");
+
+    public static string IndexingBackgroundButton =>
+        GetString(nameof(IndexingBackgroundButton), "Run in background");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
     public static string HighlightsTitle => GetString(nameof(HighlightsTitle), "Library highlights");
     public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Videos indexed");
