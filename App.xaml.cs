@@ -13,12 +13,41 @@ public partial class App : Application
 
         var mainPage = serviceProvider.GetRequiredService<MainPage>();
         MainPage = new NavigationPage(mainPage);
+
+        RequestedThemeChanged += (_, args) => ApplyThemeDictionary(args.RequestedTheme);
     }
 
     private static void ApplyTheme(string themePreference)
     {
         var theme = themePreference == "light" ? AppTheme.Light : AppTheme.Dark;
         if (Current != null)
+        {
             Current.UserAppTheme = theme;
+            ApplyThemeDictionary(theme);
+        }
+    }
+
+    private static void ApplyThemeDictionary(AppTheme theme)
+    {
+        if (Current?.Resources?.MergedDictionaries == null)
+            return;
+
+        var dictionaries = Current.Resources.MergedDictionaries;
+        var toRemove = new List<ResourceDictionary>();
+        foreach (var dictionary in dictionaries)
+        {
+            if (dictionary is Resources.Styles.ColorsLight || dictionary is Resources.Styles.ColorsDark)
+            {
+                toRemove.Add(dictionary);
+            }
+        }
+
+        foreach (var dictionary in toRemove)
+            dictionaries.Remove(dictionary);
+
+        var themeDictionary = theme == AppTheme.Dark
+            ? new Resources.Styles.ColorsDark()
+            : new Resources.Styles.ColorsLight();
+        dictionaries.Add(themeDictionary);
     }
 }
