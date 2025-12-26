@@ -102,6 +102,27 @@
   <data name="OkButton" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Share video</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Save as...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Save failed</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>We couldn't save this video. Please try a different location.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Save as isn't supported on this device.</value>
+  </data>
   <data name="BackButton" xml:space="preserve">
     <value>Back</value>
   </data>

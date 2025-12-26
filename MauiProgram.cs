@@ -34,6 +34,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ISourceService, SourceService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
+        builder.Services.AddSingleton<IFileExportService, FileExportService>();
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #elif WINDOWS
