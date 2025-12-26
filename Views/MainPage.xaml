@@ -2,6 +2,7 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
@@ -34,23 +35,21 @@
                            TextColor="{DynamicResource OnSurfaceMuted}" />
                 </VerticalStackLayout>
             </HorizontalStackLayout>
-            <Button Grid.Column="1"
-                    Text="{x:Static strings:AppResources.SourcesButton}"
-                    ImageSource="icon_sources"
-                    ContentLayout="Left,8"
-                    Command="{Binding OpenSourcesCommand}"
-                    BackgroundColor="{DynamicResource Surface2}"
-                    TextColor="{DynamicResource OnSurface}"
-                    Padding="12,8" />
-            <Button Grid.Column="2"
-                    Text="{x:Static strings:AppResources.ReindexButton}"
-                    ImageSource="icon_reindex"
-                    ContentLayout="Left,8"
-                    Command="{Binding RunIndexCommand}"
-                    BackgroundColor="{DynamicResource Accent}"
-                    TextColor="{DynamicResource OnAccent}"
-                    Padding="12,8"
-                    Margin="8,0,0,0" />
+            <controls:IconTextButton Grid.Column="1"
+                                     Text="{x:Static strings:AppResources.SourcesButton}"
+                                     ImageSource="icon_sources"
+                                     Command="{Binding OpenSourcesCommand}"
+                                     BackgroundColor="{DynamicResource Surface2}"
+                                     TextColor="{DynamicResource OnSurface}"
+                                     Padding="12,8" />
+            <controls:IconTextButton Grid.Column="2"
+                                     Text="{x:Static strings:AppResources.ReindexButton}"
+                                     ImageSource="icon_reindex"
+                                     Command="{Binding RunIndexCommand}"
+                                     BackgroundColor="{DynamicResource Accent}"
+                                     TextColor="{DynamicResource OnAccent}"
+                                     Padding="12,8"
+                                     Margin="8,0,0,0" />
         </Grid>
 
         <!-- Hero -->
@@ -102,20 +101,18 @@
                             </Frame>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Spacing="10">
-                            <Button Text="{x:Static strings:AppResources.HeroPrimaryAction}"
-                                    ImageSource="icon_sources"
-                                    ContentLayout="Left,8"
-                                    Command="{Binding OpenSourcesCommand}"
-                                    BackgroundColor="{DynamicResource Surface3}"
-                                    TextColor="{DynamicResource OnSurface}"
-                                    Padding="12,8" />
-                            <Button Text="{x:Static strings:AppResources.ReindexButton}"
-                                    ImageSource="icon_reindex"
-                                    ContentLayout="Left,8"
-                                    Command="{Binding RunIndexCommand}"
-                                    BackgroundColor="{DynamicResource Accent}"
-                                    TextColor="{DynamicResource OnAccent}"
-                                    Padding="12,8" />
+                            <controls:IconTextButton Text="{x:Static strings:AppResources.HeroPrimaryAction}"
+                                                     ImageSource="icon_sources"
+                                                     Command="{Binding OpenSourcesCommand}"
+                                                     BackgroundColor="{DynamicResource Surface3}"
+                                                     TextColor="{DynamicResource OnSurface}"
+                                                     Padding="12,8" />
+                            <controls:IconTextButton Text="{x:Static strings:AppResources.ReindexButton}"
+                                                     ImageSource="icon_reindex"
+                                                     Command="{Binding RunIndexCommand}"
+                                                     BackgroundColor="{DynamicResource Accent}"
+                                                     TextColor="{DynamicResource OnAccent}"
+                                                     Padding="12,8" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                     <Image Grid.Column="1"
