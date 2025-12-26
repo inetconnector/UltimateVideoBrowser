@@ -27,6 +27,18 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Search videos...</value>
   </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>Your personal library</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Discover every video instantly</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Browse with rich thumbnails, smart search, and fast indexing across all your folders.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Manage sources</value>
+  </data>
   <data name="SortTitle" xml:space="preserve">
     <value>Sort</value>
   </data>
@@ -48,6 +60,24 @@
   <data name="NewItemsFormat" xml:space="preserve">
     <value>New items: {0}</value>
   </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Library highlights</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Videos indexed</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Sources enabled</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Pro tip</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Use search + filters, then reindex after adding new folders for the best results.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} of {1} sources active</value>
+  </data>
   <data name="PermissionTitle" xml:space="preserve">
     <value>Access required</value>
   </data>
@@ -65,6 +95,9 @@
   </data>
   <data name="EmptyStateMessage" xml:space="preserve">
     <value>Add a source or refresh to start browsing your library.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Add sources</value>
   </data>
   <data name="SourcesPageTitle" xml:space="preserve">
     <value>Sources</value>

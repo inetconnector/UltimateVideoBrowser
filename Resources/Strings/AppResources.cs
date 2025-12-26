@@ -13,6 +13,13 @@ public static class AppResources
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search videos...");
+    public static string HeroEyebrow => GetString(nameof(HeroEyebrow), "Your personal library");
+    public static string HeroTitle => GetString(nameof(HeroTitle), "Discover every video instantly");
+
+    public static string HeroSubtitle => GetString(nameof(HeroSubtitle),
+        "Browse with rich thumbnails, smart search, and fast indexing across all your folders.");
+
+    public static string HeroPrimaryAction => GetString(nameof(HeroPrimaryAction), "Manage sources");
     public static string SortTitle => GetString(nameof(SortTitle), "Sort");
     public static string SortName => GetString(nameof(SortName), "Name");
     public static string SortDate => GetString(nameof(SortDate), "Date");
@@ -20,6 +27,16 @@ public static class AppResources
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
+    public static string HighlightsTitle => GetString(nameof(HighlightsTitle), "Library highlights");
+    public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Videos indexed");
+    public static string HighlightsSourcesLabel => GetString(nameof(HighlightsSourcesLabel), "Sources enabled");
+    public static string HighlightsTipLabel => GetString(nameof(HighlightsTipLabel), "Pro tip");
+
+    public static string HighlightsTipText =>
+        GetString(nameof(HighlightsTipText),
+            "Use search + filters, then reindex after adding new folders for the best results.");
+
+    public static string SourcesSummaryFormat => GetString(nameof(SourcesSummaryFormat), "{0} of {1} sources active");
     public static string PermissionTitle => GetString(nameof(PermissionTitle), "Access required");
 
     public static string PermissionMessage => GetString(nameof(PermissionMessage),
@@ -32,6 +49,7 @@ public static class AppResources
     public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage),
         "Add a source or refresh to start browsing your library.");
 
+    public static string EmptyStateAction => GetString(nameof(EmptyStateAction), "Add sources");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>

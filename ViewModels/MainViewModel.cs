@@ -14,6 +14,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ISourceService sourceService;
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
     [ObservableProperty] private int indexedCount;
     [ObservableProperty] private int indexProcessed;
@@ -23,6 +24,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private string sourcesSummary = "";
+    [ObservableProperty] private int totalSourceCount;
+    [ObservableProperty] private int videoCount;
 
     private CancellationTokenSource? thumbCts;
 
@@ -55,6 +59,7 @@ public partial class MainViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         await sourceService.EnsureDefaultSourceAsync();
+        await UpdateSourceStatsAsync();
 
         HasMediaPermission = await permissionService.CheckMediaReadAsync();
 
@@ -167,5 +172,18 @@ public partial class MainViewModel : ObservableObject
                 // Ignore cancellation or retrieval failures.
             }
         });
+    }
+
+    private async Task UpdateSourceStatsAsync()
+    {
+        var sources = await sourceService.GetSourcesAsync();
+        TotalSourceCount = sources.Count;
+        EnabledSourceCount = sources.Count(s => s.IsEnabled);
+        SourcesSummary = string.Format(AppResources.SourcesSummaryFormat, EnabledSourceCount, TotalSourceCount);
+    }
+
+    partial void OnVideosChanged(List<VideoItem> value)
+    {
+        VideoCount = value?.Count ?? 0;
     }
 }
