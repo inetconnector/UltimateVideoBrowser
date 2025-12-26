@@ -36,15 +36,19 @@ public partial class App : Application
             return;
 
         var dictionaries = Current.Resources.MergedDictionaries;
-        for (var i = dictionaries.Count - 1; i >= 0; i--)
+        var toRemove = new List<ResourceDictionary>();
+        foreach (var dictionary in dictionaries)
         {
-            var source = dictionaries[i].Source?.OriginalString;
+            var source = dictionary.Source?.OriginalString;
             if (string.Equals(source, LightDictionary, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(source, DarkDictionary, StringComparison.OrdinalIgnoreCase))
             {
-                dictionaries.RemoveAt(i);
+                toRemove.Add(dictionary);
             }
         }
+
+        foreach (var dictionary in toRemove)
+            dictionaries.Remove(dictionary);
 
         var themeDictionary = new ResourceDictionary
         {
