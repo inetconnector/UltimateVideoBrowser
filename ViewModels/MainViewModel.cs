@@ -147,6 +147,8 @@ public partial class MainViewModel : ObservableObject
         try
         {
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
+            var lastRefresh = DateTime.UtcNow;
+            var lastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
                 IndexProcessed = p.Processed;
@@ -155,6 +157,13 @@ public partial class MainViewModel : ObservableObject
                 IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
                 UpdateIndexLocation(p.SourceName, p.CurrentPath);
                 IndexedCount = p.Inserted;
+                if (p.Inserted > lastInserted &&
+                    DateTime.UtcNow - lastRefresh > TimeSpan.FromMilliseconds(400))
+                {
+                    lastInserted = p.Inserted;
+                    lastRefresh = DateTime.UtcNow;
+                    _ = RefreshAsync();
+                }
             });
             using var cts = new CancellationTokenSource();
 
