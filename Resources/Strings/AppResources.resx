@@ -57,6 +57,12 @@
   <data name="IndexingStatusFormat" xml:space="preserve">
     <value>Indexing {0} • {1}/{2}</value>
   </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Details</value>
+  </data>
   <data name="NewItemsFormat" xml:space="preserve">
     <value>New items: {0}</value>
   </data>

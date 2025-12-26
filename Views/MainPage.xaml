@@ -325,8 +325,40 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <!-- Indexing banner -->
+            <Frame IsVisible="{Binding ShowIndexingBanner}"
+                   BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="12"
+                   BorderColor="{DynamicResource BorderSubtle}"
+                   Padding="12"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="16,12"
+                   HasShadow="False">
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <Label Text="{x:Static strings:AppResources.Indexing}"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
+                            Command="{Binding ShowIndexOverlayCommand}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}"
+                            Padding="10,6"
+                            CornerRadius="10" />
+                    <Label Grid.Row="1"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexStatus}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <ProgressBar Grid.Row="2"
+                                 Grid.ColumnSpan="2"
+                                 Progress="{Binding IndexRatio}" />
+                </Grid>
+            </Frame>
+
             <!-- Indexing overlay -->
-            <Grid IsVisible="{Binding IsIndexing}"
+            <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
                   BackgroundColor="#99000000"
                   Padding="24">
                 <Frame BackgroundColor="{DynamicResource Surface}"
@@ -345,6 +377,12 @@
                             Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
                             TextColor="{DynamicResource OnSurfaceMuted}" />
                         <ProgressBar Progress="{Binding IndexRatio}" />
+                        <Button Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
+                                Command="{Binding DismissIndexOverlayCommand}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}"
+                                Padding="12,8"
+                                CornerRadius="10" />
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
