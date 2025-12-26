@@ -39,9 +39,7 @@ public partial class App : Application
         var toRemove = new List<ResourceDictionary>();
         foreach (var dictionary in dictionaries)
         {
-            var source = dictionary.Source?.OriginalString;
-            if (string.Equals(source, LightDictionary, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(source, DarkDictionary, StringComparison.OrdinalIgnoreCase))
+            if (dictionary is Resources.Styles.ColorsLight || dictionary is Resources.Styles.ColorsDark)
             {
                 toRemove.Add(dictionary);
             }
@@ -50,10 +48,9 @@ public partial class App : Application
         foreach (var dictionary in toRemove)
             dictionaries.Remove(dictionary);
 
-        var themeDictionary = new ResourceDictionary
-        {
-            Source = new Uri(theme == AppTheme.Dark ? DarkDictionary : LightDictionary, UriKind.Relative)
-        };
+        var themeDictionary = theme == AppTheme.Dark
+            ? new Resources.Styles.ColorsDark()
+            : new Resources.Styles.ColorsLight();
         dictionaries.Add(themeDictionary);
     }
 }
