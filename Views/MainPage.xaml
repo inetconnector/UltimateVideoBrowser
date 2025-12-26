@@ -38,25 +38,15 @@
             <controls:IconTextButton Grid.Column="1"
                                      Text="{x:Static strings:AppResources.SourcesButton}"
                                      ImageSource="icon_sources.svg"
-                                     Command="{Binding OpenSourcesCommand}"
-                                     BackgroundColor="{DynamicResource Surface2}"
-                                     TextColor="{DynamicResource OnSurface}"
-                                     Padding="12,8" />
+                                     Command="{Binding OpenSourcesCommand}" />
             <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.SettingsButton}"
                     Command="{Binding OpenSettingsCommand}"
-                    BackgroundColor="{DynamicResource Surface2}"
-                    TextColor="{DynamicResource OnSurface}"
-                    CornerRadius="12"
-                    Padding="12,8"
                     Margin="8,0,0,0" />
             <controls:IconTextButton Grid.Column="3"
                                      Text="{x:Static strings:AppResources.ReindexButton}"
                                      ImageSource="icon_reindex.svg"
                                      Command="{Binding RunIndexCommand}"
-                                     BackgroundColor="{DynamicResource Accent}"
-                                     TextColor="{DynamicResource OnAccent}"
-                                     Padding="12,8"
                                      Margin="8,0,0,0" />
         </Grid>
 
@@ -196,13 +186,9 @@
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                FontSize="12" />
                     </VerticalStackLayout>
-                            <Button Grid.Column="1"
-                                    Text="{x:Static strings:AppResources.PermissionOk}"
-                                    Command="{Binding RequestPermissionCommand}"
-                                    BackgroundColor="{DynamicResource Accent}"
-                                    TextColor="{DynamicResource OnAccent}"
-                                    CornerRadius="12"
-                                    Padding="12,8" />
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.PermissionOk}"
+                            Command="{Binding RequestPermissionCommand}" />
                 </Grid>
             </Frame>
         </Grid>
@@ -399,10 +385,7 @@
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                HorizontalTextAlignment="Center" />
                         <Button Text="{x:Static strings:AppResources.EmptyStateAction}"
-                                Command="{Binding OpenSourcesCommand}"
-                                BackgroundColor="{DynamicResource Accent}"
-                                TextColor="{DynamicResource OnAccent}"
-                                Padding="16,10" />
+                                Command="{Binding OpenSourcesCommand}" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
@@ -479,9 +462,6 @@
                                              Source="icon_play.svg"
                                              Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
                                              CommandParameter="{Binding .}"
-                                             BackgroundColor="{DynamicResource Accent}"
-                                             CornerRadius="12"
-                                             Padding="10"
                                              Margin="0,4,0,8"
                                              HeightRequest="40"
                                              WidthRequest="40"
@@ -516,33 +496,62 @@
                     <Label Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
-                    <Label Text="{Binding IndexStatus}"
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
+                            Command="{Binding ShowIndexOverlayCommand}" />
+                    <Label Grid.Row="1"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexStatus}"
+                           FontSize="12"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                           TextColor="{DynamicResource OnSurfaceMuted}"
-                           FontSize="12" />
-                    <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                           TextColor="{DynamicResource OnSurfaceMuted}"
-                           FontSize="12" />
-                    <Label
-                        Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
-                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <HorizontalStackLayout Spacing="10">
-                        <ProgressBar Progress="{Binding IndexRatio}"
-                                     HorizontalOptions="FillAndExpand"
-                                     VerticalOptions="Center" />
-                        <Label Text="{Binding IndexRatio, StringFormat='{0:P0}'}"
-                               VerticalOptions="Center"
-                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                    </HorizontalStackLayout>
-                    <Button Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
-                            Command="{Binding DismissIndexOverlayCommand}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}"
-                            Padding="12,8"
-                            CornerRadius="12" />
-                </VerticalStackLayout>
+                    <Label Grid.Row="2"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <Label Grid.Row="3"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <ProgressBar Grid.Row="4"
+                                 Grid.ColumnSpan="2"
+                                 Progress="{Binding IndexRatio}" />
+                </Grid>
             </Frame>
+
+            <!-- Indexing overlay -->
+            <Grid Grid.ColumnSpan="2"
+                  IsVisible="{Binding IsIndexingOverlayVisible}"
+                  BackgroundColor="#99000000"
+                  Padding="24">
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="16"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{x:Static strings:AppResources.Indexing}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{Binding IndexStatus}"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="12" />
+                        <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="12" />
+                        <Label
+                            Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
+                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <ProgressBar Progress="{Binding IndexRatio}" />
+                        <Button Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
+                                Command="{Binding DismissIndexOverlayCommand}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>
