@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using System.Globalization;
 using System.IO;
 
@@ -14,6 +15,7 @@ public partial class MainViewModel : ObservableObject
     private readonly AppSettingsService settingsService;
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
+    private readonly IFileExportService fileExportService;
     private readonly ISourceService sourceService;
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeSourceId = "";
@@ -44,7 +46,8 @@ public partial class MainViewModel : ObservableObject
         AppSettingsService settingsService,
         ThumbnailService thumbnailService,
         PlaybackService playbackService,
-        PermissionService permissionService)
+        PermissionService permissionService,
+        IFileExportService fileExportService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
@@ -52,6 +55,7 @@ public partial class MainViewModel : ObservableObject
         this.thumbnailService = thumbnailService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;
+        this.fileExportService = fileExportService;
 
         SortOptions = new[]
         {
@@ -189,6 +193,28 @@ public partial class MainViewModel : ObservableObject
     public void Play(VideoItem item)
     {
         playbackService.Play(item);
+    }
+
+    [RelayCommand]
+    public async Task ShareAsync(VideoItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        await Share.Default.RequestAsync(new ShareFileRequest
+        {
+            Title = AppResources.ShareTitle,
+            File = new ShareFile(item.Path)
+        });
+    }
+
+    [RelayCommand]
+    public Task SaveAsAsync(VideoItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return Task.CompletedTask;
+
+        return fileExportService.SaveAsAsync(item);
     }
 
     [RelayCommand]
