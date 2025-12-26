@@ -87,21 +87,24 @@ public partial class MainViewModel : ObservableObject
     {
         if (IsIndexing) return;
 
-        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
-        if (!HasMediaPermission)
-        {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage,
-                    AppResources.OkButton));
-            return;
-        }
-
         IsIndexing = true;
         IndexedCount = 0;
         IndexProcessed = 0;
         IndexTotal = 0;
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
+
+        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        if (!HasMediaPermission)
+        {
+            IsIndexing = false;
+            IndexStatus = "";
+            IndexRatio = 0;
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage,
+                    AppResources.OkButton));
+            return;
+        }
 
         try
         {

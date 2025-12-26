@@ -7,7 +7,8 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.SourcesPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,*" Padding="12">
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
             <Button Text="{x:Static strings:AppResources.BackButton}"
                     Clicked="OnBackClicked"
