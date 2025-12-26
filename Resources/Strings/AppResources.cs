@@ -52,6 +52,15 @@ public static class AppResources
 
     public static string PermissionOk => GetString(nameof(PermissionOk), "Grant access");
     public static string OkButton => GetString(nameof(OkButton), "OK");
+    public static string ShareAction => GetString(nameof(ShareAction), "Share");
+    public static string ShareTitle => GetString(nameof(ShareTitle), "Share video");
+    public static string SaveAsAction => GetString(nameof(SaveAsAction), "Save as...");
+    public static string SaveAsFileTypeLabel => GetString(nameof(SaveAsFileTypeLabel), "Video");
+    public static string SaveAsFailedTitle => GetString(nameof(SaveAsFailedTitle), "Save failed");
+    public static string SaveAsFailedMessage =>
+        GetString(nameof(SaveAsFailedMessage), "We couldn't save this video. Please try a different location.");
+    public static string SaveAsNotSupportedMessage =>
+        GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
     public static string EmptyStateTitle => GetString(nameof(EmptyStateTitle), "No videos yet");
 
     public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage),
