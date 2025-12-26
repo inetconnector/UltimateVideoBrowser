@@ -1,56 +1,75 @@
 using UltimateVideoBrowser.Views;
+using System.Linq;
 
 namespace UltimateVideoBrowser;
 
 public partial class App : Application
 {
-    private const string LightDictionary = "Resources/Styles/Colors.Light.xaml";
-    private const string DarkDictionary = "Resources/Styles/Colors.Dark.xaml";
+    private readonly Services.AppSettingsService _settingsService;
 
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
 
-        var settingsService = serviceProvider.GetRequiredService<Services.AppSettingsService>();
-        ApplyTheme(settingsService.ThemePreference);
+        _settingsService = serviceProvider.GetRequiredService<Services.AppSettingsService>();
+
+        ApplyThemePreference(_settingsService.ThemePreference);
 
         var mainPage = serviceProvider.GetRequiredService<MainPage>();
         MainPage = new NavigationPage(mainPage);
 
-        RequestedThemeChanged += (_, args) => ApplyThemeDictionary(args.RequestedTheme);
+        RequestedThemeChanged += (_, args) =>
+        {
+            if (IsFollowingSystem(_settingsService.ThemePreference))
+                ApplyThemeDictionary(args.RequestedTheme);
+        };
     }
 
-    private static void ApplyTheme(string themePreference)
+    private static bool IsFollowingSystem(string themePreference)
     {
-        var theme = themePreference == "light" ? AppTheme.Light : AppTheme.Dark;
-        if (Current != null)
+        var pref = (themePreference ?? string.Empty).Trim().ToLowerInvariant();
+        return pref is "" or "system" or "auto" or "default";
+    }
+
+    private static void ApplyThemePreference(string themePreference)
+    {
+        if (Current == null)
+            return;
+
+        var pref = (themePreference ?? string.Empty).Trim().ToLowerInvariant();
+
+        Current.UserAppTheme = pref switch
         {
-            Current.UserAppTheme = theme;
-            ApplyThemeDictionary(theme);
-        }
+            "light" => AppTheme.Light,
+            "dark" => AppTheme.Dark,
+            _ => AppTheme.Unspecified
+        };
+
+        var effectiveTheme = Current.UserAppTheme == AppTheme.Unspecified
+            ? Current.RequestedTheme
+            : Current.UserAppTheme;
+
+        ApplyThemeDictionary(effectiveTheme);
     }
 
     private static void ApplyThemeDictionary(AppTheme theme)
     {
-        if (Current?.Resources?.MergedDictionaries == null)
+        var merged = Current?.Resources?.MergedDictionaries;
+        if (merged == null)
             return;
 
-        var dictionaries = Current.Resources.MergedDictionaries;
-        var toRemove = new List<ResourceDictionary>();
-        foreach (var dictionary in dictionaries)
-        {
-            if (dictionary is Resources.Styles.ColorsLight || dictionary is Resources.Styles.ColorsDark)
-            {
-                toRemove.Add(dictionary);
-            }
-        }
+        var toRemove = merged
+            .Where(d => d is Resources.Styles.ColorsLight || d is Resources.Styles.ColorsDark)
+            .ToList();
 
-        foreach (var dictionary in toRemove)
-            dictionaries.Remove(dictionary);
+        foreach (var d in toRemove)
+            merged.Remove(d);
 
-        var themeDictionary = theme == AppTheme.Dark
-            ? new Resources.Styles.ColorsDark()
-            : new Resources.Styles.ColorsLight();
-        dictionaries.Add(themeDictionary);
+        ResourceDictionary themeDictionary =
+            theme == AppTheme.Dark
+                ? (ResourceDictionary)new Resources.Styles.ColorsDark()
+                : new Resources.Styles.ColorsLight();
+
+        merged.Add(themeDictionary);
     }
 }
