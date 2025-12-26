@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
-using UltimateVideoBrowser.Platforms.Windows;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
-#if ANDROID && !WINDOWS
+#if ANDROID
 using UltimateVideoBrowser.Platforms.Android;
+#elif WINDOWS
+using UltimateVideoBrowser.Platforms.Windows;
 #endif
 
 namespace UltimateVideoBrowser;
