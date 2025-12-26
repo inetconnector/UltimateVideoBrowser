@@ -3,13 +3,71 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:conv="clr-namespace:UltimateVideoBrowser.Converters">
+    xmlns:conv="clr-namespace:UltimateVideoBrowser.Converters"
+    xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls">
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
 
     <Style TargetType="Button">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+        <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+        <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="ImageSource" Value="icon_play.svg" />
+        <Setter Property="ContentLayout" Value="Left,8" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup Name="CommonStates">
+                    <VisualState Name="Normal" />
+                    <VisualState Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ImageButton">
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup Name="CommonStates">
+                    <VisualState Name="Normal" />
+                    <VisualState Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:IconTextButton">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+        <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+        <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
+        <Setter Property="Padding" Value="12,8" />
     </Style>
 
     <Style TargetType="Frame">

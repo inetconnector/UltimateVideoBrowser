@@ -8,12 +8,24 @@
            BackgroundColor="{Binding BackgroundColor, Source={x:Reference Root}}"
            BorderColor="{Binding BorderColor, Source={x:Reference Root}}"
            CornerRadius="12"
-           HasShadow="True">
-        <Frame.Shadow>
-            <Shadow Opacity="0.35"
-                    Radius="12"
-                    Offset="0,4" />
-        </Frame.Shadow>
+           HasShadow="False">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroupList>
+                <VisualStateGroup Name="CommonStates">
+                    <VisualState Name="Normal" />
+                    <VisualState Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </VisualStateManager.VisualStateGroups>
         <Grid ColumnDefinitions="Auto,*"
               ColumnSpacing="8"
               VerticalOptions="Center">
