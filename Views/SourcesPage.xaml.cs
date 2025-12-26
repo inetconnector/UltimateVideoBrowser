@@ -18,4 +18,10 @@ public partial class SourcesPage : ContentPage
         base.OnAppearing();
         await vm.InitializeAsync();
     }
+
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+        if (Navigation?.NavigationStack?.Count > 1)
+            await Navigation.PopAsync();
+    }
 }

@@ -8,12 +8,19 @@
              Title="{x:Static strings:AppResources.SourcesPageTitle}">
 
     <Grid RowDefinitions="Auto,Auto,*" Padding="12">
-        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-            <Label Text="{x:Static strings:AppResources.SourcesPageHeader}"
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button Text="{x:Static strings:AppResources.BackButton}"
+                    Clicked="OnBackClicked"
+                    BackgroundColor="{DynamicResource Surface2}"
+                    TextColor="{DynamicResource OnSurface}"
+                    CornerRadius="10"
+                    Padding="12,8" />
+            <Label Grid.Column="1"
+                   Text="{x:Static strings:AppResources.SourcesPageHeader}"
                    TextColor="{DynamicResource OnSurface}"
                    FontAttributes="Bold"
                    FontSize="16" />
-            <Button Grid.Column="1"
+            <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.AddSourceButton}"
                     Command="{Binding AddSourceCommand}"
                     BackgroundColor="{DynamicResource Accent}"
