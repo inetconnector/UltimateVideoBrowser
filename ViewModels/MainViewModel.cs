@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
+using System.Globalization;
 
 namespace UltimateVideoBrowser.ViewModels;
 
@@ -28,6 +29,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string sourcesSummary = "";
     [ObservableProperty] private int totalSourceCount;
     [ObservableProperty] private int videoCount;
+    [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
 
     private CancellationTokenSource? thumbCts;
 
@@ -244,6 +246,7 @@ public partial class MainViewModel : ObservableObject
     partial void OnVideosChanged(List<VideoItem> value)
     {
         VideoCount = value?.Count ?? 0;
+        TimelineEntries = BuildTimelineEntries(value);
     }
 
     partial void OnActiveSourceIdChanged(string value)
@@ -260,5 +263,33 @@ public partial class MainViewModel : ObservableObject
     {
         if (value != null)
             settingsService.SelectedSortOptionKey = value.Key;
+    }
+
+    private static List<TimelineEntry> BuildTimelineEntries(List<VideoItem>? items)
+    {
+        if (items == null || items.Count == 0)
+            return new List<TimelineEntry>();
+
+        var entries = new List<TimelineEntry>();
+        var lastKey = "";
+        var lastYear = -1;
+
+        foreach (var item in items)
+        {
+            var date = DateTimeOffset.FromUnixTimeSeconds(Math.Max(0, item.DateAddedSeconds))
+                .ToLocalTime()
+                .DateTime;
+            var key = date.ToString("yyyy-MM", CultureInfo.InvariantCulture);
+
+            if (key == lastKey)
+                continue;
+
+            var showYear = date.Year != lastYear;
+            entries.Add(new TimelineEntry(date.Year, date.Month, item, showYear));
+            lastKey = key;
+            lastYear = date.Year;
+        }
+
+        return entries;
     }
 }
