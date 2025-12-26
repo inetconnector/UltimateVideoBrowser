@@ -71,6 +71,15 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.Videos):
                         OnPropertyChanged(nameof(Videos));
                         break;
+                    case nameof(MainViewModel.VideoCount):
+                        OnPropertyChanged(nameof(VideoCount));
+                        break;
+                    case nameof(MainViewModel.EnabledSourceCount):
+                        OnPropertyChanged(nameof(EnabledSourceCount));
+                        break;
+                    case nameof(MainViewModel.SourcesSummary):
+                        OnPropertyChanged(nameof(SourcesSummary));
+                        break;
                 }
             };
         }
@@ -108,6 +117,9 @@ public partial class MainPage : ContentPage
         public double IndexRatio => vm.IndexRatio;
         public string IndexStatus => vm.IndexStatus;
         public bool HasMediaPermission => vm.HasMediaPermission;
+        public int VideoCount => vm.VideoCount;
+        public int EnabledSourceCount => vm.EnabledSourceCount;
+        public string SourcesSummary => vm.SourcesSummary;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
 
         public SortOption? SelectedSortOption

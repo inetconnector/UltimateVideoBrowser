@@ -7,7 +7,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
         <!-- Top bar -->
         <Grid Padding="16,14" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
@@ -67,13 +67,16 @@
                 </Frame.Background>
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="{x:Static strings:AppResources.SearchPlaceholder}"
+                        <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Label Text="{x:Static strings:AppResources.AppTitle}"
-                               FontSize="20"
+                        <Label Text="{x:Static strings:AppResources.HeroTitle}"
+                               FontSize="22"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HeroSubtitle}"
+                               FontSize="13"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
                         <HorizontalStackLayout Spacing="8">
                             <Frame BackgroundColor="{DynamicResource Surface3}"
                                    CornerRadius="999"
@@ -98,6 +101,22 @@
                                 </HorizontalStackLayout>
                             </Frame>
                         </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="10">
+                            <Button Text="{x:Static strings:AppResources.HeroPrimaryAction}"
+                                    ImageSource="icon_sources"
+                                    ContentLayout="Left,8"
+                                    Command="{Binding OpenSourcesCommand}"
+                                    BackgroundColor="{DynamicResource Surface3}"
+                                    TextColor="{DynamicResource OnSurface}"
+                                    Padding="12,8" />
+                            <Button Text="{x:Static strings:AppResources.ReindexButton}"
+                                    ImageSource="icon_reindex"
+                                    ContentLayout="Left,8"
+                                    Command="{Binding RunIndexCommand}"
+                                    BackgroundColor="{DynamicResource Accent}"
+                                    TextColor="{DynamicResource OnAccent}"
+                                    Padding="12,8" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                     <Image Grid.Column="1"
                            Source="hero_video"
@@ -109,8 +128,68 @@
             </Frame>
         </Grid>
 
+        <!-- Highlights -->
+        <Grid Grid.Row="2" Padding="16,0,16,12" RowDefinitions="Auto,Auto" RowSpacing="10">
+            <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
+                   FontAttributes="Bold"
+                   FontSize="14"
+                   TextColor="{DynamicResource OnSurface}" />
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <VerticalStackLayout Spacing="6">
+                        <Image Source="icon_play" HeightRequest="18" WidthRequest="18" />
+                        <Label Text="{Binding VideoCount}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Grid.Column="1"
+                       BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <VerticalStackLayout Spacing="6">
+                        <Image Source="icon_sources" HeightRequest="18" WidthRequest="18" />
+                        <Label Text="{Binding EnabledSourceCount}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HighlightsSourcesLabel}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding SourcesSummary}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Grid.Column="2"
+                       BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <VerticalStackLayout Spacing="6">
+                        <Image Source="chip_spark" HeightRequest="18" WidthRequest="18" />
+                        <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HighlightsTipText}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+        </Grid>
+
         <!-- Permission notice -->
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
               Padding="12"
               IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
             <Frame BackgroundColor="{DynamicResource Surface}"
@@ -138,7 +217,7 @@
         </Grid>
 
         <!-- Search + Sort -->
-        <Grid Grid.Row="3" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
+        <Grid Grid.Row="4" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
@@ -156,7 +235,7 @@
         </Grid>
 
         <!-- Grid -->
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="5">
             <CollectionView ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None">
@@ -182,6 +261,11 @@
                                FontSize="13"
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                HorizontalTextAlignment="Center" />
+                        <Button Text="{x:Static strings:AppResources.EmptyStateAction}"
+                                Command="{Binding OpenSourcesCommand}"
+                                BackgroundColor="{DynamicResource Accent}"
+                                TextColor="{DynamicResource OnAccent}"
+                                Padding="16,10" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
