@@ -4,16 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Color x:Key="AppBg">{AppThemeBinding Light=#F6F7FB, Dark=#0E0F14}</Color>
-    <Color x:Key="Surface">{AppThemeBinding Light=#FFFFFF, Dark=#181B22}</Color>
-    <Color x:Key="Surface2">{AppThemeBinding Light=#EEF1F7, Dark=#232734}</Color>
-    <Color x:Key="Surface3">{AppThemeBinding Light=#E3E8F4, Dark=#2D3242}</Color>
-    <Color x:Key="BorderSubtle">{AppThemeBinding Light=#D8DEE9, Dark=#30364A}</Color>
-    <Color x:Key="OnSurface">{AppThemeBinding Light=#0C1222, Dark=#F7F9FF}</Color>
-    <Color x:Key="OnSurfaceMuted">{AppThemeBinding Light=#5B6577, Dark=#A6AFBE}</Color>
+    <AppThemeColor x:Key="AppBg" Light="#F6F7FB" Dark="#0E0F14" />
+    <AppThemeColor x:Key="Surface" Light="#FFFFFF" Dark="#181B22" />
+    <AppThemeColor x:Key="Surface2" Light="#EEF1F7" Dark="#232734" />
+    <AppThemeColor x:Key="Surface3" Light="#E3E8F4" Dark="#2D3242" />
+    <AppThemeColor x:Key="BorderSubtle" Light="#D8DEE9" Dark="#30364A" />
+    <AppThemeColor x:Key="OnSurface" Light="#0C1222" Dark="#F7F9FF" />
+    <AppThemeColor x:Key="OnSurfaceMuted" Light="#5B6577" Dark="#A6AFBE" />
 
-    <Color x:Key="Accent">{AppThemeBinding Light=#2E6BFF, Dark=#6C8BFF}</Color>
-    <Color x:Key="AccentStrong">{AppThemeBinding Light=#1C4FD8, Dark=#8D5BFF}</Color>
-    <Color x:Key="AccentGlow">{AppThemeBinding Light=#D6E4FF, Dark=#2C3D6B}</Color>
-    <Color x:Key="OnAccent">{AppThemeBinding Light=#FFFFFF, Dark=#FFFFFF}</Color>
+    <AppThemeColor x:Key="Accent" Light="#2E6BFF" Dark="#6C8BFF" />
+    <AppThemeColor x:Key="AccentStrong" Light="#1C4FD8" Dark="#8D5BFF" />
+    <AppThemeColor x:Key="AccentGlow" Light="#D6E4FF" Dark="#2C3D6B" />
+    <AppThemeColor x:Key="OnAccent" Light="#FFFFFF" Dark="#FFFFFF" />
 </ResourceDictionary>
