@@ -232,10 +232,53 @@
         </Grid>
 
         <!-- Grid -->
-        <Grid Grid.Row="5">
-            <CollectionView ItemsSource="{Binding Videos}"
+        <Grid Grid.Row="5" ColumnDefinitions="96,*">
+            <CollectionView ItemsSource="{Binding TimelineEntries}"
+                            x:Name="TimelineView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnTimelineSelectionChanged"
+                            BackgroundColor="{DynamicResource AppBg}"
+                            ScrollBarVisibility="Always"
+                            Margin="8,0,0,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="14,*" RowDefinitions="Auto,Auto" Padding="4,6">
+                            <BoxView Grid.RowSpan="2"
+                                     WidthRequest="2"
+                                     BackgroundColor="{DynamicResource BorderSubtle}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Fill" />
+                            <Frame Grid.Column="1"
+                                   Grid.RowSpan="2"
+                                   Padding="8,6"
+                                   CornerRadius="12"
+                                   BackgroundColor="{DynamicResource Surface2}"
+                                   BorderColor="{DynamicResource BorderSubtle}"
+                                   HasShadow="False">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding MonthLabel}"
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource OnSurface}" />
+                                    <Label Text="{Binding YearLabel}"
+                                           FontSize="10"
+                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                           IsVisible="{Binding ShowYear}" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <CollectionView Grid.Column="1"
+                            ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
-                            SelectionMode="None">
+                            SelectionMode="None"
+                            ScrollBarVisibility="Always">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
                 </CollectionView.ItemsLayout>
@@ -273,7 +316,7 @@
                                Margin="8"
                                Padding="0"
                                BorderColor="{DynamicResource BorderSubtle}">
-                            <Grid RowDefinitions="170,Auto,Auto" Padding="10">
+                            <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                 <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
                                       HeightRequest="170">
                                     <Image
@@ -311,6 +354,19 @@
                                     </HorizontalStackLayout>
                                 </Frame>
 
+                                <ImageButton Grid.Row="3"
+                                             Source="icon_play"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                             CommandParameter="{Binding .}"
+                                             BackgroundColor="{DynamicResource Accent}"
+                                             CornerRadius="10"
+                                             Padding="10"
+                                             Margin="0,4,0,8"
+                                             HeightRequest="40"
+                                             WidthRequest="40"
+                                             HorizontalOptions="Start"
+                                             VerticalOptions="Center" />
+
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
@@ -323,7 +379,8 @@
             </CollectionView>
 
             <!-- Indexing banner -->
-            <Frame IsVisible="{Binding ShowIndexingBanner}"
+            <Frame Grid.ColumnSpan="2"
+                   IsVisible="{Binding ShowIndexingBanner}"
                    BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
                    BorderColor="{DynamicResource BorderSubtle}"
@@ -355,7 +412,8 @@
             </Frame>
 
             <!-- Indexing overlay -->
-            <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
+            <Grid Grid.ColumnSpan="2"
+                  IsVisible="{Binding IsIndexingOverlayVisible}"
                   BackgroundColor="#99000000"
                   Padding="24">
                 <Frame BackgroundColor="{DynamicResource Surface}"

@@ -7,8 +7,13 @@
     <Frame Padding="{Binding Padding, Source={x:Reference Root}}"
            BackgroundColor="{Binding BackgroundColor, Source={x:Reference Root}}"
            BorderColor="{Binding BorderColor, Source={x:Reference Root}}"
-           CornerRadius="12"
-           HasShadow="False">
+           CornerRadius="14"
+           HasShadow="True">
+        <Frame.Shadow>
+            <Shadow Opacity="0.35"
+                    Radius="12"
+                    Offset="0,4" />
+        </Frame.Shadow>
         <Grid ColumnDefinitions="Auto,*"
               ColumnSpacing="8"
               VerticalOptions="Center">

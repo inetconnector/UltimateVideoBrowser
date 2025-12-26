@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using System.Linq;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
@@ -21,6 +22,15 @@ public partial class MainPage : ContentPage
         base.OnAppearing();
         await vm.InitializeAsync();
         await ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
+    }
+
+    private void OnTimelineSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not TimelineEntry entry)
+            return;
+
+        VideosView.ScrollTo(entry.AnchorVideo, position: ScrollToPosition.Start, animate: true);
+        ((CollectionView)sender).SelectedItem = null;
     }
 
     private sealed class MainPageBinding : BindableObject
@@ -78,6 +88,9 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.VideoCount):
                         OnPropertyChanged(nameof(VideoCount));
+                        break;
+                    case nameof(MainViewModel.TimelineEntries):
+                        OnPropertyChanged(nameof(TimelineEntries));
                         break;
                     case nameof(MainViewModel.EnabledSourceCount):
                         OnPropertyChanged(nameof(EnabledSourceCount));
@@ -159,6 +172,7 @@ public partial class MainPage : ContentPage
         }
 
         public List<VideoItem> Videos => vm.Videos;
+        public List<TimelineEntry> TimelineEntries => vm.TimelineEntries;
 
         private async Task OpenSourcesAsync()
         {
