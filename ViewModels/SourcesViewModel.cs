@@ -1,3 +1,4 @@
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
@@ -95,7 +96,8 @@ public partial class SourcesViewModel : ObservableObject
             return false;
 
         var path = result.Path.Trim();
-        if (!Directory.Exists(path))
+        var isContentUri = path.StartsWith("content://", StringComparison.OrdinalIgnoreCase);
+        if (!isContentUri && !Directory.Exists(path))
         {
             await dialogService.DisplayAlertAsync(
                 AppResources.PathInvalidTitle,
