@@ -8,6 +8,7 @@ public sealed class AppSettingsService
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
     private const string NeedsReindexKey = "needs_reindex";
+    private const string ThemePreferenceKey = "theme_preference";
 
     public string ActiveSourceId
     {
@@ -31,5 +32,11 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(NeedsReindexKey, true);
         set => Preferences.Default.Set(NeedsReindexKey, value);
+    }
+
+    public string ThemePreference
+    {
+        get => Preferences.Default.Get(ThemePreferenceKey, "dark");
+        set => Preferences.Default.Set(ThemePreferenceKey, value ?? "dark");
     }
 }
