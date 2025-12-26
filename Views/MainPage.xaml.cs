@@ -30,6 +30,7 @@ public partial class MainPage : ContentPage
         private readonly MainViewModel vm;
 
         private int gridSpan = 3;
+        private bool isIndexingOverlayVisible;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -42,13 +43,17 @@ public partial class MainPage : ContentPage
             RunIndexCommand = vm.RunIndexCommand;
             PlayCommand = vm.PlayCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
+            DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
+            ShowIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = true);
 
             vm.PropertyChanged += (_, args) =>
             {
                 switch (args.PropertyName)
                 {
                     case nameof(MainViewModel.IsIndexing):
+                        IsIndexingOverlayVisible = vm.IsIndexing;
                         OnPropertyChanged(nameof(IsIndexing));
+                        OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
                     case nameof(MainViewModel.IndexedCount):
                         OnPropertyChanged(nameof(IndexedCount));
@@ -88,6 +93,8 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
         public IAsyncRelayCommand RequestPermissionCommand { get; }
+        public IRelayCommand DismissIndexOverlayCommand { get; }
+        public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand PlayCommand { get; }
 
         public int GridSpan
@@ -111,6 +118,21 @@ public partial class MainPage : ContentPage
         }
 
         public bool IsIndexing => vm.IsIndexing;
+        public bool IsIndexingOverlayVisible
+        {
+            get => isIndexingOverlayVisible;
+            set
+            {
+                if (isIndexingOverlayVisible == value)
+                    return;
+
+                isIndexingOverlayVisible = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowIndexingBanner));
+            }
+        }
+
+        public bool ShowIndexingBanner => vm.IsIndexing && !IsIndexingOverlayVisible;
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;
