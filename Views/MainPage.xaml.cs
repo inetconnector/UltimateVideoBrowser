@@ -49,6 +49,7 @@ public partial class MainPage : ContentPage
             this.page = page;
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
+            OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
             PlayCommand = vm.PlayCommand;
@@ -109,6 +110,7 @@ public partial class MainPage : ContentPage
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
+        public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
         public IAsyncRelayCommand RequestPermissionCommand { get; }
@@ -185,6 +187,11 @@ public partial class MainPage : ContentPage
         private async Task OpenSourcesAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SourcesPage>()!);
+        }
+
+        private async Task OpenSettingsAsync()
+        {
+            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SettingsPage>()!);
         }
 
         public Task ApplyGridSpanAsync()

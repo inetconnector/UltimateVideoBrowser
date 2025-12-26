@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.SettingsPage"
+             BackgroundColor="{DynamicResource AppBg}"
+             Title="{x:Static strings:AppResources.SettingsPageTitle}">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button Text="{x:Static strings:AppResources.BackButton}"
+                    Clicked="OnBackClicked"
+                    BackgroundColor="{DynamicResource Surface2}"
+                    TextColor="{DynamicResource OnSurface}"
+                    CornerRadius="10"
+                    Padding="12,8" />
+            <Label Grid.Column="1"
+                   Text="{x:Static strings:AppResources.SettingsPageHeader}"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontAttributes="Bold"
+                   FontSize="16" />
+        </Grid>
+
+        <Frame Grid.Row="1"
+               BackgroundColor="{DynamicResource Surface}"
+               CornerRadius="14"
+               Padding="14"
+               Margin="0,12,0,0">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="{x:Static strings:AppResources.SettingsAppearanceTitle}"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <Label Text="{x:Static strings:AppResources.SettingsThemeLabel}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           VerticalOptions="Center" />
+                    <Picker Grid.Column="1"
+                            ItemsSource="{Binding ThemeOptions}"
+                            ItemDisplayBinding="{Binding Display}"
+                            SelectedItem="{Binding SelectedTheme}"
+                            TextColor="{DynamicResource OnSurface}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            Title="{x:Static strings:AppResources.SettingsThemeLabel}"
+                            WidthRequest="160" />
+                </Grid>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

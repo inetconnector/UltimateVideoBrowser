@@ -102,6 +102,27 @@
   <data name="BackButton" xml:space="preserve">
     <value>Zurück</value>
   </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Darstellung</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
   <data name="EmptyStateTitle" xml:space="preserve">
     <value>Noch keine Videos</value>
   </data>

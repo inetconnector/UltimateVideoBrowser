@@ -43,10 +43,12 @@ public static class MauiProgram
         // ViewModels
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<SourcesViewModel>();
+        builder.Services.AddSingleton<SettingsViewModel>();
 
         // Pages
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<SourcesPage>();
+        builder.Services.AddSingleton<SettingsPage>();
 
         return builder.Build();
     }
