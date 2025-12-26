@@ -9,6 +9,7 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly IndexService indexService;
+    private readonly AppSettingsService settingsService;
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
     private readonly ISourceService sourceService;
@@ -35,12 +36,14 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(
         ISourceService sourceService,
         IndexService indexService,
+        AppSettingsService settingsService,
         ThumbnailService thumbnailService,
         PlaybackService playbackService,
         PermissionService permissionService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
+        this.settingsService = settingsService;
         this.thumbnailService = thumbnailService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;
@@ -59,7 +62,11 @@ public partial class MainViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         await sourceService.EnsureDefaultSourceAsync();
-        await UpdateSourceStatsAsync();
+
+        ApplySavedSettings();
+        var sources = await sourceService.GetSourcesAsync();
+        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+        await UpdateSourceStatsAsync(sources);
 
         HasMediaPermission = await permissionService.CheckMediaReadAsync();
 
@@ -69,16 +76,30 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        await RunIndexAsync();
         await RefreshAsync();
         StartThumbnailPipeline();
+
+        if (settingsService.NeedsReindex)
+            _ = RunIndexAsync();
     }
 
     [RelayCommand]
     public async Task RefreshAsync()
     {
+        var sources = await sourceService.GetSourcesAsync();
+        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+        await UpdateSourceStatsAsync(sources);
+
         var sortKey = SelectedSortOption?.Key ?? "name";
-        Videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey);
+        var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey);
+
+        if (string.IsNullOrWhiteSpace(ActiveSourceId))
+        {
+            var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
+            videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
+        }
+
+        Videos = videos;
         StartThumbnailPipeline();
     }
 
@@ -103,6 +124,7 @@ public partial class MainViewModel : ObservableObject
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
 
+        var completed = false;
         try
         {
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
@@ -117,6 +139,7 @@ public partial class MainViewModel : ObservableObject
             using var cts = new CancellationTokenSource();
 
             await indexService.IndexSourcesAsync(sources, progress, cts.Token);
+            completed = true;
         }
         finally
         {
@@ -124,6 +147,9 @@ public partial class MainViewModel : ObservableObject
             IndexStatus = "";
             IndexRatio = 0;
         }
+
+        if (completed)
+            settingsService.NeedsReindex = false;
 
         await RefreshAsync();
     }
@@ -177,13 +203,52 @@ public partial class MainViewModel : ObservableObject
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
+        await UpdateSourceStatsAsync(sources);
+    }
+
+    private Task UpdateSourceStatsAsync(List<MediaSource> sources)
+    {
         TotalSourceCount = sources.Count;
         EnabledSourceCount = sources.Count(s => s.IsEnabled);
         SourcesSummary = string.Format(AppResources.SourcesSummaryFormat, EnabledSourceCount, TotalSourceCount);
+        return Task.CompletedTask;
+    }
+
+    private void ApplySavedSettings()
+    {
+        SearchText = settingsService.SearchText;
+        var sortKey = settingsService.SelectedSortOptionKey;
+        SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
+        ActiveSourceId = settingsService.ActiveSourceId;
+    }
+
+    private static string NormalizeActiveSourceId(List<MediaSource> sources, string activeSourceId)
+    {
+        if (string.IsNullOrWhiteSpace(activeSourceId))
+            return "";
+
+        var exists = sources.Any(s => s.Id == activeSourceId && s.IsEnabled);
+        return exists ? activeSourceId : "";
     }
 
     partial void OnVideosChanged(List<VideoItem> value)
     {
         VideoCount = value?.Count ?? 0;
+    }
+
+    partial void OnActiveSourceIdChanged(string value)
+    {
+        settingsService.ActiveSourceId = value;
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        settingsService.SearchText = value;
+    }
+
+    partial void OnSelectedSortOptionChanged(SortOption? value)
+    {
+        if (value != null)
+            settingsService.SelectedSortOptionKey = value.Key;
     }
 }
