@@ -17,15 +17,16 @@ public sealed class IndexService
         CancellationToken ct)
     {
         var inserted = 0;
+        var processedOverall = 0;
+        var totalOverall = 0;
 
         foreach (var source in sources)
         {
             ct.ThrowIfCancellationRequested();
 
             var scanned = await scanner.ScanSourceAsync(source);
-            var processed = 0;
-            var total = scanned.Count;
-            progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName, null));
+            totalOverall += scanned.Count;
+            progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, null));
 
             foreach (var v in scanned)
             {
@@ -50,8 +51,8 @@ public sealed class IndexService
                     }
                 }
 
-                processed++;
-                progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName, v.Path));
+                processedOverall++;
+                progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
             }
         }
 

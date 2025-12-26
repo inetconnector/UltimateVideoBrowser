@@ -38,12 +38,22 @@ public partial class App : Application
 
         var pref = (themePreference ?? string.Empty).Trim().ToLowerInvariant();
 
-        Current.UserAppTheme = pref switch
+        var theme = pref switch
         {
             "light" => AppTheme.Light,
             "dark" => AppTheme.Dark,
             _ => AppTheme.Unspecified
         };
+
+        ApplyTheme(theme);
+    }
+
+    public static void ApplyTheme(AppTheme theme)
+    {
+        if (Current == null)
+            return;
+
+        Current.UserAppTheme = theme;
 
         var effectiveTheme = Current.UserAppTheme == AppTheme.Unspecified
             ? Current.RequestedTheme
