@@ -100,20 +100,6 @@
                                 </HorizontalStackLayout>
                             </Frame>
                         </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="10">
-                            <controls:IconTextButton Text="{x:Static strings:AppResources.HeroPrimaryAction}"
-                                                     ImageSource="icon_sources"
-                                                     Command="{Binding OpenSourcesCommand}"
-                                                     BackgroundColor="{DynamicResource Surface3}"
-                                                     TextColor="{DynamicResource OnSurface}"
-                                                     Padding="12,8" />
-                            <controls:IconTextButton Text="{x:Static strings:AppResources.ReindexButton}"
-                                                     ImageSource="icon_reindex"
-                                                     Command="{Binding RunIndexCommand}"
-                                                     BackgroundColor="{DynamicResource Accent}"
-                                                     TextColor="{DynamicResource OnAccent}"
-                                                     Padding="12,8" />
-                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                     <Image Grid.Column="1"
                            Source="hero_video"
