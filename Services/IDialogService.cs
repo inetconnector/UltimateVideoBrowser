@@ -12,5 +12,6 @@ public interface IDialogService
         string cancel,
         string? placeholder,
         int maxLength,
-        Keyboard keyboard);
+        Keyboard keyboard,
+        string? initialValue = null);
 }
