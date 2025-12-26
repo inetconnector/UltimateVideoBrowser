@@ -11,6 +11,7 @@ public static class AppResources
     public static string AppTitle => GetString(nameof(AppTitle), "Ultimate Video Browser");
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Videos");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
+    public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search videos...");
     public static string HeroEyebrow => GetString(nameof(HeroEyebrow), "Your personal library");
