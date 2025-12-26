@@ -7,7 +7,7 @@
     <Frame Padding="{Binding Padding, Source={x:Reference Root}}"
            BackgroundColor="{Binding BackgroundColor, Source={x:Reference Root}}"
            BorderColor="{Binding BorderColor, Source={x:Reference Root}}"
-           CornerRadius="14"
+           CornerRadius="12"
            HasShadow="True">
         <Frame.Shadow>
             <Shadow Opacity="0.35"

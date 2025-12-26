@@ -19,7 +19,7 @@
                        HeightRequest="40"
                        WidthRequest="40"
                        HorizontalOptions="Start">
-                    <Image Source="app_logo"
+                    <Image Source="app_logo.svg"
                            HeightRequest="24"
                            WidthRequest="24"
                            HorizontalOptions="Center"
@@ -37,14 +37,14 @@
             </HorizontalStackLayout>
             <controls:IconTextButton Grid.Column="1"
                                      Text="{x:Static strings:AppResources.SourcesButton}"
-                                     ImageSource="icon_sources"
+                                     ImageSource="icon_sources.svg"
                                      Command="{Binding OpenSourcesCommand}"
                                      BackgroundColor="{DynamicResource Surface2}"
                                      TextColor="{DynamicResource OnSurface}"
                                      Padding="12,8" />
             <controls:IconTextButton Grid.Column="2"
                                      Text="{x:Static strings:AppResources.ReindexButton}"
-                                     ImageSource="icon_reindex"
+                                     ImageSource="icon_reindex.svg"
                                      Command="{Binding RunIndexCommand}"
                                      BackgroundColor="{DynamicResource Accent}"
                                      TextColor="{DynamicResource OnAccent}"
@@ -82,7 +82,7 @@
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
                                 <HorizontalStackLayout Spacing="6">
-                                    <Image Source="chip_collection" HeightRequest="14" WidthRequest="14" />
+                                    <Image Source="chip_collection.svg" HeightRequest="14" WidthRequest="14" />
                                     <Label Text="{x:Static strings:AppResources.SourcesButton}"
                                            FontSize="11"
                                            TextColor="{DynamicResource OnSurfaceMuted}" />
@@ -93,7 +93,7 @@
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
                                 <HorizontalStackLayout Spacing="6">
-                                    <Image Source="chip_spark" HeightRequest="14" WidthRequest="14" />
+                                    <Image Source="chip_spark.svg" HeightRequest="14" WidthRequest="14" />
                                     <Label Text="{x:Static strings:AppResources.SortTitle}"
                                            FontSize="11"
                                            TextColor="{DynamicResource OnSurfaceMuted}" />
@@ -102,7 +102,7 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                     <Image Grid.Column="1"
-                           Source="hero_video"
+                           Source="hero_video.svg"
                            HeightRequest="120"
                            WidthRequest="140"
                            HorizontalOptions="End"
@@ -123,7 +123,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_play" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{Binding VideoCount}"
                                FontSize="20"
                                FontAttributes="Bold"
@@ -139,7 +139,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_sources" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{Binding EnabledSourceCount}"
                                FontSize="20"
                                FontAttributes="Bold"
@@ -158,7 +158,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="chip_spark" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
                                FontSize="13"
                                FontAttributes="Bold"
@@ -188,13 +188,13 @@
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                FontSize="12" />
                     </VerticalStackLayout>
-                    <Button Grid.Column="1"
-                            Text="{x:Static strings:AppResources.PermissionOk}"
-                            Command="{Binding RequestPermissionCommand}"
-                            BackgroundColor="{DynamicResource Accent}"
-                            TextColor="{DynamicResource OnAccent}"
-                            CornerRadius="10"
-                            Padding="12,8" />
+                            <Button Grid.Column="1"
+                                    Text="{x:Static strings:AppResources.PermissionOk}"
+                                    Command="{Binding RequestPermissionCommand}"
+                                    BackgroundColor="{DynamicResource Accent}"
+                                    TextColor="{DynamicResource OnAccent}"
+                                    CornerRadius="12"
+                                    Padding="12,8" />
                 </Grid>
             </Frame>
         </Grid>
@@ -274,7 +274,7 @@
                                          HorizontalOptions="Center"
                                          VerticalOptions="Center"
                                          Margin="24">
-                        <Image Source="empty_state"
+                        <Image Source="empty_state.svg"
                                HeightRequest="180"
                                WidthRequest="240"
                                HorizontalOptions="Center" />
@@ -306,7 +306,7 @@
                                 <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
                                       HeightRequest="170">
                                     <Image
-                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                         Aspect="AspectFill" />
                                     <Frame BackgroundColor="#CC0E0F14"
                                            CornerRadius="999"
@@ -314,7 +314,7 @@
                                            HorizontalOptions="End"
                                            VerticalOptions="End"
                                            Margin="8">
-                                        <Image Source="icon_play" HeightRequest="16" WidthRequest="16" />
+                                        <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
                                     </Frame>
                                 </Grid>
 
@@ -333,7 +333,7 @@
                                        HorizontalOptions="Start"
                                        Margin="0,6,0,2">
                                     <HorizontalStackLayout Spacing="6">
-                                        <Image Source="chip_clock" HeightRequest="12" WidthRequest="12" />
+                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
                                         <Label Text="{Binding DurationText}"
                                                TextColor="{DynamicResource OnSurfaceMuted}"
                                                FontSize="11" />
@@ -341,11 +341,11 @@
                                 </Frame>
 
                                 <ImageButton Grid.Row="3"
-                                             Source="icon_play"
+                                             Source="icon_play.svg"
                                              Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
                                              CommandParameter="{Binding .}"
                                              BackgroundColor="{DynamicResource Accent}"
-                                             CornerRadius="10"
+                                             CornerRadius="12"
                                              Padding="10"
                                              Margin="0,4,0,8"
                                              HeightRequest="40"
@@ -385,7 +385,7 @@
                             BackgroundColor="{DynamicResource Surface2}"
                             TextColor="{DynamicResource OnSurface}"
                             Padding="10,6"
-                            CornerRadius="10" />
+                            CornerRadius="12" />
                     <Label Grid.Row="1"
                            Grid.ColumnSpan="2"
                            Text="{Binding IndexStatus}"
@@ -439,7 +439,7 @@
                                 BackgroundColor="{DynamicResource Surface2}"
                                 TextColor="{DynamicResource OnSurface}"
                                 Padding="12,8"
-                                CornerRadius="10" />
+                                CornerRadius="12" />
                     </VerticalStackLayout>
                 </Frame>
             </Grid>

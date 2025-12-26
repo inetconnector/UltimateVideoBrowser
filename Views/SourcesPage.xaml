@@ -14,7 +14,7 @@
                     Clicked="OnBackClicked"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
-                    CornerRadius="10"
+                    CornerRadius="12"
                     Padding="12,8" />
             <Label Grid.Column="1"
                    Text="{x:Static strings:AppResources.SourcesPageHeader}"
@@ -26,7 +26,7 @@
                     Command="{Binding AddSourceCommand}"
                     BackgroundColor="{DynamicResource Accent}"
                     TextColor="{DynamicResource OnAccent}"
-                    CornerRadius="10"
+                    CornerRadius="12"
                     Padding="12,8" />
         </Grid>
 
@@ -53,7 +53,7 @@
                             Command="{Binding RequestPermissionCommand}"
                             BackgroundColor="{DynamicResource Accent}"
                             TextColor="{DynamicResource OnAccent}"
-                            CornerRadius="10"
+                            CornerRadius="12"
                             Padding="12,8" />
                 </Grid>
             </Frame>
@@ -73,7 +73,7 @@
                             Command="{Binding AddPathCommand}"
                             BackgroundColor="{DynamicResource Surface2}"
                             TextColor="{DynamicResource OnSurface}"
-                            CornerRadius="10"
+                            CornerRadius="12"
                             Padding="12,8" />
                 </Grid>
             </Frame>
