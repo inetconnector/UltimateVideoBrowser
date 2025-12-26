@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
@@ -25,7 +24,7 @@ public sealed class SourcesViewModelTests
         {
             var sourceService = new FakeSourceService();
             var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
-            var dialogService = new FakeDialogService(promptResult: null);
+            var dialogService = new FakeDialogService(null);
             var viewModel = new SourcesViewModel(
                 sourceService,
                 new PermissionService(),

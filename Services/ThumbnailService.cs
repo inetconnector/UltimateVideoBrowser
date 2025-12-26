@@ -5,9 +5,7 @@ using IOPath = System.IO.Path;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
-
 #elif WINDOWS
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 #endif

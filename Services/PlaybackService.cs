@@ -3,7 +3,6 @@ using UltimateVideoBrowser.Models;
 using Android.Content;
 using Uri = Android.Net.Uri;
 #elif WINDOWS
-using Microsoft.Maui.Storage;
 #endif
 
 namespace UltimateVideoBrowser.Services;

@@ -72,12 +72,8 @@ public partial class SourcesViewModel : ObservableObject
 
             var addedAny = false;
             foreach (var result in results)
-            {
                 if (await AddSourceFromPickAsync(result))
-                {
                     addedAny = true;
-                }
-            }
 
             if (!addedAny)
                 return;

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using UltimateVideoBrowser.Platforms.Windows;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
@@ -34,7 +35,7 @@ public static class MauiProgram
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #elif WINDOWS
-        builder.Services.AddSingleton<IFolderPickerService, UltimateVideoBrowser.Platforms.Windows.FolderPickerService>();
+        builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #endif
 
         // ViewModels

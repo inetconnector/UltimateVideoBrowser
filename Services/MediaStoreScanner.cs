@@ -1,14 +1,11 @@
-using UltimateVideoBrowser.Models;
-using IOPath = System.IO.Path;
-
 #if ANDROID && !WINDOWS
 using Android.Provider;
 using AndroidX.DocumentFile.Provider;
 using Uri = Android.Net.Uri;
-
 #elif WINDOWS
 using Windows.Storage;
 #endif
+using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
 
@@ -34,15 +31,17 @@ public sealed class MediaStoreScanner
     }
 
 #if WINDOWS
-    static readonly string[] VideoExtensions =
+    private static readonly string[] VideoExtensions =
     {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v"
     };
 
-    static bool IsVideoFile(string path)
-        => VideoExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
+    private static bool IsVideoFile(string path)
+    {
+        return VideoExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
+    }
 
-    static async Task<List<VideoItem>> ScanWindowsAsync(string? rootPath, string? sourceId)
+    private static async Task<List<VideoItem>> ScanWindowsAsync(string? rootPath, string? sourceId)
     {
         var list = new List<VideoItem>();
         var root = string.IsNullOrWhiteSpace(rootPath)
