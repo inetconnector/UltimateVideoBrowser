@@ -10,7 +10,9 @@
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*">
         <!-- Top bar -->
-        <Grid Padding="16,14" ColumnDefinitions="*,Auto,Auto,Auto" BackgroundColor="{DynamicResource Surface}">
+        <Grid Padding="16,14"
+              ColumnDefinitions="*,Auto,Auto,Auto"
+              BackgroundColor="{DynamicResource Surface}">
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
                 <Frame Padding="6"
                        BackgroundColor="{DynamicResource Surface2}"
@@ -25,6 +27,7 @@
                            HorizontalOptions="Center"
                            VerticalOptions="Center" />
                 </Frame>
+
                 <VerticalStackLayout Spacing="2">
                     <Label Text="{x:Static strings:AppResources.AppTitle}"
                            FontAttributes="Bold"
@@ -35,14 +38,17 @@
                            TextColor="{DynamicResource OnSurfaceMuted}" />
                 </VerticalStackLayout>
             </HorizontalStackLayout>
+
             <controls:IconTextButton Grid.Column="1"
                                      Text="{x:Static strings:AppResources.SourcesButton}"
                                      ImageSource="icon_sources.svg"
                                      Command="{Binding OpenSourcesCommand}" />
+
             <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.SettingsButton}"
                     Command="{Binding OpenSettingsCommand}"
                     Margin="8,0,0,0" />
+
             <controls:IconTextButton Grid.Column="3"
                                      Text="{x:Static strings:AppResources.ReindexButton}"
                                      ImageSource="icon_reindex.svg"
@@ -62,6 +68,7 @@
                         <GradientStop Color="{DynamicResource Surface3}" Offset="1.0" />
                     </LinearGradientBrush>
                 </Frame.Background>
+
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
@@ -74,24 +81,30 @@
                         <Label Text="{x:Static strings:AppResources.HeroSubtitle}"
                                FontSize="13"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
+
                         <HorizontalStackLayout Spacing="8">
                             <Frame BackgroundColor="{DynamicResource Surface3}"
                                    CornerRadius="999"
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
                                 <HorizontalStackLayout Spacing="6">
-                                    <Image Source="chip_collection.svg" HeightRequest="14" WidthRequest="14" />
+                                    <Image Source="chip_collection.svg"
+                                           HeightRequest="14"
+                                           WidthRequest="14" />
                                     <Label Text="{x:Static strings:AppResources.SourcesButton}"
                                            FontSize="11"
                                            TextColor="{DynamicResource OnSurfaceMuted}" />
                                 </HorizontalStackLayout>
                             </Frame>
+
                             <Frame BackgroundColor="{DynamicResource Surface3}"
                                    CornerRadius="999"
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
                                 <HorizontalStackLayout Spacing="6">
-                                    <Image Source="chip_spark.svg" HeightRequest="14" WidthRequest="14" />
+                                    <Image Source="chip_spark.svg"
+                                           HeightRequest="14"
+                                           WidthRequest="14" />
                                     <Label Text="{x:Static strings:AppResources.SortTitle}"
                                            FontSize="11"
                                            TextColor="{DynamicResource OnSurfaceMuted}" />
@@ -99,6 +112,7 @@
                             </Frame>
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
+
                     <Image Grid.Column="1"
                            Source="hero_video.svg"
                            HeightRequest="120"
@@ -110,11 +124,15 @@
         </Grid>
 
         <!-- Highlights -->
-        <Grid Grid.Row="2" Padding="16,0,16,12" RowDefinitions="Auto,Auto" RowSpacing="10">
+        <Grid Grid.Row="2"
+              Padding="16,0,16,12"
+              RowDefinitions="Auto,Auto"
+              RowSpacing="10">
             <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
                    FontAttributes="Bold"
                    FontSize="14"
                    TextColor="{DynamicResource OnSurface}" />
+
             <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
@@ -131,6 +149,7 @@
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                     </VerticalStackLayout>
                 </Frame>
+
                 <Frame Grid.Column="1"
                        BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
@@ -150,6 +169,7 @@
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                     </VerticalStackLayout>
                 </Frame>
+
                 <Frame Grid.Column="2"
                        BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
@@ -186,6 +206,7 @@
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                FontSize="12" />
                     </VerticalStackLayout>
+
                     <Button Grid.Column="1"
                             Text="{x:Static strings:AppResources.PermissionOk}"
                             Command="{Binding RequestPermissionCommand}" />
@@ -194,13 +215,17 @@
         </Grid>
 
         <!-- Search + Sort -->
-        <Grid Grid.Row="4" Padding="12" ColumnDefinitions="*,Auto" BackgroundColor="{DynamicResource AppBg}">
+        <Grid Grid.Row="4"
+              Padding="12"
+              ColumnDefinitions="*,Auto"
+              BackgroundColor="{DynamicResource AppBg}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
                        BackgroundColor="{DynamicResource Surface2}"
                        TextColor="{DynamicResource OnSurface}"
                        PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+
             <Picker Grid.Column="1"
                     ItemsSource="{Binding SortOptions}"
                     ItemDisplayBinding="{Binding Display}"
@@ -222,10 +247,14 @@
                VerticalOptions="Start"
                Margin="16,4,16,12"
                HasShadow="False">
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12" RowSpacing="6">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                  ColumnDefinitions="*,Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="6">
                 <Label Text="{x:Static strings:AppResources.Indexing}"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource OnSurface}" />
+
                 <Button Grid.Column="1"
                         Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
                         Command="{Binding ShowIndexOverlayCommand}"
@@ -233,24 +262,29 @@
                         TextColor="{DynamicResource OnSurface}"
                         Padding="10,6"
                         CornerRadius="12" />
+
                 <Label Grid.Row="1"
                        Grid.ColumnSpan="2"
                        Text="{Binding IndexStatus}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
+
                 <Label Grid.Row="2"
                        Grid.ColumnSpan="2"
                        Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
                        FontSize="11"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
+
                 <Label Grid.Row="3"
                        Grid.ColumnSpan="2"
                        Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
                        FontSize="11"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
+
                 <ProgressBar Grid.Row="4"
                              Grid.Column="0"
                              Progress="{Binding IndexRatio}" />
+
                 <Label Grid.Row="4"
                        Grid.Column="1"
                        Text="{Binding IndexRatio, StringFormat='{0:P0}'}"
@@ -261,7 +295,7 @@
             </Grid>
         </Frame>
 
-        <!-- Grid -->
+        <!-- Browser grid -->
         <Grid Grid.Row="6" x:Name="BrowserGrid" ColumnDefinitions="*,96">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
@@ -286,6 +320,7 @@
                             <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
                         </VisualState.Setters>
                     </VisualState>
+
                     <VisualState x:Name="Wide">
                         <VisualState.StateTriggers>
                             <OnIdiom x:TypeArguments="StateTriggerBase">
@@ -315,6 +350,7 @@
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
+
             <CollectionView ItemsSource="{Binding TimelineEntries}"
                             x:Name="TimelineView"
                             SelectionMode="Single"
@@ -362,6 +398,7 @@
                             x:Name="VideosView"
                             SelectionMode="None"
                             VerticalScrollBarVisibility="Always">
+
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
                 </CollectionView.ItemsLayout>
@@ -389,169 +426,281 @@
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
+                <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="16"
-                               Margin="8"
-                               Padding="0"
-                               BorderColor="{DynamicResource BorderSubtle}">
-                            <Frame.ContextFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.ShareAction}"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
-                                                    CommandParameter="{Binding .}">
-                                        <MenuFlyoutItem.IsVisible>
-                                            <OnPlatform x:TypeArguments="x:Boolean">
-                                                <On Platform="Android" Value="True" />
-                                                <On Platform="Windows" Value="False" />
-                                            </OnPlatform>
-                                        </MenuFlyoutItem.IsVisible>
-                                    </MenuFlyoutItem>
-                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.SaveAsAction}"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
-                                                    CommandParameter="{Binding .}">
-                                        <MenuFlyoutItem.IsVisible>
-                                            <OnPlatform x:TypeArguments="x:Boolean">
-                                                <On Platform="Android" Value="False" />
-                                                <On Platform="Windows" Value="True" />
-                                            </OnPlatform>
-                                        </MenuFlyoutItem.IsVisible>
-                                    </MenuFlyoutItem>
-                                </MenuFlyout>
-                            </Frame.ContextFlyout>
-                            <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                <Grid RowDefinitions="*" BackgroundColor="{DynamicResource Surface2}"
-                                      HeightRequest="170">
-                                    <Image
-                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                        Aspect="AspectFill" />
-                                    <Frame BackgroundColor="#CC0E0F14"
-                                           CornerRadius="999"
-                                           Padding="6"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="End"
-                                           Margin="8">
-                                        <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
-                                    </Frame>
-                                </Grid>
+                    <OnPlatform x:TypeArguments="DataTemplate">
 
-                                <Label Grid.Row="1"
-                                       Text="{Binding Name}"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       FontSize="13"
-                                       LineBreakMode="TailTruncation"
-                                       Margin="0,10,0,0" />
+                        <!-- Default fallback (no swipe) -->
+                        <On Platform="Default">
+                            <DataTemplate>
+                                <Frame BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Margin="8"
+                                       Padding="0"
+                                       BorderColor="{DynamicResource BorderSubtle}">
+                                    <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                        <Grid RowDefinitions="*"
+                                              BackgroundColor="{DynamicResource Surface2}"
+                                              HeightRequest="170">
+                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                   Aspect="AspectFill" />
+                                            <Frame BackgroundColor="#CC0E0F14"
+                                                   CornerRadius="999"
+                                                   Padding="6"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="End"
+                                                   Margin="8">
+                                                <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
+                                            </Frame>
+                                        </Grid>
 
-                                <Frame Grid.Row="2"
-                                       BackgroundColor="{DynamicResource Surface2}"
-                                       BorderColor="{DynamicResource BorderSubtle}"
-                                       CornerRadius="8"
-                                       Padding="8,4"
-                                       HorizontalOptions="Start"
-                                       Margin="0,6,0,2">
-                                    <HorizontalStackLayout Spacing="6">
-                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                                        <Label Text="{Binding DurationText}"
-                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                               FontSize="11" />
-                                    </HorizontalStackLayout>
+                                        <Label Grid.Row="1"
+                                               Text="{Binding Name}"
+                                               TextColor="{DynamicResource OnSurface}"
+                                               FontSize="13"
+                                               LineBreakMode="TailTruncation"
+                                               Margin="0,10,0,0" />
+
+                                        <Frame Grid.Row="2"
+                                               BackgroundColor="{DynamicResource Surface2}"
+                                               BorderColor="{DynamicResource BorderSubtle}"
+                                               CornerRadius="8"
+                                               Padding="8,4"
+                                               HorizontalOptions="Start"
+                                               Margin="0,6,0,2">
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                <Label Text="{Binding DurationText}"
+                                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                                       FontSize="11" />
+                                            </HorizontalStackLayout>
+                                        </Frame>
+
+                                        <ImageButton Grid.Row="3"
+                                                     Source="icon_play.svg"
+                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                     CommandParameter="{Binding .}"
+                                                     Margin="0,4,0,8"
+                                                     HeightRequest="40"
+                                                     WidthRequest="40"
+                                                     HorizontalOptions="Start"
+                                                     VerticalOptions="Center" />
+
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                    </Grid>
                                 </Frame>
+                            </DataTemplate>
+                        </On>
 
-                                <ImageButton Grid.Row="3"
-                                             Source="icon_play.svg"
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                             CommandParameter="{Binding .}"
-                                             Margin="0,4,0,8"
-                                             HeightRequest="40"
-                                             WidthRequest="40"
-                                             HorizontalOptions="Start"
-                                             VerticalOptions="Center" />
+                        <!-- Android: swipe -> Share -->
+                        <On Platform="Android">
+                            <DataTemplate>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
 
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}">
+                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="*"
+                                                  BackgroundColor="{DynamicResource Surface2}"
+                                                  HeightRequest="170">
+                                                <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                       Aspect="AspectFill" />
+                                                <Frame BackgroundColor="#CC0E0F14"
+                                                       CornerRadius="999"
+                                                       Padding="6"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"
+                                                       Margin="8">
+                                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
+                                                </Frame>
+                                            </Grid>
+
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding Name}"
+                                                   TextColor="{DynamicResource OnSurface}"
+                                                   FontSize="13"
+                                                   LineBreakMode="TailTruncation"
+                                                   Margin="0,10,0,0" />
+
+                                            <Frame Grid.Row="2"
+                                                   BackgroundColor="{DynamicResource Surface2}"
+                                                   BorderColor="{DynamicResource BorderSubtle}"
+                                                   CornerRadius="8"
+                                                   Padding="8,4"
+                                                   HorizontalOptions="Start"
+                                                   Margin="0,6,0,2">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                    <Label Text="{Binding DurationText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="11" />
+                                                </HorizontalStackLayout>
+                                            </Frame>
+
+                                            <ImageButton Grid.Row="3"
+                                                         Source="icon_play.svg"
+                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                         CommandParameter="{Binding .}"
+                                                         Margin="0,4,0,8"
+                                                         HeightRequest="40"
+                                                         WidthRequest="40"
+                                                         HorizontalOptions="Start"
+                                                         VerticalOptions="Center" />
+
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </On>
+
+                        <!-- WinUI: swipe -> Save As -->
+                        <On Platform="WinUI">
+                            <DataTemplate>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}">
+                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="*"
+                                                  BackgroundColor="{DynamicResource Surface2}"
+                                                  HeightRequest="170">
+                                                <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                       Aspect="AspectFill" />
+                                                <Frame BackgroundColor="#CC0E0F14"
+                                                       CornerRadius="999"
+                                                       Padding="6"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"
+                                                       Margin="8">
+                                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
+                                                </Frame>
+                                            </Grid>
+
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding Name}"
+                                                   TextColor="{DynamicResource OnSurface}"
+                                                   FontSize="13"
+                                                   LineBreakMode="TailTruncation"
+                                                   Margin="0,10,0,0" />
+
+                                            <Frame Grid.Row="2"
+                                                   BackgroundColor="{DynamicResource Surface2}"
+                                                   BorderColor="{DynamicResource BorderSubtle}"
+                                                   CornerRadius="8"
+                                                   Padding="8,4"
+                                                   HorizontalOptions="Start"
+                                                   Margin="0,6,0,2">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                    <Label Text="{Binding DurationText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="11" />
+                                                </HorizontalStackLayout>
+                                            </Frame>
+
+                                            <ImageButton Grid.Row="3"
+                                                         Source="icon_play.svg"
+                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                         CommandParameter="{Binding .}"
+                                                         Margin="0,4,0,8"
+                                                         HeightRequest="40"
+                                                         WidthRequest="40"
+                                                         HorizontalOptions="Start"
+                                                         VerticalOptions="Center" />
+
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </On>
+
+                    </OnPlatform>
                 </CollectionView.ItemTemplate>
-            </CollectionView>
 
+            </CollectionView>
         </Grid>
 
-        <!-- Indexing overlay -->
+        <!-- Indexing overlay (single, clean, full-page) -->
         <Grid Grid.RowSpan="7"
               IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
               Padding="24">
+
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="16"
                    Padding="16"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    HasShadow="False">
+
                 <VerticalStackLayout Spacing="10">
                     <Label Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
-                    <Button Grid.Column="1"
-                            Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
-                            Command="{Binding ShowIndexOverlayCommand}" />
-                    <Label Grid.Row="1"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexStatus}"
-                           FontSize="12"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <Label Grid.Row="2"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <Label Grid.Row="3"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <ProgressBar Grid.Row="4"
-                                 Grid.ColumnSpan="2"
-                                 Progress="{Binding IndexRatio}" />
-                </Grid>
-            </Frame>
 
-            <!-- Indexing overlay -->
-            <Grid Grid.ColumnSpan="2"
-                  IsVisible="{Binding IsIndexingOverlayVisible}"
-                  BackgroundColor="#99000000"
-                  Padding="24">
-                <Frame BackgroundColor="{DynamicResource Surface}"
-                       CornerRadius="16"
-                       Padding="16"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{x:Static strings:AppResources.Indexing}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Label Text="{Binding IndexStatus}"
+                    <Label Text="{Binding IndexStatus}"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+
+                    <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="12" />
+
+                    <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="12" />
+
+                    <Label Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <ProgressBar Progress="{Binding IndexRatio}"
+                                     HorizontalOptions="FillAndExpand"
+                                     VerticalOptions="Center" />
+                        <Label Text="{Binding IndexRatio, StringFormat='{0:P0}'}"
+                               VerticalOptions="Center"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               FontSize="12" />
-                        <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               FontSize="12" />
-                        <Label
-                            Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
-                            TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <ProgressBar Progress="{Binding IndexRatio}" />
-                        <Button Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
-                                Command="{Binding DismissIndexOverlayCommand}" />
-                    </VerticalStackLayout>
-                </Frame>
-            </Grid>
+                    </HorizontalStackLayout>
+
+                    <Button Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
+                            Command="{Binding DismissIndexOverlayCommand}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}"
+                            Padding="12,8"
+                            CornerRadius="12" />
+                </VerticalStackLayout>
+
+            </Frame>
         </Grid>
     </Grid>
 </ContentPage>
