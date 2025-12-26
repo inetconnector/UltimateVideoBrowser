@@ -42,6 +42,12 @@ public sealed class SourceService : ISourceService
 
     public Task DeleteAsync(MediaSource src)
     {
-        return db.Db.DeleteAsync(src);
+        return DeleteSourceAsync(src);
+    }
+
+    private async Task DeleteSourceAsync(MediaSource src)
+    {
+        await db.Db.ExecuteAsync("DELETE FROM VideoItem WHERE SourceId = ?", src.Id);
+        await db.Db.DeleteAsync(src);
     }
 }
