@@ -27,6 +27,18 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Videos suchen...</value>
   </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>Deine persönliche Bibliothek</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Entdecke jedes Video sofort</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Durchsuche deine Ordner mit Vorschaubildern, intelligenter Suche und schneller Indizierung.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Quellen verwalten</value>
+  </data>
   <data name="SortTitle" xml:space="preserve">
     <value>Sortieren</value>
   </data>
@@ -38,6 +50,21 @@
   </data>
   <data name="SortDuration" xml:space="preserve">
     <value>Dauer</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Highlights der Bibliothek</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Videos indiziert</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Quellen aktiviert</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Tipp</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Nutze Suche + Filter und indiziere nach dem Hinzufügen neuer Ordner erneut, um die besten Ergebnisse zu erhalten.</value>
   </data>
   <data name="Indexing" xml:space="preserve">
     <value>Indizierung...</value>
@@ -68,6 +95,9 @@
   </data>
   <data name="EmptyStateMessage" xml:space="preserve">
     <value>Füge eine Quelle hinzu oder aktualisiere, um deine Bibliothek zu durchsuchen.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Quellen hinzufügen</value>
   </data>
   <data name="SourcesPageTitle" xml:space="preserve">
     <value>Quellen</value>
@@ -110,6 +140,9 @@
   </data>
   <data name="SourceExistsMessage" xml:space="preserve">
     <value>Dieser Ordner ist bereits als Quelle hinterlegt.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} von {1} Quellen aktiv</value>
   </data>
   <data name="AddPathHelper" xml:space="preserve">
     <value>Lokalen Ordner oder Netzwerkfreigabe auswählen.</value>

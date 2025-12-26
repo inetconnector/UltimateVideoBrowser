@@ -162,9 +162,9 @@ public partial class MainViewModel : ObservableObject
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, ct);
                     if (!string.IsNullOrWhiteSpace(p))
-                        item.ThumbnailPath = p;
-
-                    MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(Videos)));
+                    {
+                        MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
+                    }
                 }
             }
             catch
