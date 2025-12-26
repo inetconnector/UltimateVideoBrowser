@@ -39,21 +39,21 @@
                 </VerticalStackLayout>
             </HorizontalStackLayout>
 
-            <controls:IconTextButton Grid.Column="1"
-                                     Text="{x:Static strings:AppResources.SourcesButton}"
-                                     ImageSource="icon_sources.svg"
-                                     Command="{Binding OpenSourcesCommand}" />
+            <Button Grid.Column="1"
+                    Text="{x:Static strings:AppResources.SourcesButton}"
+                    ImageSource="icon_sources.svg"
+                    Command="{Binding OpenSourcesCommand}" />
 
             <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.SettingsButton}"
                     Command="{Binding OpenSettingsCommand}"
                     Margin="8,0,0,0" />
 
-            <controls:IconTextButton Grid.Column="3"
-                                     Text="{x:Static strings:AppResources.ReindexButton}"
-                                     ImageSource="icon_reindex.svg"
-                                     Command="{Binding RunIndexCommand}"
-                                     Margin="8,0,0,0" />
+            <Button Grid.Column="3"
+                    Text="{x:Static strings:AppResources.ReindexButton}"
+                    ImageSource="icon_reindex.svg"
+                    Command="{Binding RunIndexCommand}"
+                    Margin="8,0,0,0" />
         </Grid>
 
         <!-- Hero -->

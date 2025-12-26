@@ -16,8 +16,6 @@
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="Padding" Value="12,8" />
-        <Setter Property="ImageSource" Value="icon_play.svg" />
-        <Setter Property="ContentLayout" Value="Left,8" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
