@@ -127,7 +127,8 @@ public partial class SourcesViewModel : ObservableObject
             AppResources.NewSourceCancel,
             suggestedName,
             60,
-            Keyboard.Text);
+            Keyboard.Text,
+            suggestedName);
 
         if (string.IsNullOrWhiteSpace(displayName))
             return false;

@@ -21,12 +21,13 @@ public sealed class DialogService : IDialogService
         string cancel,
         string? placeholder,
         int maxLength,
-        Keyboard keyboard)
+        Keyboard keyboard,
+        string? initialValue = null)
     {
         var page = GetPage();
         return page == null
             ? Task.FromResult<string?>(null)
-            : page.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard);
+            : page.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue);
     }
 
     private static Page? GetPage()

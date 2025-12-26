@@ -83,7 +83,8 @@ public sealed class SourcesViewModelTests
             string cancel,
             string? placeholder,
             int maxLength,
-            Keyboard keyboard)
+            Keyboard keyboard,
+            string? initialValue = null)
         {
             return Task.FromResult(promptResult);
         }
