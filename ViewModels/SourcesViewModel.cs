@@ -13,6 +13,7 @@ public partial class SourcesViewModel : ObservableObject
     private readonly IFolderPickerService folderPickerService;
     private readonly PermissionService permissionService;
     private readonly ISourceService sourceService;
+    private readonly AppSettingsService settingsService;
     [ObservableProperty] private bool hasMediaPermission;
 
     [ObservableProperty] private List<MediaSource> sources = new();
@@ -22,12 +23,14 @@ public partial class SourcesViewModel : ObservableObject
         ISourceService sourceService,
         PermissionService permissionService,
         IFolderPickerService folderPickerService,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        AppSettingsService settingsService)
     {
         this.sourceService = sourceService;
         this.permissionService = permissionService;
         this.folderPickerService = folderPickerService;
         this.dialogService = dialogService;
+        this.settingsService = settingsService;
         SupportsManualPath = DeviceInfo.Platform == DevicePlatform.WinUI;
     }
 
@@ -42,6 +45,7 @@ public partial class SourcesViewModel : ObservableObject
     {
         src.IsEnabled = !src.IsEnabled;
         await sourceService.UpsertAsync(src);
+        settingsService.NeedsReindex = true;
         await InitializeAsync();
     }
 
@@ -143,6 +147,7 @@ public partial class SourcesViewModel : ObservableObject
         };
 
         await sourceService.UpsertAsync(src);
+        settingsService.NeedsReindex = true;
         await InitializeAsync();
         return true;
     }
@@ -163,6 +168,7 @@ public partial class SourcesViewModel : ObservableObject
             return;
 
         await sourceService.DeleteAsync(src);
+        settingsService.NeedsReindex = true;
         await InitializeAsync();
     }
 }

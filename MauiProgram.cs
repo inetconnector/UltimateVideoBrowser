@@ -25,6 +25,7 @@ public static class MauiProgram
 
         // Services
         builder.Services.AddSingleton<AppDb>();
+        builder.Services.AddSingleton<AppSettingsService>();
         builder.Services.AddSingleton<DeviceModeService>();
         builder.Services.AddSingleton<PermissionService>();
         builder.Services.AddSingleton<MediaStoreScanner>();
