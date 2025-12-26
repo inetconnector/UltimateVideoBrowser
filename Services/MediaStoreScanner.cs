@@ -5,6 +5,7 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 #endif
+using IOPath = System.IO.Path;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
