@@ -60,6 +60,9 @@
   <data name="OkButton" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
   <data name="EmptyStateTitle" xml:space="preserve">
     <value>Noch keine Videos</value>
   </data>
