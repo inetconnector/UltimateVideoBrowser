@@ -218,14 +218,47 @@
         </Grid>
 
         <!-- Grid -->
-        <Grid Grid.Row="5" ColumnDefinitions="96,*">
+        <Grid Grid.Row="5" x:Name="BrowserGrid" ColumnDefinitions="*,96">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="LayoutStates">
+                    <VisualState x:Name="Phone">
+                        <VisualState.StateTriggers>
+                            <OnIdiom Phone="True" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*" />
+                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="Auto,*" />
+                            <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Margin" Value="12,0,12,8" />
+                            <Setter TargetName="VideosView" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Wide">
+                        <VisualState.StateTriggers>
+                            <OnIdiom Tablet="True" Desktop="True" TV="True" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,96" />
+                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
+                            <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <CollectionView ItemsSource="{Binding TimelineEntries}"
                             x:Name="TimelineView"
                             SelectionMode="Single"
                             SelectionChanged="OnTimelineSelectionChanged"
                             BackgroundColor="{DynamicResource AppBg}"
                             VerticalScrollBarVisibility="Always"
-                            Margin="8,0,0,0">
+                            Margin="8,0,8,0"
+                            Grid.Column="1">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
                 </CollectionView.ItemsLayout>
@@ -260,7 +293,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <CollectionView Grid.Column="1"
+            <CollectionView Grid.Column="0"
                             ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None"

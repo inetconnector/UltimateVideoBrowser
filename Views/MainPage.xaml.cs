@@ -192,6 +192,12 @@ public partial class MainPage : ContentPage
             // Compute grid span based on display width and mode.
             var mode = deviceMode.GetUiMode();
 
+            if (mode == UiMode.Phone)
+            {
+                GridSpan = 1;
+                return Task.CompletedTask;
+            }
+
             var width = page.Width;
             if (width <= 0)
                 width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
