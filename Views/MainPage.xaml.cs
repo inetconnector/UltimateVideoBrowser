@@ -80,6 +80,12 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IndexStatus):
                         OnPropertyChanged(nameof(IndexStatus));
                         break;
+                    case nameof(MainViewModel.IndexCurrentFolder):
+                        OnPropertyChanged(nameof(IndexCurrentFolder));
+                        break;
+                    case nameof(MainViewModel.IndexCurrentFile):
+                        OnPropertyChanged(nameof(IndexCurrentFile));
+                        break;
                     case nameof(MainViewModel.HasMediaPermission):
                         OnPropertyChanged(nameof(HasMediaPermission));
                         break;
@@ -151,6 +157,8 @@ public partial class MainPage : ContentPage
         public int IndexTotal => vm.IndexTotal;
         public double IndexRatio => vm.IndexRatio;
         public string IndexStatus => vm.IndexStatus;
+        public string IndexCurrentFolder => vm.IndexCurrentFolder;
+        public string IndexCurrentFile => vm.IndexCurrentFile;
         public bool HasMediaPermission => vm.HasMediaPermission;
         public int VideoCount => vm.VideoCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;

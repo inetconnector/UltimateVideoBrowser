@@ -26,6 +26,8 @@ public static class AppResources
     public static string SortDuration => GetString(nameof(SortDuration), "Duration");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
+    public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
+    public static string IndexingFileFormat => GetString(nameof(IndexingFileFormat), "File: {0}");
     public static string IndexingShowDetailsButton =>
         GetString(nameof(IndexingShowDetailsButton), "Show details");
 

@@ -57,6 +57,12 @@
   <data name="IndexingStatusFormat" xml:space="preserve">
     <value>Indexing {0} • {1}/{2}</value>
   </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Folder: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>File: {0}</value>
+  </data>
   <data name="IndexingBackgroundButton" xml:space="preserve">
     <value>Background</value>
   </data>

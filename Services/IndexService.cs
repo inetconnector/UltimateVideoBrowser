@@ -25,7 +25,7 @@ public sealed class IndexService
             var scanned = await scanner.ScanSourceAsync(source);
             var processed = 0;
             var total = scanned.Count;
-            progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName));
+            progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName, null));
 
             foreach (var v in scanned)
             {
@@ -51,7 +51,7 @@ public sealed class IndexService
                 }
 
                 processed++;
-                progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName));
+                progress?.Report(new IndexProgress(processed, total, inserted, source.DisplayName, v.Path));
             }
         }
 
