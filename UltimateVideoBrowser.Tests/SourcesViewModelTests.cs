@@ -25,11 +25,15 @@ public sealed class SourcesViewModelTests
             var sourceService = new FakeSourceService();
             var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
             var dialogService = new FakeDialogService(null);
+
+            var settingsService = new AppSettingsService();
+
             var viewModel = new SourcesViewModel(
                 sourceService,
                 new PermissionService(),
                 folderPicker,
-                dialogService);
+                dialogService,
+                settingsService);
 
             await viewModel.AddSourceAsync();
 
