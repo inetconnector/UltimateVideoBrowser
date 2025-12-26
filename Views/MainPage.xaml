@@ -389,7 +389,7 @@
                    VerticalOptions="Start"
                    Margin="16,12"
                    HasShadow="False">
-                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
                     <Label Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
@@ -405,7 +405,17 @@
                            Text="{Binding IndexStatus}"
                            FontSize="12"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
-                    <ProgressBar Grid.Row="2"
+                    <Label Grid.Row="2"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <Label Grid.Row="3"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <ProgressBar Grid.Row="4"
                                  Grid.ColumnSpan="2"
                                  Progress="{Binding IndexRatio}" />
                 </Grid>
@@ -428,6 +438,12 @@
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{Binding IndexStatus}"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="12" />
+                        <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="12" />
                         <Label
                             Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
                             TextColor="{DynamicResource OnSurfaceMuted}" />

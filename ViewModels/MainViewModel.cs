@@ -4,6 +4,7 @@ using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using System.Globalization;
+using System.IO;
 
 namespace UltimateVideoBrowser.ViewModels;
 
@@ -23,6 +24,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private double indexRatio;
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
+    [ObservableProperty] private string indexCurrentFolder = "";
+    [ObservableProperty] private string indexCurrentFile = "";
     [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private SortOption? selectedSortOption;
@@ -116,6 +119,8 @@ public partial class MainViewModel : ObservableObject
         IndexTotal = 0;
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
+        IndexCurrentFolder = "";
+        IndexCurrentFile = "";
 
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
         if (!HasMediaPermission)
@@ -135,6 +140,8 @@ public partial class MainViewModel : ObservableObject
         IndexTotal = 0;
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
+        IndexCurrentFolder = "";
+        IndexCurrentFile = "";
 
         var completed = false;
         try
@@ -146,6 +153,7 @@ public partial class MainViewModel : ObservableObject
                 IndexTotal = p.Total;
                 IndexRatio = p.Ratio;
                 IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
+                UpdateIndexLocation(p.SourceName, p.CurrentPath);
                 IndexedCount = p.Inserted;
             });
             using var cts = new CancellationTokenSource();
@@ -158,6 +166,8 @@ public partial class MainViewModel : ObservableObject
             IsIndexing = false;
             IndexStatus = "";
             IndexRatio = 0;
+            IndexCurrentFolder = "";
+            IndexCurrentFile = "";
         }
 
         if (completed)
@@ -291,5 +301,20 @@ public partial class MainViewModel : ObservableObject
         }
 
         return entries;
+    }
+
+    private void UpdateIndexLocation(string sourceName, string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            IndexCurrentFolder = sourceName;
+            IndexCurrentFile = "";
+            return;
+        }
+
+        var fileName = Path.GetFileName(path);
+        var folderName = Path.GetDirectoryName(path);
+        IndexCurrentFile = string.IsNullOrWhiteSpace(fileName) ? path : fileName;
+        IndexCurrentFolder = string.IsNullOrWhiteSpace(folderName) ? sourceName : folderName;
     }
 }
