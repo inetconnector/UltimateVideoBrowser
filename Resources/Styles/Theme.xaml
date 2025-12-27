@@ -8,7 +8,7 @@
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
 
-    <Style TargetType="Button">
+    <Style x:Key="ButtonBaseStyle" TargetType="Button">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
@@ -34,6 +34,9 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
+
+    <Style TargetType="Button"
+           BasedOn="{StaticResource ButtonBaseStyle}" />
 
     <Style TargetType="ImageButton">
         <Setter Property="CornerRadius" Value="12" />
@@ -74,7 +77,7 @@
 
     <Style x:Key="OverlayButtonStyle"
            TargetType="Button"
-           BasedOn="{StaticResource Button}">
+           BasedOn="{StaticResource ButtonBaseStyle}">
         <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
         <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
         <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
