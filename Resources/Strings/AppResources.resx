@@ -51,6 +51,15 @@
   <data name="SortDuration" xml:space="preserve">
     <value>Duration</value>
   </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Date range</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>To</value>
+  </data>
   <data name="Indexing" xml:space="preserve">
     <value>Indexing...</value>
   </data>

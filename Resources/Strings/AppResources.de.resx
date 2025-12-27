@@ -51,6 +51,15 @@
   <data name="SortDuration" xml:space="preserve">
     <value>Dauer</value>
   </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Datumsbereich</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>Von</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Bis</value>
+  </data>
   <data name="HighlightsTitle" xml:space="preserve">
     <value>Highlights der Bibliothek</value>
   </data>
