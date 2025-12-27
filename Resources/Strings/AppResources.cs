@@ -33,7 +33,9 @@ public static class AppResources
         GetString(nameof(IndexingShowDetailsButton), "Show details");
 
     public static string IndexingBackgroundButton =>
-        GetString(nameof(IndexingBackgroundButton), "Run in background");
+        GetString(nameof(IndexingBackgroundButton), "Hide");
+    public static string IndexingCancelButton =>
+        GetString(nameof(IndexingCancelButton), "Cancel");
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
     public static string HighlightsTitle => GetString(nameof(HighlightsTitle), "Library highlights");
     public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Videos indexed");

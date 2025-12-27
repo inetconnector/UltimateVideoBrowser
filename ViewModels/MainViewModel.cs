@@ -36,6 +36,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int videoCount;
     [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
 
+    private CancellationTokenSource? indexCts;
     private CancellationTokenSource? thumbCts;
 
     [ObservableProperty] private List<VideoItem> videos = new();
@@ -169,13 +170,21 @@ public partial class MainViewModel : ObservableObject
                     _ = RefreshAsync();
                 }
             });
-            using var cts = new CancellationTokenSource();
+            indexCts?.Cancel();
+            indexCts?.Dispose();
+            indexCts = new CancellationTokenSource();
 
-            await indexService.IndexSourcesAsync(sources, progress, cts.Token);
+            await indexService.IndexSourcesAsync(sources, progress, indexCts.Token);
             completed = true;
+        }
+        catch (OperationCanceledException)
+        {
+            completed = false;
         }
         finally
         {
+            indexCts?.Dispose();
+            indexCts = null;
             IsIndexing = false;
             IndexStatus = "";
             IndexRatio = 0;
@@ -187,6 +196,12 @@ public partial class MainViewModel : ObservableObject
             settingsService.NeedsReindex = false;
 
         await RefreshAsync();
+    }
+
+    [RelayCommand]
+    public void CancelIndex()
+    {
+        indexCts?.Cancel();
     }
 
     [RelayCommand]
