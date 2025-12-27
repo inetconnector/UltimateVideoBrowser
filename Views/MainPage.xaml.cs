@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Linq;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
@@ -111,6 +112,15 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.SourcesSummary):
                         OnPropertyChanged(nameof(SourcesSummary));
                         break;
+                    case nameof(MainViewModel.IsDateFilterEnabled):
+                        OnPropertyChanged(nameof(IsDateFilterEnabled));
+                        break;
+                    case nameof(MainViewModel.DateFilterFrom):
+                        OnPropertyChanged(nameof(DateFilterFrom));
+                        break;
+                    case nameof(MainViewModel.DateFilterTo):
+                        OnPropertyChanged(nameof(DateFilterTo));
+                        break;
                 }
             };
         }
@@ -141,6 +151,45 @@ public partial class MainPage : ContentPage
             set
             {
                 vm.SearchText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsDateFilterEnabled
+        {
+            get => vm.IsDateFilterEnabled;
+            set
+            {
+                if (vm.IsDateFilterEnabled == value)
+                    return;
+
+                vm.IsDateFilterEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime DateFilterFrom
+        {
+            get => vm.DateFilterFrom;
+            set
+            {
+                if (vm.DateFilterFrom == value)
+                    return;
+
+                vm.DateFilterFrom = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime DateFilterTo
+        {
+            get => vm.DateFilterTo;
+            set
+            {
+                if (vm.DateFilterTo == value)
+                    return;
+
+                vm.DateFilterTo = value;
                 OnPropertyChanged();
             }
         }

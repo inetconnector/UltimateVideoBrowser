@@ -29,6 +29,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string indexCurrentFolder = "";
     [ObservableProperty] private string indexCurrentFile = "";
     [ObservableProperty] private bool isIndexing;
+    [ObservableProperty] private bool isDateFilterEnabled;
+    [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
+    [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private string sourcesSummary = "";
@@ -101,7 +104,9 @@ public partial class MainViewModel : ObservableObject
         await UpdateSourceStatsAsync(sources);
 
         var sortKey = SelectedSortOption?.Key ?? "name";
-        var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey);
+        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : null;
+        var dateTo = IsDateFilterEnabled ? DateFilterTo : null;
+        var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo);
 
         if (string.IsNullOrWhiteSpace(ActiveSourceId))
         {
@@ -292,6 +297,9 @@ public partial class MainViewModel : ObservableObject
         var sortKey = settingsService.SelectedSortOptionKey;
         SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
         ActiveSourceId = settingsService.ActiveSourceId;
+        IsDateFilterEnabled = settingsService.DateFilterEnabled;
+        DateFilterFrom = settingsService.DateFilterFrom;
+        DateFilterTo = settingsService.DateFilterTo;
     }
 
     private static string NormalizeActiveSourceId(List<MediaSource> sources, string activeSourceId)
@@ -317,6 +325,30 @@ public partial class MainViewModel : ObservableObject
     partial void OnSearchTextChanged(string value)
     {
         settingsService.SearchText = value;
+    }
+
+    partial void OnIsDateFilterEnabledChanged(bool value)
+    {
+        settingsService.DateFilterEnabled = value;
+        _ = RefreshAsync();
+    }
+
+    partial void OnDateFilterFromChanged(DateTime value)
+    {
+        if (value > DateFilterTo)
+            DateFilterTo = value;
+        settingsService.DateFilterFrom = value;
+        if (IsDateFilterEnabled)
+            _ = RefreshAsync();
+    }
+
+    partial void OnDateFilterToChanged(DateTime value)
+    {
+        if (value < DateFilterFrom)
+            DateFilterFrom = value;
+        settingsService.DateFilterTo = value;
+        if (IsDateFilterEnabled)
+            _ = RefreshAsync();
     }
 
     partial void OnSelectedSortOptionChanged(SortOption? value)

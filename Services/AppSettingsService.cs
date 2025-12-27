@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Maui.Storage;
 
 namespace UltimateVideoBrowser.Services;
@@ -7,6 +8,9 @@ public sealed class AppSettingsService
     private const string ActiveSourceKey = "active_source_id";
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
+    private const string DateFilterEnabledKey = "date_filter_enabled";
+    private const string DateFilterFromKey = "date_filter_from";
+    private const string DateFilterToKey = "date_filter_to";
     private const string NeedsReindexKey = "needs_reindex";
     private const string ThemePreferenceKey = "theme_preference";
 
@@ -26,6 +30,32 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(SearchTextKey, "");
         set => Preferences.Default.Set(SearchTextKey, value ?? "");
+    }
+
+    public bool DateFilterEnabled
+    {
+        get => Preferences.Default.Get(DateFilterEnabledKey, false);
+        set => Preferences.Default.Set(DateFilterEnabledKey, value);
+    }
+
+    public DateTime DateFilterFrom
+    {
+        get
+        {
+            var fallback = DateTime.Today.AddMonths(-1).ToBinary();
+            return DateTime.FromBinary(Preferences.Default.Get(DateFilterFromKey, fallback));
+        }
+        set => Preferences.Default.Set(DateFilterFromKey, value.Date.ToBinary());
+    }
+
+    public DateTime DateFilterTo
+    {
+        get
+        {
+            var fallback = DateTime.Today.ToBinary();
+            return DateTime.FromBinary(Preferences.Default.Get(DateFilterToKey, fallback));
+        }
+        set => Preferences.Default.Set(DateFilterToKey, value.Date.ToBinary());
     }
 
     public bool NeedsReindex

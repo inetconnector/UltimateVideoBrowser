@@ -8,7 +8,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
         <!-- Top bar -->
         <Grid Padding="16,14"
               ColumnDefinitions="*,Auto,Auto,Auto"
@@ -243,8 +243,47 @@
                     Margin="8,0,0,0" />
         </Grid>
 
+        <!-- Date filter -->
+        <Grid Grid.Row="5"
+              Padding="12"
+              RowDefinitions="Auto,Auto"
+              RowSpacing="8"
+              BackgroundColor="{DynamicResource AppBg}">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label Text="{x:Static strings:AppResources.DateFilterTitle}"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}" />
+                <Switch Grid.Column="1"
+                        IsToggled="{Binding IsDateFilterEnabled}"
+                        OnColor="{DynamicResource Accent}" />
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="12"
+                  IsVisible="{Binding IsDateFilterEnabled}">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static strings:AppResources.DateFilterFromLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <DatePicker Date="{Binding DateFilterFrom}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="{x:Static strings:AppResources.DateFilterToLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <DatePicker Date="{Binding DateFilterTo}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+
         <!-- Indexing banner -->
-        <Frame Grid.Row="5"
+        <Frame Grid.Row="6"
                IsVisible="{Binding ShowIndexingBanner}"
                BackgroundColor="{DynamicResource Surface}"
                CornerRadius="12"
@@ -308,7 +347,7 @@
         </Frame>
 
         <!-- Browser grid -->
-        <Grid Grid.Row="6" x:Name="BrowserGrid" ColumnDefinitions="*,96">
+        <Grid Grid.Row="7" x:Name="BrowserGrid" ColumnDefinitions="*,96">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">

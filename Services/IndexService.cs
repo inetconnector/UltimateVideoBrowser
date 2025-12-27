@@ -60,7 +60,8 @@ public sealed class IndexService
         return inserted;
     }
 
-    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey)
+    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
+        DateTime? to)
     {
         var q = db.Db.Table<VideoItem>();
 
@@ -69,6 +70,15 @@ public sealed class IndexService
 
         if (!string.IsNullOrWhiteSpace(search))
             q = q.Where(v => v.Name.Contains(search));
+
+        if (from.HasValue || to.HasValue)
+        {
+            var fromSeconds = from.HasValue ? new DateTimeOffset(from.Value.Date).ToUnixTimeSeconds() : 0;
+            var toSeconds = to.HasValue
+                ? new DateTimeOffset(to.Value.Date.AddDays(1).AddTicks(-1)).ToUnixTimeSeconds()
+                : long.MaxValue;
+            q = q.Where(v => v.DateAddedSeconds >= fromSeconds && v.DateAddedSeconds <= toSeconds);
+        }
 
         q = sortKey switch
         {
