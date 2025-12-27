@@ -8,7 +8,8 @@
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
 
-    <Style TargetType="Button">
+    <!-- 1) Base style WITH key (reusable) -->
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
@@ -34,6 +35,9 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
+
+    <!-- 2) Implicit style applies to all Buttons -->
+    <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}" />
 
     <Style TargetType="ImageButton">
         <Setter Property="CornerRadius" Value="12" />
@@ -72,9 +76,10 @@
         <Setter Property="HasShadow" Value="False" />
     </Style>
 
+    <!-- 3) Overlay style can now safely inherit -->
     <Style x:Key="OverlayButtonStyle"
            TargetType="Button"
-           BasedOn="{StaticResource {x:Type Button}}">
+           BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
         <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
         <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
@@ -97,4 +102,5 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
+
 </ResourceDictionary>
