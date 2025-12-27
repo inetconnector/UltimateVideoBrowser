@@ -12,22 +12,28 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class MediaStoreScanner
 {
-    public Task<List<VideoItem>> ScanSourceAsync(MediaSource source)
+    public async IAsyncEnumerable<VideoItem> StreamSourceAsync(MediaSource source,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";
 #if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
-            // On Android 9 we can read file paths from MediaStore DATA column.
-            return Task.Run(() => ScanMediaStore(sourceId));
+        {
+            foreach (var item in ScanMediaStore(sourceId, ct))
+                yield return item;
+            yield break;
+        }
 
-        return Task.Run(() => ScanAndroidFolder(rootPath, sourceId));
+        foreach (var item in ScanAndroidFolder(rootPath, sourceId, ct))
+            yield return item;
 #elif WINDOWS
-        return ScanWindowsAsync(rootPath, sourceId, source.AccessToken);
+        await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, ct))
+            yield return item;
 #else
         _ = sourceId;
         _ = rootPath;
-        return Task.FromResult(new List<VideoItem>());
+        await Task.CompletedTask;
 #endif
     }
 
@@ -42,21 +48,25 @@ public sealed class MediaStoreScanner
         return VideoExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
     }
 
-    private static async Task<List<VideoItem>> ScanWindowsAsync(string? rootPath, string? sourceId, string? accessToken)
+    private static async IAsyncEnumerable<VideoItem> ScanWindowsAsync(string? rootPath, string? sourceId,
+        string? accessToken, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
-        var list = new List<VideoItem>();
         var root = string.IsNullOrWhiteSpace(rootPath)
             ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)
             : rootPath;
 
         if (string.IsNullOrWhiteSpace(root))
-            return list;
+            yield break;
 
         try
         {
             var folder = await TryGetStorageFolderAsync(root, accessToken);
             if (folder != null)
-                return await ScanWindowsFolderAsync(folder, sourceId);
+            {
+                await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, ct))
+                    yield return item;
+                yield break;
+            }
         }
         catch
         {
@@ -64,19 +74,23 @@ public sealed class MediaStoreScanner
         }
 
         if (!Directory.Exists(root))
-            return list;
+            yield break;
 
         try
         {
+            var isNetworkPath = root.StartsWith(@"\\", StringComparison.OrdinalIgnoreCase);
             var options = new EnumerationOptions
             {
                 RecurseSubdirectories = true,
                 IgnoreInaccessible = true,
-                AttributesToSkip = System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
+                AttributesToSkip = isNetworkPath
+                    ? System.IO.FileAttributes.System
+                    : System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
             };
 
             foreach (var path in Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile))
             {
+                ct.ThrowIfCancellationRequested();
                 var info = new FileInfo(path);
                 var durationMs = 0L;
 
@@ -91,22 +105,20 @@ public sealed class MediaStoreScanner
                     durationMs = 0;
                 }
 
-                list.Add(new VideoItem
+                yield return new VideoItem
                 {
                     Path = path,
                     Name = Path.GetFileName(path),
                     DurationMs = durationMs,
                     DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
                     SourceId = sourceId
-                });
+                };
             }
         }
         catch
         {
             // Ignore inaccessible paths.
         }
-
-        return list;
     }
 
     private static async Task<StorageFolder?> TryGetStorageFolderAsync(string rootPath, string? accessToken)
@@ -135,14 +147,15 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static async Task<List<VideoItem>> ScanWindowsFolderAsync(StorageFolder root, string? sourceId)
+    private static async IAsyncEnumerable<VideoItem> ScanWindowsFolderAsync(StorageFolder root, string? sourceId,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
-        var list = new List<VideoItem>();
         var queue = new Queue<StorageFolder>();
         queue.Enqueue(root);
 
         while (queue.Count > 0)
         {
+            ct.ThrowIfCancellationRequested();
             var folder = queue.Dequeue();
             IReadOnlyList<StorageFile> files;
             try
@@ -156,6 +169,7 @@ public sealed class MediaStoreScanner
 
             foreach (var file in files)
             {
+                ct.ThrowIfCancellationRequested();
                 if (!IsVideoFile(file.Name))
                     continue;
 
@@ -174,14 +188,14 @@ public sealed class MediaStoreScanner
                 if (string.IsNullOrWhiteSpace(path))
                     continue;
 
-                list.Add(new VideoItem
+                yield return new VideoItem
                 {
                     Path = path,
                     Name = file.Name,
                     DurationMs = durationMs,
                     DateAddedSeconds = new DateTimeOffset(file.DateCreated.UtcDateTime).ToUnixTimeSeconds(),
                     SourceId = sourceId
-                });
+                };
             }
 
             IReadOnlyList<StorageFolder> subfolders;
@@ -197,8 +211,6 @@ public sealed class MediaStoreScanner
             foreach (var subfolder in subfolders)
                 queue.Enqueue(subfolder);
         }
-
-        return list;
     }
 #endif
 
@@ -214,9 +226,8 @@ public sealed class MediaStoreScanner
                && VideoExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase);
     }
 
-    private static List<VideoItem> ScanMediaStore(string? sourceId)
+    private static IEnumerable<VideoItem> ScanMediaStore(string? sourceId, CancellationToken ct)
     {
-        var list = new List<VideoItem>();
         var ctx = Platform.AppContext;
         var resolver = ctx.ContentResolver;
 
@@ -236,7 +247,7 @@ public sealed class MediaStoreScanner
             $"{MediaStore.Video.Media.InterfaceConsts.DateAdded} DESC");
 
         if (cursor == null)
-            return list;
+            yield break;
 
         var nameCol = cursor.GetColumnIndex(projection[0]);
         var pathCol = cursor.GetColumnIndex(projection[1]);
@@ -245,52 +256,53 @@ public sealed class MediaStoreScanner
 
         while (cursor.MoveToNext())
         {
+            ct.ThrowIfCancellationRequested();
             var path = cursor.GetString(pathCol) ?? "";
             if (string.IsNullOrWhiteSpace(path))
                 continue;
 
-            list.Add(new VideoItem
+            yield return new VideoItem
             {
                 Path = path,
                 Name = cursor.GetString(nameCol) ?? IOPath.GetFileName(path),
                 DurationMs = cursor.IsNull(durCol) ? 0 : cursor.GetLong(durCol),
                 DateAddedSeconds = cursor.IsNull(addCol) ? 0 : cursor.GetLong(addCol),
                 SourceId = sourceId
-            });
+            };
         }
-
-        return list;
     }
 
-    private static List<VideoItem> ScanAndroidFolder(string rootPath, string? sourceId)
+    private static IEnumerable<VideoItem> ScanAndroidFolder(string rootPath, string? sourceId, CancellationToken ct)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-            return ScanAndroidTreeUri(rootPath, sourceId);
+            return ScanAndroidTreeUri(rootPath, sourceId, ct);
 
-        return ScanAndroidFileSystem(rootPath, sourceId);
+        return ScanAndroidFileSystem(rootPath, sourceId, ct);
     }
 
-    private static List<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId)
+    private static IEnumerable<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId, CancellationToken ct)
     {
-        var list = new List<VideoItem>();
         var ctx = Platform.AppContext;
         var uri = Uri.Parse(rootPath);
         var root = DocumentFile.FromTreeUri(ctx, uri);
 
         if (root == null)
-            return list;
+            yield break;
 
-        TraverseDocumentTree(root, list, sourceId);
-        return list;
+        foreach (var item in TraverseDocumentTree(root, sourceId, ct))
+            yield return item;
     }
 
-    private static void TraverseDocumentTree(DocumentFile doc, List<VideoItem> list, string? sourceId)
+    private static IEnumerable<VideoItem> TraverseDocumentTree(DocumentFile doc, string? sourceId,
+        CancellationToken ct)
     {
         foreach (var child in doc.ListFiles())
         {
+            ct.ThrowIfCancellationRequested();
             if (child.IsDirectory)
             {
-                TraverseDocumentTree(child, list, sourceId);
+                foreach (var item in TraverseDocumentTree(child, sourceId, ct))
+                    yield return item;
                 continue;
             }
 
@@ -300,42 +312,42 @@ public sealed class MediaStoreScanner
 
             var lastModified = child.LastModified();
             var added = lastModified > 0 ? lastModified / 1000 : DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            list.Add(new VideoItem
+            yield return new VideoItem
             {
                 Path = child.Uri?.ToString() ?? "",
                 Name = name,
                 DurationMs = 0,
                 DateAddedSeconds = added,
                 SourceId = sourceId
-            });
+            };
         }
     }
 
-    private static List<VideoItem> ScanAndroidFileSystem(string rootPath, string? sourceId)
+    private static IEnumerable<VideoItem> ScanAndroidFileSystem(string rootPath, string? sourceId, CancellationToken ct)
     {
-        var list = new List<VideoItem>();
         if (!Directory.Exists(rootPath))
-            return list;
+            yield break;
 
         try
         {
             foreach (var path in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
                          .Where(p => IsVideoFileName(p)))
-                list.Add(new VideoItem
+            {
+                ct.ThrowIfCancellationRequested();
+                yield return new VideoItem
                 {
                     Path = path,
                     Name = IOPath.GetFileName(path),
                     DurationMs = 0,
                     DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     SourceId = sourceId
-                });
+                };
+            }
         }
         catch
         {
             // Ignore inaccessible paths.
         }
-
-        return list;
     }
 #endif
 }

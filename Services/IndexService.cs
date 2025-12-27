@@ -24,13 +24,14 @@ public sealed class IndexService
         {
             ct.ThrowIfCancellationRequested();
 
-            var scanned = await scanner.ScanSourceAsync(source);
-            totalOverall += scanned.Count;
             progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, null));
 
-            foreach (var v in scanned)
+            await foreach (var v in scanner.StreamSourceAsync(source, ct))
             {
                 ct.ThrowIfCancellationRequested();
+                totalOverall++;
+                progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName,
+                    v.Path));
 
                 var exists = await db.Db.FindAsync<VideoItem>(v.Path);
                 if (exists == null)
