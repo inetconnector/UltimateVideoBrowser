@@ -1,3 +1,4 @@
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using UltimateVideoBrowser.Services;
 using WinRT.Interop;
@@ -26,6 +27,7 @@ public sealed class FolderPickerService : IFolderPickerService
         if (folder == null)
             return Array.Empty<FolderPickResult>();
 
-        return new[] { new FolderPickResult(folder.Path, folder.DisplayName) };
+        var token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+        return new[] { new FolderPickResult(folder.Path, folder.DisplayName, token) };
     }
 }

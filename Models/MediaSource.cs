@@ -11,6 +11,8 @@ public class MediaSource
 
     public string LocalFolderPath { get; set; } = "";
 
+    public string? AccessToken { get; set; }
+
     public bool IsEnabled { get; set; } = true;
 
     public long LastIndexedUtcSeconds { get; set; } = 0;

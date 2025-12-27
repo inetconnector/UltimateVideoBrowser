@@ -142,6 +142,7 @@ public partial class SourcesViewModel : ObservableObject
             Id = Guid.NewGuid().ToString("N"),
             DisplayName = displayName.Trim(),
             LocalFolderPath = path,
+            AccessToken = result.AccessToken,
             IsEnabled = true,
             LastIndexedUtcSeconds = 0
         };

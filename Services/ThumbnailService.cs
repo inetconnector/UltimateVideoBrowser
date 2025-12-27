@@ -15,9 +15,14 @@ namespace UltimateVideoBrowser.Services;
 public sealed class ThumbnailService
 {
     private readonly string cacheDir;
+    private readonly ISourceService sourceService;
+#if WINDOWS
+    private IReadOnlyDictionary<string, string> sourceTokens = new Dictionary<string, string>();
+#endif
 
-    public ThumbnailService()
+    public ThumbnailService(ISourceService sourceService)
     {
+        this.sourceService = sourceService;
         cacheDir = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
         Directory.CreateDirectory(cacheDir);
     }
@@ -70,10 +75,22 @@ public sealed class ThumbnailService
 #elif WINDOWS
         try
         {
-            var file = await StorageFile.GetFileFromPathAsync(item.Path);
-            using var thumb = await file.GetThumbnailAsync(ThumbnailMode.VideosView, 320);
-            if (thumb == null || thumb.Size == 0)
+            var file = await GetStorageFileAsync(item);
+            if (file == null)
                 return null;
+
+            using var thumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320, ThumbnailOptions.UseCurrentScale);
+            if (thumb == null || thumb.Size == 0)
+            {
+                using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.VideosView, 320);
+                if (fallbackThumb == null || fallbackThumb.Size == 0)
+                    return null;
+
+                using var fallbackInput = fallbackThumb.AsStreamForRead();
+                using var fallbackStream = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await fallbackInput.CopyToAsync(fallbackStream, ct);
+                return thumbPath;
+            }
 
             using var input = thumb.AsStreamForRead();
             using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -90,6 +107,73 @@ public sealed class ThumbnailService
         return await Task.FromResult<string?>(null);
 #endif
     }
+
+#if WINDOWS
+    private async Task<StorageFile?> GetStorageFileAsync(VideoItem item)
+    {
+        try
+        {
+            return await StorageFile.GetFileFromPathAsync(item.Path);
+        }
+        catch
+        {
+            var token = await GetSourceTokenAsync(item.SourceId);
+            if (string.IsNullOrWhiteSpace(token))
+                return null;
+
+            try
+            {
+                var folder = await Windows.Storage.AccessCache.StorageApplicationPermissions
+                    .FutureAccessList
+                    .GetFolderAsync(token);
+
+                if (string.IsNullOrWhiteSpace(folder.Path))
+                    return null;
+
+                var relativePath = item.Path.Replace(folder.Path, string.Empty)
+                    .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                if (string.IsNullOrWhiteSpace(relativePath))
+                    return null;
+
+                return await GetFileFromFolderAsync(folder, relativePath);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    private async Task<string?> GetSourceTokenAsync(string? sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId))
+            return null;
+
+        if (!sourceTokens.TryGetValue(sourceId, out var token))
+        {
+            var sources = await sourceService.GetSourcesAsync();
+            sourceTokens = sources
+                .Where(s => !string.IsNullOrWhiteSpace(s.AccessToken))
+                .ToDictionary(s => s.Id, s => s.AccessToken ?? string.Empty);
+
+            sourceTokens.TryGetValue(sourceId, out token);
+        }
+
+        return string.IsNullOrWhiteSpace(token) ? null : token;
+    }
+
+    private static async Task<StorageFile> GetFileFromFolderAsync(StorageFolder root, string relativePath)
+    {
+        var segments = relativePath
+            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+
+        var current = root;
+        for (var i = 0; i < segments.Length - 1; i++)
+            current = await current.GetFolderAsync(segments[i]);
+
+        return await current.GetFileAsync(segments[^1]);
+    }
+#endif
 
     private static string MakeSafeFileName(string input)
     {
