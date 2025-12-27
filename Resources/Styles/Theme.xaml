@@ -71,4 +71,30 @@
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
     </Style>
+
+    <Style x:Key="OverlayButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+        <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup Name="CommonStates">
+                    <VisualState Name="Normal" />
+                    <VisualState Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
 </ResourceDictionary>

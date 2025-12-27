@@ -265,15 +265,13 @@
                 <Button Grid.Column="1"
                         Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
                         Command="{Binding ShowIndexOverlayCommand}"
-                        BackgroundColor="{DynamicResource Surface2}"
-                        TextColor="{DynamicResource OnSurface}"
+                        Style="{StaticResource OverlayButtonStyle}"
                         Padding="10,6"
                         CornerRadius="12" />
                 <Button Grid.Column="2"
                         Text="{x:Static strings:AppResources.IndexingCancelButton}"
                         Command="{Binding CancelIndexCommand}"
-                        BackgroundColor="{DynamicResource Surface2}"
-                        TextColor="{DynamicResource OnSurface}"
+                        Style="{StaticResource OverlayButtonStyle}"
                         Padding="10,6"
                         CornerRadius="12" />
 
@@ -709,16 +707,14 @@
                         <Button Grid.Column="2"
                                 Text="{x:Static strings:AppResources.IndexingBackgroundButton}"
                                 Command="{Binding DismissIndexOverlayCommand}"
-                                BackgroundColor="{DynamicResource Surface2}"
-                                TextColor="{DynamicResource OnSurface}"
+                                Style="{StaticResource OverlayButtonStyle}"
                                 Padding="10,6"
                                 CornerRadius="12" />
                     </Grid>
 
                     <Button Text="{x:Static strings:AppResources.IndexingCancelButton}"
                             Command="{Binding CancelIndexCommand}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}"
+                            Style="{StaticResource OverlayButtonStyle}"
                             Padding="12,8"
                             CornerRadius="12"
                             HorizontalOptions="End" />
