@@ -20,7 +20,8 @@
                    FontSize="16" />
             <Button Grid.Column="2"
                     Text="{x:Static strings:AppResources.AddSourceButton}"
-                    Command="{Binding AddSourceCommand}" />
+                    Command="{Binding AddSourceCommand}"
+                    IsVisible="{Binding SupportsManualPath, Converter={StaticResource InverseBoolConverter}}" />
         </Grid>
 
         <Grid Grid.Row="1"

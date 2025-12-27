@@ -79,7 +79,10 @@
     <value>Datei: {0}</value>
   </data>
   <data name="IndexingBackgroundButton" xml:space="preserve">
-    <value>Im Hintergrund</value>
+    <value>Ausblenden</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
   </data>
   <data name="IndexingShowDetailsButton" xml:space="preserve">
     <value>Details</value>

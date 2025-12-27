@@ -64,7 +64,10 @@
     <value>File: {0}</value>
   </data>
   <data name="IndexingBackgroundButton" xml:space="preserve">
-    <value>Background</value>
+    <value>Hide</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="IndexingShowDetailsButton" xml:space="preserve">
     <value>Details</value>

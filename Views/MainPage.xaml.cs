@@ -52,6 +52,7 @@ public partial class MainPage : ContentPage
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
+            CancelIndexCommand = vm.CancelIndexCommand;
             PlayCommand = vm.PlayCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
@@ -113,6 +114,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
+        public IRelayCommand CancelIndexCommand { get; }
         public IAsyncRelayCommand RequestPermissionCommand { get; }
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
