@@ -21,10 +21,14 @@ public static class AppResources
         "Browse with rich thumbnails, smart search, and fast indexing across all your folders.");
 
     public static string HeroPrimaryAction => GetString(nameof(HeroPrimaryAction), "Manage sources");
+    public static string BackButton => GetString(nameof(BackButton), "Back");
     public static string SortTitle => GetString(nameof(SortTitle), "Sort");
     public static string SortName => GetString(nameof(SortName), "Name");
     public static string SortDate => GetString(nameof(SortDate), "Date");
     public static string SortDuration => GetString(nameof(SortDuration), "Duration");
+    public static string DateFilterTitle => GetString(nameof(DateFilterTitle), "Date");
+    public static string DateFilterFromLabel => GetString(nameof(DateFilterFromLabel), "From");
+    public static string DateFilterToLabel => GetString(nameof(DateFilterToLabel), "To");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
@@ -75,6 +79,10 @@ public static class AppResources
         "Add a source or refresh to start browsing your library.");
 
     public static string EmptyStateAction => GetString(nameof(EmptyStateAction), "Add sources");
+    public static string SettingsPageTitle => GetString(nameof(SettingsPageTitle), "Settings");
+    public static string SettingsPageHeader => GetString(nameof(SettingsPageHeader), "Settings");
+    public static string SettingsAppearanceTitle => GetString(nameof(SettingsAppearanceTitle), "Appearance");
+    public static string SettingsThemeLabel => GetString(nameof(SettingsThemeLabel), "Theme");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>
