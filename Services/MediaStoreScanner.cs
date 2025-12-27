@@ -58,66 +58,73 @@ public sealed class MediaStoreScanner
         if (string.IsNullOrWhiteSpace(root))
             yield break;
 
+        StorageFolder? folder = null;
         try
         {
-            var folder = await TryGetStorageFolderAsync(root, accessToken);
-            if (folder != null)
-            {
-                await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, ct))
-                    yield return item;
-                yield break;
-            }
+            folder = await TryGetStorageFolderAsync(root, accessToken);
         }
         catch
         {
-            // Fall back to IO enumeration below.
+            folder = null;
+        }
+
+        if (folder != null)
+        {
+            await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, ct))
+                yield return item;
+            yield break;
         }
 
         if (!Directory.Exists(root))
             yield break;
 
+        var isNetworkPath = root.StartsWith(@"\\", StringComparison.OrdinalIgnoreCase);
+        var options = new EnumerationOptions
+        {
+            RecurseSubdirectories = true,
+            IgnoreInaccessible = true,
+            AttributesToSkip = isNetworkPath
+                ? System.IO.FileAttributes.System
+                : System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
+        };
+
+        List<string> paths;
+        // Fix: try/catch darf kein yield enthalten, also try/catch auslagern
         try
         {
-            var isNetworkPath = root.StartsWith(@"\\", StringComparison.OrdinalIgnoreCase);
-            var options = new EnumerationOptions
-            {
-                RecurseSubdirectories = true,
-                IgnoreInaccessible = true,
-                AttributesToSkip = isNetworkPath
-                    ? System.IO.FileAttributes.System
-                    : System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
-            };
-
-            foreach (var path in Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile))
-            {
-                ct.ThrowIfCancellationRequested();
-                var info = new FileInfo(path);
-                var durationMs = 0L;
-
-                try
-                {
-                    var file = await StorageFile.GetFileFromPathAsync(path);
-                    var props = await file.Properties.GetVideoPropertiesAsync();
-                    durationMs = (long)props.Duration.TotalMilliseconds;
-                }
-                catch
-                {
-                    durationMs = 0;
-                }
-
-                yield return new VideoItem
-                {
-                    Path = path,
-                    Name = Path.GetFileName(path),
-                    DurationMs = durationMs,
-                    DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
-                    SourceId = sourceId
-                };
-            }
+            paths = Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile).ToList();
         }
         catch
         {
             // Ignore inaccessible paths.
+            paths = new List<string>();
+        }
+
+        foreach (var path in paths)
+        {
+            ct.ThrowIfCancellationRequested();
+            var info = new FileInfo(path);
+            var durationMs = 0L;
+
+            try
+            {
+                var file = await StorageFile.GetFileFromPathAsync(path);
+                var props = await file.Properties.GetVideoPropertiesAsync();
+                durationMs = (long)props.Duration.TotalMilliseconds;
+            }
+            catch
+            {
+                durationMs = 0;
+            }
+
+            yield return new VideoItem
+            {
+                Path = path,
+                Name = Path.GetFileName(path),
+                DurationMs = durationMs,
+                DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
+                SourceId = sourceId
+            };
         }
     }
 
@@ -328,25 +335,36 @@ public sealed class MediaStoreScanner
         if (!Directory.Exists(rootPath))
             yield break;
 
+        var options = new EnumerationOptions
+        {
+            RecurseSubdirectories = true,
+            IgnoreInaccessible = true
+        };
+
+        List<string> files;
         try
         {
-            foreach (var path in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
-                         .Where(p => IsVideoFileName(p)))
-            {
-                ct.ThrowIfCancellationRequested();
-                yield return new VideoItem
-                {
-                    Path = path,
-                    Name = IOPath.GetFileName(path),
-                    DurationMs = 0,
-                    DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    SourceId = sourceId
-                };
-            }
+            files = Directory.EnumerateFiles(rootPath, "*.*", options)
+                .Where(IsVideoFileName)
+                .ToList();
         }
         catch
         {
             // Ignore inaccessible paths.
+            files = new List<string>();
+        }
+
+        foreach (var path in files)
+        {
+            ct.ThrowIfCancellationRequested();
+            yield return new VideoItem
+            {
+                Path = path,
+                Name = IOPath.GetFileName(path),
+                DurationMs = 0,
+                DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                SourceId = sourceId
+            };
         }
     }
 #endif

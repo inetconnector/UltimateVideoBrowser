@@ -74,7 +74,7 @@
 
     <Style x:Key="OverlayButtonStyle"
            TargetType="Button"
-           BasedOn="{StaticResource {x:Type Button}}">
+           BasedOn="{StaticResource Button}">
         <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
         <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
         <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
