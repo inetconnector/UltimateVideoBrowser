@@ -20,7 +20,7 @@ public partial class SettingsViewModel : ObservableObject
         };
 
         SelectedTheme = ThemeOptions.FirstOrDefault(option => option.Key == settingsService.ThemePreference)
-            ?? ThemeOptions.First();
+                        ?? ThemeOptions.First();
         ApplyTheme(SelectedTheme.Key);
     }
 

@@ -29,13 +29,16 @@ public static class AppResources
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
     public static string IndexingFileFormat => GetString(nameof(IndexingFileFormat), "File: {0}");
+
     public static string IndexingShowDetailsButton =>
         GetString(nameof(IndexingShowDetailsButton), "Show details");
 
     public static string IndexingBackgroundButton =>
         GetString(nameof(IndexingBackgroundButton), "Hide");
+
     public static string IndexingCancelButton =>
         GetString(nameof(IndexingCancelButton), "Cancel");
+
     public static string NewItemsFormat => GetString(nameof(NewItemsFormat), "New items: {0}");
     public static string HighlightsTitle => GetString(nameof(HighlightsTitle), "Library highlights");
     public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Videos indexed");
@@ -59,10 +62,13 @@ public static class AppResources
     public static string SaveAsAction => GetString(nameof(SaveAsAction), "Save as...");
     public static string SaveAsFileTypeLabel => GetString(nameof(SaveAsFileTypeLabel), "Video");
     public static string SaveAsFailedTitle => GetString(nameof(SaveAsFailedTitle), "Save failed");
+
     public static string SaveAsFailedMessage =>
         GetString(nameof(SaveAsFailedMessage), "We couldn't save this video. Please try a different location.");
+
     public static string SaveAsNotSupportedMessage =>
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
+
     public static string EmptyStateTitle => GetString(nameof(EmptyStateTitle), "No videos yet");
 
     public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage),

@@ -1,46 +1,44 @@
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using System.Globalization;
-using System.IO;
 
 namespace UltimateVideoBrowser.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly IFileExportService fileExportService;
     private readonly IndexService indexService;
-    private readonly AppSettingsService settingsService;
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
-    private readonly IFileExportService fileExportService;
+    private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
+    [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
+
+    private CancellationTokenSource? indexCts;
+    [ObservableProperty] private string indexCurrentFile = "";
+    [ObservableProperty] private string indexCurrentFolder = "";
     [ObservableProperty] private int indexedCount;
     [ObservableProperty] private int indexProcessed;
     [ObservableProperty] private double indexRatio;
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
-    [ObservableProperty] private string indexCurrentFolder = "";
-    [ObservableProperty] private string indexCurrentFile = "";
-    [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private bool isDateFilterEnabled;
-    [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
-    [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
+    [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private string sourcesSummary = "";
+    private CancellationTokenSource? thumbCts;
+    [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
     [ObservableProperty] private int totalSourceCount;
     [ObservableProperty] private int videoCount;
-    [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
-
-    private CancellationTokenSource? indexCts;
-    private CancellationTokenSource? thumbCts;
 
     [ObservableProperty] private List<VideoItem> videos = new();
 
@@ -104,8 +102,8 @@ public partial class MainViewModel : ObservableObject
         await UpdateSourceStatsAsync(sources);
 
         var sortKey = SelectedSortOption?.Key ?? "name";
-        DateTime? dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-        DateTime? dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+        var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
         var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo);
 
         if (string.IsNullOrWhiteSpace(ActiveSourceId))
@@ -266,10 +264,7 @@ public partial class MainViewModel : ObservableObject
                         continue;
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, ct);
-                    if (!string.IsNullOrWhiteSpace(p))
-                    {
-                        MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
-                    }
+                    if (!string.IsNullOrWhiteSpace(p)) MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
                 }
             }
             catch

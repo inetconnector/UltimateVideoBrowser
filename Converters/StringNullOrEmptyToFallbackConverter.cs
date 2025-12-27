@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.IO;
 
 namespace UltimateVideoBrowser.Converters;
 
@@ -9,10 +8,8 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
     {
         var text = value as string;
         if (!string.IsNullOrWhiteSpace(text))
-        {
             if (text.StartsWith("content://", StringComparison.OrdinalIgnoreCase) || File.Exists(text))
                 return text;
-        }
 
         return parameter as string ?? string.Empty;
     }

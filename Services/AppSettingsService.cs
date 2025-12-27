@@ -1,6 +1,3 @@
-using System;
-using Microsoft.Maui.Storage;
-
 namespace UltimateVideoBrowser.Services;
 
 public sealed class AppSettingsService

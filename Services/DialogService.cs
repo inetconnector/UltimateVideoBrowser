@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace UltimateVideoBrowser.Services;
 
 public sealed class DialogService : IDialogService

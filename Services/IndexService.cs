@@ -53,7 +53,8 @@ public sealed class IndexService
                 }
 
                 processedOverall++;
-                progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
+                progress?.Report(
+                    new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
             }
         }
 

@@ -1,7 +1,5 @@
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
-using System.Collections.Generic;
-using System.IO;
 #if WINDOWS
 using Microsoft.Maui.Platform;
 using Windows.Storage.Pickers;

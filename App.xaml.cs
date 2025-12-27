@@ -1,19 +1,20 @@
+using UltimateVideoBrowser.Resources.Styles;
+using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Views;
-using System.Linq;
 
 namespace UltimateVideoBrowser;
 
 public partial class App : Application
 {
-    private readonly Services.AppSettingsService _settingsService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly AppSettingsService _settingsService;
 
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
 
         _serviceProvider = serviceProvider;
-        _settingsService = serviceProvider.GetRequiredService<Services.AppSettingsService>();
+        _settingsService = serviceProvider.GetRequiredService<AppSettingsService>();
 
         ApplyThemePreference(_settingsService.ThemePreference);
 
@@ -74,16 +75,16 @@ public partial class App : Application
             return;
 
         var toRemove = merged
-            .Where(d => d is Resources.Styles.ColorsLight || d is Resources.Styles.ColorsDark)
+            .Where(d => d is ColorsLight || d is ColorsDark)
             .ToList();
 
         foreach (var d in toRemove)
             merged.Remove(d);
 
-        ResourceDictionary themeDictionary =
+        var themeDictionary =
             theme == AppTheme.Dark
-                ? (ResourceDictionary)new Resources.Styles.ColorsDark()
-                : new Resources.Styles.ColorsLight();
+                ? (ResourceDictionary)new ColorsDark()
+                : new ColorsLight();
 
         merged.Add(themeDictionary);
     }

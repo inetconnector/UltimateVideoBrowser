@@ -1,6 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Linq;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
@@ -81,7 +79,7 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IndexTotal):
                         OnPropertyChanged(nameof(IndexTotal));
-                        break;  
+                        break;
                     case nameof(MainViewModel.IndexRatio):
                         OnPropertyChanged(nameof(IndexRatio));
                         break;
@@ -195,6 +193,7 @@ public partial class MainPage : ContentPage
         }
 
         public bool IsIndexing => vm.IsIndexing;
+
         public bool IsIndexingOverlayVisible
         {
             get => isIndexingOverlayVisible;
@@ -271,5 +270,5 @@ public partial class MainPage : ContentPage
             GridSpan = Math.Min(8, span);
             return Task.CompletedTask;
         }
-    }               
+    }
 }

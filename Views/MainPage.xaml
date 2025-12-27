@@ -2,7 +2,6 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
@@ -493,8 +492,9 @@
                                         <Grid RowDefinitions="*"
                                               BackgroundColor="{DynamicResource Surface2}"
                                               HeightRequest="170">
-                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
-                                                   Aspect="AspectFill" />
+                                            <Image
+                                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                Aspect="AspectFill" />
                                             <Frame BackgroundColor="#CC0E0F14"
                                                    CornerRadius="999"
                                                    Padding="6"
@@ -538,8 +538,9 @@
                                                      VerticalOptions="Center" />
 
                                         <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                                  CommandParameter="{Binding .}" />
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                CommandParameter="{Binding .}" />
                                         </Grid.GestureRecognizers>
                                     </Grid>
                                 </Frame>
@@ -567,8 +568,9 @@
                                             <Grid RowDefinitions="*"
                                                   BackgroundColor="{DynamicResource Surface2}"
                                                   HeightRequest="170">
-                                                <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
-                                                       Aspect="AspectFill" />
+                                                <Image
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                    Aspect="AspectFill" />
                                                 <Frame BackgroundColor="#CC0E0F14"
                                                        CornerRadius="999"
                                                        Padding="6"
@@ -612,8 +614,9 @@
                                                          VerticalOptions="Center" />
 
                                             <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                                      CommandParameter="{Binding .}" />
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
                                         </Grid>
                                     </Frame>
@@ -642,8 +645,9 @@
                                             <Grid RowDefinitions="*"
                                                   BackgroundColor="{DynamicResource Surface2}"
                                                   HeightRequest="170">
-                                                <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
-                                                       Aspect="AspectFill" />
+                                                <Image
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                    Aspect="AspectFill" />
                                                 <Frame BackgroundColor="#CC0E0F14"
                                                        CornerRadius="999"
                                                        Padding="6"
@@ -687,8 +691,9 @@
                                                          VerticalOptions="Center" />
 
                                             <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                                      CommandParameter="{Binding .}" />
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
                                         </Grid>
                                     </Frame>
@@ -723,13 +728,15 @@
                     <Label Text="{Binding IndexStatus}"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
-                    <Label Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                           TextColor="{DynamicResource OnSurfaceMuted}"
-                           FontSize="12" />
+                    <Label
+                        Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
+                        TextColor="{DynamicResource OnSurfaceMuted}"
+                        FontSize="12" />
 
-                    <Label Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                           TextColor="{DynamicResource OnSurfaceMuted}"
-                           FontSize="12" />
+                    <Label
+                        Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
+                        TextColor="{DynamicResource OnSurfaceMuted}"
+                        FontSize="12" />
 
                     <Label Text="{Binding IndexedCount, StringFormat={x:Static strings:AppResources.NewItemsFormat}}"
                            TextColor="{DynamicResource OnSurfaceMuted}" />

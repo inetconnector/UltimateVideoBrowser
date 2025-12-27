@@ -5,15 +5,16 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 #endif
-using IOPath = System.IO.Path;
+using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
+using IOPath = System.IO.Path;
 
 namespace UltimateVideoBrowser.Services;
 
 public sealed class MediaStoreScanner
 {
     public async IAsyncEnumerable<VideoItem> StreamSourceAsync(MediaSource source,
-        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        [EnumeratorCancellation] CancellationToken ct)
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";

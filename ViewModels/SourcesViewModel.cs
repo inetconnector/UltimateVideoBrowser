@@ -1,4 +1,3 @@
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
@@ -12,8 +11,8 @@ public partial class SourcesViewModel : ObservableObject
     private readonly IDialogService dialogService;
     private readonly IFolderPickerService folderPickerService;
     private readonly PermissionService permissionService;
-    private readonly ISourceService sourceService;
     private readonly AppSettingsService settingsService;
+    private readonly ISourceService sourceService;
     [ObservableProperty] private bool hasMediaPermission;
 
     [ObservableProperty] private List<MediaSource> sources = new();

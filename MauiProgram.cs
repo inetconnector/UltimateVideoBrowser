@@ -4,6 +4,7 @@ using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
 #if ANDROID
 using UltimateVideoBrowser.Platforms.Android;
+
 #elif WINDOWS
 using UltimateVideoBrowser.Platforms.Windows;
 #endif

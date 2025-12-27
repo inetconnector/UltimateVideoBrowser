@@ -5,6 +5,7 @@ using IOPath = System.IO.Path;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
+
 #elif WINDOWS
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -83,7 +84,8 @@ public sealed class ThumbnailService
             if (file == null)
                 return null;
 
-            using var thumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320, ThumbnailOptions.UseCurrentScale);
+            using var thumb =
+ await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320, ThumbnailOptions.UseCurrentScale);
             if (thumb == null || thumb.Size == 0)
             {
                 using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.VideosView, 320);
