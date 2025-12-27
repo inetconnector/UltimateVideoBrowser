@@ -104,8 +104,8 @@ public partial class MainViewModel : ObservableObject
         await UpdateSourceStatsAsync(sources);
 
         var sortKey = SelectedSortOption?.Key ?? "name";
-        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : null;
-        var dateTo = IsDateFilterEnabled ? DateFilterTo : null;
+        DateTime? dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+        DateTime? dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
         var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo);
 
         if (string.IsNullOrWhiteSpace(ActiveSourceId))

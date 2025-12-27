@@ -88,17 +88,8 @@ public sealed class MediaStoreScanner
                 : System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
         };
 
-        List<string> paths;
-        // Fix: try/catch darf kein yield enthalten, also try/catch auslagern
-        try
-        {
-            paths = Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile).ToList();
-        }
-        catch
-        {
-            // Ignore inaccessible paths.
-            paths = new List<string>();
-        }
+        // Fix: try/catch darf kein yield enthalten, also Pfad-Ermittlung auslagern
+        var paths = GetVideoFilePaths(root, options);
 
         foreach (var path in paths)
         {
@@ -125,6 +116,19 @@ public sealed class MediaStoreScanner
                 DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
                 SourceId = sourceId
             };
+        }
+    }
+
+    private static List<string> GetVideoFilePaths(string root, EnumerationOptions options)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile).ToList();
+        }
+        catch
+        {
+            // Ignore inaccessible paths.
+            return new List<string>();
         }
     }
 
@@ -341,18 +345,8 @@ public sealed class MediaStoreScanner
             IgnoreInaccessible = true
         };
 
-        List<string> files;
-        try
-        {
-            files = Directory.EnumerateFiles(rootPath, "*.*", options)
-                .Where(IsVideoFileName)
-                .ToList();
-        }
-        catch
-        {
-            // Ignore inaccessible paths.
-            files = new List<string>();
-        }
+        // Fix: try/catch darf kein yield enthalten, daher Pfad-Ermittlung auslagern
+        var files = GetVideoFilePathsAndroid(rootPath, options);
 
         foreach (var path in files)
         {
@@ -365,6 +359,21 @@ public sealed class MediaStoreScanner
                 DateAddedSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 SourceId = sourceId
             };
+        }
+    }
+
+    private static List<string> GetVideoFilePathsAndroid(string rootPath, EnumerationOptions options)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(rootPath, "*.*", options)
+                .Where(IsVideoFileName)
+                .ToList();
+        }
+        catch
+        {
+            // Ignore inaccessible paths.
+            return new List<string>();
         }
     }
 #endif
