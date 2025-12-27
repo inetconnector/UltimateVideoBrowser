@@ -64,7 +64,11 @@ public sealed class ThumbnailService
                     return null;
 
                 using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                bmp.Compress(Bitmap.CompressFormat.Jpeg, 82, fs);
+                var format = Bitmap.CompressFormat.Jpeg;
+                if (format == null)
+                    return null;
+
+                bmp.Compress(format, 82, fs);
                 return thumbPath;
             }
             catch

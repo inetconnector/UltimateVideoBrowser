@@ -6,23 +6,28 @@ namespace UltimateVideoBrowser;
 public partial class App : Application
 {
     private readonly Services.AppSettingsService _settingsService;
+    private readonly IServiceProvider _serviceProvider;
 
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
 
+        _serviceProvider = serviceProvider;
         _settingsService = serviceProvider.GetRequiredService<Services.AppSettingsService>();
 
         ApplyThemePreference(_settingsService.ThemePreference);
-
-        var mainPage = serviceProvider.GetRequiredService<MainPage>();
-        MainPage = new NavigationPage(mainPage);
 
         RequestedThemeChanged += (_, args) =>
         {
             if (IsFollowingSystem(_settingsService.ThemePreference))
                 ApplyThemeDictionary(args.RequestedTheme);
         };
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var mainPage = _serviceProvider.GetRequiredService<MainPage>();
+        return new Window(new NavigationPage(mainPage));
     }
 
     private static bool IsFollowingSystem(string themePreference)

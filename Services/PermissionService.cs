@@ -1,6 +1,7 @@
 #if ANDROID && !WINDOWS
 using Android;
 using Android.OS;
+using System.Runtime.Versioning;
 #endif
 
 namespace UltimateVideoBrowser.Services;
@@ -56,6 +57,7 @@ public sealed class PermissionService
         return status == PermissionStatus.Granted;
     }
 
+    [SupportedOSPlatform("android33.0")]
     private sealed class MediaVideoPermission : Permissions.BasePlatformPermission
     {
         public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>

@@ -139,8 +139,10 @@ public partial class MainViewModel : ObservableObject
             IndexStatus = "";
             IndexRatio = 0;
             await MainThread.InvokeOnMainThreadAsync(() =>
-                Shell.Current.DisplayAlert(AppResources.PermissionTitle, AppResources.PermissionMessage,
-                    AppResources.OkButton));
+                Shell.Current?.DisplayAlertAsync(
+                    AppResources.PermissionTitle,
+                    AppResources.PermissionMessage,
+                    AppResources.OkButton) ?? Task.CompletedTask);
             return;
         }
 
