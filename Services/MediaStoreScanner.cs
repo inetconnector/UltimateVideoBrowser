@@ -72,7 +72,7 @@ public sealed class MediaStoreScanner
             {
                 RecurseSubdirectories = true,
                 IgnoreInaccessible = true,
-                AttributesToSkip = FileAttributes.System | FileAttributes.ReparsePoint
+                AttributesToSkip = System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
             };
 
             foreach (var path in Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile))
