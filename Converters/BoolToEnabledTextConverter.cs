@@ -5,7 +5,7 @@ namespace UltimateVideoBrowser.Converters;
 
 public sealed class BoolToEnabledTextConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool b)
             return b ? AppResources.Enabled : AppResources.Disabled;
@@ -13,7 +13,7 @@ public sealed class BoolToEnabledTextConverter : IValueConverter
         return AppResources.Disabled;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         // Button text isn't used for back conversion.
         return false;

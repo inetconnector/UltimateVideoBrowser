@@ -241,6 +241,10 @@ public sealed class MediaStoreScanner
     {
         var ctx = Platform.AppContext;
         var resolver = ctx.ContentResolver;
+        var externalUri = MediaStore.Video.Media.ExternalContentUri;
+
+        if (resolver == null || externalUri == null)
+            yield break;
 
         string[] projection =
         {
@@ -251,7 +255,7 @@ public sealed class MediaStoreScanner
         };
 
         using var cursor = resolver.Query(
-            MediaStore.Video.Media.ExternalContentUri,
+            externalUri,
             projection,
             null,
             null,

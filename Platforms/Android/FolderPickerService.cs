@@ -71,6 +71,6 @@ public sealed class FolderPickerService : IFolderPickerService
         var name = activity == null
             ? uri.LastPathSegment ?? "Folder"
             : DocumentFile.FromTreeUri(activity, uri)?.Name ?? uri.LastPathSegment ?? "Folder";
-        tcs.TrySetResult(new[] { new FolderPickResult(uri.ToString(), name, null) });
+        tcs.TrySetResult(new[] { new FolderPickResult(uri.ToString() ?? string.Empty, name, null) });
     }
 }

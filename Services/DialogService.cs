@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace UltimateVideoBrowser.Services;
 
 public sealed class DialogService : IDialogService
@@ -5,13 +7,13 @@ public sealed class DialogService : IDialogService
     public Task DisplayAlertAsync(string title, string message, string cancel)
     {
         var page = GetPage();
-        return page == null ? Task.CompletedTask : page.DisplayAlert(title, message, cancel);
+        return page == null ? Task.CompletedTask : page.DisplayAlertAsync(title, message, cancel);
     }
 
     public Task<bool> DisplayAlertAsync(string title, string message, string accept, string cancel)
     {
         var page = GetPage();
-        return page == null ? Task.FromResult(false) : page.DisplayAlert(title, message, accept, cancel);
+        return page == null ? Task.FromResult(false) : page.DisplayAlertAsync(title, message, accept, cancel);
     }
 
     public Task<string?> DisplayPromptAsync(
@@ -32,6 +34,6 @@ public sealed class DialogService : IDialogService
 
     private static Page? GetPage()
     {
-        return Shell.Current ?? Application.Current?.MainPage;
+        return Shell.Current ?? Application.Current?.Windows.FirstOrDefault()?.Page;
     }
 }
