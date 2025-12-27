@@ -28,7 +28,16 @@ public sealed class FolderPickerService : IFolderPickerService
         if (folder == null)
             return Array.Empty<FolderPickResult>();
 
-        var token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+        string? token = null;
+        try
+        {
+            token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+        }
+        catch
+        {
+            // Ignore failures (e.g. unpackaged apps or network locations without access list support).
+        }
+
         return new[] { new FolderPickResult(folder.Path, folder.DisplayName, token) };
     }
 }
