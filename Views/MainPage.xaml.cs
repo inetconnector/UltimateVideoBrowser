@@ -33,6 +33,11 @@ public partial class MainPage : ContentPage
         ((CollectionView)sender).SelectedItem = null;
     }
 
+    private void OnSortChipTapped(object sender, TappedEventArgs e)
+    {
+        SortPicker?.Focus();
+    }
+
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;

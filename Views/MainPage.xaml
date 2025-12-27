@@ -87,6 +87,9 @@
                                    CornerRadius="999"
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenSourcesCommand}" />
+                                </Frame.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="6">
                                     <Image Source="chip_collection"
                                            HeightRequest="14"
@@ -101,6 +104,9 @@
                                    CornerRadius="999"
                                    Padding="10,4"
                                    BorderColor="{DynamicResource BorderSubtle}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSortChipTapped" />
+                                </Frame.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="6">
                                     <Image Source="chip_spark"
                                            HeightRequest="14"
@@ -226,7 +232,8 @@
                        TextColor="{DynamicResource OnSurface}"
                        PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
 
-            <Picker Grid.Column="1"
+            <Picker x:Name="SortPicker"
+                    Grid.Column="1"
                     ItemsSource="{Binding SortOptions}"
                     ItemDisplayBinding="{Binding Display}"
                     SelectedItem="{Binding SelectedSortOption}"
