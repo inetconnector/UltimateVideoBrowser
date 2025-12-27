@@ -23,7 +23,7 @@ public sealed class SourcesViewModelTests
         try
         {
             var sourceService = new FakeSourceService();
-            var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
+            var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos", null));
             var dialogService = new FakeDialogService(null);
 
             var settingsService = new AppSettingsService();

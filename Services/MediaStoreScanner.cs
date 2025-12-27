@@ -23,7 +23,7 @@ public sealed class MediaStoreScanner
 
         return Task.Run(() => ScanAndroidFolder(rootPath, sourceId));
 #elif WINDOWS
-        return ScanWindowsAsync(rootPath, sourceId);
+        return ScanWindowsAsync(rootPath, sourceId, source.AccessToken);
 #else
         _ = sourceId;
         _ = rootPath;
@@ -42,20 +42,40 @@ public sealed class MediaStoreScanner
         return VideoExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
     }
 
-    private static async Task<List<VideoItem>> ScanWindowsAsync(string? rootPath, string? sourceId)
+    private static async Task<List<VideoItem>> ScanWindowsAsync(string? rootPath, string? sourceId, string? accessToken)
     {
         var list = new List<VideoItem>();
         var root = string.IsNullOrWhiteSpace(rootPath)
             ? Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)
             : rootPath;
 
-        if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root))
+        if (string.IsNullOrWhiteSpace(root))
             return list;
 
         try
         {
-            foreach (var path in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories)
-                         .Where(IsVideoFile))
+            var folder = await TryGetStorageFolderAsync(root, accessToken);
+            if (folder != null)
+                return await ScanWindowsFolderAsync(folder, sourceId);
+        }
+        catch
+        {
+            // Fall back to IO enumeration below.
+        }
+
+        if (!Directory.Exists(root))
+            return list;
+
+        try
+        {
+            var options = new EnumerationOptions
+            {
+                RecurseSubdirectories = true,
+                IgnoreInaccessible = true,
+                AttributesToSkip = FileAttributes.System | FileAttributes.ReparsePoint
+            };
+
+            foreach (var path in Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile))
             {
                 var info = new FileInfo(path);
                 var durationMs = 0L;
@@ -84,6 +104,98 @@ public sealed class MediaStoreScanner
         catch
         {
             // Ignore inaccessible paths.
+        }
+
+        return list;
+    }
+
+    private static async Task<StorageFolder?> TryGetStorageFolderAsync(string rootPath, string? accessToken)
+    {
+        if (!string.IsNullOrWhiteSpace(accessToken))
+        {
+            try
+            {
+                return await Windows.Storage.AccessCache.StorageApplicationPermissions
+                    .FutureAccessList
+                    .GetFolderAsync(accessToken);
+            }
+            catch
+            {
+                // Ignore missing/invalid access tokens.
+            }
+        }
+
+        try
+        {
+            return await StorageFolder.GetFolderFromPathAsync(rootPath);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static async Task<List<VideoItem>> ScanWindowsFolderAsync(StorageFolder root, string? sourceId)
+    {
+        var list = new List<VideoItem>();
+        var queue = new Queue<StorageFolder>();
+        queue.Enqueue(root);
+
+        while (queue.Count > 0)
+        {
+            var folder = queue.Dequeue();
+            IReadOnlyList<StorageFile> files;
+            try
+            {
+                files = await folder.GetFilesAsync();
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                if (!IsVideoFile(file.Name))
+                    continue;
+
+                var durationMs = 0L;
+                try
+                {
+                    var props = await file.Properties.GetVideoPropertiesAsync();
+                    durationMs = (long)props.Duration.TotalMilliseconds;
+                }
+                catch
+                {
+                    durationMs = 0;
+                }
+
+                var path = file.Path;
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                list.Add(new VideoItem
+                {
+                    Path = path,
+                    Name = file.Name,
+                    DurationMs = durationMs,
+                    DateAddedSeconds = new DateTimeOffset(file.DateCreated.UtcDateTime).ToUnixTimeSeconds(),
+                    SourceId = sourceId
+                });
+            }
+
+            IReadOnlyList<StorageFolder> subfolders;
+            try
+            {
+                subfolders = await folder.GetFoldersAsync();
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var subfolder in subfolders)
+                queue.Enqueue(subfolder);
         }
 
         return list;
