@@ -7,12 +7,14 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid>
-        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
-        <!-- Top bar -->
-        <Grid Padding="16,14"
-              ColumnDefinitions="*,Auto,Auto,Auto"
-              BackgroundColor="{DynamicResource Surface}">
+    <AbsoluteLayout>
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+            <!-- Top bar -->
+            <Grid Padding="16,14"
+                  ColumnDefinitions="*,Auto,Auto,Auto"
+                  BackgroundColor="{DynamicResource Surface}">
             <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
                 <Frame Padding="6"
                        BackgroundColor="{DynamicResource Surface2}"
@@ -54,10 +56,10 @@
                     ImageSource="icon_reindex.svg"
                     Command="{Binding RunIndexCommand}"
                     Margin="8,0,0,0" />
-        </Grid>
+            </Grid>
 
         <!-- Hero -->
-        <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
+            <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
             <Frame CornerRadius="20"
                    Padding="16"
                    BorderColor="{DynamicResource BorderSubtle}">
@@ -127,13 +129,13 @@
                            VerticalOptions="Center" />
                 </Grid>
             </Frame>
-        </Grid>
+            </Grid>
 
         <!-- Highlights -->
-        <Grid Grid.Row="2"
-              Padding="16,0,16,12"
-              RowDefinitions="Auto,Auto"
-              RowSpacing="10">
+            <Grid Grid.Row="2"
+                  Padding="16,0,16,12"
+                  RowDefinitions="Auto,Auto"
+                  RowSpacing="10">
             <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
                    FontAttributes="Bold"
                    FontSize="14"
@@ -193,12 +195,12 @@
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
-        </Grid>
+            </Grid>
 
         <!-- Marked actions -->
-        <Grid Grid.Row="3"
-              Padding="12"
-              IsVisible="{Binding HasMarked}">
+            <Grid Grid.Row="3"
+                  Padding="12"
+                  IsVisible="{Binding HasMarked}">
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
                    BorderColor="{DynamicResource BorderSubtle}"
@@ -220,12 +222,12 @@
                             Command="{Binding ClearMarkedCommand}" />
                 </Grid>
             </Frame>
-        </Grid>
+            </Grid>
 
         <!-- Permission notice -->
-        <Grid Grid.Row="4"
-              Padding="12"
-              IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
+            <Grid Grid.Row="4"
+                  Padding="12"
+                  IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
                    Padding="12"
@@ -245,13 +247,13 @@
                             Command="{Binding RequestPermissionCommand}" />
                 </Grid>
             </Frame>
-        </Grid>
+            </Grid>
 
         <!-- Search + Sort -->
-        <Grid Grid.Row="5"
-              Padding="12"
-              ColumnDefinitions="*,Auto"
-              BackgroundColor="{DynamicResource AppBg}">
+            <Grid Grid.Row="5"
+                  Padding="12"
+                  ColumnDefinitions="*,Auto"
+                  BackgroundColor="{DynamicResource AppBg}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                        Text="{Binding SearchText}"
                        SearchCommand="{Binding RefreshCommand}"
@@ -268,14 +270,14 @@
                     TextColor="{DynamicResource OnSurface}"
                     BackgroundColor="{DynamicResource Surface2}"
                     Margin="8,0,0,0" />
-        </Grid>
+            </Grid>
 
         <!-- Date filter -->
-        <Grid Grid.Row="6"
-              Padding="12"
-              RowDefinitions="Auto,Auto"
-              RowSpacing="8"
-              BackgroundColor="{DynamicResource AppBg}">
+            <Grid Grid.Row="6"
+                  Padding="12"
+                  RowDefinitions="Auto,Auto"
+                  RowSpacing="8"
+                  BackgroundColor="{DynamicResource AppBg}">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <Label Text="{x:Static strings:AppResources.DateFilterTitle}"
                        FontAttributes="Bold"
@@ -307,19 +309,19 @@
                                 TextColor="{DynamicResource OnSurface}" />
                 </VerticalStackLayout>
             </Grid>
-        </Grid>
+            </Grid>
 
         <!-- Indexing banner -->
-        <Frame Grid.Row="7"
-               IsVisible="{Binding ShowIndexingBanner}"
-               BackgroundColor="{DynamicResource Surface}"
-               CornerRadius="12"
-               BorderColor="{DynamicResource BorderSubtle}"
-               Padding="12"
-               HorizontalOptions="Center"
-               VerticalOptions="Start"
-               Margin="16,4,16,12"
-               HasShadow="False">
+            <Frame Grid.Row="7"
+                   IsVisible="{Binding ShowIndexingBanner}"
+                   BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="12"
+                   BorderColor="{DynamicResource BorderSubtle}"
+                   Padding="12"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="16,4,16,12"
+                   HasShadow="False">
             <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                   ColumnDefinitions="*,Auto,Auto"
                   ColumnSpacing="12"
@@ -371,10 +373,10 @@
                        FontSize="11"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
             </Grid>
-        </Frame>
+            </Frame>
 
         <!-- Browser grid -->
-        <Grid Grid.Row="8" x:Name="BrowserGrid" ColumnDefinitions="*,96">
+            <Grid Grid.Row="8" x:Name="BrowserGrid" ColumnDefinitions="*,96">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">
@@ -736,16 +738,18 @@
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
-        </Grid>
-
+            </Grid>
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"
+              IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
               Padding="24"
               HorizontalOptions="Fill"
-              VerticalOptions="Fill">
+              VerticalOptions="Fill"
+              ZIndex="1">
 
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="16"
@@ -802,5 +806,5 @@
 
             </Frame>
         </Grid>
-    </Grid>
+    </AbsoluteLayout>
 </ContentPage>
