@@ -132,6 +132,51 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>„Speichern unter“ wird auf diesem Gerät nicht unterstützt.</value>
   </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Markiert: {0}</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Verschieben</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Auswahl löschen</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Zielordner erstellen</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Gib einen Namen für den neuen Ordner an.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Ordnername</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Übertragen fehlgeschlagen</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Die ausgewählten Videos konnten nicht kopiert oder verschoben werden.</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Kopieren oder Verschieben wird auf diesem Gerät nicht unterstützt.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Kopieren abgeschlossen</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Verschieben abgeschlossen</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Erfolgreich: {0}, übersprungen: {1}, fehlgeschlagen: {2}.</value>
+  </data>
   <data name="BackButton" xml:space="preserve">
     <value>Zurück</value>
   </data>

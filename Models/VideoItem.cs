@@ -6,6 +6,7 @@ namespace UltimateVideoBrowser.Models;
 
 public class VideoItem : INotifyPropertyChanged
 {
+    private bool isMarked;
     private string? thumbnailPath;
 
     [PrimaryKey] public string Path { get; set; } = "";
@@ -32,6 +33,20 @@ public class VideoItem : INotifyPropertyChanged
 
     [Ignore]
     public string DurationText => DurationMs <= 0 ? "" : TimeSpan.FromMilliseconds(DurationMs).ToString(@"hh\:mm\:ss");
+
+    [Ignore]
+    public bool IsMarked
+    {
+        get => isMarked;
+        set
+        {
+            if (isMarked == value)
+                return;
+
+            isMarked = value;
+            OnPropertyChanged();
+        }
+    }
 
     [Ignore]
     public string FirstLetter

@@ -59,6 +59,9 @@ public partial class MainPage : ContentPage
             CancelIndexCommand = vm.CancelIndexCommand;
             PlayCommand = vm.PlayCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
+            CopyMarkedCommand = vm.CopyMarkedCommand;
+            MoveMarkedCommand = vm.MoveMarkedCommand;
+            ClearMarkedCommand = vm.ClearMarkedCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = true);
 
@@ -110,6 +113,10 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.SourcesSummary):
                         OnPropertyChanged(nameof(SourcesSummary));
                         break;
+                    case nameof(MainViewModel.MarkedCount):
+                        OnPropertyChanged(nameof(MarkedCount));
+                        OnPropertyChanged(nameof(HasMarked));
+                        break;
                     case nameof(MainViewModel.IsDateFilterEnabled):
                         OnPropertyChanged(nameof(IsDateFilterEnabled));
                         break;
@@ -132,6 +139,9 @@ public partial class MainPage : ContentPage
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand PlayCommand { get; }
+        public IAsyncRelayCommand CopyMarkedCommand { get; }
+        public IAsyncRelayCommand MoveMarkedCommand { get; }
+        public IRelayCommand ClearMarkedCommand { get; }
 
         public int GridSpan
         {
@@ -220,6 +230,8 @@ public partial class MainPage : ContentPage
         public int VideoCount => vm.VideoCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
         public string SourcesSummary => vm.SourcesSummary;
+        public int MarkedCount => vm.MarkedCount;
+        public bool HasMarked => vm.HasMarked;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
 
         public SortOption? SelectedSortOption

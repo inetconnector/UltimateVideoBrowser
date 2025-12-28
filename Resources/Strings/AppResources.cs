@@ -73,6 +73,32 @@ public static class AppResources
     public static string SaveAsNotSupportedMessage =>
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
+    public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
+    public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
+    public static string MoveMarkedAction => GetString(nameof(MoveMarkedAction), "Move");
+    public static string ClearMarkedAction => GetString(nameof(ClearMarkedAction), "Clear");
+    public static string TransferFolderTitle => GetString(nameof(TransferFolderTitle), "Create destination folder");
+
+    public static string TransferFolderMessage =>
+        GetString(nameof(TransferFolderMessage), "Choose a name for the new folder.");
+
+    public static string TransferFolderPlaceholder => GetString(nameof(TransferFolderPlaceholder), "Folder name");
+    public static string CreateButton => GetString(nameof(CreateButton), "Create");
+    public static string CancelButton => GetString(nameof(CancelButton), "Cancel");
+    public static string TransferFailedTitle => GetString(nameof(TransferFailedTitle), "Transfer failed");
+
+    public static string TransferFailedMessage =>
+        GetString(nameof(TransferFailedMessage), "We couldn't copy or move the selected videos.");
+
+    public static string TransferNotSupportedMessage =>
+        GetString(nameof(TransferNotSupportedMessage), "Copy or move isn't supported on this device.");
+
+    public static string TransferCopyCompletedTitle => GetString(nameof(TransferCopyCompletedTitle), "Copy complete");
+    public static string TransferMoveCompletedTitle => GetString(nameof(TransferMoveCompletedTitle), "Move complete");
+
+    public static string TransferCompletedMessageFormat =>
+        GetString(nameof(TransferCompletedMessageFormat), "Successful: {0}, skipped: {1}, failed: {2}.");
+
     public static string EmptyStateTitle => GetString(nameof(EmptyStateTitle), "No videos yet");
 
     public static string EmptyStateMessage => GetString(nameof(EmptyStateMessage),

@@ -90,4 +90,15 @@ public sealed class IndexService
 
         return q.ToListAsync();
     }
+
+    public async Task RemoveAsync(IEnumerable<VideoItem> items)
+    {
+        foreach (var item in items)
+        {
+            if (string.IsNullOrWhiteSpace(item.Path))
+                continue;
+
+            await db.Db.DeleteAsync<VideoItem>(item.Path);
+        }
+    }
 }
