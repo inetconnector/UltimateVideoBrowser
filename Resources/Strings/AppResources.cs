@@ -83,6 +83,14 @@ public static class AppResources
     public static string SettingsPageHeader => GetString(nameof(SettingsPageHeader), "Settings");
     public static string SettingsAppearanceTitle => GetString(nameof(SettingsAppearanceTitle), "Appearance");
     public static string SettingsThemeLabel => GetString(nameof(SettingsThemeLabel), "Theme");
+    public static string SettingsSortingTitle => GetString(nameof(SettingsSortingTitle), "Sorting");
+    public static string SettingsDefaultSortLabel => GetString(nameof(SettingsDefaultSortLabel), "Default order");
+    public static string SettingsFilterTitle => GetString(nameof(SettingsFilterTitle), "Filter");
+    public static string SettingsDateFilterLabel => GetString(nameof(SettingsDateFilterLabel), "Enable date filter");
+    public static string SettingsDateFromLabel => GetString(nameof(SettingsDateFromLabel), "From");
+    public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
+    public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
+    public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>
