@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>כל הסרטונים במכשיר</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>הספרייה האישית שלך</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>גלה כל וידאו מיד</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>דפדף עם תמונות ממוזערות עשירות, חיפוש חכם ואינדוקס מהיר בכל התיקיות שלך.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>נהל מקורות</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>טווח תאריכים</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>מ-</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>עד</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>מאונדקס {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>תיקייה: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>קובץ: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>הסתר</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>בטל</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>פרטים</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>הדגשים מהספרייה</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>סרטונים שאונדקסו</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>מקורות מופעלים</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>טיפ</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>השתמש בחיפוש + מסננים, ואז בצע אינדוקס מחדש לאחר הוספת תיקיות חדשות לקבלת התוצאות הטובות ביותר.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} מתוך {1} מקורות פעילים</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>נדרש אישור גישה</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>אפשר גישה לסרטונים שלך כדי שנוכל לאנדקס ולהפעיל אותם.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>אשר גישה</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>אישור</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>שתף</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>שתף וידאו</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>שמור בשם...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>וידאו</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>השמירה נכשלה</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>לא הצלחנו לשמור את הווידאו הזה. נסה מיקום אחר.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>"שמור בשם" אינו נתמך במכשיר זה.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>חזרה</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>הגדרות</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>הגדרות</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>הגדרות</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>מראה</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>ערכת נושא</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>מיון</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>סדר ברירת מחדל</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>מסנן</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>הפעל מסנן תאריך</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>מ-</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>עד</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>אינדוקס</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>אינדוקס מחדש בהפעלה הבאה</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>בהיר</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>כהה</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>אין סרטונים עדיין</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>הוסף מקור או רענן כדי להתחיל לדפדף בספרייה שלך.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>הוסף מקורות</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>הוסף תיקייה</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>הסר</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>להסיר מקור?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>להסיר את “{0}” מהמקורות?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>הסר</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>הוסף מקור</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>שם המקור</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>הוסף</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>בטל</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>מקור חדש</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>כבר נוסף</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>התיקייה הזו כבר במקורות שלך.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>בחר תיקייה מקומית או שיתוף רשת.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>עיין בתיקייה</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>בחר תיקייה</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>בחר תיקייה מקומית או שיתוף רשת.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>להוסיף תיקייה נוספת?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>האם תרצה להוסיף תיקייה נוספת?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>הוסף נוספת</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>סיום</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>הנתיב לא נמצא</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>לא הצלחנו למצוא את התיקייה. בדוק את הנתיב.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>ספריית המדיה של המכשיר</value>
   </data>
 </root>

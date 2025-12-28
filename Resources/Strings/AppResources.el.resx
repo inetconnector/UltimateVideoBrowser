@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Όλα τα βίντεο της συσκευής</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>Η προσωπική σας βιβλιοθήκη</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Ανακαλύψτε κάθε βίντεο άμεσα</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Περιηγηθείτε με πλούσιες μικρογραφίες, έξυπνη αναζήτηση και γρήγορη ευρετηρίαση σε όλους τους φακέλους σας.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Διαχείριση πηγών</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Εύρος ημερομηνιών</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>Από</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Έως</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Γίνεται ευρετηρίαση {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Φάκελος: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>Αρχείο: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Απόκρυψη</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Λεπτομέρειες</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Στιγμιότυπα βιβλιοθήκης</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Βίντεο που ευρετηριάστηκαν</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Ενεργοποιημένες πηγές</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Συμβουλή</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Χρησιμοποιήστε αναζήτηση + φίλτρα και μετά επανευρετηρίαση αφού προσθέσετε νέους φακέλους για τα καλύτερα αποτελέσματα.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} από {1} πηγές ενεργές</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Απαιτείται πρόσβαση</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Επιτρέψτε την πρόσβαση στα βίντεό σας ώστε να μπορούμε να τα ευρετηριάσουμε και να τα αναπαράγουμε.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Παραχώρηση πρόσβασης</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Εντάξει</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Κοινοποίηση</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Κοινοποίηση βίντεο</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Αποθήκευση ως...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Βίντεο</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Αποτυχία αποθήκευσης</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>Δεν μπορέσαμε να αποθηκεύσουμε αυτό το βίντεο. Δοκιμάστε άλλη τοποθεσία.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Η "Αποθήκευση ως" δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Πίσω</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Εμφάνιση</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Θέμα</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>Ταξινόμηση</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>Προεπιλεγμένη σειρά</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>Φίλτρο</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>Ενεργοποίηση φίλτρου ημερομηνίας</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>Από</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>Έως</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>Ευρετηρίαση</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>Επανευρετηρίαση στην επόμενη εκκίνηση</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Φωτεινό</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Σκούρο</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Δεν υπάρχουν βίντεο ακόμη</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Προσθέστε μια πηγή ή ανανεώστε για να ξεκινήσετε την περιήγηση στη βιβλιοθήκη σας.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Προσθήκη πηγών</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Προσθήκη φακέλου</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Αφαίρεση</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>Αφαίρεση πηγής;</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>Αφαίρεση “{0}” από τις πηγές;</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Αφαίρεση</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Προσθήκη πηγής</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Όνομα πηγής</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Προσθήκη</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>Νέα πηγή</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Έχει ήδη προστεθεί</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>Αυτός ο φάκελος είναι ήδη στις πηγές σας.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Επιλέξτε έναν τοπικό φάκελο ή ένα δικτυακό κοινόχρηστο.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Περιήγηση φακέλου</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Επιλογή φακέλου</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Επιλέξτε έναν τοπικό φάκελο ή ένα δικτυακό κοινόχρηστο.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Προσθήκη άλλου φακέλου;</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Θέλετε να προσθέσετε άλλο φάκελο;</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Προσθήκη άλλου</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Τέλος</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Η διαδρομή δεν βρέθηκε</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>Δεν μπορέσαμε να βρούμε αυτόν τον φάκελο. Ελέγξτε τη διαδρομή.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Βιβλιοθήκη πολυμέσων συσκευής</value>
   </data>
 </root>

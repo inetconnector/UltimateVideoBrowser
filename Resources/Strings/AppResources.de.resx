@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -109,7 +109,7 @@
     <value>Zugriff erlauben</value>
   </data>
   <data name="OkButton" xml:space="preserve">
-    <value>OK</value>
+    <value>In Ordnung</value>
   </data>
   <data name="ShareAction" xml:space="preserve">
     <value>Teilen</value>
@@ -148,7 +148,7 @@
     <value>Darstellung</value>
   </data>
   <data name="SettingsThemeLabel" xml:space="preserve">
-    <value>Theme</value>
+    <value>Design</value>
   </data>
   <data name="SettingsSortingTitle" xml:space="preserve">
     <value>Sortierung</value>

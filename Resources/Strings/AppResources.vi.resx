@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Tất cả video trên thiết bị</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>Thư viện cá nhân của bạn</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Khám phá mọi video ngay lập tức</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Duyệt với ảnh thu nhỏ phong phú, tìm kiếm thông minh và lập chỉ mục nhanh trên tất cả các thư mục.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Quản lý nguồn</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Khoảng ngày</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>Từ</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Đến</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Đang lập chỉ mục {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Thư mục: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>Tệp: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Ẩn</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Chi tiết</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Điểm nổi bật thư viện</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Video đã lập chỉ mục</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Nguồn đã bật</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Mẹo</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Dùng tìm kiếm + bộ lọc, sau đó lập chỉ mục lại sau khi thêm thư mục mới để có kết quả tốt nhất.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} trong {1} nguồn đang hoạt động</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Cần quyền truy cập</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Cho phép truy cập video của bạn để chúng tôi có thể lập chỉ mục và phát chúng.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Cho phép truy cập</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Đồng ý</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Chia sẻ</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Chia sẻ video</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Lưu thành...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Lưu thất bại</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>Không thể lưu video này. Vui lòng thử vị trí khác.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Lưu thành không được hỗ trợ trên thiết bị này.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Quay lại</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Giao diện</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Chủ đề</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>Sắp xếp</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>Thứ tự mặc định</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>Bộ lọc</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>Bật bộ lọc ngày</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>Từ</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>Đến</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>Lập chỉ mục</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>Lập chỉ mục lại khi khởi chạy lần sau</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Sáng</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tối</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Chưa có video</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Thêm nguồn hoặc làm mới để bắt đầu duyệt thư viện của bạn.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Thêm nguồn</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Thêm thư mục</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>Xóa nguồn?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>Xóa “{0}” khỏi nguồn?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Thêm nguồn</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Tên nguồn</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>Nguồn mới</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Đã thêm</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>Thư mục này đã có trong các nguồn của bạn.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Chọn một thư mục cục bộ hoặc chia sẻ mạng.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Duyệt thư mục</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Chọn thư mục</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Chọn một thư mục cục bộ hoặc chia sẻ mạng.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Thêm thư mục khác?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Bạn có muốn thêm một thư mục khác không?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Thêm một thư mục khác</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Xong</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Không tìm thấy đường dẫn</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>Chúng tôi không tìm thấy thư mục đó. Vui lòng kiểm tra đường dẫn.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Thư viện phương tiện của thiết bị</value>
   </data>
 </root>

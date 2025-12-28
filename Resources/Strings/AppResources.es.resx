@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Todos los videos del dispositivo</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>Tu biblioteca personal</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Descubre cada video al instante</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Explora con miniaturas detalladas, búsqueda inteligente e indexación rápida en todas tus carpetas.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Administrar fuentes</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Rango de fechas</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>Desde</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Hasta</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Indexando {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Carpeta: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>Archivo: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Ocultar</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Destacados de la biblioteca</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Videos indexados</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Fuentes habilitadas</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Consejo</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Usa búsqueda + filtros y vuelve a indexar después de añadir nuevas carpetas para mejores resultados.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} de {1} fuentes activas</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Acceso requerido</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Permite el acceso a tus videos para que podamos indexarlos y reproducirlos.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Conceder acceso</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Compartir</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Compartir video</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Guardar como...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Vídeo</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Error al guardar</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>No pudimos guardar este video. Intenta otra ubicación.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Guardar como no es compatible en este dispositivo.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Atrás</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Apariencia</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>Ordenación</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>Orden predeterminado</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>Filtro</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>Habilitar filtro de fecha</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>Desde</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>Hasta</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>Indexación</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>Reindexar en el próximo inicio</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Oscuro</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Aún no hay videos</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Agrega una fuente o actualiza para empezar a explorar tu biblioteca.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Agregar fuentes</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Agregar carpeta</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>¿Eliminar fuente?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>¿Eliminar “{0}” de las fuentes?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Agregar fuente</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Nombre de la fuente</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Agregar</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>Nueva fuente</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Ya agregado</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>Esta carpeta ya está en tus fuentes.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Selecciona una carpeta local o un recurso compartido de red.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Explorar carpeta</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Seleccionar carpeta</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Selecciona una carpeta local o un recurso compartido de red.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>¿Agregar otra carpeta?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>¿Quieres agregar otra carpeta?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Agregar otra</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Listo</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Ruta no encontrada</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>No pudimos encontrar esa carpeta. Verifica la ruta.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Biblioteca multimedia del dispositivo</value>
   </data>
 </root>
