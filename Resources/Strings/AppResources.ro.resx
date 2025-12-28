@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Toate videoclipurile de pe dispozitiv</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>Biblioteca ta personală</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Descoperă fiecare videoclip instant</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Răsfoiește cu miniaturi bogate, căutare inteligentă și indexare rapidă în toate folderele tale.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Gestionează sursele</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Interval de date</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>De la</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Până la</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Se indexează {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Folder: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>Fișier: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Ascunde</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Anulează</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Detalii</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Reperele bibliotecii</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Videoclipuri indexate</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Surse activate</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Sfat</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Folosește căutarea + filtrele, apoi reindexează după adăugarea de foldere noi pentru cele mai bune rezultate.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0} din {1} surse active</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Acces necesar</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Permite accesul la videoclipurile tale pentru a le putea indexa și reda.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Acordă acces</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Bine</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Partajează</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Partajează videoclip</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Salvează ca...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Videoclip</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Salvare eșuată</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>Nu am putut salva acest videoclip. Încearcă o altă locație.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Salvare ca nu este acceptată pe acest dispozitiv.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Înapoi</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Aspect</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Temă</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>Sortare</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>Ordine implicită</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>Filtru</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>Activează filtrul de dată</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>De la</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>Până la</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>Indexare</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>Reindexează la următoarea pornire</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Deschis</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Închis</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Încă nu există videoclipuri</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Adaugă o sursă sau reîmprospătează pentru a începe să răsfoiești biblioteca.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Adaugă surse</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Adaugă folder</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Elimină</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>Elimină sursa?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>Elimini “{0}” din surse?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Elimină</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Adaugă sursă</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Numele sursei</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Adaugă</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Anulează</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>Sursă nouă</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Deja adăugat</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>Acest folder este deja în sursele tale.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Selectează un folder local sau o partajare de rețea.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Răsfoiește folderul</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Selectează folderul</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Selectează un folder local sau o partajare de rețea.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Adaugi un alt folder?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Dorești să adaugi un alt folder?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Adaugă altul</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Gata</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Calea nu a fost găsită</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>Nu am putut găsi acel folder. Verifică calea.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Biblioteca media a dispozitivului</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Kaikki laitteen videot</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>Henkilökohtainen kirjastosi</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Löydä jokainen video heti</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Selaa rikkailla pikkukuvilla, älykkäällä haulla ja nopealla indeksoinnilla kaikissa kansioissasi.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>Hallitse lähteitä</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>Päivämääräväli</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>Alkaen</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>Asti</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>Indeksoidaan {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>Kansio: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>Tiedosto: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>Piilota</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>Tiedot</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>Kirjaston kohokohdat</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>Indeksoidut videot</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>Käytössä olevat lähteet</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>Vinkki</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>Käytä hakua + suodattimia ja indeksoi uudelleen uusien kansioiden lisäämisen jälkeen parhaan tuloksen saamiseksi.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>{0}/{1} lähdettä aktiivisena</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>Käyttöoikeus vaaditaan</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>Salli pääsy videoihisi, jotta voimme indeksoida ja toistaa ne.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>Myönnä käyttöoikeus</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Hyväksy</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Jaa</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>Jaa video</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>Tallenna nimellä...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>Tallennus epäonnistui</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>Emme voineet tallentaa tätä videota. Kokeile toista sijaintia.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>Tallenna nimellä ei ole tuettu tällä laitteella.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Takaisin</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>Ulkoasu</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>Teema</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>Lajittelu</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>Oletusjärjestys</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>Suodatin</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>Ota päivämääräsuodatin käyttöön</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>Alkaen</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>Asti</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>Indeksointi</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>Indeksoi uudelleen seuraavalla käynnistyksellä</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Vaalea</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tumma</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>Ei videoita vielä</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>Lisää lähde tai päivitä aloittaaksesi kirjastosi selaamisen.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>Lisää lähteitä</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>Lisää kansio</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>Poista</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>Poista lähde?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>Poistetaanko “{0}” lähteistä?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>Poista</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>Lisää lähde</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>Lähteen nimi</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>Lisää</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>Uusi lähde</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>Jo lisätty</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>Tämä kansio on jo lähteissäsi.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>Valitse paikallinen kansio tai verkkojaettu.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>Selaa kansiota</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>Valitse kansio</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>Valitse paikallinen kansio tai verkkojaettu.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>Lisää toinen kansio?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>Haluatko lisätä toisen kansion?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>Lisää toinen</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>Valmis</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>Polkua ei löydy</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>Emme löytäneet kyseistä kansiota. Tarkista polku.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>Laitteen mediakirjasto</value>
   </data>
 </root>

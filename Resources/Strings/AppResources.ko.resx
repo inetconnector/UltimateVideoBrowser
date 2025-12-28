@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>기기의 모든 동영상</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>나만의 라이브러리</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>모든 비디오를 즉시 발견</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>풍부한 썸네일, 스마트 검색, 빠른 인덱싱으로 모든 폴더를 탐색하세요.</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>소스 관리</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>날짜 범위</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>시작</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>끝</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>인덱싱 중 {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>폴더: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>파일: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>숨기기</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>자세히</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>라이브러리 하이라이트</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>인덱싱된 비디오</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>활성화된 소스</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>팁</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>검색 + 필터를 사용한 다음 새 폴더를 추가한 후 다시 인덱싱하면 최상의 결과를 얻을 수 있습니다.</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>활성 소스 {1}개 중 {0}개</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>액세스 필요</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>비디오에 접근하도록 허용하면 인덱싱하고 재생할 수 있습니다.</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>접근 허용</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>공유</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>비디오 공유</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>다른 이름으로 저장...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>비디오</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>저장 실패</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>이 비디오를 저장할 수 없습니다. 다른 위치를 시도하세요.</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>이 장치에서는 "다른 이름으로 저장"이 지원되지 않습니다.</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>뒤로</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>모양</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>테마</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>정렬</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>기본 순서</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>필터</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>날짜 필터 사용</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>시작</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>끝</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>인덱싱</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>다음 실행 시 재인덱싱</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>라이트</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>다크</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>아직 비디오가 없습니다</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>소스를 추가하거나 새로 고침하여 라이브러리 탐색을 시작하세요.</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>소스 추가</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>폴더 추가</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>제거</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>소스를 제거할까요?</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>소스에서 “{0}”을(를) 제거할까요?</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>제거</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>소스 추가</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>소스 이름</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>추가</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>새 소스</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>이미 추가됨</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>이 폴더는 이미 소스에 있습니다.</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>로컬 폴더 또는 네트워크 공유를 선택하세요.</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>폴더 찾아보기</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>폴더 선택</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>로컬 폴더 또는 네트워크 공유를 선택하세요.</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>다른 폴더를 추가할까요?</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>다른 폴더를 추가하시겠습니까?</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>다른 폴더 추가</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>완료</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>경로를 찾을 수 없음</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>해당 폴더를 찾을 수 없습니다. 경로를 확인하세요.</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>기기 미디어 라이브러리</value>
   </data>
 </root>

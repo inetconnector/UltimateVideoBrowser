@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -59,5 +59,221 @@
   </data>
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>デバイス上のすべての動画</value>
+  </data>
+<data name="HeroEyebrow" xml:space="preserve">
+    <value>あなたの個人ライブラリ</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>すべての動画を瞬時に発見</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>豊富なサムネイル、スマート検索、高速インデックスで全フォルダーをブラウズできます。</value>
+  </data>
+  <data name="HeroPrimaryAction" xml:space="preserve">
+    <value>ソースを管理</value>
+  </data>
+  <data name="DateFilterTitle" xml:space="preserve">
+    <value>日付範囲</value>
+  </data>
+  <data name="DateFilterFromLabel" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="DateFilterToLabel" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="IndexingStatusFormat" xml:space="preserve">
+    <value>インデックス中 {0} • {1}/{2}</value>
+  </data>
+  <data name="IndexingFolderFormat" xml:space="preserve">
+    <value>フォルダー: {0}</value>
+  </data>
+  <data name="IndexingFileFormat" xml:space="preserve">
+    <value>ファイル: {0}</value>
+  </data>
+  <data name="IndexingBackgroundButton" xml:space="preserve">
+    <value>非表示</value>
+  </data>
+  <data name="IndexingCancelButton" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="IndexingShowDetailsButton" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="HighlightsTitle" xml:space="preserve">
+    <value>ライブラリのハイライト</value>
+  </data>
+  <data name="HighlightsVideosLabel" xml:space="preserve">
+    <value>インデックス済み動画</value>
+  </data>
+  <data name="HighlightsSourcesLabel" xml:space="preserve">
+    <value>有効なソース</value>
+  </data>
+  <data name="HighlightsTipLabel" xml:space="preserve">
+    <value>ヒント</value>
+  </data>
+  <data name="HighlightsTipText" xml:space="preserve">
+    <value>検索 + フィルターを使い、新しいフォルダーを追加した後に再インデックスすると最良の結果になります。</value>
+  </data>
+  <data name="SourcesSummaryFormat" xml:space="preserve">
+    <value>有効なソース {1} 件中 {0} 件</value>
+  </data>
+  <data name="PermissionTitle" xml:space="preserve">
+    <value>アクセスが必要です</value>
+  </data>
+  <data name="PermissionMessage" xml:space="preserve">
+    <value>動画へのアクセスを許可すると、インデックス化して再生できます。</value>
+  </data>
+  <data name="PermissionOk" xml:space="preserve">
+    <value>アクセスを許可</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>了解</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>共有</value>
+  </data>
+  <data name="ShareTitle" xml:space="preserve">
+    <value>動画を共有</value>
+  </data>
+  <data name="SaveAsAction" xml:space="preserve">
+    <value>名前を付けて保存...</value>
+  </data>
+  <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="SaveAsFailedTitle" xml:space="preserve">
+    <value>保存に失敗しました</value>
+  </data>
+  <data name="SaveAsFailedMessage" xml:space="preserve">
+    <value>この動画を保存できませんでした。別の場所を試してください。</value>
+  </data>
+  <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    <value>このデバイスでは「名前を付けて保存」はサポートされていません。</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>戻る</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SettingsPageTitle" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SettingsPageHeader" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SettingsAppearanceTitle" xml:space="preserve">
+    <value>外観</value>
+  </data>
+  <data name="SettingsThemeLabel" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="SettingsSortingTitle" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    <value>既定の順序</value>
+  </data>
+  <data name="SettingsFilterTitle" xml:space="preserve">
+    <value>フィルター</value>
+  </data>
+  <data name="SettingsDateFilterLabel" xml:space="preserve">
+    <value>日付フィルターを有効にする</value>
+  </data>
+  <data name="SettingsDateFromLabel" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="SettingsDateToLabel" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="SettingsIndexingTitle" xml:space="preserve">
+    <value>インデックス</value>
+  </data>
+  <data name="SettingsReindexLabel" xml:space="preserve">
+    <value>次回起動時に再インデックス</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ダーク</value>
+  </data>
+  <data name="EmptyStateTitle" xml:space="preserve">
+    <value>まだ動画がありません</value>
+  </data>
+  <data name="EmptyStateMessage" xml:space="preserve">
+    <value>ソースを追加するか更新して、ライブラリの閲覧を開始しましょう。</value>
+  </data>
+  <data name="EmptyStateAction" xml:space="preserve">
+    <value>ソースを追加</value>
+  </data>
+  <data name="AddSourceButton" xml:space="preserve">
+    <value>フォルダーを追加</value>
+  </data>
+  <data name="RemoveSourceButton" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="RemoveSourceTitle" xml:space="preserve">
+    <value>ソースを削除しますか？</value>
+  </data>
+  <data name="RemoveSourceMessage" xml:space="preserve">
+    <value>ソースから「{0}」を削除しますか？</value>
+  </data>
+  <data name="RemoveSourceConfirm" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="NewSourceTitle" xml:space="preserve">
+    <value>ソースを追加</value>
+  </data>
+  <data name="NewSourcePrompt" xml:space="preserve">
+    <value>ソース名</value>
+  </data>
+  <data name="NewSourceConfirm" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="NewSourceCancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="NewSourceDefaultName" xml:space="preserve">
+    <value>新しいソース</value>
+  </data>
+  <data name="SourceExistsTitle" xml:space="preserve">
+    <value>すでに追加されています</value>
+  </data>
+  <data name="SourceExistsMessage" xml:space="preserve">
+    <value>このフォルダーはすでにソースにあります。</value>
+  </data>
+  <data name="AddPathHelper" xml:space="preserve">
+    <value>ローカルフォルダーまたはネットワーク共有を選択してください。</value>
+  </data>
+  <data name="AddPathButton" xml:space="preserve">
+    <value>フォルダーを参照</value>
+  </data>
+  <data name="AddPathTitle" xml:space="preserve">
+    <value>フォルダーを選択</value>
+  </data>
+  <data name="AddPathPrompt" xml:space="preserve">
+    <value>ローカルフォルダーまたはネットワーク共有を選択してください。</value>
+  </data>
+  <data name="AddAnotherFolderTitle" xml:space="preserve">
+    <value>別のフォルダーを追加しますか？</value>
+  </data>
+  <data name="AddAnotherFolderMessage" xml:space="preserve">
+    <value>別のフォルダーを追加しますか？</value>
+  </data>
+  <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    <value>別のフォルダーを追加</value>
+  </data>
+  <data name="AddAnotherFolderCancel" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="PathInvalidTitle" xml:space="preserve">
+    <value>パスが見つかりません</value>
+  </data>
+  <data name="PathInvalidMessage" xml:space="preserve">
+    <value>そのフォルダーが見つかりませんでした。パスを確認してください。</value>
+  </data>
+  <data name="DeviceLibraryPath" xml:space="preserve">
+    <value>デバイスのメディアライブラリ</value>
   </data>
 </root>
