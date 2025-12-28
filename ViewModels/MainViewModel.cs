@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -41,6 +42,10 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int videoCount;
 
     [ObservableProperty] private List<VideoItem> videos = new();
+    [ObservableProperty] private int markedCount;
+
+    private readonly PropertyChangedEventHandler videoMarkedHandler;
+    private List<VideoItem> subscribedVideos = new();
     private int indexLastInserted;
     private DateTime indexLastRefresh;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
@@ -62,6 +67,7 @@ public partial class MainViewModel : ObservableObject
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
 
+        videoMarkedHandler = OnVideoPropertyChanged;
         SortOptions = new[]
         {
             new SortOption("name", AppResources.SortName),
@@ -244,6 +250,42 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task CopyMarkedAsync()
+    {
+        var markedItems = Videos.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+        await fileExportService.CopyToFolderAsync(markedItems);
+    }
+
+    [RelayCommand]
+    public async Task MoveMarkedAsync()
+    {
+        var markedItems = Videos.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+        var moved = await fileExportService.MoveToFolderAsync(markedItems);
+        if (moved.Count > 0)
+        {
+            await indexService.RemoveAsync(moved);
+            Videos = Videos.Except(moved).ToList();
+        }
+        else
+        {
+            UpdateMarkedCount();
+        }
+    }
+
+    [RelayCommand]
+    public void ClearMarked()
+    {
+        foreach (var item in Videos.Where(v => v.IsMarked))
+            item.IsMarked = false;
+    }
+
+    [RelayCommand]
     public async Task RequestPermissionAsync()
     {
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
@@ -318,7 +360,16 @@ public partial class MainViewModel : ObservableObject
     {
         VideoCount = value?.Count ?? 0;
         TimelineEntries = BuildTimelineEntries(value);
+        SubscribeToMarkedChanges(value);
+        UpdateMarkedCount();
     }
+
+    partial void OnMarkedCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(HasMarked));
+    }
+
+    public bool HasMarked => MarkedCount > 0;
 
     partial void OnActiveSourceIdChanged(string value)
     {
@@ -386,6 +437,31 @@ public partial class MainViewModel : ObservableObject
         }
 
         return entries;
+    }
+
+    private void SubscribeToMarkedChanges(List<VideoItem>? items)
+    {
+        if (subscribedVideos.Count > 0)
+        {
+            foreach (var video in subscribedVideos)
+                video.PropertyChanged -= videoMarkedHandler;
+        }
+
+        subscribedVideos = items ?? new List<VideoItem>();
+
+        foreach (var video in subscribedVideos)
+            video.PropertyChanged += videoMarkedHandler;
+    }
+
+    private void OnVideoPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(VideoItem.IsMarked))
+            UpdateMarkedCount();
+    }
+
+    private void UpdateMarkedCount()
+    {
+        MarkedCount = Videos?.Count(v => v.IsMarked) ?? 0;
     }
 
     private void UpdateIndexLocation(string sourceName, string? path)
