@@ -20,6 +20,10 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>();
 
+#if WINDOWS
+        SvgImageSourceFix.Configure();
+#endif
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
