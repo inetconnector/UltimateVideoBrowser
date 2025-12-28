@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -26,35 +27,50 @@ public sealed class IndexService
 
             progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, null));
 
-            await foreach (var v in scanner.StreamSourceAsync(source, ct))
+            try
             {
-                ct.ThrowIfCancellationRequested();
-                totalOverall++;
-                progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName,
-                    v.Path));
+                await foreach (var v in scanner.StreamSourceAsync(source, ct))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    totalOverall++;
+                    progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName,
+                        v.Path));
 
-                var exists = await db.Db.FindAsync<VideoItem>(v.Path);
-                if (exists == null)
-                {
-                    await db.Db.InsertAsync(v);
-                    inserted++;
-                }
-                else
-                {
-                    // Update name/duration if changed (cheap)
-                    if (exists.Name != v.Name || exists.DurationMs != v.DurationMs || exists.SourceId != v.SourceId)
+                    try
                     {
-                        exists.Name = v.Name;
-                        exists.DurationMs = v.DurationMs;
-                        exists.SourceId = v.SourceId;
-                        exists.DateAddedSeconds = v.DateAddedSeconds;
-                        await db.Db.UpdateAsync(exists);
+                        var exists = await db.Db.FindAsync<VideoItem>(v.Path);
+                        if (exists == null)
+                        {
+                            await db.Db.InsertAsync(v);
+                            inserted++;
+                        }
+                        else
+                        {
+                            // Update name/duration if changed (cheap)
+                            if (exists.Name != v.Name || exists.DurationMs != v.DurationMs ||
+                                exists.SourceId != v.SourceId)
+                            {
+                                exists.Name = v.Name;
+                                exists.DurationMs = v.DurationMs;
+                                exists.SourceId = v.SourceId;
+                                exists.DateAddedSeconds = v.DateAddedSeconds;
+                                await db.Db.UpdateAsync(exists);
+                            }
+                        }
                     }
-                }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Indexing skipped item '{v.Path}': {ex}");
+                    }
 
-                processedOverall++;
-                progress?.Report(
-                    new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
+                    processedOverall++;
+                    progress?.Report(
+                        new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Indexing failed for source '{source.DisplayName}': {ex}");
             }
         }
 

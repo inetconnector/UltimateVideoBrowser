@@ -193,12 +193,20 @@ public partial class MainViewModel : ObservableObject
             indexCts?.Dispose();
             indexCts = new CancellationTokenSource();
 
-            await indexService.IndexSourcesAsync(sources, progress, indexCts.Token);
+            await Task.Run(async () =>
+            {
+                await indexService.IndexSourcesAsync(sources, progress, indexCts.Token);
+            }, indexCts.Token);
             completed = true;
         }
         catch (OperationCanceledException)
         {
             completed = false;
+        }
+        catch (Exception ex)
+        {
+            completed = false;
+            System.Diagnostics.Debug.WriteLine($"Indexing failed: {ex}");
         }
         finally
         {
