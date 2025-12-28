@@ -41,6 +41,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int videoCount;
 
     [ObservableProperty] private List<VideoItem> videos = new();
+    private int indexLastInserted;
+    private DateTime indexLastRefresh;
+    private readonly SemaphoreSlim refreshLock = new(1, 1);
 
     public MainViewModel(
         ISourceService sourceService,
@@ -97,23 +100,35 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task RefreshAsync()
     {
-        var sources = await sourceService.GetSourcesAsync();
-        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
-        await UpdateSourceStatsAsync(sources);
-
-        var sortKey = SelectedSortOption?.Key ?? "name";
-        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-        var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-        var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo);
-
-        if (string.IsNullOrWhiteSpace(ActiveSourceId))
+        await refreshLock.WaitAsync();
+        try
         {
-            var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
-            videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
-        }
+            var sources = await sourceService.GetSourcesAsync();
+            var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
 
-        Videos = videos;
-        StartThumbnailPipeline();
+            var sortKey = SelectedSortOption?.Key ?? "name";
+            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+            var videos = await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
+
+            if (string.IsNullOrWhiteSpace(normalizedSourceId))
+            {
+                var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
+                videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                ActiveSourceId = normalizedSourceId;
+                _ = UpdateSourceStatsAsync(sources);
+                Videos = videos;
+                StartThumbnailPipeline();
+            });
+        }
+        finally
+        {
+            refreshLock.Release();
+        }
     }
 
     [RelayCommand]
@@ -157,23 +172,11 @@ public partial class MainViewModel : ObservableObject
         try
         {
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
-            var lastRefresh = DateTime.UtcNow;
-            var lastInserted = 0;
+            indexLastRefresh = DateTime.UtcNow;
+            indexLastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
-                IndexProcessed = p.Processed;
-                IndexTotal = p.Total;
-                IndexRatio = p.Ratio;
-                IndexStatus = string.Format(AppResources.IndexingStatusFormat, p.SourceName, p.Processed, p.Total);
-                UpdateIndexLocation(p.SourceName, p.CurrentPath);
-                IndexedCount = p.Inserted;
-                if (p.Inserted > lastInserted &&
-                    DateTime.UtcNow - lastRefresh > TimeSpan.FromMilliseconds(400))
-                {
-                    lastInserted = p.Inserted;
-                    lastRefresh = DateTime.UtcNow;
-                    _ = RefreshAsync();
-                }
+                MainThread.BeginInvokeOnMainThread(() => ApplyIndexProgress(p));
             });
             indexCts?.Cancel();
             indexCts?.Dispose();
@@ -190,11 +193,14 @@ public partial class MainViewModel : ObservableObject
         {
             indexCts?.Dispose();
             indexCts = null;
-            IsIndexing = false;
-            IndexStatus = "";
-            IndexRatio = 0;
-            IndexCurrentFolder = "";
-            IndexCurrentFile = "";
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                IsIndexing = false;
+                IndexStatus = "";
+                IndexRatio = 0;
+                IndexCurrentFolder = "";
+                IndexCurrentFile = "";
+            });
         }
 
         if (completed)
@@ -395,5 +401,24 @@ public partial class MainViewModel : ObservableObject
         var folderName = Path.GetDirectoryName(path);
         IndexCurrentFile = string.IsNullOrWhiteSpace(fileName) ? path : fileName;
         IndexCurrentFolder = string.IsNullOrWhiteSpace(folderName) ? sourceName : folderName;
+    }
+
+    private void ApplyIndexProgress(IndexProgress progress)
+    {
+        IndexProcessed = progress.Processed;
+        IndexTotal = progress.Total;
+        IndexRatio = progress.Ratio;
+        IndexStatus = string.Format(AppResources.IndexingStatusFormat, progress.SourceName, progress.Processed,
+            progress.Total);
+        UpdateIndexLocation(progress.SourceName, progress.CurrentPath);
+        IndexedCount = progress.Inserted;
+
+        if (progress.Inserted > indexLastInserted &&
+            DateTime.UtcNow - indexLastRefresh > TimeSpan.FromMilliseconds(400))
+        {
+            indexLastInserted = progress.Inserted;
+            indexLastRefresh = DateTime.UtcNow;
+            _ = RefreshAsync();
+        }
     }
 }
