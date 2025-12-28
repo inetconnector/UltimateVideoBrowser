@@ -43,6 +43,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private List<VideoItem> videos = new();
     private int indexLastInserted;
     private DateTime indexLastRefresh;
+    private readonly SemaphoreSlim refreshLock = new(1, 1);
 
     public MainViewModel(
         ISourceService sourceService,
@@ -99,23 +100,35 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task RefreshAsync()
     {
-        var sources = await sourceService.GetSourcesAsync();
-        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
-        await UpdateSourceStatsAsync(sources);
-
-        var sortKey = SelectedSortOption?.Key ?? "name";
-        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-        var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-        var videos = await indexService.QueryAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo);
-
-        if (string.IsNullOrWhiteSpace(ActiveSourceId))
+        await refreshLock.WaitAsync();
+        try
         {
-            var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
-            videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
-        }
+            var sources = await sourceService.GetSourcesAsync();
+            var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
 
-        Videos = videos;
-        StartThumbnailPipeline();
+            var sortKey = SelectedSortOption?.Key ?? "name";
+            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+            var videos = await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
+
+            if (string.IsNullOrWhiteSpace(normalizedSourceId))
+            {
+                var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
+                videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                ActiveSourceId = normalizedSourceId;
+                _ = UpdateSourceStatsAsync(sources);
+                Videos = videos;
+                StartThumbnailPipeline();
+            });
+        }
+        finally
+        {
+            refreshLock.Release();
+        }
     }
 
     [RelayCommand]
