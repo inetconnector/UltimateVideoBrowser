@@ -7,7 +7,10 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+    <AbsoluteLayout>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
         <!-- Top bar -->
         <Grid Padding="16,14"
               ColumnDefinitions="*,Auto,Auto,Auto"
@@ -708,10 +711,13 @@
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid Grid.RowSpan="7"
-              IsVisible="{Binding IsIndexingOverlayVisible}"
+        <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
-              Padding="24">
+              Padding="24"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
 
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="16"
@@ -768,5 +774,5 @@
 
             </Frame>
         </Grid>
-    </Grid>
+    </AbsoluteLayout>
 </ContentPage>
