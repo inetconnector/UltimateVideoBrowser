@@ -119,7 +119,7 @@
                     </VerticalStackLayout>
 
                     <Image Grid.Column="1"
-                           Source="hero_video"
+                           Source="hero_video.svg"
                            HeightRequest="120"
                            WidthRequest="140"
                            HorizontalOptions="End"
@@ -144,7 +144,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_play" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{Binding VideoCount}"
                                FontSize="20"
                                FontAttributes="Bold"
@@ -161,7 +161,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="icon_sources" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{Binding EnabledSourceCount}"
                                FontSize="20"
                                FontAttributes="Bold"
@@ -181,7 +181,7 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
-                        <Image Source="chip_spark" HeightRequest="18" WidthRequest="18" />
+                        <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
                         <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
                                FontSize="13"
                                FontAttributes="Bold"
@@ -458,7 +458,7 @@
                                          HorizontalOptions="Center"
                                          VerticalOptions="Center"
                                          Margin="24">
-                        <Image Source="empty_state"
+                        <Image Source="empty_state.svg"
                                HeightRequest="180"
                                WidthRequest="240"
                                HorizontalOptions="Center" />
@@ -488,12 +488,12 @@
                                        Margin="8"
                                        Padding="0"
                                        BorderColor="{DynamicResource BorderSubtle}">
-                                    <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                    <Grid RowDefinitions="170,Auto,Auto" Padding="10">
                                         <Grid RowDefinitions="*"
                                               BackgroundColor="{DynamicResource Surface2}"
                                               HeightRequest="170">
                                             <Image
-                                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                 Aspect="AspectFill" />
                                             <Frame BackgroundColor="#CC0E0F14"
                                                    CornerRadius="999"
@@ -501,7 +501,7 @@
                                                    HorizontalOptions="End"
                                                    VerticalOptions="End"
                                                    Margin="8">
-                                                <Image Source="icon_play" HeightRequest="16" WidthRequest="16" />
+                                                <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
                                             </Frame>
                                         </Grid>
 
@@ -520,22 +520,12 @@
                                                HorizontalOptions="Start"
                                                Margin="0,6,0,2">
                                             <HorizontalStackLayout Spacing="6">
-                                                <Image Source="chip_clock" HeightRequest="12" WidthRequest="12" />
+                                                <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
                                                 <Label Text="{Binding DurationText}"
                                                        TextColor="{DynamicResource OnSurfaceMuted}"
                                                        FontSize="11" />
                                             </HorizontalStackLayout>
                                         </Frame>
-
-                                        <ImageButton Grid.Row="3"
-                                                     Source="icon_play"
-                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                     CommandParameter="{Binding .}"
-                                                     Margin="0,4,0,8"
-                                                     HeightRequest="40"
-                                                     WidthRequest="40"
-                                                     HorizontalOptions="Start"
-                                                     VerticalOptions="Center" />
 
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer
@@ -564,12 +554,12 @@
                                            Margin="8"
                                            Padding="0"
                                            BorderColor="{DynamicResource BorderSubtle}">
-                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                        <Grid RowDefinitions="170,Auto,Auto" Padding="10">
                                             <Grid RowDefinitions="*"
                                                   BackgroundColor="{DynamicResource Surface2}"
                                                   HeightRequest="170">
                                                 <Image
-                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                     Aspect="AspectFill" />
                                                 <Frame BackgroundColor="#CC0E0F14"
                                                        CornerRadius="999"
@@ -577,7 +567,7 @@
                                                        HorizontalOptions="End"
                                                        VerticalOptions="End"
                                                        Margin="8">
-                                                    <Image Source="icon_play" HeightRequest="16" WidthRequest="16" />
+                                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
                                                 </Frame>
                                             </Grid>
 
@@ -596,22 +586,12 @@
                                                    HorizontalOptions="Start"
                                                    Margin="0,6,0,2">
                                                 <HorizontalStackLayout Spacing="6">
-                                                    <Image Source="chip_clock" HeightRequest="12" WidthRequest="12" />
+                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
                                                     <Label Text="{Binding DurationText}"
                                                            TextColor="{DynamicResource OnSurfaceMuted}"
                                                            FontSize="11" />
                                                 </HorizontalStackLayout>
                                             </Frame>
-
-                                            <ImageButton Grid.Row="3"
-                                                         Source="icon_play"
-                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                         CommandParameter="{Binding .}"
-                                                         Margin="0,4,0,8"
-                                                         HeightRequest="40"
-                                                         WidthRequest="40"
-                                                         HorizontalOptions="Start"
-                                                         VerticalOptions="Center" />
 
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer
@@ -641,12 +621,12 @@
                                            Margin="8"
                                            Padding="0"
                                            BorderColor="{DynamicResource BorderSubtle}">
-                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                        <Grid RowDefinitions="170,Auto,Auto" Padding="10">
                                             <Grid RowDefinitions="*"
                                                   BackgroundColor="{DynamicResource Surface2}"
                                                   HeightRequest="170">
                                                 <Image
-                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder}"
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                     Aspect="AspectFill" />
                                                 <Frame BackgroundColor="#CC0E0F14"
                                                        CornerRadius="999"
@@ -654,7 +634,7 @@
                                                        HorizontalOptions="End"
                                                        VerticalOptions="End"
                                                        Margin="8">
-                                                    <Image Source="icon_play" HeightRequest="16" WidthRequest="16" />
+                                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
                                                 </Frame>
                                             </Grid>
 
@@ -673,22 +653,12 @@
                                                    HorizontalOptions="Start"
                                                    Margin="0,6,0,2">
                                                 <HorizontalStackLayout Spacing="6">
-                                                    <Image Source="chip_clock" HeightRequest="12" WidthRequest="12" />
+                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
                                                     <Label Text="{Binding DurationText}"
                                                            TextColor="{DynamicResource OnSurfaceMuted}"
                                                            FontSize="11" />
                                                 </HorizontalStackLayout>
                                             </Frame>
-
-                                            <ImageButton Grid.Row="3"
-                                                         Source="icon_play"
-                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                         CommandParameter="{Binding .}"
-                                                         Margin="0,4,0,8"
-                                                         HeightRequest="40"
-                                                         WidthRequest="40"
-                                                         HorizontalOptions="Start"
-                                                         VerticalOptions="Center" />
 
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer
