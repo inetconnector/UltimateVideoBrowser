@@ -54,7 +54,7 @@ public static class SvgImageSourceFix
         return path.Contains(Path.DirectorySeparatorChar) || path.Contains(Path.AltDirectorySeparatorChar);
     }
 
-    private static async Task ApplySvgSourceAsync(ImageHandler handler, string fileName)
+    private static async Task ApplySvgSourceAsync(IImageHandler handler, string fileName)
     {
         try
         {
