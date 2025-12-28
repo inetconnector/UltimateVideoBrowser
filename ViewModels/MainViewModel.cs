@@ -52,6 +52,10 @@ public partial class MainViewModel : ObservableObject
     private readonly object indexProgressLock = new();
     private bool isApplyingIndexProgress;
     private IndexProgress? pendingIndexProgress;
+    private readonly object thumbnailLock = new();
+    private bool thumbnailPipelineRunning;
+    private bool thumbnailPipelineQueued;
+    private int videosVersion;
 
     public MainViewModel(
         ISourceService sourceService,
@@ -100,7 +104,6 @@ public partial class MainViewModel : ObservableObject
         }
 
         await RefreshAsync();
-        StartThumbnailPipeline();
 
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
@@ -131,7 +134,6 @@ public partial class MainViewModel : ObservableObject
                 ActiveSourceId = normalizedSourceId;
                 _ = UpdateSourceStatsAsync(sources);
                 Videos = videos;
-                StartThumbnailPipeline();
             });
         }
         finally
@@ -298,6 +300,20 @@ public partial class MainViewModel : ObservableObject
 
     private void StartThumbnailPipeline()
     {
+        int currentVersion;
+        lock (thumbnailLock)
+        {
+            if (thumbnailPipelineRunning)
+            {
+                thumbnailPipelineQueued = true;
+                return;
+            }
+
+            thumbnailPipelineRunning = true;
+            thumbnailPipelineQueued = false;
+            currentVersion = videosVersion;
+        }
+
         thumbCts?.Cancel();
         thumbCts?.Dispose();
         thumbCts = new CancellationTokenSource();
@@ -321,6 +337,19 @@ public partial class MainViewModel : ObservableObject
             catch
             {
                 // Ignore cancellation or retrieval failures.
+            }
+            finally
+            {
+                var shouldRestart = false;
+                lock (thumbnailLock)
+                {
+                    thumbnailPipelineRunning = false;
+                    shouldRestart = thumbnailPipelineQueued || videosVersion != currentVersion;
+                    thumbnailPipelineQueued = false;
+                }
+
+                if (shouldRestart)
+                    MainThread.BeginInvokeOnMainThread(StartThumbnailPipeline);
             }
         });
     }
@@ -365,6 +394,8 @@ public partial class MainViewModel : ObservableObject
         TimelineEntries = BuildTimelineEntries(value);
         SubscribeToMarkedChanges(value);
         UpdateMarkedCount();
+        videosVersion++;
+        StartThumbnailPipeline();
     }
 
     partial void OnMarkedCountChanged(int value)
