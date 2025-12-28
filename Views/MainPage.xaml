@@ -708,10 +708,13 @@
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid Grid.RowSpan="7"
+        <Grid Grid.Row="0"
+              Grid.RowSpan="8"
               IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
-              Padding="24">
+              Padding="24"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill">
 
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="16"
