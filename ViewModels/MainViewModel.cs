@@ -49,6 +49,9 @@ public partial class MainViewModel : ObservableObject
     private int indexLastInserted;
     private DateTime indexLastRefresh;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
+    private readonly object indexProgressLock = new();
+    private bool isApplyingIndexProgress;
+    private IndexProgress? pendingIndexProgress;
     private readonly object thumbnailLock = new();
     private bool thumbnailPipelineRunning;
     private bool thumbnailPipelineQueued;
@@ -184,7 +187,7 @@ public partial class MainViewModel : ObservableObject
             indexLastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
-                MainThread.BeginInvokeOnMainThread(() => ApplyIndexProgress(p));
+                MainThread.BeginInvokeOnMainThread(() => QueueIndexProgress(p));
             });
             indexCts?.Cancel();
             indexCts?.Dispose();
@@ -508,6 +511,33 @@ public partial class MainViewModel : ObservableObject
         var folderName = Path.GetDirectoryName(path);
         IndexCurrentFile = string.IsNullOrWhiteSpace(fileName) ? path : fileName;
         IndexCurrentFolder = string.IsNullOrWhiteSpace(folderName) ? sourceName : folderName;
+    }
+
+    private void QueueIndexProgress(IndexProgress progress)
+    {
+        var next = progress;
+        while (next != null)
+        {
+            lock (indexProgressLock)
+            {
+                if (isApplyingIndexProgress)
+                {
+                    pendingIndexProgress = next;
+                    return;
+                }
+
+                isApplyingIndexProgress = true;
+            }
+
+            ApplyIndexProgress(next);
+
+            lock (indexProgressLock)
+            {
+                isApplyingIndexProgress = false;
+                next = pendingIndexProgress;
+                pendingIndexProgress = null;
+            }
+        }
     }
 
     private void ApplyIndexProgress(IndexProgress progress)

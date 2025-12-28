@@ -7,7 +7,8 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+    <Grid>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
         <!-- Top bar -->
         <Grid Padding="16,14"
               ColumnDefinitions="*,Auto,Auto,Auto"
@@ -737,10 +738,10 @@
             </CollectionView>
         </Grid>
 
+        </Grid>
+
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid Grid.Row="0"
-              Grid.RowSpan="8"
-              IsVisible="{Binding IsIndexingOverlayVisible}"
+        <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
               Padding="24"
               HorizontalOptions="Fill"
