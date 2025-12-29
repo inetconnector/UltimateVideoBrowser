@@ -9,6 +9,9 @@ using Windows.Storage;
 #endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+#if WINDOWS
+using System.Threading.Channels;
+#endif
 using UltimateVideoBrowser.Models;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 using IOPath = System.IO.Path;
@@ -154,49 +157,8 @@ public sealed class MediaStoreScanner
         if (!Directory.Exists(root))
             yield break;
 
-        foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
-        {
-            ct.ThrowIfCancellationRequested();
-
-            FileInfo? info;
-            try
-            {
-                info = new FileInfo(path);
-            }
-            catch
-            {
-                continue;
-            }
-
-            var mediaType = extensions.GetMediaTypeFromPath(path);
-            if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
-                continue;
-
-            var durationMs = 0L;
-            if (mediaType == ModelMediaType.Videos)
-            {
-                try
-                {
-                    var file = await StorageFile.GetFileFromPathAsync(path);
-                    var props = await file.Properties.GetVideoPropertiesAsync();
-                    durationMs = (long)props.Duration.TotalMilliseconds;
-                }
-                catch
-                {
-                    durationMs = 0;
-                }
-            }
-
-            yield return new MediaItem
-            {
-                Path = path,
-                Name = Path.GetFileName(path),
-                DurationMs = durationMs,
-                DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
-                SourceId = sourceId,
-                MediaType = mediaType
-            };
-        }
+        await foreach (var item in ScanWindowsFileSystemAsync(root, sourceId, indexedTypes, extensions, ct))
+            yield return item;
     }
 
     private static IEnumerable<string> EnumerateMediaFilesStreamingWindows(string root, ModelMediaType indexedTypes,
@@ -343,6 +305,145 @@ public sealed class MediaStoreScanner
             foreach (var subfolder in subfolders)
                 queue.Enqueue(subfolder);
         }
+    }
+
+    private static async IAsyncEnumerable<MediaItem> ScanWindowsFileSystemAsync(string root, string? sourceId,
+        ModelMediaType indexedTypes, ExtensionLookup extensions,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+    {
+        var fileChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(512)
+        {
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleWriter = true,
+            SingleReader = false
+        });
+        var itemChannel = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(512)
+        {
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleWriter = false,
+            SingleReader = true
+        });
+
+        var producer = Task.Run(async () =>
+        {
+            try
+            {
+                foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await fileChannel.Writer.WriteAsync(path, ct).ConfigureAwait(false);
+                }
+                fileChannel.Writer.TryComplete();
+            }
+            catch (OperationCanceledException)
+            {
+                fileChannel.Writer.TryComplete();
+            }
+            catch (Exception ex)
+            {
+                fileChannel.Writer.TryComplete(ex);
+            }
+        }, ct);
+
+        var workerCount = Math.Clamp(Environment.ProcessorCount, 2, 6);
+        var workers = new Task[workerCount];
+
+        for (var i = 0; i < workerCount; i++)
+        {
+            workers[i] = Task.Run(async () =>
+            {
+                try
+                {
+                    await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
+                    {
+                        var item = await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
+                            .ConfigureAwait(false);
+                        if (item != null)
+                            await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // Cancellation is expected; let completion happen below.
+                }
+            }, ct);
+        }
+
+        var completion = Task.WhenAll(workers).ContinueWith(task =>
+        {
+            itemChannel.Writer.TryComplete(task.Exception);
+        }, TaskScheduler.Default);
+
+        try
+        {
+            await foreach (var item in itemChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
+                yield return item;
+        }
+        finally
+        {
+            try
+            {
+                await producer.ConfigureAwait(false);
+            }
+            catch
+            {
+                // Exceptions are propagated through the channel completion.
+            }
+
+            try
+            {
+                await completion.ConfigureAwait(false);
+            }
+            catch
+            {
+                // Exceptions are propagated through the channel completion.
+            }
+        }
+    }
+
+    private static async ValueTask<MediaItem?> BuildMediaItemFromPathWindowsAsync(string path, string? sourceId,
+        ModelMediaType indexedTypes, ExtensionLookup extensions, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        FileInfo? info;
+        try
+        {
+            info = new FileInfo(path);
+        }
+        catch
+        {
+            return null;
+        }
+
+        var mediaType = extensions.GetMediaTypeFromPath(path);
+        if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
+            return null;
+
+        var durationMs = 0L;
+        if (mediaType == ModelMediaType.Videos)
+        {
+            try
+            {
+                var file = await StorageFile.GetFileFromPathAsync(path);
+                var props = await file.Properties.GetVideoPropertiesAsync();
+                durationMs = (long)props.Duration.TotalMilliseconds;
+            }
+            catch
+            {
+                durationMs = 0;
+            }
+        }
+
+        return new MediaItem
+        {
+            Path = path,
+            Name = Path.GetFileName(path),
+            DurationMs = durationMs,
+            DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
+            SourceId = sourceId,
+            MediaType = mediaType
+        };
     }
 #endif
 
