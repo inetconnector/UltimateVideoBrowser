@@ -436,7 +436,7 @@
         <!-- Browser grid -->
             <Grid Grid.Row="9"
                   x:Name="BrowserGrid"
-                  ColumnDefinitions="96,*"
+                  ColumnDefinitions="*,120"
                   RowDefinitions="*"
                   VerticalOptions="FillAndExpand"
                   HorizontalOptions="FillAndExpand">
@@ -456,11 +456,11 @@
                         <VisualState.Setters>
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
                             <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
                             <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
                             <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="VideosView" Property="Grid.Column" Value="1" />
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="96,*" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
                         </VisualState.Setters>
                     </VisualState>
 
@@ -482,13 +482,13 @@
                             </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="96,*" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
                             <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
                             <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
                             <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="VideosView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -503,42 +503,47 @@
                             VerticalOptions="FillAndExpand"
                             HorizontalOptions="FillAndExpand"
                             Margin="8,0,8,0"
-                            Grid.Column="0">
+                            Grid.Column="1">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="14,*" RowDefinitions="Auto,Auto" Padding="4,6">
-                            <BoxView Grid.RowSpan="2"
-                                     WidthRequest="2"
+                        <Grid ColumnDefinitions="14,*" Padding="4,6">
+                            <BoxView WidthRequest="2"
                                      BackgroundColor="{DynamicResource BorderSubtle}"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Fill" />
                             <Frame Grid.Column="1"
-                                   Grid.RowSpan="2"
-                                   Padding="8,6"
+                                   Padding="6"
                                    CornerRadius="12"
                                    BackgroundColor="{DynamicResource Surface2}"
                                    BorderColor="{DynamicResource BorderSubtle}"
                                    HasShadow="False">
-                                <VerticalStackLayout Spacing="2">
-                                    <Label Text="{Binding MonthLabel}"
-                                           FontAttributes="Bold"
-                                           FontSize="12"
-                                           TextColor="{DynamicResource OnSurface}" />
-                                    <Label Text="{Binding YearLabel}"
-                                           FontSize="10"
-                                           TextColor="{DynamicResource OnSurfaceMuted}"
-                                           IsVisible="{Binding ShowYear}" />
-                                </VerticalStackLayout>
+                                <Grid RowDefinitions="70,Auto" RowSpacing="6">
+                                    <Grid BackgroundColor="{DynamicResource Surface3}"
+                                          HeightRequest="70">
+                                        <Image Source="{Binding AnchorVideo.ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                               Aspect="AspectFill" />
+                                    </Grid>
+                                    <VerticalStackLayout Grid.Row="1" Spacing="2">
+                                        <Label Text="{Binding MonthLabel}"
+                                               FontAttributes="Bold"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{Binding YearLabel}"
+                                               FontSize="10"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               IsVisible="{Binding ShowYear}" />
+                                    </VerticalStackLayout>
+                                </Grid>
                             </Frame>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <CollectionView Grid.Column="1"
+            <CollectionView Grid.Column="0"
                             ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None"
