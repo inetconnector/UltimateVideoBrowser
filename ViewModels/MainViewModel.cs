@@ -22,6 +22,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
+    [ObservableProperty] private List<MediaSource> sources = new();
 
     private CancellationTokenSource? indexCts;
     [ObservableProperty] private string indexCurrentFile = "";
@@ -48,7 +49,6 @@ public partial class MainViewModel : ObservableObject
     private readonly PropertyChangedEventHandler videoMarkedHandler;
     private List<VideoItem> subscribedVideos = new();
     private int indexLastInserted;
-    private DateTime indexLastRefresh;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly object indexProgressLock = new();
     private bool isApplyingIndexProgress;
@@ -96,6 +96,7 @@ public partial class MainViewModel : ObservableObject
         var sources = await sourceService.GetSourcesAsync();
         ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
         await UpdateSourceStatsAsync(sources);
+        Sources = sources.Where(s => s.IsEnabled).ToList();
 
         HasMediaPermission = await permissionService.CheckMediaReadAsync();
 
@@ -125,19 +126,15 @@ public partial class MainViewModel : ObservableObject
             var sortKey = SelectedSortOption?.Key ?? "name";
             var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-            var totalCountTask = indexService.CountAsync();
-            var videos = await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
-            var totalCount = await totalCountTask;
-
-            if (string.IsNullOrWhiteSpace(normalizedSourceId))
-            {
-                var enabledIds = sources.Where(s => s.IsEnabled).Select(s => s.Id).ToHashSet();
-                videos = videos.Where(v => v.SourceId != null && enabledIds.Contains(v.SourceId)).ToList();
-            }
+            var videos = string.IsNullOrWhiteSpace(normalizedSourceId)
+                ? new List<VideoItem>()
+                : await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
+            var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 ActiveSourceId = normalizedSourceId;
+                Sources = enabledSources;
                 _ = UpdateSourceStatsAsync(sources);
                 Videos = videos;
                 IndexedVideoCount = totalCount;
@@ -213,7 +210,6 @@ public partial class MainViewModel : ObservableObject
             indexStartingCount = await indexService.CountAsync();
             await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = indexStartingCount);
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
-            indexLastRefresh = DateTime.UtcNow;
             indexLastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
@@ -330,6 +326,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task SelectSourceAsync(MediaSource? source)
+    {
+        if (source == null || source.Id == ActiveSourceId)
+            return;
+
+        ActiveSourceId = source.Id;
+        await RefreshAsync();
+    }
+
+    [RelayCommand]
     public async Task RequestPermissionAsync()
     {
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
@@ -420,11 +426,15 @@ public partial class MainViewModel : ObservableObject
 
     private static string NormalizeActiveSourceId(List<MediaSource> sources, string activeSourceId)
     {
-        if (string.IsNullOrWhiteSpace(activeSourceId))
+        var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+        if (enabledSources.Count == 0)
             return "";
 
-        var exists = sources.Any(s => s.Id == activeSourceId && s.IsEnabled);
-        return exists ? activeSourceId : "";
+        if (string.IsNullOrWhiteSpace(activeSourceId))
+            return enabledSources[0].Id;
+
+        var exists = enabledSources.Any(s => s.Id == activeSourceId);
+        return exists ? activeSourceId : enabledSources[0].Id;
     }
 
     partial void OnVideosChanged(List<VideoItem> value)
@@ -590,11 +600,9 @@ public partial class MainViewModel : ObservableObject
         IndexedCount = progress.Inserted;
         IndexedVideoCount = indexStartingCount + progress.Inserted;
 
-        if (progress.Inserted > indexLastInserted &&
-            DateTime.UtcNow - indexLastRefresh > TimeSpan.FromMilliseconds(400))
+        if (progress.Inserted > indexLastInserted)
         {
             indexLastInserted = progress.Inserted;
-            indexLastRefresh = DateTime.UtcNow;
             _ = RefreshAsync();
         }
     }

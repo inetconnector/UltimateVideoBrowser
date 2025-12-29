@@ -11,6 +11,7 @@
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:StringNullOrEmptyToFallbackConverter x:Key="StringFallbackConverter" />
+            <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <styles:ColorsLight />
                 <ResourceDictionary Source="Resources/Styles/Theme.xaml" />
