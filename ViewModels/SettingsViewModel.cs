@@ -17,6 +17,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool isPhotosIndexed;
     [ObservableProperty] private bool isDocumentsIndexed;
+    [ObservableProperty] private string videoExtensionsText = string.Empty;
+    [ObservableProperty] private string photoExtensionsText = string.Empty;
+    [ObservableProperty] private string documentExtensionsText = string.Empty;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
 
@@ -52,6 +55,10 @@ public partial class SettingsViewModel : ObservableObject
         IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
         IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
         IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
+
+        VideoExtensionsText = settingsService.VideoExtensions;
+        PhotoExtensionsText = settingsService.PhotoExtensions;
+        DocumentExtensionsText = settingsService.DocumentExtensions;
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -127,6 +134,27 @@ public partial class SettingsViewModel : ObservableObject
             return;
 
         ApplyIndexedMediaTypes();
+    }
+
+    partial void OnVideoExtensionsTextChanged(string value)
+    {
+        settingsService.VideoExtensions = value;
+        if (!NeedsReindex)
+            NeedsReindex = true;
+    }
+
+    partial void OnPhotoExtensionsTextChanged(string value)
+    {
+        settingsService.PhotoExtensions = value;
+        if (!NeedsReindex)
+            NeedsReindex = true;
+    }
+
+    partial void OnDocumentExtensionsTextChanged(string value)
+    {
+        settingsService.DocumentExtensions = value;
+        if (!NeedsReindex)
+            NeedsReindex = true;
     }
 
     private static void ApplyTheme(string themeKey)

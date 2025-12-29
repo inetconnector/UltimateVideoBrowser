@@ -533,6 +533,7 @@
                                 RemainingItemsThreshold="12"
                                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
                                 VerticalScrollBarVisibility="Always"
+                                Scrolled="OnMediaItemsScrolled"
                                 VerticalOptions="FillAndExpand"
                                 HorizontalOptions="FillAndExpand">
 

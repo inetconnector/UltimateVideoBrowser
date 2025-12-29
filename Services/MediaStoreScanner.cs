@@ -17,38 +17,99 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class MediaStoreScanner
 {
+    private readonly AppSettingsService settingsService;
+
+    public MediaStoreScanner(AppSettingsService settingsService)
+    {
+        this.settingsService = settingsService;
+    }
+
     public async IAsyncEnumerable<MediaItem> StreamSourceAsync(MediaSource source, ModelMediaType indexedTypes,
         [EnumeratorCancellation] CancellationToken ct)
     {
         var sourceId = source.Id;
         var rootPath = source.LocalFolderPath ?? "";
+        var extensions = new ExtensionLookup(settingsService);
 #if ANDROID && !WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
         {
-            foreach (var item in ScanMediaStore(sourceId, indexedTypes, ct))
+            foreach (var item in ScanMediaStore(sourceId, indexedTypes, extensions, ct))
                 yield return item;
             yield break;
         }
 
-        foreach (var item in ScanAndroidFolder(rootPath, sourceId, indexedTypes, ct))
+        foreach (var item in ScanAndroidFolder(rootPath, sourceId, indexedTypes, extensions, ct))
             yield return item;
 #elif WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
         {
             foreach (var defaultRoot in GetWindowsDefaultRoots(indexedTypes))
-                await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes, ct))
+                await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
+                                     extensions, ct))
                     yield return item;
         }
         else
         {
-            await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, indexedTypes, ct))
+            await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, indexedTypes,
+                                 extensions, ct))
                 yield return item;
         }
 #else
         _ = sourceId;
         _ = rootPath;
+        _ = extensions;
         await Task.CompletedTask;
 #endif
+    }
+
+    private sealed class ExtensionLookup
+    {
+        private readonly IReadOnlySet<string> documentExtensions;
+        private readonly IReadOnlySet<string> photoExtensions;
+        private readonly IReadOnlySet<string> videoExtensions;
+
+        public ExtensionLookup(AppSettingsService settingsService)
+        {
+            videoExtensions = settingsService.GetVideoExtensions();
+            photoExtensions = settingsService.GetPhotoExtensions();
+            documentExtensions = settingsService.GetDocumentExtensions();
+        }
+
+        public ModelMediaType GetMediaTypeFromPath(string? path)
+        {
+            return GetMediaType(Path.GetExtension(path ?? string.Empty));
+        }
+
+        public ModelMediaType GetMediaTypeFromName(string? name)
+        {
+            return GetMediaType(Path.GetExtension(name ?? string.Empty));
+        }
+
+        public bool IsPhotoName(string? name)
+        {
+            var ext = Path.GetExtension(name ?? string.Empty);
+            return !string.IsNullOrWhiteSpace(ext) && photoExtensions.Contains(ext);
+        }
+
+        public bool IsDocumentName(string? name)
+        {
+            var ext = Path.GetExtension(name ?? string.Empty);
+            return !string.IsNullOrWhiteSpace(ext) && documentExtensions.Contains(ext);
+        }
+
+        private ModelMediaType GetMediaType(string? ext)
+        {
+            if (string.IsNullOrWhiteSpace(ext))
+                return ModelMediaType.None;
+
+            if (videoExtensions.Contains(ext))
+                return ModelMediaType.Videos;
+            if (photoExtensions.Contains(ext))
+                return ModelMediaType.Photos;
+            if (documentExtensions.Contains(ext))
+                return ModelMediaType.Documents;
+            return ModelMediaType.None;
+        }
     }
 
 #if WINDOWS
@@ -64,25 +125,8 @@ public sealed class MediaStoreScanner
         return roots.Where(root => !string.IsNullOrWhiteSpace(root));
     }
 
-    private static readonly string[] VideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
-    private static readonly string[] PhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
-    private static readonly string[] DocumentExtensions =
-        { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
-
-    private static ModelMediaType GetMediaTypeFromPath(string path)
-    {
-        var ext = Path.GetExtension(path);
-        if (VideoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Videos;
-        if (PhotoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Photos;
-        if (DocumentExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Documents;
-        return ModelMediaType.None;
-    }
-
     private static async IAsyncEnumerable<MediaItem> ScanWindowsAsync(string? rootPath, string? sourceId,
-        string? accessToken, ModelMediaType indexedTypes,
+        string? accessToken, ModelMediaType indexedTypes, ExtensionLookup extensions,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var root = rootPath;
@@ -102,7 +146,7 @@ public sealed class MediaStoreScanner
 
         if (folder != null)
         {
-            await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, indexedTypes, ct))
+            await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, indexedTypes, extensions, ct))
                 yield return item;
             yield break;
         }
@@ -110,7 +154,7 @@ public sealed class MediaStoreScanner
         if (!Directory.Exists(root))
             yield break;
 
-        foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, ct))
+        foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
         {
             ct.ThrowIfCancellationRequested();
 
@@ -124,7 +168,7 @@ public sealed class MediaStoreScanner
                 continue;
             }
 
-            var mediaType = GetMediaTypeFromPath(path);
+            var mediaType = extensions.GetMediaTypeFromPath(path);
             if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                 continue;
 
@@ -156,7 +200,7 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<string> EnumerateMediaFilesStreamingWindows(string root, ModelMediaType indexedTypes,
-        CancellationToken ct)
+        ExtensionLookup extensions, CancellationToken ct)
     {
         var queue = new Queue<string>();
         queue.Enqueue(root);
@@ -180,7 +224,7 @@ public sealed class MediaStoreScanner
             foreach (var file in files)
             {
                 ct.ThrowIfCancellationRequested();
-                var mediaType = GetMediaTypeFromPath(file);
+                var mediaType = extensions.GetMediaTypeFromPath(file);
                 if (mediaType != ModelMediaType.None && indexedTypes.HasFlag(mediaType))
                     yield return file;
             }
@@ -230,7 +274,8 @@ public sealed class MediaStoreScanner
     }
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsFolderAsync(StorageFolder root, string? sourceId,
-        ModelMediaType indexedTypes, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        ModelMediaType indexedTypes, ExtensionLookup extensions,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var queue = new Queue<StorageFolder>();
         queue.Enqueue(root);
@@ -252,7 +297,7 @@ public sealed class MediaStoreScanner
             foreach (var file in files)
             {
                 ct.ThrowIfCancellationRequested();
-                var mediaType = GetMediaTypeFromPath(file.Name);
+                var mediaType = extensions.GetMediaTypeFromName(file.Name);
                 if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                     continue;
 
@@ -302,39 +347,19 @@ public sealed class MediaStoreScanner
 #endif
 
 #if ANDROID && !WINDOWS
-    private static readonly string[] VideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
-    private static readonly string[] PhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
-    private static readonly string[] DocumentExtensions =
-        { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
-
-    private static ModelMediaType GetMediaTypeFromName(string? name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            return ModelMediaType.None;
-
-        var ext = Path.GetExtension(name);
-        if (VideoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Videos;
-        if (PhotoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Photos;
-        if (DocumentExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return ModelMediaType.Documents;
-        return ModelMediaType.None;
-    }
-
     private static IEnumerable<MediaItem> ScanMediaStore(string? sourceId, ModelMediaType indexedTypes,
-        CancellationToken ct)
+        ExtensionLookup extensions, CancellationToken ct)
     {
         if (indexedTypes.HasFlag(ModelMediaType.Videos))
             foreach (var item in ScanMediaStoreVideos(sourceId, ct))
                 yield return item;
 
         if (indexedTypes.HasFlag(ModelMediaType.Photos))
-            foreach (var item in ScanMediaStoreImages(sourceId, ct))
+            foreach (var item in ScanMediaStoreImages(sourceId, extensions, ct))
                 yield return item;
 
         if (indexedTypes.HasFlag(ModelMediaType.Documents))
-            foreach (var item in ScanMediaStoreDocuments(sourceId, ct))
+            foreach (var item in ScanMediaStoreDocuments(sourceId, extensions, ct))
                 yield return item;
     }
 
@@ -467,7 +492,8 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<MediaItem> ScanMediaStoreImages(string? sourceId, CancellationToken ct)
+    private static IEnumerable<MediaItem> ScanMediaStoreImages(string? sourceId, ExtensionLookup extensions,
+        CancellationToken ct)
     {
         var ctx = Platform.AppContext;
         var resolver = ctx?.ContentResolver;
@@ -569,6 +595,9 @@ public sealed class MediaStoreScanner
                 if (string.IsNullOrWhiteSpace(name))
                     name = $"photo_{id}";
 
+                if (!extensions.IsPhotoName(name))
+                    continue;
+
                 yield return new MediaItem
                 {
                     Path = path,
@@ -582,7 +611,8 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<MediaItem> ScanMediaStoreDocuments(string? sourceId, CancellationToken ct)
+    private static IEnumerable<MediaItem> ScanMediaStoreDocuments(string? sourceId, ExtensionLookup extensions,
+        CancellationToken ct)
     {
         var ctx = Platform.AppContext;
         var resolver = ctx?.ContentResolver;
@@ -666,8 +696,7 @@ public sealed class MediaStoreScanner
                         name = "";
                     }
 
-                var mediaType = GetMediaTypeFromName(name);
-                if (mediaType != ModelMediaType.Documents)
+                if (!extensions.IsDocumentName(name))
                     continue;
 
                 var itemUri = ContentUris.WithAppendedId(externalUri, id);
@@ -703,16 +732,16 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId, ModelMediaType indexedTypes,
-        CancellationToken ct)
+        ExtensionLookup extensions, CancellationToken ct)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-            return ScanAndroidTreeUri(rootPath, sourceId, indexedTypes, ct);
+            return ScanAndroidTreeUri(rootPath, sourceId, indexedTypes, extensions, ct);
 
-        return ScanAndroidFileSystem(rootPath, sourceId, indexedTypes, ct);
+        return ScanAndroidFileSystem(rootPath, sourceId, indexedTypes, extensions, ct);
     }
 
     private static IEnumerable<MediaItem> ScanAndroidTreeUri(string rootPath, string? sourceId,
-        ModelMediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, ExtensionLookup extensions, CancellationToken ct)
     {
         var ctx = Platform.AppContext;
         DocumentFile? root = null;
@@ -731,12 +760,12 @@ public sealed class MediaStoreScanner
         if (root == null)
             yield break;
 
-        foreach (var item in TraverseDocumentTree(root, sourceId, indexedTypes, ct))
+        foreach (var item in TraverseDocumentTree(root, sourceId, indexedTypes, extensions, ct))
             yield return item;
     }
 
     private static IEnumerable<MediaItem> TraverseDocumentTree(DocumentFile root, string? sourceId,
-        ModelMediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, ExtensionLookup extensions, CancellationToken ct)
     {
         var stack = new Stack<DocumentFile>();
         stack.Push(root);
@@ -791,7 +820,7 @@ public sealed class MediaStoreScanner
                     continue;
                 }
 
-                var mediaType = GetMediaTypeFromName(name);
+                var mediaType = extensions.GetMediaTypeFromName(name);
                 if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                     continue;
 
@@ -836,19 +865,19 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<MediaItem> ScanAndroidFileSystem(string rootPath, string? sourceId,
-        ModelMediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, ExtensionLookup extensions, CancellationToken ct)
     {
         if (!Directory.Exists(rootPath))
             yield break;
 
-        foreach (var path in EnumerateMediaFilesStreamingAndroid(rootPath, indexedTypes, ct))
+        foreach (var path in EnumerateMediaFilesStreamingAndroid(rootPath, indexedTypes, extensions, ct))
         {
             ct.ThrowIfCancellationRequested();
 
             if (string.IsNullOrWhiteSpace(path))
                 continue;
 
-            var mediaType = GetMediaTypeFromName(path);
+            var mediaType = extensions.GetMediaTypeFromPath(path);
             if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                 continue;
 
@@ -865,7 +894,7 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<string> EnumerateMediaFilesStreamingAndroid(string rootPath, ModelMediaType indexedTypes,
-        CancellationToken ct)
+        ExtensionLookup extensions, CancellationToken ct)
     {
         var queue = new Queue<string>();
         queue.Enqueue(rootPath);
@@ -894,11 +923,11 @@ public sealed class MediaStoreScanner
                     yield return file;
             }
 
-            static bool SafeIsMediaFile(string file, ModelMediaType indexedTypes)
+            bool SafeIsMediaFile(string file, ModelMediaType indexedTypes)
             {
                 try
                 {
-                    var mediaType = GetMediaTypeFromName(file);
+                    var mediaType = extensions.GetMediaTypeFromPath(file);
                     return mediaType != ModelMediaType.None && indexedTypes.HasFlag(mediaType);
                 }
                 catch

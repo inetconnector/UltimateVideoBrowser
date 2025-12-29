@@ -194,6 +194,14 @@ public static class AppResources
     public static string SettingsMediaTypesTitle => GetString(nameof(SettingsMediaTypesTitle), "Media types");
     public static string SettingsMediaTypesMessage => GetString(nameof(SettingsMediaTypesMessage),
         "Choose which types to index in your library.");
+    public static string SettingsExtensionsTitle => GetString(nameof(SettingsExtensionsTitle), "File extensions");
+    public static string SettingsExtensionsHint => GetString(nameof(SettingsExtensionsHint),
+        "Separate extensions with commas (e.g. .mp4, .mkv).");
+    public static string SettingsExtensionsPlaceholder =>
+        GetString(nameof(SettingsExtensionsPlaceholder), ".mp4, .mkv, .avi");
+    public static string RenameConfirmTitle => GetString(nameof(RenameConfirmTitle), "Confirm rename");
+    public static string RenameConfirmMessage =>
+        GetString(nameof(RenameConfirmMessage), "Rename \"{0}\" to \"{1}\"?");
 
     private static string GetString(string key, string fallback)
     {

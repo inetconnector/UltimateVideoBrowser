@@ -150,6 +150,43 @@
                             <Switch Grid.Column="1"
                                     IsToggled="{Binding IsDocumentsIndexed}" />
                         </Grid>
+                        <Label Text="{x:Static strings:AppResources.SettingsExtensionsTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}"
+                               Margin="0,4,0,0" />
+                        <Label Text="{x:Static strings:AppResources.SettingsExtensionsHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="8">
+                            <Label Text="{x:Static strings:AppResources.MediaTypeVideos}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Entry Grid.Column="1"
+                                   Text="{Binding VideoExtensionsText}"
+                                   Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   BackgroundColor="{DynamicResource Surface2}" />
+                            <Label Grid.Row="1"
+                                   Text="{x:Static strings:AppResources.MediaTypePhotos}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Entry Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding PhotoExtensionsText}"
+                                   Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   BackgroundColor="{DynamicResource Surface2}" />
+                            <Label Grid.Row="2"
+                                   Text="{x:Static strings:AppResources.MediaTypeDocuments}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Entry Grid.Row="2"
+                                   Grid.Column="1"
+                                   Text="{Binding DocumentExtensionsText}"
+                                   Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   BackgroundColor="{DynamicResource Surface2}" />
+                        </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
