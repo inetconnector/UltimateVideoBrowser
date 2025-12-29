@@ -67,6 +67,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int totalSourceCount;
     [ObservableProperty] private int mediaCount;
     [ObservableProperty] private bool isSourceSwitching;
+    [ObservableProperty] private bool allowFileChanges;
 
     [ObservableProperty] private List<MediaItem> mediaItems = new();
     private bool hasMoreMediaItems;
@@ -423,6 +424,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public Task SaveAsAsync(MediaItem item)
     {
+        if (!AllowFileChanges)
+            return Task.CompletedTask;
+
         if (item == null || string.IsNullOrWhiteSpace(item.Path))
             return Task.CompletedTask;
 
@@ -432,6 +436,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task RenameAsync(MediaItem item)
     {
+        if (!AllowFileChanges)
+            return;
+
         if (item == null || string.IsNullOrWhiteSpace(item.Path))
             return;
 
@@ -567,6 +574,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task CopyMarkedAsync()
     {
+        if (!AllowFileChanges)
+            return;
+
         var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
         if (markedItems.Count == 0)
             return;
@@ -577,6 +587,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task MoveMarkedAsync()
     {
+        if (!AllowFileChanges)
+            return;
+
         var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
         if (markedItems.Count == 0)
             return;
@@ -587,6 +600,40 @@ public partial class MainViewModel : ObservableObject
             await indexService.RemoveAsync(moved);
             MediaItems = MediaItems.Except(moved).ToList();
             await UpdateIndexedMediaCountAsync();
+        }
+        else
+        {
+            UpdateMarkedCount();
+        }
+    }
+
+    [RelayCommand]
+    public async Task DeleteMarkedAsync()
+    {
+        if (!AllowFileChanges)
+            return;
+
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+        var confirm = await dialogService.DisplayAlertAsync(
+            AppResources.DeleteConfirmTitle,
+            string.Format(AppResources.DeleteConfirmMessageFormat, markedItems.Count),
+            AppResources.DeleteMarkedAction,
+            AppResources.CancelButton);
+        if (!confirm)
+            return;
+
+        var deleted = await fileExportService.DeletePermanentlyAsync(markedItems);
+        if (deleted.Count > 0)
+        {
+            await indexService.RemoveAsync(deleted);
+            MediaItems = MediaItems.Except(deleted).ToList();
+            await UpdateIndexedMediaCountAsync();
+
+            if (deleted.Any(item => string.Equals(item.Path, CurrentMediaSource, StringComparison.OrdinalIgnoreCase)))
+                ClearPlayerState();
         }
         else
         {
@@ -722,6 +769,7 @@ public partial class MainViewModel : ObservableObject
         var visibleTypes = settingsService.VisibleMediaTypes;
         SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
         ApplyPlaybackSettings();
+        ApplyFileChangeSettings();
     }
 
     public void ApplyPlaybackSettings()
@@ -729,6 +777,11 @@ public partial class MainViewModel : ObservableObject
         IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
         if (!IsInternalPlayerEnabled)
             ClearPlayerState();
+    }
+
+    public void ApplyFileChangeSettings()
+    {
+        AllowFileChanges = settingsService.AllowFileChanges;
     }
 
     private void ClearPlayerState()

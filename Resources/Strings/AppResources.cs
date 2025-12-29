@@ -101,6 +101,21 @@ public static class AppResources
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
     public static string MoveMarkedAction => GetString(nameof(MoveMarkedAction), "Move");
     public static string ClearMarkedAction => GetString(nameof(ClearMarkedAction), "Clear");
+    public static string DeleteMarkedAction => GetString(nameof(DeleteMarkedAction), "Delete permanently");
+    public static string DeleteConfirmTitle => GetString(nameof(DeleteConfirmTitle), "Delete from disk?");
+
+    public static string DeleteConfirmMessageFormat =>
+        GetString(nameof(DeleteConfirmMessageFormat), "Delete {0} item(s) permanently? This cannot be undone.");
+
+    public static string DeleteCompletedTitle => GetString(nameof(DeleteCompletedTitle), "Delete completed");
+
+    public static string DeleteCompletedMessageFormat =>
+        GetString(nameof(DeleteCompletedMessageFormat), "Deleted: {0}, failed: {1}.");
+
+    public static string DeleteFailedTitle => GetString(nameof(DeleteFailedTitle), "Delete failed");
+
+    public static string DeleteNotSupportedMessage =>
+        GetString(nameof(DeleteNotSupportedMessage), "Permanent delete isn't supported on this device.");
     public static string TransferFolderTitle => GetString(nameof(TransferFolderTitle), "Create destination folder");
 
     public static string TransferFolderMessage =>
@@ -146,8 +161,18 @@ public static class AppResources
     public static string SettingsInternalPlayerLabel =>
         GetString(nameof(SettingsInternalPlayerLabel), "Use internal video player for videos");
 
+    public static string SettingsFileChangesTitle =>
+        GetString(nameof(SettingsFileChangesTitle), "File changes");
+
+    public static string SettingsFileChangesLabel =>
+        GetString(nameof(SettingsFileChangesLabel), "Allow renaming, moving, copying, and deleting");
+
+    public static string SettingsFileChangesHint =>
+        GetString(nameof(SettingsFileChangesHint), "Enable this to show actions that change files on disk.");
+
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
     public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");
+    public static string LoadingMedia => GetString(nameof(LoadingMedia), "Loading media...");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>

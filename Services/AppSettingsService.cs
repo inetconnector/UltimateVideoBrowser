@@ -18,6 +18,7 @@ public sealed class AppSettingsService
     private const string VideoExtensionsKey = "video_extensions";
     private const string PhotoExtensionsKey = "photo_extensions";
     private const string DocumentExtensionsKey = "document_extensions";
+    private const string AllowFileChangesKey = "allow_file_changes";
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
     private static readonly string[] DefaultPhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
@@ -114,6 +115,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(DocumentExtensionsKey, string.Join(", ", DefaultDocumentExtensions));
         set => Preferences.Default.Set(DocumentExtensionsKey, value ?? string.Empty);
+    }
+
+    public bool AllowFileChanges
+    {
+        get => Preferences.Default.Get(AllowFileChangesKey, false);
+        set => Preferences.Default.Set(AllowFileChangesKey, value);
     }
 
     public IReadOnlySet<string> GetVideoExtensions() => ParseExtensions(VideoExtensions, DefaultVideoExtensions);
