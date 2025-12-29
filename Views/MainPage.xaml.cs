@@ -63,6 +63,7 @@ public partial class MainPage : ContentPage
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
+            SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
@@ -129,6 +130,12 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(MarkedCount));
                         OnPropertyChanged(nameof(HasMarked));
                         break;
+                    case nameof(MainViewModel.Sources):
+                        OnPropertyChanged(nameof(Sources));
+                        break;
+                    case nameof(MainViewModel.ActiveSourceId):
+                        OnPropertyChanged(nameof(ActiveSourceId));
+                        break;
                     case nameof(MainViewModel.IsDateFilterEnabled):
                         OnPropertyChanged(nameof(IsDateFilterEnabled));
                         break;
@@ -154,6 +161,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
+        public IAsyncRelayCommand SelectSourceCommand { get; }
 
         public int GridSpan
         {
@@ -247,6 +255,8 @@ public partial class MainPage : ContentPage
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
+        public List<MediaSource> Sources => vm.Sources;
+        public string ActiveSourceId => vm.ActiveSourceId;
 
         public SortOption? SelectedSortOption
         {
