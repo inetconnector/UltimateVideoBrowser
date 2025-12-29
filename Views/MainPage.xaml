@@ -839,7 +839,8 @@
                    HasShadow="False">
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="{x:Static strings:AppResources.Indexing}"
+                    <Label x:Name="IndexingStatusLabel"
+                           Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
 
