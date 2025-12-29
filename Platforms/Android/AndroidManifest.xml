@@ -14,15 +14,7 @@
                android:supportsRtl="true"
                android:theme="@style/Maui.MainTheme"
                android:usesCleartextTraffic="false">
-    <activity android:name=".MainActivity"
-              android:exported="true"
-              android:launchMode="singleTask"
-              android:configChanges="orientation|screenSize|uiMode|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation"
-              android:theme="@style/Maui.SplashTheme">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
+    <!-- Entfernen der handgeschriebenen MainActivity beim Merge -->
+    <activity android:name=".MainActivity"  />
   </application>
 </manifest>
