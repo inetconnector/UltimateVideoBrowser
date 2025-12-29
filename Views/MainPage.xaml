@@ -326,7 +326,8 @@
                   ColumnDefinitions="*,Auto,Auto"
                   ColumnSpacing="12"
                   RowSpacing="6">
-                <Label Text="{x:Static strings:AppResources.Indexing}"
+                <Label x:Name="IndexingStatusBannerLabel"
+                       Text="{x:Static strings:AppResources.Indexing}"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource OnSurface}" />
 
@@ -759,7 +760,8 @@
                    HasShadow="False">
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="{x:Static strings:AppResources.Indexing}"
+                    <Label x:Name="IndexingStatusLabel"
+                           Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
 
