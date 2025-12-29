@@ -522,7 +522,9 @@
                                            CornerRadius="16"
                                            Margin="8"
                                            Padding="0"
-                                           BorderColor="{DynamicResource BorderSubtle}">
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="240"
+                                           MinimumHeightRequest="280">
                                         <Frame.Triggers>
                                             <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
                                                 <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
@@ -611,7 +613,9 @@
                                                CornerRadius="16"
                                                Margin="8"
                                                Padding="0"
-                                               BorderColor="{DynamicResource BorderSubtle}">
+                                               BorderColor="{DynamicResource BorderSubtle}"
+                                               MinimumWidthRequest="240"
+                                               MinimumHeightRequest="280">
                                             <Frame.Triggers>
                                                 <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
                                                              Value="True">
@@ -705,7 +709,9 @@
                                                CornerRadius="16"
                                                Margin="8"
                                                Padding="0"
-                                               BorderColor="{DynamicResource BorderSubtle}">
+                                               BorderColor="{DynamicResource BorderSubtle}"
+                                               MinimumWidthRequest="240"
+                                               MinimumHeightRequest="280">
                                             <Frame.Triggers>
                                                 <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
                                                              Value="True">
