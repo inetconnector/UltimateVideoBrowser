@@ -344,7 +344,7 @@ public partial class MainPage : ContentPage
 
             var window = indexingWindow;
             indexingWindow = null;
-            window.Close();
+            Application.Current?.CloseWindow(window);
         }
 
         public Task ApplyGridSpanAsync()
