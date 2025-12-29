@@ -43,6 +43,7 @@
     <MauiIcon Include="Resources\AppIcon\appicon.svg" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
     <MauiImage Include="Resources\Images\*" />
+    <MauiAsset Include="Resources\Images\*.svg" LogicalName="%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
