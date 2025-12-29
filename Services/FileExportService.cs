@@ -87,20 +87,6 @@ public sealed class FileExportService : IFileExportService
         if (list.Count == 0)
             return Array.Empty<VideoItem>();
 
-        var folderName = await dialogService.DisplayPromptAsync(
-            AppResources.TransferFolderTitle,
-            AppResources.TransferFolderMessage,
-            AppResources.CreateButton,
-            AppResources.CancelButton,
-            AppResources.TransferFolderPlaceholder,
-            64,
-            Keyboard.Text);
-
-        if (string.IsNullOrWhiteSpace(folderName))
-            return Array.Empty<VideoItem>();
-
-        folderName = folderName.Trim();
-
         var window = Application.Current?.Windows.FirstOrDefault();
         if (window?.Handler?.PlatformView is not MauiWinUIWindow mauiWindow)
         {
@@ -117,22 +103,7 @@ public sealed class FileExportService : IFileExportService
         var rootFolder = await picker.PickSingleFolderAsync();
         if (rootFolder is null)
             return Array.Empty<VideoItem>();
-
-        StorageFolder targetFolder;
-        try
-        {
-            targetFolder = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists);
-        }
-        catch
-        {
-            await dialogService.DisplayAlertAsync(
-                AppResources.TransferFailedTitle,
-                AppResources.TransferFailedMessage,
-                AppResources.OkButton);
-            return Array.Empty<VideoItem>();
-        }
-
-        var targetPath = targetFolder.Path;
+        var targetPath = rootFolder.Path;
         var succeeded = new List<VideoItem>();
         var skipped = 0;
         var failed = 0;
