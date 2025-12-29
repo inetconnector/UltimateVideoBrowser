@@ -22,11 +22,18 @@ public partial class MainPage : ContentPage
         base.OnAppearing();
         _ = vm.InitializeAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
+        SizeChanged += OnPageSizeChanged;
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        SizeChanged -= OnPageSizeChanged;
+    }
+
+    private void OnPageSizeChanged(object? sender, EventArgs e)
+    {
+        _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
     }
 
     private void OnTimelineSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -370,7 +377,14 @@ public partial class MainPage : ContentPage
             if (width <= 0)
                 width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 
-            var targetTile = mode == UiMode.Tv ? 320 : mode == UiMode.Tablet ? 300 : 260;
+            var minTileWidth = 240;
+            var tilePadding = 20;
+            var targetTile = minTileWidth + tilePadding;
+            if (mode == UiMode.Tv)
+                targetTile = 340;
+            else if (mode == UiMode.Tablet)
+                targetTile = 300;
+
             var span = Math.Max(2, (int)(width / targetTile));
 
             GridSpan = Math.Min(8, span);
