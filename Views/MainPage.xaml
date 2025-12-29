@@ -797,30 +797,6 @@
 
             </CollectionView>
             </Grid>
-            <!-- Status bar -->
-            <Grid Grid.Row="9"
-                  Padding="16,6"
-                  ColumnDefinitions="*,Auto"
-                  BackgroundColor="{DynamicResource Surface}">
-                <Label x:Name="IndexingStatusLabel"
-                       Text="{x:Static strings:AppResources.Indexing}"
-                       IsVisible="{Binding IsIndexing}"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       TextColor="{DynamicResource Accent}" />
-
-                <HorizontalStackLayout Grid.Column="1"
-                                       Spacing="6"
-                                       VerticalOptions="Center">
-                    <Label Text="{Binding IndexedVideoCount}"
-                           FontAttributes="Bold"
-                           FontSize="12"
-                           TextColor="{DynamicResource OnSurface}" />
-                    <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
-                           FontSize="12"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                </HorizontalStackLayout>
-            </Grid>
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
@@ -829,7 +805,9 @@
               Padding="24"
               HorizontalOptions="Fill"
               VerticalOptions="Fill"
-              ZIndex="1">
+              ZIndex="1"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
 
             <Frame BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="16"
