@@ -187,4 +187,32 @@ public sealed class IndexService
             await db.Db.DeleteAsync<VideoItem>(item.Path).ConfigureAwait(false);
         }
     }
+
+    public async Task<bool> RenameAsync(VideoItem item, string newPath, string newName)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(newPath))
+            return false;
+
+        try
+        {
+            var existing = await db.Db.FindAsync<VideoItem>(newPath).ConfigureAwait(false);
+            if (existing != null && !string.Equals(existing.Path, item.Path, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            var oldPath = item.Path;
+            item.Path = newPath;
+            item.Name = newName;
+            await db.Db.InsertOrReplaceAsync(item).ConfigureAwait(false);
+
+            if (!string.IsNullOrWhiteSpace(oldPath) &&
+                !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+                await db.Db.DeleteAsync<VideoItem>(oldPath).ConfigureAwait(false);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

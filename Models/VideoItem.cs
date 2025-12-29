@@ -7,11 +7,37 @@ namespace UltimateVideoBrowser.Models;
 public class VideoItem : INotifyPropertyChanged
 {
     private bool isMarked;
+    private string name = "";
+    private string path = "";
     private string? thumbnailPath;
 
-    [PrimaryKey] public string Path { get; set; } = "";
+    [PrimaryKey]
+    public string Path
+    {
+        get => path;
+        set
+        {
+            if (path == value)
+                return;
 
-    [Indexed] public string Name { get; set; } = "";
+            path = value;
+            OnPropertyChanged();
+        }
+    }
+
+    [Indexed]
+    public string Name
+    {
+        get => name;
+        set
+        {
+            if (name == value)
+                return;
+
+            name = value;
+            OnPropertyChanged();
+        }
+    }
 
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
