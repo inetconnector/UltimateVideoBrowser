@@ -544,14 +544,14 @@ public partial class MainViewModel : ObservableObject
                 UseShellExecute = true
             });
 #else
-            if (!await Launcher.Default.IsSupportedAsync())
-            {
-                await dialogService.DisplayAlertAsync(
-                    AppResources.OpenFolderFailedTitle,
-                    AppResources.OpenFolderNotSupportedMessage,
-                    AppResources.OkButton);
-                return;
-            }
+            //if (!await Launcher.Default.IsSupportedAsync())
+            //{
+            //    await dialogService.DisplayAlertAsync(
+            //        AppResources.OpenFolderFailedTitle,
+            //        AppResources.OpenFolderNotSupportedMessage,
+            //        AppResources.OkButton);
+            //    return;
+            //}
 
             var uri = new Uri($"file://{folder}");
             await Launcher.OpenAsync(uri);
