@@ -1032,5 +1032,30 @@
                                    WidthRequest="32" />
             </Frame>
         </Grid>
+
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsRefreshing}"
+              BackgroundColor="#80000000"
+              InputTransparent="False">
+            <Frame BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="16"
+                   Padding="18"
+                   HasShadow="True"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <VerticalStackLayout Spacing="12"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                       Color="{DynamicResource Accent}"
+                                       HeightRequest="32"
+                                       WidthRequest="32" />
+                    <Label Text="{x:Static strings:AppResources.LoadingMedia}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
     </Grid>
 </ContentPage>

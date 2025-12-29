@@ -76,6 +76,7 @@ public partial class MainViewModel : ObservableObject
     private int mediaItemsVersion;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
+    [ObservableProperty] private bool isRefreshing;
 
     public MainViewModel(
         ISourceService sourceService,
@@ -167,6 +168,7 @@ public partial class MainViewModel : ObservableObject
         await refreshLock.WaitAsync();
         try
         {
+            IsRefreshing = true;
             var refreshVersion = Interlocked.Increment(ref mediaQueryVersion);
             var result = await Task.Run(async () =>
             {
@@ -204,6 +206,7 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            IsRefreshing = false;
             refreshLock.Release();
         }
     }
