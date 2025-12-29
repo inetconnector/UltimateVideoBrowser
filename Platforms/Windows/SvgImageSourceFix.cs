@@ -59,13 +59,14 @@ public static class SvgImageSourceFix
         try
         {
             await using var stream = await TryOpenSvgAsync(fileName)
-                ?? (HasDirectorySeparator(fileName)
-                    ? null
-                    : await TryOpenSvgAsync(Path.Combine("Resources", "Images", fileName)));
+                                     ?? (HasDirectorySeparator(fileName)
+                                         ? null
+                                         : await TryOpenSvgAsync(Path.Combine("Resources", "Images", fileName)));
             if (stream is null)
             {
                 return;
             }
+
             var svgSource = new SvgImageSource();
             await svgSource.SetSourceAsync(stream.AsRandomAccessStream());
             handler.PlatformView.Source = svgSource;

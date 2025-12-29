@@ -9,6 +9,7 @@ namespace UltimateVideoBrowser.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
+
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
         InitializeComponent();
@@ -47,11 +48,11 @@ public partial class MainPage : ContentPage
         private readonly DeviceModeService deviceMode;
         private readonly Page page;
         private readonly MainViewModel vm;
-        private Window? indexingWindow;
 
         private int gridSpan = 3;
-        private bool isIndexingOverlayVisible;
+        private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
+        private bool isIndexingOverlayVisible;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -255,6 +256,7 @@ public partial class MainPage : ContentPage
                     if (vm.IsIndexing)
                         isIndexingOverlaySuppressed = true;
                 }
+
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ShowIndexingBanner));
             }
@@ -313,14 +315,14 @@ public partial class MainPage : ContentPage
 
             var indexingPage = new IndexingProgressPage(this)
             {
-                Title = AppResources.Indexing,
+                Title = AppResources.Indexing
             };
 
             var window = new Window(indexingPage)
             {
                 Title = AppResources.Indexing,
                 Width = 460,
-                Height = 360,
+                Height = 360
             };
 
             window.Destroying += (_, _) =>

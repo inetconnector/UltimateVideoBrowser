@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using System.IO;
+using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,52 +12,52 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly IFileExportService fileExportService;
+    private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
+    private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
+    private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
+
+    private readonly PropertyChangedEventHandler videoMarkedHandler;
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
-    [ObservableProperty] private List<MediaSource> sources = new();
 
     private CancellationTokenSource? indexCts;
     [ObservableProperty] private string indexCurrentFile = "";
     [ObservableProperty] private string indexCurrentFolder = "";
     [ObservableProperty] private int indexedCount;
+    [ObservableProperty] private int indexedVideoCount;
+    private int indexLastInserted;
     [ObservableProperty] private int indexProcessed;
     [ObservableProperty] private double indexRatio;
+    private int indexStartingCount;
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
-    [ObservableProperty] private int indexedVideoCount;
+    private bool isApplyingIndexProgress;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
+    [ObservableProperty] private int markedCount;
+    private IndexProgress? pendingIndexProgress;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
+    private List<VideoItem> subscribedVideos = new();
     private CancellationTokenSource? thumbCts;
+    private bool thumbnailPipelineQueued;
+    private bool thumbnailPipelineRunning;
     [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
     [ObservableProperty] private int totalSourceCount;
     [ObservableProperty] private int videoCount;
 
     [ObservableProperty] private List<VideoItem> videos = new();
-    [ObservableProperty] private int markedCount;
-
-    private readonly PropertyChangedEventHandler videoMarkedHandler;
-    private List<VideoItem> subscribedVideos = new();
-    private int indexLastInserted;
-    private readonly SemaphoreSlim refreshLock = new(1, 1);
-    private readonly object indexProgressLock = new();
-    private bool isApplyingIndexProgress;
-    private IndexProgress? pendingIndexProgress;
-    private int indexStartingCount;
-    private readonly object thumbnailLock = new();
-    private bool thumbnailPipelineRunning;
-    private bool thumbnailPipelineQueued;
     private int videosVersion;
 
     public MainViewModel(
@@ -88,6 +88,8 @@ public partial class MainViewModel : ObservableObject
     }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
+
+    public bool HasMarked => MarkedCount > 0;
 
     public async Task InitializeAsync()
     {
@@ -178,7 +180,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Permission check failed: {ex}");
+            Debug.WriteLine($"Permission check failed: {ex}");
             hasPermission = false;
         }
 
@@ -221,10 +223,8 @@ public partial class MainViewModel : ObservableObject
             indexCts?.Dispose();
             indexCts = new CancellationTokenSource();
 
-            await Task.Run(async () =>
-            {
-                await indexService.IndexSourcesAsync(sources, progress, indexCts.Token);
-            }, indexCts.Token);
+            await Task.Run(async () => { await indexService.IndexSourcesAsync(sources, progress, indexCts.Token); },
+                indexCts.Token);
             completed = true;
         }
         catch (OperationCanceledException)
@@ -234,7 +234,7 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             completed = false;
-            System.Diagnostics.Debug.WriteLine($"Indexing failed: {ex}");
+            Debug.WriteLine($"Indexing failed: {ex}");
         }
         finally
         {
@@ -308,16 +308,16 @@ public partial class MainViewModel : ObservableObject
             return;
 
         var moved = await fileExportService.MoveToFolderAsync(markedItems);
-            if (moved.Count > 0)
-            {
-                await indexService.RemoveAsync(moved);
-                Videos = Videos.Except(moved).ToList();
-                await UpdateIndexedVideoCountAsync();
-            }
-            else
-            {
-                UpdateMarkedCount();
-            }
+        if (moved.Count > 0)
+        {
+            await indexService.RemoveAsync(moved);
+            Videos = Videos.Except(moved).ToList();
+            await UpdateIndexedVideoCountAsync();
+        }
+        else
+        {
+            UpdateMarkedCount();
+        }
     }
 
     [RelayCommand]
@@ -459,8 +459,6 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(HasMarked));
     }
 
-    public bool HasMarked => MarkedCount > 0;
-
     partial void OnActiveSourceIdChanged(string value)
     {
         settingsService.ActiveSourceId = value;
@@ -532,10 +530,8 @@ public partial class MainViewModel : ObservableObject
     private void SubscribeToMarkedChanges(List<VideoItem>? items)
     {
         if (subscribedVideos.Count > 0)
-        {
             foreach (var video in subscribedVideos)
                 video.PropertyChanged -= videoMarkedHandler;
-        }
 
         subscribedVideos = items ?? new List<VideoItem>();
 

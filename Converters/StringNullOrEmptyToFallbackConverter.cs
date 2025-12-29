@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using System.IO;
 
 namespace UltimateVideoBrowser.Converters;
 
@@ -19,7 +17,9 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
         }
 
         var fallback = parameter as string ?? string.Empty;
-        return string.IsNullOrWhiteSpace(fallback) ? ImageSource.FromFile(string.Empty) : ImageSource.FromFile(fallback);
+        return string.IsNullOrWhiteSpace(fallback)
+            ? ImageSource.FromFile(string.Empty)
+            : ImageSource.FromFile(fallback);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

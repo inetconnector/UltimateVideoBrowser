@@ -83,7 +83,6 @@
         <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
         <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
         <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
-        <Setter Property="BorderWidth" Value="1" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">

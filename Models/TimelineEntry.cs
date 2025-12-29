@@ -6,20 +6,18 @@ namespace UltimateVideoBrowser.Models;
 
 public class TimelineEntry : INotifyPropertyChanged
 {
-    private readonly VideoItem anchorVideo;
-
     public TimelineEntry(int year, int month, VideoItem anchorVideo, bool showYear)
     {
         Year = year;
         Month = month;
-        this.anchorVideo = anchorVideo;
+        this.AnchorVideo = anchorVideo;
         ShowYear = showYear;
 
         var date = new DateTime(year, month, 1);
         MonthLabel = date.ToString("MMM", CultureInfo.CurrentCulture).ToUpperInvariant();
         YearLabel = year.ToString(CultureInfo.InvariantCulture);
 
-        this.anchorVideo.PropertyChanged += OnAnchorVideoPropertyChanged;
+        this.AnchorVideo.PropertyChanged += OnAnchorVideoPropertyChanged;
     }
 
     public int Year { get; }
@@ -27,8 +25,9 @@ public class TimelineEntry : INotifyPropertyChanged
     public string MonthLabel { get; }
     public string YearLabel { get; }
     public bool ShowYear { get; }
-    public VideoItem AnchorVideo => anchorVideo;
-    public string? ThumbnailPath => anchorVideo.ThumbnailPath;
+    public VideoItem AnchorVideo { get; }
+
+    public string? ThumbnailPath => AnchorVideo.ThumbnailPath;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

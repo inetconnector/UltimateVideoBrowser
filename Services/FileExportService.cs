@@ -1,4 +1,3 @@
-using System.Linq;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 #if WINDOWS
@@ -73,12 +72,12 @@ public sealed class FileExportService : IFileExportService
 
     public async Task CopyToFolderAsync(IEnumerable<VideoItem> items)
     {
-        await TransferToFolderAsync(items, isMove: false);
+        await TransferToFolderAsync(items, false);
     }
 
     public Task<IReadOnlyList<VideoItem>> MoveToFolderAsync(IEnumerable<VideoItem> items)
     {
-        return TransferToFolderAsync(items, isMove: true);
+        return TransferToFolderAsync(items, true);
     }
 
     private async Task<IReadOnlyList<VideoItem>> TransferToFolderAsync(IEnumerable<VideoItem> items, bool isMove)

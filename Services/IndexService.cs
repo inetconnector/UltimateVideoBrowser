@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Threading;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -7,10 +6,10 @@ namespace UltimateVideoBrowser.Services;
 public sealed class IndexService
 {
     private readonly AppDb db;
-    private readonly MediaStoreScanner scanner;
 
     // Prevent concurrent indexing runs across the whole app instance
     private readonly SemaphoreSlim indexGate = new(1, 1);
+    private readonly MediaStoreScanner scanner;
 
     public IndexService(AppDb db, MediaStoreScanner scanner)
     {
@@ -36,7 +35,10 @@ public sealed class IndexService
             void SafeReport(IndexProgress p)
             {
                 if (progress == null) return;
-                try { progress.Report(p); }
+                try
+                {
+                    progress.Report(p);
+                }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Progress handler crashed: {ex}");
@@ -139,7 +141,8 @@ public sealed class IndexService
         }
     }
 
-    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from, DateTime? to)
+    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
+        DateTime? to)
     {
         var q = db.Db.Table<VideoItem>();
 
@@ -169,7 +172,10 @@ public sealed class IndexService
         return q.ToListAsync();
     }
 
-    public Task<int> CountAsync() => db.Db.Table<VideoItem>().CountAsync();
+    public Task<int> CountAsync()
+    {
+        return db.Db.Table<VideoItem>().CountAsync();
+    }
 
     public async Task RemoveAsync(IEnumerable<VideoItem> items)
     {

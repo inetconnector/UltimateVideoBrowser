@@ -7,13 +7,13 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppSettingsService settingsService;
-
-    [ObservableProperty] private ThemeOption? selectedTheme;
-    [ObservableProperty] private SortOption? selectedSortOption;
-    [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
+    [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool needsReindex;
+    [ObservableProperty] private SortOption? selectedSortOption;
+
+    [ObservableProperty] private ThemeOption? selectedTheme;
 
     public SettingsViewModel(AppSettingsService settingsService)
     {

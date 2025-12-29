@@ -7,6 +7,7 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 #endif
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
@@ -299,7 +300,7 @@ public sealed class MediaStoreScanner
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"MediaStore query failed: {ex}");
+            Debug.WriteLine($"MediaStore query failed: {ex}");
             yield break;
         }
 
@@ -321,10 +322,13 @@ public sealed class MediaStoreScanner
                 ct.ThrowIfCancellationRequested();
 
                 bool moved;
-                try { moved = cursor.MoveToNext(); }
+                try
+                {
+                    moved = cursor.MoveToNext();
+                }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Cursor iteration failed: {ex}");
+                    Debug.WriteLine($"Cursor iteration failed: {ex}");
                     yield break;
                 }
 
@@ -332,34 +336,52 @@ public sealed class MediaStoreScanner
                     yield break;
 
                 long id;
-                try { id = cursor.GetLong(idCol); }
-                catch { continue; }
+                try
+                {
+                    id = cursor.GetLong(idCol);
+                }
+                catch
+                {
+                    continue;
+                }
 
                 var itemUri = ContentUris.WithAppendedId(externalUri, id);
                 var path = itemUri?.ToString() ?? "";
                 if (string.IsNullOrWhiteSpace(path))
                     continue;
 
-                string name = "";
+                var name = "";
                 if (nameCol >= 0 && !cursor.IsNull(nameCol))
-                {
-                    try { name = cursor.GetString(nameCol) ?? ""; }
-                    catch { name = ""; }
-                }
+                    try
+                    {
+                        name = cursor.GetString(nameCol) ?? "";
+                    }
+                    catch
+                    {
+                        name = "";
+                    }
 
                 long durationMs = 0;
                 if (durCol >= 0 && !cursor.IsNull(durCol))
-                {
-                    try { durationMs = cursor.GetLong(durCol); }
-                    catch { durationMs = 0; }
-                }
+                    try
+                    {
+                        durationMs = cursor.GetLong(durCol);
+                    }
+                    catch
+                    {
+                        durationMs = 0;
+                    }
 
                 long addedSeconds = 0;
                 if (addCol >= 0 && !cursor.IsNull(addCol))
-                {
-                    try { addedSeconds = cursor.GetLong(addCol); }
-                    catch { addedSeconds = 0; }
-                }
+                    try
+                    {
+                        addedSeconds = cursor.GetLong(addCol);
+                    }
+                    catch
+                    {
+                        addedSeconds = 0;
+                    }
 
                 if (string.IsNullOrWhiteSpace(name))
                     name = $"video_{id}";
@@ -396,7 +418,7 @@ public sealed class MediaStoreScanner
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"SAF tree uri parse/open failed: {ex}");
+            Debug.WriteLine($"SAF tree uri parse/open failed: {ex}");
             root = null;
         }
 
@@ -407,7 +429,8 @@ public sealed class MediaStoreScanner
             yield return item;
     }
 
-    private static IEnumerable<VideoItem> TraverseDocumentTree(DocumentFile root, string? sourceId, CancellationToken ct)
+    private static IEnumerable<VideoItem> TraverseDocumentTree(DocumentFile root, string? sourceId,
+        CancellationToken ct)
     {
         var stack = new Stack<DocumentFile>();
         stack.Push(root);
@@ -425,7 +448,7 @@ public sealed class MediaStoreScanner
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"SAF ListFiles failed: {ex}");
+                Debug.WriteLine($"SAF ListFiles failed: {ex}");
                 continue;
             }
 
@@ -437,8 +460,14 @@ public sealed class MediaStoreScanner
                     continue;
 
                 bool isDir;
-                try { isDir = child.IsDirectory; }
-                catch { continue; }
+                try
+                {
+                    isDir = child.IsDirectory;
+                }
+                catch
+                {
+                    continue;
+                }
 
                 if (isDir)
                 {
@@ -447,23 +476,41 @@ public sealed class MediaStoreScanner
                 }
 
                 string name;
-                try { name = child.Name ?? ""; }
-                catch { continue; }
+                try
+                {
+                    name = child.Name ?? "";
+                }
+                catch
+                {
+                    continue;
+                }
 
                 if (!IsVideoFileName(name))
                     continue;
 
                 long lastModifiedMs = 0;
-                try { lastModifiedMs = child.LastModified(); }
-                catch { lastModifiedMs = 0; }
+                try
+                {
+                    lastModifiedMs = child.LastModified();
+                }
+                catch
+                {
+                    lastModifiedMs = 0;
+                }
 
                 var added = lastModifiedMs > 0
                     ? lastModifiedMs / 1000
                     : DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-                string path = "";
-                try { path = child.Uri?.ToString() ?? ""; }
-                catch { path = ""; }
+                var path = "";
+                try
+                {
+                    path = child.Uri?.ToString() ?? "";
+                }
+                catch
+                {
+                    path = "";
+                }
 
                 if (string.IsNullOrWhiteSpace(path))
                     continue;
