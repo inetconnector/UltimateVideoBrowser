@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -370,14 +371,19 @@ public partial class MainViewModel : ObservableObject
             {
                 var ct = thumbCts.Token;
                 // Generate thumbnails for the first N visible items quickly, then continue.
-                foreach (var item in Videos.Take(80))
+                var snapshot = Videos.ToList();
+                var priority = snapshot.Take(80);
+                var remainder = snapshot.Skip(80);
+
+                foreach (var item in priority.Concat(remainder))
                 {
                     ct.ThrowIfCancellationRequested();
                     if (!string.IsNullOrWhiteSpace(item.ThumbnailPath) && File.Exists(item.ThumbnailPath))
                         continue;
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, ct);
-                    if (!string.IsNullOrWhiteSpace(p)) MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
+                    if (!string.IsNullOrWhiteSpace(p))
+                        MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
                 }
             }
             catch

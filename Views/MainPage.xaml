@@ -434,7 +434,12 @@
             </Frame>
 
         <!-- Browser grid -->
-            <Grid Grid.Row="9" x:Name="BrowserGrid" ColumnDefinitions="96,*">
+            <Grid Grid.Row="9"
+                  x:Name="BrowserGrid"
+                  ColumnDefinitions="96,*"
+                  RowDefinitions="*"
+                  VerticalOptions="FillAndExpand"
+                  HorizontalOptions="FillAndExpand">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">
@@ -495,6 +500,8 @@
                             SelectionChanged="OnTimelineSelectionChanged"
                             BackgroundColor="{DynamicResource AppBg}"
                             VerticalScrollBarVisibility="Always"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand"
                             Margin="8,0,8,0"
                             Grid.Column="0">
                 <CollectionView.ItemsLayout>
@@ -535,7 +542,9 @@
                             ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None"
-                            VerticalScrollBarVisibility="Always">
+                            VerticalScrollBarVisibility="Always"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
 
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
