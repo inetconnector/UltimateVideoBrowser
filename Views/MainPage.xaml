@@ -148,7 +148,7 @@
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
                         <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
-                        <Label Text="{Binding VideoCount}"
+                        <Label Text="{Binding IndexedVideoCount}"
                                FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
@@ -796,12 +796,34 @@
 
             </CollectionView>
             </Grid>
+            <!-- Status bar -->
+            <Grid Grid.Row="9"
+                  Padding="16,6"
+                  ColumnDefinitions="*,Auto"
+                  BackgroundColor="{DynamicResource Surface}">
+                <Label x:Name="IndexingStatusLabel"
+                       Text="{x:Static strings:AppResources.Indexing}"
+                       IsVisible="{Binding IsIndexing}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Accent}" />
+
+                <HorizontalStackLayout Grid.Column="1"
+                                       Spacing="6"
+                                       VerticalOptions="Center">
+                    <Label Text="{Binding IndexedVideoCount}"
+                           FontAttributes="Bold"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </HorizontalStackLayout>
+            </Grid>
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All"
-              IsVisible="{Binding IsIndexingOverlayVisible}"
+        <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
               Padding="24"
               HorizontalOptions="Fill"
@@ -863,5 +885,5 @@
 
             </Frame>
         </Grid>
-    </AbsoluteLayout>
+    </Grid>
 </ContentPage>

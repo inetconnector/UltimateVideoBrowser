@@ -32,6 +32,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private double indexRatio;
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
+    [ObservableProperty] private int indexedVideoCount;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private string searchText = "";
@@ -52,6 +53,7 @@ public partial class MainViewModel : ObservableObject
     private readonly object indexProgressLock = new();
     private bool isApplyingIndexProgress;
     private IndexProgress? pendingIndexProgress;
+    private int indexStartingCount;
     private readonly object thumbnailLock = new();
     private bool thumbnailPipelineRunning;
     private bool thumbnailPipelineQueued;
@@ -101,6 +103,8 @@ public partial class MainViewModel : ObservableObject
         if (!HasMediaPermission)
         {
             Videos = new List<VideoItem>();
+            var total = await indexService.CountAsync();
+            await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = total);
             return;
         }
 
@@ -133,6 +137,7 @@ public partial class MainViewModel : ObservableObject
                 Sources = enabledSources;
                 _ = UpdateSourceStatsAsync(sources);
                 Videos = videos;
+                IndexedVideoCount = totalCount;
             });
         }
         finally
@@ -202,6 +207,8 @@ public partial class MainViewModel : ObservableObject
         var completed = false;
         try
         {
+            indexStartingCount = await indexService.CountAsync();
+            await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = indexStartingCount);
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
             indexLastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
@@ -299,15 +306,16 @@ public partial class MainViewModel : ObservableObject
             return;
 
         var moved = await fileExportService.MoveToFolderAsync(markedItems);
-        if (moved.Count > 0)
-        {
-            await indexService.RemoveAsync(moved);
-            Videos = Videos.Except(moved).ToList();
-        }
-        else
-        {
-            UpdateMarkedCount();
-        }
+            if (moved.Count > 0)
+            {
+                await indexService.RemoveAsync(moved);
+                Videos = Videos.Except(moved).ToList();
+                await UpdateIndexedVideoCountAsync();
+            }
+            else
+            {
+                UpdateMarkedCount();
+            }
     }
 
     [RelayCommand]
@@ -590,11 +598,18 @@ public partial class MainViewModel : ObservableObject
             progress.Total);
         UpdateIndexLocation(progress.SourceName, progress.CurrentPath);
         IndexedCount = progress.Inserted;
+        IndexedVideoCount = indexStartingCount + progress.Inserted;
 
         if (progress.Inserted > indexLastInserted)
         {
             indexLastInserted = progress.Inserted;
             _ = RefreshAsync();
         }
+    }
+
+    private async Task UpdateIndexedVideoCountAsync()
+    {
+        var total = await indexService.CountAsync();
+        await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = total);
     }
 }
