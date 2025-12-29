@@ -45,6 +45,7 @@ public partial class MainPage : ContentPage
 
         private int gridSpan = 3;
         private bool isIndexingOverlayVisible;
+        private bool isIndexingOverlaySuppressed;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -63,19 +64,30 @@ public partial class MainPage : ContentPage
             MoveMarkedCommand = vm.MoveMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
-            ShowIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = true);
+            ShowIndexOverlayCommand = new RelayCommand(() =>
+            {
+                isIndexingOverlaySuppressed = false;
+                IsIndexingOverlayVisible = true;
+            });
 
             vm.PropertyChanged += (_, args) =>
             {
                 switch (args.PropertyName)
                 {
                     case nameof(MainViewModel.IsIndexing):
-                        IsIndexingOverlayVisible = vm.IsIndexing;
+                        if (!vm.IsIndexing)
+                            isIndexingOverlaySuppressed = false;
+
+                        IsIndexingOverlayVisible = vm.IsIndexing && vm.IndexedCount > 0 && !isIndexingOverlaySuppressed;
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
                     case nameof(MainViewModel.IndexedCount):
+                        if (vm.IsIndexing && vm.IndexedCount > 0 && !isIndexingOverlaySuppressed)
+                            IsIndexingOverlayVisible = true;
+
                         OnPropertyChanged(nameof(IndexedCount));
+                        OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
                     case nameof(MainViewModel.IndexProcessed):
                         OnPropertyChanged(nameof(IndexProcessed));
@@ -213,12 +225,14 @@ public partial class MainPage : ContentPage
                     return;
 
                 isIndexingOverlayVisible = value;
+                if (!value && vm.IsIndexing)
+                    isIndexingOverlaySuppressed = true;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ShowIndexingBanner));
             }
         }
 
-        public bool ShowIndexingBanner => vm.IsIndexing && !IsIndexingOverlayVisible;
+        public bool ShowIndexingBanner => vm.IsIndexing && vm.IndexedCount > 0 && !IsIndexingOverlayVisible;
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;
