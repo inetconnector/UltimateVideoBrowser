@@ -10,6 +10,7 @@ namespace UltimateVideoBrowser.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
+    private bool isTimelineSelectionSyncing;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
@@ -43,8 +44,29 @@ public partial class MainPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is not TimelineEntry entry)
             return;
 
+        if (isTimelineSelectionSyncing)
+            return;
+
         MediaItemsView.ScrollTo(entry.AnchorMedia, position: ScrollToPosition.Start, animate: true);
-        ((CollectionView)sender).SelectedItem = null;
+    }
+
+    private void OnMediaItemsScrolled(object? sender, ItemsViewScrolledEventArgs e)
+    {
+        if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
+            return;
+
+        var index = Math.Clamp(e.FirstVisibleItemIndex, 0, vm.MediaItems.Count - 1);
+        var item = vm.MediaItems[index];
+        var date = DateTimeOffset.FromUnixTimeSeconds(Math.Max(0, item.DateAddedSeconds))
+            .ToLocalTime()
+            .DateTime;
+        var entry = vm.TimelineEntries.FirstOrDefault(t => t.Year == date.Year && t.Month == date.Month);
+        if (entry == null || TimelineView.SelectedItem == entry)
+            return;
+
+        isTimelineSelectionSyncing = true;
+        TimelineView.SelectedItem = entry;
+        isTimelineSelectionSyncing = false;
     }
 
     private void OnSortChipTapped(object sender, TappedEventArgs e)

@@ -387,6 +387,7 @@ public partial class MainViewModel : ObservableObject
         var existingName = string.IsNullOrWhiteSpace(item.Name)
             ? Path.GetFileNameWithoutExtension(item.Path)
             : Path.GetFileNameWithoutExtension(item.Name);
+        var currentName = Path.GetFileName(item.Path);
         var suggested = BuildSuggestedName(item, existingName);
         var prompt = await dialogService.DisplayPromptAsync(
             AppResources.RenameTitle,
@@ -408,6 +409,14 @@ public partial class MainViewModel : ObservableObject
             : string.Concat(newBaseName, extension);
         var folder = Path.GetDirectoryName(item.Path) ?? string.Empty;
         var newPath = Path.Combine(folder, finalName);
+
+        var confirm = await dialogService.DisplayAlertAsync(
+            AppResources.RenameConfirmTitle,
+            string.Format(AppResources.RenameConfirmMessage, currentName, finalName),
+            AppResources.RenameAction,
+            AppResources.CancelButton);
+        if (!confirm)
+            return;
 
         if (string.Equals(newPath, item.Path, StringComparison.OrdinalIgnoreCase))
         {
@@ -851,6 +860,8 @@ public partial class MainViewModel : ObservableObject
             : DateTime.Now;
         var datePart = date.ToString("yyyy-MM-dd_HHmmss", CultureInfo.InvariantCulture);
         var baseName = string.IsNullOrWhiteSpace(fallbackName) ? "media" : fallbackName.Trim();
+        if (baseName.StartsWith($"{datePart}-", StringComparison.OrdinalIgnoreCase))
+            return baseName;
         return $"{datePart}-{baseName}";
     }
 

@@ -15,6 +15,14 @@ public sealed class AppSettingsService
     private const string InternalPlayerEnabledKey = "internal_player_enabled";
     private const string IndexedMediaTypesKey = "indexed_media_types";
     private const string VisibleMediaTypesKey = "visible_media_types";
+    private const string VideoExtensionsKey = "video_extensions";
+    private const string PhotoExtensionsKey = "photo_extensions";
+    private const string DocumentExtensionsKey = "document_extensions";
+
+    private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
+    private static readonly string[] DefaultPhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
+    private static readonly string[] DefaultDocumentExtensions =
+        { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
     public string ActiveSourceId
     {
@@ -88,5 +96,52 @@ public sealed class AppSettingsService
     {
         get => (MediaType)Preferences.Default.Get(VisibleMediaTypesKey, (int)MediaType.All);
         set => Preferences.Default.Set(VisibleMediaTypesKey, (int)value);
+    }
+
+    public string VideoExtensions
+    {
+        get => Preferences.Default.Get(VideoExtensionsKey, string.Join(", ", DefaultVideoExtensions));
+        set => Preferences.Default.Set(VideoExtensionsKey, value ?? string.Empty);
+    }
+
+    public string PhotoExtensions
+    {
+        get => Preferences.Default.Get(PhotoExtensionsKey, string.Join(", ", DefaultPhotoExtensions));
+        set => Preferences.Default.Set(PhotoExtensionsKey, value ?? string.Empty);
+    }
+
+    public string DocumentExtensions
+    {
+        get => Preferences.Default.Get(DocumentExtensionsKey, string.Join(", ", DefaultDocumentExtensions));
+        set => Preferences.Default.Set(DocumentExtensionsKey, value ?? string.Empty);
+    }
+
+    public IReadOnlySet<string> GetVideoExtensions() => ParseExtensions(VideoExtensions, DefaultVideoExtensions);
+    public IReadOnlySet<string> GetPhotoExtensions() => ParseExtensions(PhotoExtensions, DefaultPhotoExtensions);
+    public IReadOnlySet<string> GetDocumentExtensions() => ParseExtensions(DocumentExtensions, DefaultDocumentExtensions);
+
+    private static HashSet<string> ParseExtensions(string? raw, IEnumerable<string> fallback)
+    {
+        var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var tokens = (raw ?? string.Empty)
+            .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        foreach (var token in tokens)
+        {
+            var normalized = token.StartsWith(".", StringComparison.Ordinal)
+                ? token
+                : $".{token}";
+            if (string.Equals(normalized, ".", StringComparison.Ordinal))
+                continue;
+            extensions.Add(normalized);
+        }
+
+        if (extensions.Count == 0)
+        {
+            foreach (var ext in fallback)
+                extensions.Add(ext);
+        }
+
+        return extensions;
     }
 }

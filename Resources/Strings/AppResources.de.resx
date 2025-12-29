@@ -375,4 +375,19 @@
   <data name="SettingsMediaTypesMessage" xml:space="preserve">
     <value>Lege fest, welche Typen indiziert werden sollen.</value>
   </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Dateiendungen</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Dateiendungen mit Kommas trennen (z. B. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Umbenennen bestätigen</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>"{0}" in "{1}" umbenennen?</value>
+  </data>
 </root>

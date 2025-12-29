@@ -578,6 +578,7 @@
                                 x:Name="MediaItemsView"
                                 SelectionMode="None"
                                 VerticalScrollBarVisibility="Always"
+                                Scrolled="OnMediaItemsScrolled"
                                 VerticalOptions="FillAndExpand"
                                 HorizontalOptions="FillAndExpand">
 
