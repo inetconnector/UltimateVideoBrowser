@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MauiMediaSource = Microsoft.Maui.Controls.MediaSource;
 using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
@@ -31,7 +30,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
-    [ObservableProperty] private MauiMediaSource? currentVideoSource;
+    [ObservableProperty] private string? currentVideoSource;
     [ObservableProperty] private string currentVideoName = "";
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
@@ -291,7 +290,7 @@ public partial class MainViewModel : ObservableObject
 
         if (settingsService.InternalPlayerEnabled)
         {
-            CurrentVideoSource = new FileMediaSource { File = item.Path };
+            CurrentVideoSource = item.Path;
             CurrentVideoName = string.IsNullOrWhiteSpace(item.Name)
                 ? Path.GetFileName(item.Path)
                 : item.Name;
