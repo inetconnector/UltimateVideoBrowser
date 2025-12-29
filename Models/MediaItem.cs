@@ -9,6 +9,7 @@ public class MediaItem : INotifyPropertyChanged
     private bool isMarked;
     private string name = "";
     private string path = "";
+    private string peopleTagsSummary = "";
     private string? thumbnailPath;
 
     [PrimaryKey]
@@ -79,6 +80,24 @@ public class MediaItem : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    [Ignore]
+    public string PeopleTagsSummary
+    {
+        get => peopleTagsSummary;
+        set
+        {
+            if (peopleTagsSummary == value)
+                return;
+
+            peopleTagsSummary = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasPeopleTags));
+        }
+    }
+
+    [Ignore]
+    public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
 
     [Ignore]
     public string FirstLetter

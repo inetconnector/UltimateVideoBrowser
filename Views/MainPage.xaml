@@ -628,6 +628,14 @@
                                             Padding="10,2"
                                             BackgroundColor="{DynamicResource Surface2}"
                                             TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
+                                            FontSize="11"
+                                            Padding="10,2"
+                                            BackgroundColor="{DynamicResource Surface2}"
+                                            TextColor="{DynamicResource OnSurfaceMuted}" />
                                     <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
                                             CommandParameter="{Binding .}"
@@ -636,14 +644,22 @@
                                             BackgroundColor="{DynamicResource Surface2}"
                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                 </VerticalStackLayout>
-                                <Label Grid.Row="1"
-                                       Grid.Column="1"
-                                       Text="{Binding Name}"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       FontSize="13"
-                                       LineBreakMode="WordWrap"
-                                       MaxLines="2"
-                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Row="1"
+                                                     Grid.Column="1"
+                                                     Spacing="2">
+                                    <Label Text="{Binding Name}"
+                                           TextColor="{DynamicResource OnSurface}"
+                                           FontSize="13"
+                                           LineBreakMode="WordWrap"
+                                           MaxLines="2"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding PeopleTagsSummary}"
+                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                           FontSize="11"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="1"
+                                           IsVisible="{Binding HasPeopleTags}" />
+                                </VerticalStackLayout>
                             </Grid>
 
                                             <HorizontalStackLayout Grid.Row="2"

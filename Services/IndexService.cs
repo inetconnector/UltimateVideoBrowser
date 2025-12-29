@@ -178,6 +178,8 @@ public sealed class IndexService
                 continue;
 
             await db.Db.DeleteAsync<MediaItem>(item.Path).ConfigureAwait(false);
+            await db.Db.ExecuteAsync("DELETE FROM PersonTag WHERE MediaPath = ?;", item.Path)
+                .ConfigureAwait(false);
         }
     }
 
@@ -200,7 +202,14 @@ public sealed class IndexService
 
             if (!string.IsNullOrWhiteSpace(oldPath) &&
                 !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+            {
                 await db.Db.DeleteAsync<MediaItem>(oldPath).ConfigureAwait(false);
+                await db.Db.ExecuteAsync(
+                        "UPDATE PersonTag SET MediaPath = ? WHERE MediaPath = ?;",
+                        newPath,
+                        oldPath)
+                    .ConfigureAwait(false);
+            }
 
             return true;
         }

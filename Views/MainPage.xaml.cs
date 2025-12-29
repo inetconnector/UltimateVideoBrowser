@@ -24,6 +24,7 @@ public partial class MainPage : ContentPage
         base.OnAppearing();
         vm.ApplyPlaybackSettings();
         vm.ApplyFileChangeSettings();
+        vm.ApplyPeopleTaggingSettings();
         _ = vm.InitializeAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
@@ -109,6 +110,7 @@ public partial class MainPage : ContentPage
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
+            TagPeopleCommand = vm.TagPeopleCommand;
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
@@ -237,6 +239,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.AllowFileChanges):
                         OnPropertyChanged(nameof(AllowFileChanges));
                         break;
+                    case nameof(MainViewModel.IsPeopleTaggingEnabled):
+                        OnPropertyChanged(nameof(IsPeopleTaggingEnabled));
+                        break;
                 }
             };
         }
@@ -258,6 +263,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand DeleteMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
         public IAsyncRelayCommand RenameCommand { get; }
+        public IAsyncRelayCommand TagPeopleCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
@@ -396,6 +402,7 @@ public partial class MainPage : ContentPage
         public bool ShowPreview => vm.ShowPreview;
         public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
         public bool AllowFileChanges => vm.AllowFileChanges;
+        public bool IsPeopleTaggingEnabled => vm.IsPeopleTaggingEnabled;
 
         private async Task OpenSourcesAsync()
         {
