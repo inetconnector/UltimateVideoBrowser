@@ -366,7 +366,7 @@ public partial class MainPage : ContentPage
             if (width <= 0)
                 width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 
-            var targetTile = mode == UiMode.Tv ? 260 : mode == UiMode.Tablet ? 220 : 180;
+            var targetTile = mode == UiMode.Tv ? 300 : mode == UiMode.Tablet ? 260 : 240;
             var span = Math.Max(2, (int)(width / targetTile));
 
             GridSpan = Math.Min(8, span);

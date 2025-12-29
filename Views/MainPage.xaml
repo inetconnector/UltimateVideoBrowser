@@ -7,9 +7,11 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
-    <ScrollView VerticalScrollBarVisibility="Always"
-                HorizontalScrollBarVisibility="Never">
-        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0"
+                    VerticalScrollBarVisibility="Always"
+                    HorizontalScrollBarVisibility="Never">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
             <!-- Top bar -->
             <Grid Padding="16,14"
                   ColumnDefinitions="*,Auto,Auto,Auto"
@@ -196,36 +198,8 @@
                 </Grid>
             </Grid>
 
-            <!-- Marked actions -->
-            <Grid Grid.Row="3"
-                  Padding="12"
-                  IsVisible="{Binding HasMarked}">
-                <Frame BackgroundColor="{DynamicResource Surface}"
-                       CornerRadius="12"
-                       BorderColor="{DynamicResource BorderSubtle}"
-                       Padding="12"
-                       HasShadow="False">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto"
-                          ColumnSpacing="8">
-                        <Label
-                            Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
-                            FontAttributes="Bold"
-                            TextColor="{DynamicResource OnSurface}" />
-                        <Button Grid.Column="1"
-                                Text="{x:Static strings:AppResources.CopyMarkedAction}"
-                                Command="{Binding CopyMarkedCommand}" />
-                        <Button Grid.Column="2"
-                                Text="{x:Static strings:AppResources.MoveMarkedAction}"
-                                Command="{Binding MoveMarkedCommand}" />
-                        <Button Grid.Column="3"
-                                Text="{x:Static strings:AppResources.ClearMarkedAction}"
-                                Command="{Binding ClearMarkedCommand}" />
-                    </Grid>
-                </Frame>
-            </Grid>
-
             <!-- Permission notice -->
-            <Grid Grid.Row="4"
+            <Grid Grid.Row="3"
                   Padding="12"
                   IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
                 <Frame BackgroundColor="{DynamicResource Surface}"
@@ -250,7 +224,7 @@
             </Grid>
 
             <!-- Search + Sort -->
-            <Grid Grid.Row="5"
+            <Grid Grid.Row="4"
                   Padding="12"
                   ColumnDefinitions="*,Auto"
                   BackgroundColor="{DynamicResource AppBg}">
@@ -273,7 +247,7 @@
             </Grid>
 
             <!-- Date filter -->
-            <Grid Grid.Row="6"
+            <Grid Grid.Row="5"
                   Padding="12"
                   RowDefinitions="Auto,Auto"
                   RowSpacing="8"
@@ -312,7 +286,7 @@
             </Grid>
 
             <!-- Source tabs -->
-            <Grid Grid.Row="7"
+            <Grid Grid.Row="6"
                   Padding="12,0,12,12"
                   BackgroundColor="{DynamicResource AppBg}">
                 <CollectionView ItemsSource="{Binding Sources}"
@@ -369,7 +343,7 @@
             </Grid>
 
             <!-- Indexing banner -->
-            <Frame Grid.Row="8"
+            <Frame Grid.Row="7"
                    IsVisible="{Binding ShowIndexingBanner}"
                    BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
@@ -434,7 +408,7 @@
             </Frame>
 
             <!-- Browser grid -->
-            <Grid Grid.Row="9"
+            <Grid Grid.Row="8"
                   x:Name="BrowserGrid"
                   ColumnDefinitions="*,120"
                   RowDefinitions="*"
@@ -597,21 +571,16 @@
                                                 <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
                                             </DataTrigger>
                                         </Frame.Triggers>
-                                        <Grid RowDefinitions="170,Auto,Auto" Padding="10">
-                                            <Grid RowDefinitions="*"
-                                                  BackgroundColor="{DynamicResource Surface2}"
-                                                  HeightRequest="170">
-                                                <Image
-                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                                    Aspect="AspectFill" />
-                                                <CheckBox IsChecked="{Binding IsMarked}"
-                                                          Color="{DynamicResource Accent}"
-                                                          HorizontalOptions="Start"
-                                                          VerticalOptions="Start"
-                                                          Margin="6" />
-                                                <Frame BackgroundColor="#CC0E0F14"
-                                                       CornerRadius="999"
-                                                       Padding="6"
+                        <Grid RowDefinitions="170,Auto,Auto" Padding="10">
+                            <Grid RowDefinitions="*"
+                                  BackgroundColor="{DynamicResource Surface2}"
+                                  HeightRequest="170">
+                                <Image
+                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                    Aspect="AspectFill" />
+                                <Frame BackgroundColor="#CC0E0F14"
+                                       CornerRadius="999"
+                                       Padding="6"
                                                        HorizontalOptions="End"
                                                        VerticalOptions="End"
                                                        Margin="8">
@@ -619,22 +588,29 @@
                                                 </Frame>
                                             </Grid>
 
-                                            <HorizontalStackLayout Grid.Row="1"
-                                                                   Spacing="8"
-                                                                   Margin="0,10,0,0">
-                                                <Label Text="{Binding Name}"
-                                                       TextColor="{DynamicResource OnSurface}"
-                                                       FontSize="13"
-                                                       LineBreakMode="TailTruncation"
-                                                       HorizontalOptions="StartAndExpand" />
-                                                <Button Text="{x:Static strings:AppResources.RenameAction}"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        FontSize="11"
-                                                        Padding="10,2"
-                                                        BackgroundColor="{DynamicResource Surface2}"
-                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                                            </HorizontalStackLayout>
+                            <Grid Grid.Row="1"
+                                  ColumnDefinitions="Auto,*,Auto"
+                                  ColumnSpacing="8"
+                                  Margin="0,10,0,0">
+                                <CheckBox IsChecked="{Binding IsMarked}"
+                                          Color="{DynamicResource Accent}"
+                                          VerticalOptions="Center"
+                                          Margin="0" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding Name}"
+                                       TextColor="{DynamicResource OnSurface}"
+                                       FontSize="13"
+                                       LineBreakMode="TailTruncation"
+                                       VerticalOptions="Center" />
+                                <Button Grid.Column="2"
+                                        Text="{x:Static strings:AppResources.RenameAction}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="11"
+                                        Padding="10,2"
+                                        BackgroundColor="{DynamicResource Surface2}"
+                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                            </Grid>
 
                                             <Frame Grid.Row="2"
                                                    BackgroundColor="{DynamicResource Surface2}"
@@ -693,11 +669,6 @@
                                                     <Image
                                                         Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                         Aspect="AspectFill" />
-                                                    <CheckBox IsChecked="{Binding IsMarked}"
-                                                              Color="{DynamicResource Accent}"
-                                                              HorizontalOptions="Start"
-                                                              VerticalOptions="Start"
-                                                              Margin="6" />
                                                     <Frame BackgroundColor="#CC0E0F14"
                                                            CornerRadius="999"
                                                            Padding="6"
@@ -709,22 +680,29 @@
                                                     </Frame>
                                                 </Grid>
 
-                                                <HorizontalStackLayout Grid.Row="1"
-                                                                       Spacing="8"
-                                                                       Margin="0,10,0,0">
-                                                    <Label Text="{Binding Name}"
+                                                <Grid Grid.Row="1"
+                                                      ColumnDefinitions="Auto,*,Auto"
+                                                      ColumnSpacing="8"
+                                                      Margin="0,10,0,0">
+                                                    <CheckBox IsChecked="{Binding IsMarked}"
+                                                              Color="{DynamicResource Accent}"
+                                                              VerticalOptions="Center"
+                                                              Margin="0" />
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Name}"
                                                            TextColor="{DynamicResource OnSurface}"
                                                            FontSize="13"
                                                            LineBreakMode="TailTruncation"
-                                                           HorizontalOptions="StartAndExpand" />
-                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                           VerticalOptions="Center" />
+                                                    <Button Grid.Column="2"
+                                                            Text="{x:Static strings:AppResources.RenameAction}"
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                                             CommandParameter="{Binding .}"
                                                             FontSize="11"
                                                             Padding="10,2"
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                </HorizontalStackLayout>
+                                                </Grid>
 
                                                 <Frame Grid.Row="2"
                                                        BackgroundColor="{DynamicResource Surface2}"
@@ -785,11 +763,6 @@
                                                     <Image
                                                         Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                         Aspect="AspectFill" />
-                                                    <CheckBox IsChecked="{Binding IsMarked}"
-                                                              Color="{DynamicResource Accent}"
-                                                              HorizontalOptions="Start"
-                                                              VerticalOptions="Start"
-                                                              Margin="6" />
                                                     <Frame BackgroundColor="#CC0E0F14"
                                                            CornerRadius="999"
                                                            Padding="6"
@@ -801,22 +774,29 @@
                                                     </Frame>
                                                 </Grid>
 
-                                                <HorizontalStackLayout Grid.Row="1"
-                                                                       Spacing="8"
-                                                                       Margin="0,10,0,0">
-                                                    <Label Text="{Binding Name}"
+                                                <Grid Grid.Row="1"
+                                                      ColumnDefinitions="Auto,*,Auto"
+                                                      ColumnSpacing="8"
+                                                      Margin="0,10,0,0">
+                                                    <CheckBox IsChecked="{Binding IsMarked}"
+                                                              Color="{DynamicResource Accent}"
+                                                              VerticalOptions="Center"
+                                                              Margin="0" />
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Name}"
                                                            TextColor="{DynamicResource OnSurface}"
                                                            FontSize="13"
                                                            LineBreakMode="TailTruncation"
-                                                           HorizontalOptions="StartAndExpand" />
-                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                           VerticalOptions="Center" />
+                                                    <Button Grid.Column="2"
+                                                            Text="{x:Static strings:AppResources.RenameAction}"
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                                             CommandParameter="{Binding .}"
                                                             FontSize="11"
                                                             Padding="10,2"
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                </HorizontalStackLayout>
+                                                </Grid>
 
                                                 <Frame Grid.Row="2"
                                                        BackgroundColor="{DynamicResource Surface2}"
@@ -850,7 +830,35 @@
 
                 </CollectionView>
             </Grid>
-        </Grid>
+            </Grid>
+        </ScrollView>
 
-    </ScrollView>
+        <!-- Marked actions pinned to bottom -->
+        <Grid Grid.Row="1"
+              Padding="12"
+              BackgroundColor="{DynamicResource AppBg}"
+              IsVisible="{Binding HasMarked}">
+            <Frame BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="12"
+                   BorderColor="{DynamicResource BorderSubtle}"
+                   Padding="12"
+                   HasShadow="False">
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                      ColumnSpacing="8">
+                    <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                            Command="{Binding CopyMarkedCommand}" />
+                    <Button Grid.Column="2"
+                            Text="{x:Static strings:AppResources.MoveMarkedAction}"
+                            Command="{Binding MoveMarkedCommand}" />
+                    <Button Grid.Column="3"
+                            Text="{x:Static strings:AppResources.ClearMarkedAction}"
+                            Command="{Binding ClearMarkedCommand}" />
+                </Grid>
+            </Frame>
+        </Grid>
+    </Grid>
 </ContentPage>
