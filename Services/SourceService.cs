@@ -12,13 +12,15 @@ public sealed class SourceService : ISourceService
         this.db = db;
     }
 
-    public Task<List<MediaSource>> GetSourcesAsync()
+    public async Task<List<MediaSource>> GetSourcesAsync()
     {
-        return db.Db.Table<MediaSource>().OrderBy(s => s.DisplayName).ToListAsync();
+        await db.EnsureInitializedAsync();
+        return await db.Db.Table<MediaSource>().OrderBy(s => s.DisplayName).ToListAsync();
     }
 
     public async Task EnsureDefaultSourceAsync()
     {
+        await db.EnsureInitializedAsync();
         var existing = await db.Db.Table<MediaSource>().FirstOrDefaultAsync();
         if (existing != null)
             return;
@@ -35,14 +37,16 @@ public sealed class SourceService : ISourceService
         await db.Db.InsertAsync(src);
     }
 
-    public Task UpsertAsync(MediaSource src)
+    public async Task UpsertAsync(MediaSource src)
     {
-        return db.Db.InsertOrReplaceAsync(src);
+        await db.EnsureInitializedAsync();
+        await db.Db.InsertOrReplaceAsync(src);
     }
 
-    public Task DeleteAsync(MediaSource src)
+    public async Task DeleteAsync(MediaSource src)
     {
-        return DeleteSourceAsync(src);
+        await db.EnsureInitializedAsync();
+        await DeleteSourceAsync(src);
     }
 
     private async Task DeleteSourceAsync(MediaSource src)
