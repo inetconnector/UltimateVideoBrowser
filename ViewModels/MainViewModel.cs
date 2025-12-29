@@ -645,11 +645,32 @@ public partial class MainViewModel : ObservableObject
     partial void OnMediaItemsChanged(List<MediaItem> value)
     {
         MediaCount = value?.Count ?? 0;
-        TimelineEntries = BuildTimelineEntries(value);
-        SubscribeToMarkedChanges(value);
-        UpdateMarkedCount();
         mediaItemsVersion++;
-        StartThumbnailPipeline();
+
+        var snapshot = value?.ToList() ?? new List<MediaItem>();
+        var currentVersion = mediaItemsVersion;
+
+        _ = Task.Run(() =>
+        {
+            var timelineEntries = BuildTimelineEntries(snapshot);
+            var markedCount = snapshot.Count(v => v.IsMarked);
+            return (timelineEntries, markedCount);
+        }).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (mediaItemsVersion != currentVersion)
+                    return;
+
+                TimelineEntries = task.Result.timelineEntries;
+                MarkedCount = task.Result.markedCount;
+                SubscribeToMarkedChanges(snapshot);
+                StartThumbnailPipeline();
+            });
+        });
     }
 
     partial void OnMarkedCountChanged(int value)
