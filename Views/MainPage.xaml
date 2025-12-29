@@ -818,5 +818,22 @@
                 </Grid>
             </Frame>
         </Grid>
+
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsSourceSwitching}"
+              BackgroundColor="#80000000"
+              InputTransparent="False">
+            <Frame BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="16"
+                   Padding="18"
+                   HasShadow="True"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <ActivityIndicator IsRunning="True"
+                                   Color="{DynamicResource Accent}"
+                                   HeightRequest="32"
+                                   WidthRequest="32" />
+            </Frame>
+        </Grid>
     </Grid>
 </ContentPage>

@@ -58,6 +58,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
     [ObservableProperty] private int totalSourceCount;
     [ObservableProperty] private int videoCount;
+    [ObservableProperty] private bool isSourceSwitching;
 
     [ObservableProperty] private List<VideoItem> videos = new();
     private int videosVersion;
@@ -424,8 +425,16 @@ public partial class MainViewModel : ObservableObject
         if (source == null || source.Id == ActiveSourceId)
             return;
 
-        ActiveSourceId = source.Id;
-        await RefreshAsync();
+        IsSourceSwitching = true;
+        try
+        {
+            ActiveSourceId = source.Id;
+            await RefreshAsync();
+        }
+        finally
+        {
+            IsSourceSwitching = false;
+        }
     }
 
     [RelayCommand]
