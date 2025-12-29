@@ -94,7 +94,7 @@
     <value>Abbrechen</value>
   </data>
   <data name="IndexingShowDetailsButton" xml:space="preserve">
-    <value>Details</value>
+    <value>Fortschritt anzeigen</value>
   </data>
   <data name="NewItemsFormat" xml:space="preserve">
     <value>Neue Elemente: {0}</value>
