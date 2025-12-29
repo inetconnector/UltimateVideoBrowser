@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
@@ -18,7 +19,8 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
 
         builder
-            .UseMauiApp<App>();
+            .UseMauiApp<App>()
+            .UseSkiaSharp();
 
 #if WINDOWS
         SvgImageSourceFix.Configure();

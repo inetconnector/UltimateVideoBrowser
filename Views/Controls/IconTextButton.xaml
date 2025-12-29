@@ -2,6 +2,7 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls"
              x:Class="UltimateVideoBrowser.Views.Controls.IconTextButton"
              x:Name="Root">
     <Frame Padding="{Binding Padding, Source={x:Reference Root}}"
@@ -29,10 +30,10 @@
         <Grid ColumnDefinitions="Auto,*"
               ColumnSpacing="8"
               VerticalOptions="Center">
-            <Image Source="{Binding ImageSource, Source={x:Reference Root}}"
-                   HeightRequest="18"
-                   WidthRequest="18"
-                   VerticalOptions="Center" />
+            <controls:AdaptiveImage Source="{Binding ImageSource, Source={x:Reference Root}}"
+                                    HeightRequest="18"
+                                    WidthRequest="18"
+                                    VerticalOptions="Center" />
             <Label Grid.Column="1"
                    Text="{Binding Text, Source={x:Reference Root}}"
                    TextColor="{Binding TextColor, Source={x:Reference Root}}"
