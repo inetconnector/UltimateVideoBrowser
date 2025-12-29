@@ -35,7 +35,7 @@ public static class AppResources
     public static string IndexingFileFormat => GetString(nameof(IndexingFileFormat), "File: {0}");
 
     public static string IndexingShowDetailsButton =>
-        GetString(nameof(IndexingShowDetailsButton), "Show details");
+        GetString(nameof(IndexingShowDetailsButton), "Show progress");
 
     public static string IndexingBackgroundButton =>
         GetString(nameof(IndexingBackgroundButton), "Hide");

@@ -79,7 +79,7 @@
     <value>Cancel</value>
   </data>
   <data name="IndexingShowDetailsButton" xml:space="preserve">
-    <value>Details</value>
+    <value>Show progress</value>
   </data>
   <data name="NewItemsFormat" xml:space="preserve">
     <value>New items: {0}</value>

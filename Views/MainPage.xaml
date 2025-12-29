@@ -408,58 +408,11 @@
                    VerticalOptions="Start"
                    Margin="16,4,16,12"
                    HasShadow="False">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                      ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12"
-                      RowSpacing="6">
-                    <Label x:Name="IndexingStatusBannerLabel"
-                           Text="{x:Static strings:AppResources.Indexing}"
-                           FontAttributes="Bold"
-                           TextColor="{DynamicResource OnSurface}" />
-
-                    <Button Grid.Column="1"
-                            Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
-                            Command="{Binding ShowIndexOverlayCommand}"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Padding="10,6"
-                            CornerRadius="12" />
-                    <Button Grid.Column="2"
-                            Text="{x:Static strings:AppResources.IndexingCancelButton}"
-                            Command="{Binding CancelIndexCommand}"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Padding="10,6"
-                            CornerRadius="12" />
-
-                    <Label Grid.Row="1"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexStatus}"
-                           FontSize="12"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-
-                    <Label Grid.Row="2"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFolder, StringFormat={x:Static strings:AppResources.IndexingFolderFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-
-                    <Label Grid.Row="3"
-                           Grid.ColumnSpan="2"
-                           Text="{Binding IndexCurrentFile, StringFormat={x:Static strings:AppResources.IndexingFileFormat}}"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-
-                    <ProgressBar Grid.Row="4"
-                                 Grid.Column="0"
-                                 Progress="{Binding IndexRatio}" />
-
-                    <Label Grid.Row="4"
-                           Grid.Column="1"
-                           Text="{Binding IndexRatio, StringFormat='{0:P0}'}"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center"
-                           FontSize="11"
-                           TextColor="{DynamicResource OnSurfaceMuted}" />
-                </Grid>
+                <Button Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
+                        Command="{Binding ShowIndexOverlayCommand}"
+                        Style="{StaticResource OverlayButtonStyle}"
+                        Padding="12,8"
+                        CornerRadius="12" />
             </Frame>
 
             <!-- Browser grid -->
