@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 
@@ -46,6 +47,7 @@ public partial class MainPage : ContentPage
         private readonly DeviceModeService deviceMode;
         private readonly Page page;
         private readonly MainViewModel vm;
+        private Window? indexingWindow;
 
         private int gridSpan = 3;
         private bool isIndexingOverlayVisible;
@@ -81,7 +83,10 @@ public partial class MainPage : ContentPage
                 {
                     case nameof(MainViewModel.IsIndexing):
                         if (!vm.IsIndexing)
+                        {
                             isIndexingOverlaySuppressed = false;
+                            IsIndexingOverlayVisible = false;
+                        }
 
                         IsIndexingOverlayVisible = vm.IsIndexing && vm.IndexedCount > 0 && !isIndexingOverlaySuppressed;
                         OnPropertyChanged(nameof(IsIndexing));
@@ -240,8 +245,16 @@ public partial class MainPage : ContentPage
                     return;
 
                 isIndexingOverlayVisible = value;
-                if (!value && vm.IsIndexing)
-                    isIndexingOverlaySuppressed = true;
+                if (value)
+                {
+                    EnsureIndexingWindow();
+                }
+                else
+                {
+                    CloseIndexingWindow();
+                    if (vm.IsIndexing)
+                        isIndexingOverlaySuppressed = true;
+                }
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ShowIndexingBanner));
             }
@@ -291,6 +304,47 @@ public partial class MainPage : ContentPage
         private async Task OpenSettingsAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SettingsPage>()!);
+        }
+
+        private void EnsureIndexingWindow()
+        {
+            if (indexingWindow != null)
+                return;
+
+            var indexingPage = new IndexingProgressPage(this)
+            {
+                Title = AppResources.Indexing,
+            };
+
+            var window = new Window(indexingPage)
+            {
+                Title = AppResources.Indexing,
+                Width = 460,
+                Height = 360,
+            };
+
+            window.Destroying += (_, _) =>
+            {
+                indexingWindow = null;
+                if (isIndexingOverlayVisible)
+                    isIndexingOverlayVisible = false;
+                if (vm.IsIndexing)
+                    isIndexingOverlaySuppressed = true;
+                OnPropertyChanged(nameof(ShowIndexingBanner));
+            };
+
+            indexingWindow = window;
+            Application.Current?.OpenWindow(window);
+        }
+
+        private void CloseIndexingWindow()
+        {
+            if (indexingWindow == null)
+                return;
+
+            var window = indexingWindow;
+            indexingWindow = null;
+            window.Close();
         }
 
         public Task ApplyGridSpanAsync()
