@@ -243,6 +243,18 @@
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Beim nächsten Start neu indizieren</value>
   </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Wiedergabe</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Internen Videoplayer verwenden</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Wähle ein Video aus, um es hier abzuspielen.</value>
+  </data>
   <data name="ThemeLight" xml:space="preserve">
     <value>Hell</value>
   </data>

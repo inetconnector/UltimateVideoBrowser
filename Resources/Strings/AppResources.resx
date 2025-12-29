@@ -246,6 +246,18 @@
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Re-index on next launch</value>
   </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Use internal video player</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Select a video to play it here.</value>
+  </data>
   <data name="ThemeLight" xml:space="preserve">
     <value>Light</value>
   </data>

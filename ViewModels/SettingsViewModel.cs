@@ -11,6 +11,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private DateTime dateFilterTo;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool needsReindex;
+    [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private SortOption? selectedSortOption;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
@@ -41,6 +42,7 @@ public partial class SettingsViewModel : ObservableObject
         DateFilterFrom = settingsService.DateFilterFrom;
         DateFilterTo = settingsService.DateFilterTo;
         NeedsReindex = settingsService.NeedsReindex;
+        IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -87,6 +89,11 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnNeedsReindexChanged(bool value)
     {
         settingsService.NeedsReindex = value;
+    }
+
+    partial void OnIsInternalPlayerEnabledChanged(bool value)
+    {
+        settingsService.InternalPlayerEnabled = value;
     }
 
     private static void ApplyTheme(string themeKey)

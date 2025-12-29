@@ -10,6 +10,7 @@ public sealed class AppSettingsService
     private const string DateFilterToKey = "date_filter_to";
     private const string NeedsReindexKey = "needs_reindex";
     private const string ThemePreferenceKey = "theme_preference";
+    private const string InternalPlayerEnabledKey = "internal_player_enabled";
 
     public string ActiveSourceId
     {
@@ -65,5 +66,11 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(ThemePreferenceKey, "dark");
         set => Preferences.Default.Set(ThemePreferenceKey, value ?? "dark");
+    }
+
+    public bool InternalPlayerEnabled
+    {
+        get => Preferences.Default.Get(InternalPlayerEnabledKey, false);
+        set => Preferences.Default.Set(InternalPlayerEnabledKey, value);
     }
 }
