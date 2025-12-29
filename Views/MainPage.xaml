@@ -522,7 +522,7 @@
                                 <Grid RowDefinitions="70,Auto" RowSpacing="6">
                                     <Grid BackgroundColor="{DynamicResource Surface3}"
                                           HeightRequest="70">
-                                        <Image Source="{Binding AnchorVideo.ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
                                                Aspect="AspectFill" />
                                     </Grid>
                                     <VerticalStackLayout Grid.Row="1" Spacing="2">
