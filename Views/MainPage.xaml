@@ -14,7 +14,7 @@
             <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
             <!-- Top bar -->
             <Grid Padding="16,14"
-                  ColumnDefinitions="*,Auto,Auto,Auto"
+                  ColumnDefinitions="*"
                   BackgroundColor="{DynamicResource Surface}">
                 <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
                     <Frame Padding="6"
@@ -42,21 +42,6 @@
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
 
-                <Button Grid.Column="1"
-                        Text="{x:Static strings:AppResources.SourcesButton}"
-                        ImageSource="icon_sources.svg"
-                        Command="{Binding OpenSourcesCommand}" />
-
-                <Button Grid.Column="2"
-                        Text="{x:Static strings:AppResources.SettingsButton}"
-                        Command="{Binding OpenSettingsCommand}"
-                        Margin="8,0,0,0" />
-
-                <Button Grid.Column="3"
-                        Text="{x:Static strings:AppResources.ReindexButton}"
-                        ImageSource="icon_reindex.svg"
-                        Command="{Binding RunIndexCommand}"
-                        Margin="8,0,0,0" />
             </Grid>
 
             <!-- Hero -->
@@ -86,39 +71,14 @@
                                    TextColor="{DynamicResource OnSurfaceMuted}" />
 
                             <HorizontalStackLayout Spacing="8">
-                                <Frame BackgroundColor="{DynamicResource Surface3}"
-                                       CornerRadius="999"
-                                       Padding="10,4"
-                                       BorderColor="{DynamicResource BorderSubtle}">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding OpenSourcesCommand}" />
-                                    </Frame.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="6">
-                                        <Image Source="chip_collection.svg"
-                                               HeightRequest="14"
-                                               WidthRequest="14" />
-                                        <Label Text="{x:Static strings:AppResources.SourcesButton}"
-                                               FontSize="11"
-                                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                                    </HorizontalStackLayout>
-                                </Frame>
-
-                                <Frame BackgroundColor="{DynamicResource Surface3}"
-                                       CornerRadius="999"
-                                       Padding="10,4"
-                                       BorderColor="{DynamicResource BorderSubtle}">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnSortChipTapped" />
-                                    </Frame.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="6">
-                                        <Image Source="chip_spark.svg"
-                                               HeightRequest="14"
-                                               WidthRequest="14" />
-                                        <Label Text="{x:Static strings:AppResources.SortTitle}"
-                                               FontSize="11"
-                                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                                    </HorizontalStackLayout>
-                                </Frame>
+                                <Button Text="{x:Static strings:AppResources.SourcesButton}"
+                                        ImageSource="icon_sources.svg"
+                                        Command="{Binding OpenSourcesCommand}" />
+                                <Button Text="{x:Static strings:AppResources.SettingsButton}"
+                                        Command="{Binding OpenSettingsCommand}" />
+                                <Button Text="{x:Static strings:AppResources.ReindexButton}"
+                                        ImageSource="icon_reindex.svg"
+                                        Command="{Binding RunIndexCommand}" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
 
@@ -548,8 +508,6 @@
                                    FontSize="13"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    HorizontalTextAlignment="Center" />
-                            <Button Text="{x:Static strings:AppResources.EmptyStateAction}"
-                                    Command="{Binding OpenSourcesCommand}" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
 
