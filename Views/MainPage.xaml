@@ -582,7 +582,7 @@
                                                 <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
                                             </DataTrigger>
                                         </Frame.Triggers>
-                        <Grid RowDefinitions="170,Auto,Auto" Padding="10">
+                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                             <Grid RowDefinitions="*"
                                   BackgroundColor="{DynamicResource Surface2}"
                                   HeightRequest="170">
@@ -644,22 +644,6 @@
                                             BackgroundColor="{DynamicResource Surface2}"
                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                 </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Row="1"
-                                                     Grid.Column="1"
-                                                     Spacing="2">
-                                    <Label Text="{Binding Name}"
-                                           TextColor="{DynamicResource OnSurface}"
-                                           FontSize="13"
-                                           LineBreakMode="WordWrap"
-                                           MaxLines="2"
-                                           VerticalOptions="Center" />
-                                    <Label Text="{Binding PeopleTagsSummary}"
-                                           TextColor="{DynamicResource OnSurfaceMuted}"
-                                           FontSize="11"
-                                           LineBreakMode="TailTruncation"
-                                           MaxLines="1"
-                                           IsVisible="{Binding HasPeopleTags}" />
-                                </VerticalStackLayout>
                             </Grid>
 
                                             <HorizontalStackLayout Grid.Row="2"
@@ -690,7 +674,24 @@
                                                                FontSize="11" />
                                                     </HorizontalStackLayout>
                                                 </Frame>
-                                            </HorizontalStackLayout>
+                                                </HorizontalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="3"
+                                                                 Spacing="2"
+                                                                 Margin="0,2,0,2">
+                                                <Label Text="{Binding PeopleTagsSummary}"
+                                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                                       FontSize="10"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1"
+                                                       IsVisible="{Binding HasPeopleTags}" />
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="1"
+                                                       VerticalOptions="End" />
+                                            </VerticalStackLayout>
 
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer
@@ -729,7 +730,7 @@
                                                             Value="{DynamicResource Surface2}" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
-                                            <Grid RowDefinitions="170,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                                 <Grid RowDefinitions="*"
                                                       BackgroundColor="{DynamicResource Surface2}"
                                                       HeightRequest="170">
@@ -784,14 +785,6 @@
                                                                 BackgroundColor="{DynamicResource Surface2}"
                                                                 TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     </VerticalStackLayout>
-                                                    <Label Grid.Row="1"
-                                                           Grid.Column="1"
-                                                           Text="{Binding Name}"
-                                                           TextColor="{DynamicResource OnSurface}"
-                                                           FontSize="13"
-                                                           LineBreakMode="WordWrap"
-                                                           MaxLines="2"
-                                                           VerticalOptions="Center" />
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"
@@ -825,6 +818,15 @@
                                                         </HorizontalStackLayout>
                                                     </Frame>
                                                 </HorizontalStackLayout>
+
+                                                <Label Grid.Row="3"
+                                                       Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="1"
+                                                       VerticalOptions="End"
+                                                       Margin="0,2,0,2" />
 
                                                 <Grid.GestureRecognizers>
                                                     <TapGestureRecognizer
@@ -865,7 +867,7 @@
                                                             Value="{DynamicResource Surface2}" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
-                                            <Grid RowDefinitions="170,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                                 <Grid RowDefinitions="*"
                                                       BackgroundColor="{DynamicResource Surface2}"
                                                       HeightRequest="170">
@@ -920,14 +922,6 @@
                                                                 BackgroundColor="{DynamicResource Surface2}"
                                                                 TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     </VerticalStackLayout>
-                                                    <Label Grid.Row="1"
-                                                           Grid.Column="1"
-                                                           Text="{Binding Name}"
-                                                           TextColor="{DynamicResource OnSurface}"
-                                                           FontSize="13"
-                                                           LineBreakMode="WordWrap"
-                                                           MaxLines="2"
-                                                           VerticalOptions="Center" />
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"
@@ -961,6 +955,15 @@
                                                         </HorizontalStackLayout>
                                                     </Frame>
                                                 </HorizontalStackLayout>
+
+                                                <Label Grid.Row="3"
+                                                       Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="1"
+                                                       VerticalOptions="End"
+                                                       Margin="0,2,0,2" />
 
                                                 <Grid.GestureRecognizers>
                                                     <TapGestureRecognizer
