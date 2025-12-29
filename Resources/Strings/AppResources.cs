@@ -172,6 +172,7 @@ public static class AppResources
 
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
     public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");
+    public static string LoadingMedia => GetString(nameof(LoadingMedia), "Loading media...");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>
