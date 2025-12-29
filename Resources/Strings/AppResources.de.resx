@@ -156,6 +156,18 @@
   <data name="RenameExistsMessage" xml:space="preserve">
     <value>Eine Datei mit diesem Namen existiert bereits in diesem Ordner.</value>
   </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Ordner öffnen</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Ordner konnte nicht geöffnet werden</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Der Ordner konnte nicht geöffnet werden. Bitte versuche es erneut.</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Ordner öffnen wird auf diesem Gerät nicht unterstützt.</value>
+  </data>
   <data name="MarkedCountFormat" xml:space="preserve">
     <value>Markiert: {0}</value>
   </data>

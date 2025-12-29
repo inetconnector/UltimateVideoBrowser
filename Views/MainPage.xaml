@@ -619,16 +619,27 @@
                                        Text="{Binding Name}"
                                        TextColor="{DynamicResource OnSurface}"
                                        FontSize="13"
-                                       LineBreakMode="TailTruncation"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2"
                                        VerticalOptions="Center" />
-                                <Button Grid.Column="2"
-                                        Text="{x:Static strings:AppResources.RenameAction}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                        CommandParameter="{Binding .}"
-                                        FontSize="11"
-                                        Padding="10,2"
-                                        BackgroundColor="{DynamicResource Surface2}"
-                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                <VerticalStackLayout Grid.Column="2"
+                                                     Spacing="4"
+                                                     HorizontalOptions="End">
+                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                            CommandParameter="{Binding .}"
+                                            FontSize="11"
+                                            Padding="10,2"
+                                            BackgroundColor="{DynamicResource Surface2}"
+                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                            CommandParameter="{Binding .}"
+                                            FontSize="11"
+                                            Padding="10,2"
+                                            BackgroundColor="{DynamicResource Surface2}"
+                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                </VerticalStackLayout>
                             </Grid>
 
                                             <HorizontalStackLayout Grid.Row="2"
@@ -736,16 +747,27 @@
                                                            Text="{Binding Name}"
                                                            TextColor="{DynamicResource OnSurface}"
                                                            FontSize="13"
-                                                           LineBreakMode="TailTruncation"
+                                                           LineBreakMode="WordWrap"
+                                                           MaxLines="2"
                                                            VerticalOptions="Center" />
-                                                    <Button Grid.Column="2"
-                                                            Text="{x:Static strings:AppResources.RenameAction}"
-                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                            CommandParameter="{Binding .}"
-                                                            FontSize="11"
-                                                            Padding="10,2"
-                                                            BackgroundColor="{DynamicResource Surface2}"
-                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <VerticalStackLayout Grid.Column="2"
+                                                                         Spacing="4"
+                                                                         HorizontalOptions="End">
+                                                        <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="11"
+                                                                Padding="10,2"
+                                                                BackgroundColor="{DynamicResource Surface2}"
+                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                        <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="11"
+                                                                Padding="10,2"
+                                                                BackgroundColor="{DynamicResource Surface2}"
+                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    </VerticalStackLayout>
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"
@@ -856,16 +878,27 @@
                                                            Text="{Binding Name}"
                                                            TextColor="{DynamicResource OnSurface}"
                                                            FontSize="13"
-                                                           LineBreakMode="TailTruncation"
+                                                           LineBreakMode="WordWrap"
+                                                           MaxLines="2"
                                                            VerticalOptions="Center" />
-                                                    <Button Grid.Column="2"
-                                                            Text="{x:Static strings:AppResources.RenameAction}"
-                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                            CommandParameter="{Binding .}"
-                                                            FontSize="11"
-                                                            Padding="10,2"
-                                                            BackgroundColor="{DynamicResource Surface2}"
-                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <VerticalStackLayout Grid.Column="2"
+                                                                         Spacing="4"
+                                                                         HorizontalOptions="End">
+                                                        <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="11"
+                                                                Padding="10,2"
+                                                                BackgroundColor="{DynamicResource Surface2}"
+                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                        <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="11"
+                                                                Padding="10,2"
+                                                                BackgroundColor="{DynamicResource Surface2}"
+                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    </VerticalStackLayout>
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"

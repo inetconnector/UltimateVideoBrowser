@@ -159,6 +159,18 @@
   <data name="RenameExistsMessage" xml:space="preserve">
     <value>A file with that name already exists in this folder.</value>
   </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Open folder failed</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>We couldn't open this folder. Please try again.</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Opening folders isn't supported on this device.</value>
+  </data>
   <data name="MarkedCountFormat" xml:space="preserve">
     <value>Marked: {0}</value>
   </data>

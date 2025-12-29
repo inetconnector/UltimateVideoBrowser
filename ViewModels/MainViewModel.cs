@@ -516,6 +516,55 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task OpenFolderAsync(MediaItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        var folder = Path.GetDirectoryName(item.Path);
+        if (string.IsNullOrWhiteSpace(folder))
+            return;
+
+        try
+        {
+#if WINDOWS
+            var arguments = $"/select,\"{item.Path}\"";
+            Process.Start(new ProcessStartInfo("explorer.exe", arguments)
+            {
+                UseShellExecute = true
+            });
+#else
+            if (!await Launcher.Default.IsSupportedAsync())
+            {
+                await dialogService.DisplayAlertAsync(
+                    AppResources.OpenFolderFailedTitle,
+                    AppResources.OpenFolderNotSupportedMessage,
+                    AppResources.OkButton);
+                return;
+            }
+
+            var uri = new Uri($"file://{folder}");
+            await Launcher.OpenAsync(uri);
+#endif
+        }
+        catch (NotImplementedException)
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenFolderFailedTitle,
+                AppResources.OpenFolderNotSupportedMessage,
+                AppResources.OkButton);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Open folder failed: {ex}");
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenFolderFailedTitle,
+                AppResources.OpenFolderFailedMessage,
+                AppResources.OkButton);
+        }
+    }
+
+    [RelayCommand]
     public async Task CopyMarkedAsync()
     {
         var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
