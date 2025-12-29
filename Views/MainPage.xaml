@@ -623,6 +623,7 @@
                                     <Button Text="{x:Static strings:AppResources.RenameAction}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                             CommandParameter="{Binding .}"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
                                             FontSize="11"
                                             Padding="10,2"
                                             BackgroundColor="{DynamicResource Surface2}"
@@ -754,6 +755,7 @@
                                                         <Button Text="{x:Static strings:AppResources.RenameAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                                                 CommandParameter="{Binding .}"
+                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
                                                                 FontSize="11"
                                                                 Padding="10,2"
                                                                 BackgroundColor="{DynamicResource Surface2}"
@@ -826,6 +828,7 @@
                                         <SwipeView.RightItems>
                                             <SwipeItems Mode="Reveal">
                                                 <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                           IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
                                                            CommandParameter="{Binding .}" />
                                             </SwipeItems>
@@ -888,6 +891,7 @@
                                                         <Button Text="{x:Static strings:AppResources.RenameAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                                                 CommandParameter="{Binding .}"
+                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
                                                                 FontSize="11"
                                                                 Padding="10,2"
                                                                 BackgroundColor="{DynamicResource Surface2}"
@@ -998,18 +1002,24 @@
                    BorderColor="{DynamicResource BorderSubtle}"
                    Padding="12"
                    HasShadow="False">
-                <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
                       ColumnSpacing="8">
                     <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
                     <Button Grid.Column="1"
                             Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                            IsVisible="{Binding AllowFileChanges}"
                             Command="{Binding CopyMarkedCommand}" />
                     <Button Grid.Column="2"
                             Text="{x:Static strings:AppResources.MoveMarkedAction}"
+                            IsVisible="{Binding AllowFileChanges}"
                             Command="{Binding MoveMarkedCommand}" />
                     <Button Grid.Column="3"
+                            Text="{x:Static strings:AppResources.DeleteMarkedAction}"
+                            IsVisible="{Binding AllowFileChanges}"
+                            Command="{Binding DeleteMarkedCommand}" />
+                    <Button Grid.Column="4"
                             Text="{x:Static strings:AppResources.ClearMarkedAction}"
                             Command="{Binding ClearMarkedCommand}" />
                 </Grid>

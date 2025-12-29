@@ -181,7 +181,28 @@
     <value>Verschieben</value>
   </data>
   <data name="ClearMarkedAction" xml:space="preserve">
-    <value>Auswahl löschen</value>
+    <value>Auswahl aufheben</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Dauerhaft löschen</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Von der Festplatte löschen?</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>{0} Datei(en) dauerhaft löschen? Dies kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Löschen abgeschlossen</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Gelöscht: {0}, fehlgeschlagen: {1}.</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Löschen fehlgeschlagen</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Dauerhaftes Löschen wird auf diesem Gerät nicht unterstützt.</value>
   </data>
   <data name="TransferFolderTitle" xml:space="preserve">
     <value>Zielordner erstellen</value>
@@ -263,6 +284,15 @@
   </data>
   <data name="SettingsInternalPlayerLabel" xml:space="preserve">
     <value>Internen Videoplayer für Videos verwenden</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Dateiänderungen</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Umbenennen, Verschieben, Kopieren und Löschen erlauben</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Nur dann werden Aktionen angezeigt, die Dateien auf der Festplatte verändern.</value>
   </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Vorschau</value>

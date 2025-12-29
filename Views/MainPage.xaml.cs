@@ -23,6 +23,7 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         vm.ApplyPlaybackSettings();
+        vm.ApplyFileChangeSettings();
         _ = vm.InitializeAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
@@ -103,6 +104,7 @@ public partial class MainPage : ContentPage
             RequestPermissionCommand = vm.RequestPermissionCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
+            DeleteMarkedCommand = vm.DeleteMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
             OpenFolderCommand = vm.OpenFolderCommand;
@@ -225,6 +227,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IsPlayerFullscreen):
                         OnPropertyChanged(nameof(IsPlayerFullscreen));
                         break;
+                    case nameof(MainViewModel.AllowFileChanges):
+                        OnPropertyChanged(nameof(AllowFileChanges));
+                        break;
                 }
             };
         }
@@ -243,6 +248,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
+        public IAsyncRelayCommand DeleteMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
         public IAsyncRelayCommand RenameCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
@@ -381,6 +387,7 @@ public partial class MainPage : ContentPage
         public bool ShowDocumentPreview => vm.ShowDocumentPreview;
         public bool ShowPreview => vm.ShowPreview;
         public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
+        public bool AllowFileChanges => vm.AllowFileChanges;
 
         private async Task OpenSourcesAsync()
         {

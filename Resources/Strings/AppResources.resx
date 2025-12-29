@@ -184,7 +184,28 @@
     <value>Move</value>
   </data>
   <data name="ClearMarkedAction" xml:space="preserve">
-    <value>Clear</value>
+    <value>Clear selection</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Delete permanently</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Delete from disk?</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Delete {0} item(s) permanently? This cannot be undone.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Delete completed</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Deleted: {0}, failed: {1}.</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Delete failed</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Permanent delete isn't supported on this device.</value>
   </data>
   <data name="TransferFolderTitle" xml:space="preserve">
     <value>Create destination folder</value>
@@ -266,6 +287,15 @@
   </data>
   <data name="SettingsInternalPlayerLabel" xml:space="preserve">
     <value>Use internal video player for videos</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>File changes</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Allow renaming, moving, copying, and deleting</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Enable this to show actions that change files on disk.</value>
   </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Preview</value>
