@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
@@ -25,6 +26,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ThumbnailService thumbnailService;
 
     private readonly PropertyChangedEventHandler mediaMarkedHandler;
+    private const int PageSize = 60;
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
@@ -67,6 +69,10 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isSourceSwitching;
 
     [ObservableProperty] private List<MediaItem> mediaItems = new();
+    private bool hasMoreMediaItems;
+    private bool isLoadingMoreMediaItems;
+    private int mediaItemsOffset;
+    private int mediaQueryVersion;
     private int mediaItemsVersion;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
@@ -142,6 +148,8 @@ public partial class MainViewModel : ObservableObject
         if (!HasMediaPermission)
         {
             MediaItems = new List<MediaItem>();
+            mediaItemsOffset = 0;
+            hasMoreMediaItems = false;
             var total = await indexService.CountAsync(SelectedMediaTypes);
             await MainThread.InvokeOnMainThreadAsync(() => IndexedMediaCount = total);
             return;
@@ -159,6 +167,7 @@ public partial class MainViewModel : ObservableObject
         await refreshLock.WaitAsync();
         try
         {
+            var refreshVersion = Interlocked.Increment(ref mediaQueryVersion);
             var result = await Task.Run(async () =>
             {
                 var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
@@ -169,27 +178,70 @@ public partial class MainViewModel : ObservableObject
                 var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
                 var items = string.IsNullOrWhiteSpace(normalizedSourceId)
                     ? new List<MediaItem>()
-                    : await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo,
-                            SelectedMediaTypes)
+                    : await indexService.QueryPageAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo,
+                            SelectedMediaTypes, 0, PageSize)
                         .ConfigureAwait(false);
                 var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                 var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
-                return (sources, enabledSources, items, totalCount, normalizedSourceId);
+                return (sources, enabledSources, items, totalCount, normalizedSourceId, refreshVersion);
             });
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
+                if (result.refreshVersion != mediaQueryVersion)
+                    return;
+
                 ActiveSourceId = result.normalizedSourceId;
                 Sources = result.enabledSources;
                 _ = UpdateSourceStatsAsync(result.sources);
                 MediaItems = result.items;
                 IndexedMediaCount = result.totalCount;
+                mediaItemsOffset = result.items.Count;
+                hasMoreMediaItems = result.items.Count == PageSize;
+                isLoadingMoreMediaItems = false;
             });
         }
         finally
         {
             refreshLock.Release();
+        }
+    }
+
+    [RelayCommand]
+    public async Task LoadMoreAsync()
+    {
+        if (isLoadingMoreMediaItems || !hasMoreMediaItems || string.IsNullOrWhiteSpace(ActiveSourceId))
+            return;
+
+        if (refreshLock.CurrentCount == 0)
+            return;
+
+        isLoadingMoreMediaItems = true;
+        var queryVersion = mediaQueryVersion;
+
+        try
+        {
+            var sortKey = SelectedSortOption?.Key ?? "name";
+            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+            var nextItems = await indexService.QueryPageAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo,
+                    SelectedMediaTypes, mediaItemsOffset, PageSize)
+                .ConfigureAwait(false);
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                if (queryVersion != mediaQueryVersion)
+                    return;
+
+                MediaItems = MediaItems.Concat(nextItems).ToList();
+                mediaItemsOffset += nextItems.Count;
+                hasMoreMediaItems = nextItems.Count == PageSize;
+            });
+        }
+        finally
+        {
+            isLoadingMoreMediaItems = false;
         }
     }
 

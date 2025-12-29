@@ -77,6 +77,7 @@ public partial class MainPage : ContentPage
             PlayCommand = vm.PlayCommand;
             TogglePlayerFullscreenCommand = vm.TogglePlayerFullscreenCommand;
             ToggleMediaTypeFilterCommand = vm.ToggleMediaTypeFilterCommand;
+            LoadMoreCommand = vm.LoadMoreCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
@@ -216,6 +217,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand PlayCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
+        public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
