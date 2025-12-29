@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiMediaSource = Microsoft.Maui.Controls.MediaSource;
+using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -29,6 +31,10 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
+    [ObservableProperty] private MauiMediaSource? currentVideoSource;
+    [ObservableProperty] private string currentVideoName = "";
+    [ObservableProperty] private bool isInternalPlayerEnabled;
+    [ObservableProperty] private bool isPlayerFullscreen;
 
     private CancellationTokenSource? indexCts;
     [ObservableProperty] private string indexCurrentFile = "";
@@ -280,7 +286,29 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void Play(VideoItem item)
     {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        if (settingsService.InternalPlayerEnabled)
+        {
+            CurrentVideoSource = new FileMediaSource { File = item.Path };
+            CurrentVideoName = string.IsNullOrWhiteSpace(item.Name)
+                ? Path.GetFileName(item.Path)
+                : item.Name;
+            IsPlayerFullscreen = false;
+            return;
+        }
+
         playbackService.Play(item);
+    }
+
+    [RelayCommand]
+    public void TogglePlayerFullscreen()
+    {
+        if (!IsInternalPlayerEnabled || CurrentVideoSource == null)
+            return;
+
+        IsPlayerFullscreen = !IsPlayerFullscreen;
     }
 
     [RelayCommand]
@@ -537,6 +565,21 @@ public partial class MainViewModel : ObservableObject
         IsDateFilterEnabled = settingsService.DateFilterEnabled;
         DateFilterFrom = settingsService.DateFilterFrom;
         DateFilterTo = settingsService.DateFilterTo;
+        ApplyPlaybackSettings();
+    }
+
+    public void ApplyPlaybackSettings()
+    {
+        IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
+        if (!IsInternalPlayerEnabled)
+            ClearPlayerState();
+    }
+
+    private void ClearPlayerState()
+    {
+        CurrentVideoSource = null;
+        CurrentVideoName = "";
+        IsPlayerFullscreen = false;
     }
 
     private static string NormalizeActiveSourceId(List<MediaSource> sources, string activeSourceId)

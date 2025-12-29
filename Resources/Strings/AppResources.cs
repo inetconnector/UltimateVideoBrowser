@@ -132,6 +132,13 @@ public static class AppResources
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
+    public static string SettingsPlaybackTitle => GetString(nameof(SettingsPlaybackTitle), "Playback");
+
+    public static string SettingsInternalPlayerLabel =>
+        GetString(nameof(SettingsInternalPlayerLabel), "Use internal video player");
+
+    public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
+    public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a video to play it here.");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
     public static string SourcesPageHeader =>

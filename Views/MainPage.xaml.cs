@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
+using MauiMediaSource = Microsoft.Maui.Controls.MediaSource;
+using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -20,6 +22,7 @@ public partial class MainPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        vm.ApplyPlaybackSettings();
         _ = vm.InitializeAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
     }
@@ -66,6 +69,7 @@ public partial class MainPage : ContentPage
             RunIndexCommand = vm.RunIndexCommand;
             CancelIndexCommand = vm.CancelIndexCommand;
             PlayCommand = vm.PlayCommand;
+            TogglePlayerFullscreenCommand = vm.TogglePlayerFullscreenCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
@@ -162,6 +166,20 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
                         break;
+                    case nameof(MainViewModel.IsInternalPlayerEnabled):
+                        OnPropertyChanged(nameof(IsInternalPlayerEnabled));
+                        OnPropertyChanged(nameof(ShowInternalPlayer));
+                        break;
+                    case nameof(MainViewModel.CurrentVideoSource):
+                        OnPropertyChanged(nameof(CurrentVideoSource));
+                        OnPropertyChanged(nameof(ShowInternalPlayer));
+                        break;
+                    case nameof(MainViewModel.CurrentVideoName):
+                        OnPropertyChanged(nameof(CurrentVideoName));
+                        break;
+                    case nameof(MainViewModel.IsPlayerFullscreen):
+                        OnPropertyChanged(nameof(IsPlayerFullscreen));
+                        break;
                 }
             };
         }
@@ -175,6 +193,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand PlayCommand { get; }
+        public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
@@ -303,6 +322,11 @@ public partial class MainPage : ContentPage
 
         public List<VideoItem> Videos => vm.Videos;
         public List<TimelineEntry> TimelineEntries => vm.TimelineEntries;
+        public MauiMediaSource? CurrentVideoSource => vm.CurrentVideoSource;
+        public string CurrentVideoName => vm.CurrentVideoName;
+        public bool IsInternalPlayerEnabled => vm.IsInternalPlayerEnabled;
+        public bool IsPlayerFullscreen => vm.IsPlayerFullscreen;
+        public bool ShowInternalPlayer => IsInternalPlayerEnabled && CurrentVideoSource != null;
 
         private async Task OpenSourcesAsync()
         {

@@ -11,7 +11,7 @@
         <ScrollView Grid.Row="0"
                     VerticalScrollBarVisibility="Always"
                     HorizontalScrollBarVisibility="Never">
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
             <!-- Top bar -->
             <Grid Padding="16,14"
                   ColumnDefinitions="*"
@@ -158,8 +158,46 @@
                 </Grid>
             </Grid>
 
-            <!-- Permission notice -->
+            <!-- Preview -->
             <Grid Grid.Row="3"
+                  Padding="12"
+                  IsVisible="{Binding IsInternalPlayerEnabled}">
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.PreviewTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Grid HeightRequest="220"
+                              BackgroundColor="{DynamicResource Surface2}">
+                            <MediaElement Source="{Binding CurrentVideoSource}"
+                                          ShouldAutoPlay="True"
+                                          ShowsPlaybackControls="True"
+                                          Aspect="AspectFit"
+                                          IsVisible="{Binding ShowInternalPlayer}" />
+                            <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"
+                                   IsVisible="{Binding ShowInternalPlayer, Converter={StaticResource InverseBoolConverter}}" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      Command="{Binding TogglePlayerFullscreenCommand}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <Label Text="{Binding CurrentVideoName}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="TailTruncation"
+                               IsVisible="{Binding ShowInternalPlayer}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Permission notice -->
+            <Grid Grid.Row="4"
                   Padding="12"
                   IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
                 <Frame BackgroundColor="{DynamicResource Surface}"
@@ -184,7 +222,7 @@
             </Grid>
 
             <!-- Search + Sort -->
-            <Grid Grid.Row="4"
+            <Grid Grid.Row="5"
                   Padding="12"
                   ColumnDefinitions="*,Auto"
                   BackgroundColor="{DynamicResource AppBg}">
@@ -207,7 +245,7 @@
             </Grid>
 
             <!-- Date filter -->
-            <Grid Grid.Row="5"
+            <Grid Grid.Row="6"
                   Padding="12"
                   RowDefinitions="Auto,Auto"
                   RowSpacing="8"
@@ -246,7 +284,7 @@
             </Grid>
 
             <!-- Source tabs -->
-            <Grid Grid.Row="6"
+            <Grid Grid.Row="7"
                   Padding="12,0,12,12"
                   BackgroundColor="{DynamicResource AppBg}">
                 <CollectionView ItemsSource="{Binding Sources}"
@@ -303,7 +341,7 @@
             </Grid>
 
             <!-- Indexing banner -->
-            <Frame Grid.Row="7"
+            <Frame Grid.Row="8"
                    IsVisible="{Binding ShowIndexingBanner}"
                    BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
@@ -368,7 +406,7 @@
             </Frame>
 
             <!-- Browser grid -->
-            <Grid Grid.Row="8"
+            <Grid Grid.Row="9"
                   x:Name="BrowserGrid"
                   ColumnDefinitions="*,120"
                   RowDefinitions="*"
@@ -790,6 +828,33 @@
             </Grid>
             </Grid>
         </ScrollView>
+
+        <Grid Grid.RowSpan="2"
+              BackgroundColor="#CC000000"
+              IsVisible="{Binding IsPlayerFullscreen}">
+            <Grid RowDefinitions="*,Auto"
+                  Padding="24">
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="18"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <MediaElement Source="{Binding CurrentVideoSource}"
+                                  ShouldAutoPlay="True"
+                                  ShowsPlaybackControls="True"
+                                  Aspect="AspectFit" />
+                </Frame>
+                <Label Grid.Row="1"
+                       Text="{Binding CurrentVideoName}"
+                       FontSize="12"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,12,0,0" />
+            </Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                      Command="{Binding TogglePlayerFullscreenCommand}" />
+            </Grid.GestureRecognizers>
+        </Grid>
 
         <!-- Marked actions pinned to bottom -->
         <Grid Grid.Row="1"
