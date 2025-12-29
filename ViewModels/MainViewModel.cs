@@ -156,7 +156,28 @@ public partial class MainViewModel : ObservableObject
         IndexCurrentFolder = "";
         IndexCurrentFile = "";
 
-        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        bool hasPermission;
+
+        try
+        {
+#if WINDOWS
+            hasPermission = true; // Windows: no runtime media permission flow like Android/iOS
+#else
+            hasPermission = await permissionService.EnsureMediaReadAsync();
+#endif
+        }
+        catch (NotImplementedException)
+        {
+            hasPermission = true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Permission check failed: {ex}");
+            hasPermission = false;
+        }
+
+        HasMediaPermission = hasPermission;
+
         if (!HasMediaPermission)
         {
             IsIndexing = false;
