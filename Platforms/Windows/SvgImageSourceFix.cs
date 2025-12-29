@@ -58,7 +58,14 @@ public static class SvgImageSourceFix
     {
         try
         {
-            await using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+            await using var stream = await TryOpenSvgAsync(fileName)
+                ?? (HasDirectorySeparator(fileName)
+                    ? null
+                    : await TryOpenSvgAsync(Path.Combine("Resources", "Images", fileName)));
+            if (stream is null)
+            {
+                return;
+            }
             var svgSource = new SvgImageSource();
             await svgSource.SetSourceAsync(stream.AsRandomAccessStream());
             handler.PlatformView.Source = svgSource;
@@ -66,6 +73,22 @@ public static class SvgImageSourceFix
         catch (Exception)
         {
             // Ignore failures and fall back to default handling.
+        }
+    }
+
+    private static async Task<Stream?> TryOpenSvgAsync(string fileName)
+    {
+        try
+        {
+            return await FileSystem.OpenAppPackageFileAsync(fileName);
+        }
+        catch (FileNotFoundException)
+        {
+            return null;
+        }
+        catch (DirectoryNotFoundException)
+        {
+            return null;
         }
     }
 }
