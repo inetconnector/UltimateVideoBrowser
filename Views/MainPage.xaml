@@ -608,21 +608,16 @@
                                             </Grid>
 
                             <Grid Grid.Row="1"
-                                  ColumnDefinitions="Auto,*,Auto"
+                                  RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="Auto,*"
                                   ColumnSpacing="8"
                                   Margin="0,10,0,0">
                                 <CheckBox IsChecked="{Binding IsMarked}"
                                           Color="{DynamicResource Accent}"
-                                          VerticalOptions="Center"
-                                          Margin="0" />
-                                <Label Grid.Column="1"
-                                       Text="{Binding Name}"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       FontSize="13"
-                                       LineBreakMode="WordWrap"
-                                       MaxLines="2"
-                                       VerticalOptions="Center" />
-                                <VerticalStackLayout Grid.Column="2"
+                                          VerticalOptions="Start"
+                                          Margin="0"
+                                          Grid.RowSpan="2" />
+                                <VerticalStackLayout Grid.Column="1"
                                                      Spacing="4"
                                                      HorizontalOptions="End">
                                     <Button Text="{x:Static strings:AppResources.RenameAction}"
@@ -640,6 +635,14 @@
                                             BackgroundColor="{DynamicResource Surface2}"
                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                 </VerticalStackLayout>
+                                <Label Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding Name}"
+                                       TextColor="{DynamicResource OnSurface}"
+                                       FontSize="13"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2"
+                                       VerticalOptions="Center" />
                             </Grid>
 
                                             <HorizontalStackLayout Grid.Row="2"
@@ -736,21 +739,16 @@
                                                 </Grid>
 
                                                 <Grid Grid.Row="1"
-                                                      ColumnDefinitions="Auto,*,Auto"
+                                                      RowDefinitions="Auto,Auto"
+                                                      ColumnDefinitions="Auto,*"
                                                       ColumnSpacing="8"
                                                       Margin="0,10,0,0">
                                                     <CheckBox IsChecked="{Binding IsMarked}"
                                                               Color="{DynamicResource Accent}"
-                                                              VerticalOptions="Center"
-                                                              Margin="0" />
-                                                    <Label Grid.Column="1"
-                                                           Text="{Binding Name}"
-                                                           TextColor="{DynamicResource OnSurface}"
-                                                           FontSize="13"
-                                                           LineBreakMode="WordWrap"
-                                                           MaxLines="2"
-                                                           VerticalOptions="Center" />
-                                                    <VerticalStackLayout Grid.Column="2"
+                                                              VerticalOptions="Start"
+                                                              Margin="0"
+                                                              Grid.RowSpan="2" />
+                                                    <VerticalStackLayout Grid.Column="1"
                                                                          Spacing="4"
                                                                          HorizontalOptions="End">
                                                         <Button Text="{x:Static strings:AppResources.RenameAction}"
@@ -768,6 +766,14 @@
                                                                 BackgroundColor="{DynamicResource Surface2}"
                                                                 TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     </VerticalStackLayout>
+                                                    <Label Grid.Row="1"
+                                                           Grid.Column="1"
+                                                           Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="13"
+                                                           LineBreakMode="WordWrap"
+                                                           MaxLines="2"
+                                                           VerticalOptions="Center" />
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"
@@ -867,21 +873,16 @@
                                                 </Grid>
 
                                                 <Grid Grid.Row="1"
-                                                      ColumnDefinitions="Auto,*,Auto"
+                                                      RowDefinitions="Auto,Auto"
+                                                      ColumnDefinitions="Auto,*"
                                                       ColumnSpacing="8"
                                                       Margin="0,10,0,0">
                                                     <CheckBox IsChecked="{Binding IsMarked}"
                                                               Color="{DynamicResource Accent}"
-                                                              VerticalOptions="Center"
-                                                              Margin="0" />
-                                                    <Label Grid.Column="1"
-                                                           Text="{Binding Name}"
-                                                           TextColor="{DynamicResource OnSurface}"
-                                                           FontSize="13"
-                                                           LineBreakMode="WordWrap"
-                                                           MaxLines="2"
-                                                           VerticalOptions="Center" />
-                                                    <VerticalStackLayout Grid.Column="2"
+                                                              VerticalOptions="Start"
+                                                              Margin="0"
+                                                              Grid.RowSpan="2" />
+                                                    <VerticalStackLayout Grid.Column="1"
                                                                          Spacing="4"
                                                                          HorizontalOptions="End">
                                                         <Button Text="{x:Static strings:AppResources.RenameAction}"
@@ -899,6 +900,14 @@
                                                                 BackgroundColor="{DynamicResource Surface2}"
                                                                 TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     </VerticalStackLayout>
+                                                    <Label Grid.Row="1"
+                                                           Grid.Column="1"
+                                                           Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="13"
+                                                           LineBreakMode="WordWrap"
+                                                           MaxLines="2"
+                                                           VerticalOptions="Center" />
                                                 </Grid>
 
                                                 <HorizontalStackLayout Grid.Row="2"
