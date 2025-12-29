@@ -3,7 +3,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
@@ -173,11 +172,11 @@
                                TextColor="{DynamicResource OnSurface}" />
                         <Grid HeightRequest="220"
                               BackgroundColor="{DynamicResource Surface2}">
-                            <toolkit:MediaElement Source="{Binding CurrentVideoSource}"
-                                                  ShouldAutoPlay="True"
-                                                  ShowsPlaybackControls="True"
-                                                  Aspect="AspectFit"
-                                                  IsVisible="{Binding ShowInternalPlayer}" />
+                            <MediaElement Source="{Binding CurrentVideoSource}"
+                                          ShouldAutoPlay="True"
+                                          ShowsPlaybackControls="True"
+                                          Aspect="AspectFit"
+                                          IsVisible="{Binding ShowInternalPlayer}" />
                             <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    HorizontalTextAlignment="Center"
