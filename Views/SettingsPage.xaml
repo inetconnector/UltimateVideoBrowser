@@ -87,6 +87,26 @@
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="14"
                        Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.SettingsFileChangesTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.SettingsFileChangesHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.SettingsFileChangesLabel}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding AllowFileChanges}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
                     <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.SettingsFilterTitle}"
                                FontAttributes="Bold"

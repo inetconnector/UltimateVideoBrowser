@@ -80,6 +80,47 @@ public sealed class FileExportService : IFileExportService
         return TransferToFolderAsync(items, true);
     }
 
+    public async Task<IReadOnlyList<MediaItem>> DeletePermanentlyAsync(IEnumerable<MediaItem> items)
+    {
+#if WINDOWS
+        var list = items.Where(i => i != null && !string.IsNullOrWhiteSpace(i.Path)).ToList();
+        if (list.Count == 0)
+            return Array.Empty<MediaItem>();
+
+        var deleted = new List<MediaItem>();
+        var failed = 0;
+
+        foreach (var item in list)
+        {
+            try
+            {
+                if (!File.Exists(item.Path))
+                {
+                    failed++;
+                    continue;
+                }
+
+                File.Delete(item.Path);
+                deleted.Add(item);
+            }
+            catch
+            {
+                failed++;
+            }
+        }
+
+        var message = string.Format(AppResources.DeleteCompletedMessageFormat, deleted.Count, failed);
+        await dialogService.DisplayAlertAsync(AppResources.DeleteCompletedTitle, message, AppResources.OkButton);
+        return deleted;
+#else
+        await dialogService.DisplayAlertAsync(
+            AppResources.DeleteFailedTitle,
+            AppResources.DeleteNotSupportedMessage,
+            AppResources.OkButton);
+        return Array.Empty<MediaItem>();
+#endif
+    }
+
     private async Task<IReadOnlyList<MediaItem>> TransferToFolderAsync(IEnumerable<MediaItem> items, bool isMove)
     {
 #if WINDOWS

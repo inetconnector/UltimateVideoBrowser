@@ -20,6 +20,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string videoExtensionsText = string.Empty;
     [ObservableProperty] private string photoExtensionsText = string.Empty;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
+    [ObservableProperty] private bool allowFileChanges;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
 
@@ -59,6 +60,7 @@ public partial class SettingsViewModel : ObservableObject
         VideoExtensionsText = settingsService.VideoExtensions;
         PhotoExtensionsText = settingsService.PhotoExtensions;
         DocumentExtensionsText = settingsService.DocumentExtensions;
+        AllowFileChanges = settingsService.AllowFileChanges;
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -155,6 +157,11 @@ public partial class SettingsViewModel : ObservableObject
         settingsService.DocumentExtensions = value;
         if (!NeedsReindex)
             NeedsReindex = true;
+    }
+
+    partial void OnAllowFileChangesChanged(bool value)
+    {
+        settingsService.AllowFileChanges = value;
     }
 
     private static void ApplyTheme(string themeKey)
