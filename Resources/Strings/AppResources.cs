@@ -73,6 +73,21 @@ public static class AppResources
     public static string SaveAsNotSupportedMessage =>
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
+    public static string RenameAction => GetString(nameof(RenameAction), "Rename");
+    public static string RenameTitle => GetString(nameof(RenameTitle), "Rename video");
+    public static string RenameMessage => GetString(nameof(RenameMessage), "Enter a new name for this video.");
+    public static string RenamePlaceholder => GetString(nameof(RenamePlaceholder), "Video name");
+    public static string RenameFailedTitle => GetString(nameof(RenameFailedTitle), "Rename failed");
+
+    public static string RenameFailedMessage =>
+        GetString(nameof(RenameFailedMessage), "We couldn't rename this video. Please try again.");
+
+    public static string RenameNotSupportedMessage =>
+        GetString(nameof(RenameNotSupportedMessage), "Renaming isn't supported on this device.");
+
+    public static string RenameExistsMessage =>
+        GetString(nameof(RenameExistsMessage), "A video with that name already exists in this folder.");
+
     public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
     public static string MoveMarkedAction => GetString(nameof(MoveMarkedAction), "Move");

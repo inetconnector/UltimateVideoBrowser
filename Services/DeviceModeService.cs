@@ -20,7 +20,7 @@ public sealed class DeviceModeService
         if (idiom == DeviceIdiom.TV)
             return UiMode.Tv;
 
-        if (idiom == DeviceIdiom.Tablet)
+        if (idiom == DeviceIdiom.Tablet || idiom == DeviceIdiom.Desktop)
             return UiMode.Tablet;
 
         // Fallback based on width at runtime can be done in UI layer.

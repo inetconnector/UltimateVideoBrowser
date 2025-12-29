@@ -11,6 +11,7 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly IDialogService dialogService;
     private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
@@ -41,6 +42,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
     private bool isApplyingIndexProgress;
+    private bool isInitialized;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private int markedCount;
@@ -67,7 +69,8 @@ public partial class MainViewModel : ObservableObject
         ThumbnailService thumbnailService,
         PlaybackService playbackService,
         PermissionService permissionService,
-        IFileExportService fileExportService)
+        IFileExportService fileExportService,
+        IDialogService dialogService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
@@ -76,6 +79,7 @@ public partial class MainViewModel : ObservableObject
         this.playbackService = playbackService;
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
+        this.dialogService = dialogService;
 
         videoMarkedHandler = OnVideoPropertyChanged;
         SortOptions = new[]
@@ -93,6 +97,10 @@ public partial class MainViewModel : ObservableObject
 
     public async Task InitializeAsync()
     {
+        if (isInitialized)
+            return;
+
+        isInitialized = true;
         await sourceService.EnsureDefaultSourceAsync();
 
         ApplySavedSettings();
@@ -111,7 +119,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        await RefreshAsync();
+        _ = RefreshAsync();
 
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
@@ -123,25 +131,31 @@ public partial class MainViewModel : ObservableObject
         await refreshLock.WaitAsync();
         try
         {
-            var sources = await sourceService.GetSourcesAsync();
-            var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+            var result = await Task.Run(async () =>
+            {
+                var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+                var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
 
-            var sortKey = SelectedSortOption?.Key ?? "name";
-            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-            var videos = string.IsNullOrWhiteSpace(normalizedSourceId)
-                ? new List<VideoItem>()
-                : await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
-            var totalCount = await indexService.CountAsync();
-            var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+                var sortKey = SelectedSortOption?.Key ?? "name";
+                var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+                var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+                var videos = string.IsNullOrWhiteSpace(normalizedSourceId)
+                    ? new List<VideoItem>()
+                    : await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo)
+                        .ConfigureAwait(false);
+                var totalCount = await indexService.CountAsync().ConfigureAwait(false);
+                var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+
+                return (sources, enabledSources, videos, totalCount, normalizedSourceId);
+            });
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                ActiveSourceId = normalizedSourceId;
-                Sources = enabledSources;
-                _ = UpdateSourceStatsAsync(sources);
-                Videos = videos;
-                IndexedVideoCount = totalCount;
+                ActiveSourceId = result.normalizedSourceId;
+                Sources = result.enabledSources;
+                _ = UpdateSourceStatsAsync(result.sources);
+                Videos = result.videos;
+                IndexedVideoCount = result.totalCount;
             });
         }
         finally
@@ -291,6 +305,83 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task RenameAsync(VideoItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+#if WINDOWS
+        var existingName = string.IsNullOrWhiteSpace(item.Name)
+            ? Path.GetFileNameWithoutExtension(item.Path)
+            : Path.GetFileNameWithoutExtension(item.Name);
+        var suggested = BuildSuggestedName(item, existingName);
+        var prompt = await dialogService.DisplayPromptAsync(
+            AppResources.RenameTitle,
+            AppResources.RenameMessage,
+            AppResources.RenameAction,
+            AppResources.CancelButton,
+            AppResources.RenamePlaceholder,
+            128,
+            Keyboard.Text,
+            suggested);
+
+        if (string.IsNullOrWhiteSpace(prompt))
+            return;
+
+        var newBaseName = prompt.Trim();
+        var extension = Path.GetExtension(item.Path);
+        var finalName = Path.HasExtension(newBaseName)
+            ? newBaseName
+            : string.Concat(newBaseName, extension);
+        var folder = Path.GetDirectoryName(item.Path) ?? string.Empty;
+        var newPath = Path.Combine(folder, finalName);
+
+        if (string.Equals(newPath, item.Path, StringComparison.OrdinalIgnoreCase))
+        {
+            item.Name = finalName;
+            await indexService.RenameAsync(item, newPath, finalName);
+            return;
+        }
+
+        if (File.Exists(newPath))
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.RenameFailedTitle,
+                AppResources.RenameExistsMessage,
+                AppResources.OkButton);
+            return;
+        }
+
+        try
+        {
+            File.Move(item.Path, newPath);
+        }
+        catch
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.RenameFailedTitle,
+                AppResources.RenameFailedMessage,
+                AppResources.OkButton);
+            return;
+        }
+
+        var updated = await indexService.RenameAsync(item, newPath, finalName);
+        if (!updated)
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.RenameFailedTitle,
+                AppResources.RenameFailedMessage,
+                AppResources.OkButton);
+        }
+#else
+        await dialogService.DisplayAlertAsync(
+            AppResources.RenameFailedTitle,
+            AppResources.RenameNotSupportedMessage,
+            AppResources.OkButton);
+#endif
+    }
+
+    [RelayCommand]
     public async Task CopyMarkedAsync()
     {
         var markedItems = Videos.Where(v => v.IsMarked).ToList();
@@ -383,7 +474,15 @@ public partial class MainViewModel : ObservableObject
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, ct);
                     if (!string.IsNullOrWhiteSpace(p))
-                        MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = p);
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
+                                item.ThumbnailPath = string.Empty;
+
+                            item.ThumbnailPath = p;
+                        });
+                    }
                 }
             }
             catch
@@ -614,5 +713,15 @@ public partial class MainViewModel : ObservableObject
     {
         var total = await indexService.CountAsync();
         await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = total);
+    }
+
+    private static string BuildSuggestedName(VideoItem item, string fallbackName)
+    {
+        var date = item.DateAddedSeconds > 0
+            ? DateTimeOffset.FromUnixTimeSeconds(item.DateAddedSeconds).ToLocalTime().DateTime
+            : DateTime.Now;
+        var datePart = date.ToString("yyyy-MM-dd_HHmmss", CultureInfo.InvariantCulture);
+        var baseName = string.IsNullOrWhiteSpace(fallbackName) ? "video" : fallbackName.Trim();
+        return $"{datePart}-{baseName}";
     }
 }
