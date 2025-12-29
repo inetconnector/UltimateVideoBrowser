@@ -24,6 +24,7 @@ public sealed class IndexService
         IProgress<IndexProgress>? progress,
         CancellationToken ct)
     {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
         await indexGate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
@@ -148,37 +149,29 @@ public sealed class IndexService
     public Task<List<MediaItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
         DateTime? to, MediaType mediaTypes)
     {
-        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes);
-        return q.ToListAsync();
+        return QueryAsyncInternal(search, sourceId, sortKey, from, to, mediaTypes);
     }
 
     public Task<List<MediaItem>> QueryPageAsync(string search, string? sourceId, string sortKey, DateTime? from,
         DateTime? to, MediaType mediaTypes, int offset, int limit)
     {
-        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes)
-            .Skip(offset)
-            .Take(limit);
-        return q.ToListAsync();
+        return QueryPageAsyncInternal(search, sourceId, sortKey, from, to, mediaTypes, offset, limit);
     }
 
     public Task<int> CountQueryAsync(string search, string? sourceId, DateTime? from, DateTime? to,
         MediaType mediaTypes)
     {
-        var q = BuildQuery(search, sourceId, "name", from, to, mediaTypes);
-        return q.CountAsync();
+        return CountQueryAsyncInternal(search, sourceId, from, to, mediaTypes);
     }
 
     public Task<int> CountAsync(MediaType mediaTypes)
     {
-        var q = db.Db.Table<MediaItem>();
-        var allowedTypes = BuildAllowedTypes(mediaTypes);
-        if (allowedTypes.Count > 0)
-            q = q.Where(v => allowedTypes.Contains(v.MediaType));
-        return q.CountAsync();
+        return CountAsyncInternal(mediaTypes);
     }
 
     public async Task RemoveAsync(IEnumerable<MediaItem> items)
     {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
         foreach (var item in items)
         {
             if (string.IsNullOrWhiteSpace(item.Path))
@@ -195,6 +188,7 @@ public sealed class IndexService
 
         try
         {
+            await db.EnsureInitializedAsync().ConfigureAwait(false);
             var existing = await db.Db.FindAsync<MediaItem>(newPath).ConfigureAwait(false);
             if (existing != null && !string.Equals(existing.Path, item.Path, StringComparison.OrdinalIgnoreCase))
                 return false;
@@ -226,6 +220,42 @@ public sealed class IndexService
         if (mediaTypes.HasFlag(MediaType.Documents))
             allowed.Add(MediaType.Documents);
         return allowed;
+    }
+
+    private async Task<List<MediaItem>> QueryAsyncInternal(string search, string? sourceId, string sortKey,
+        DateTime? from, DateTime? to, MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes);
+        return await q.ToListAsync().ConfigureAwait(false);
+    }
+
+    private async Task<List<MediaItem>> QueryPageAsyncInternal(string search, string? sourceId, string sortKey,
+        DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes)
+            .Skip(offset)
+            .Take(limit);
+        return await q.ToListAsync().ConfigureAwait(false);
+    }
+
+    private async Task<int> CountQueryAsyncInternal(string search, string? sourceId, DateTime? from, DateTime? to,
+        MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var q = BuildQuery(search, sourceId, "name", from, to, mediaTypes);
+        return await q.CountAsync().ConfigureAwait(false);
+    }
+
+    private async Task<int> CountAsyncInternal(MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var q = db.Db.Table<MediaItem>();
+        var allowedTypes = BuildAllowedTypes(mediaTypes);
+        if (allowedTypes.Count > 0)
+            q = q.Where(v => allowedTypes.Contains(v.MediaType));
+        return await q.CountAsync().ConfigureAwait(false);
     }
 
     private AsyncTableQuery<MediaItem> BuildQuery(string search, string? sourceId, string sortKey, DateTime? from,
