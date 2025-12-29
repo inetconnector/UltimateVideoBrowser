@@ -383,7 +383,7 @@
                   ColumnDefinitions="*,Auto,Auto"
                   ColumnSpacing="12"
                   RowSpacing="6">
-                <Label x:Name="IndexingStatusLabel"
+                <Label x:Name="IndexingStatusBannerLabel"
                        Text="{x:Static strings:AppResources.Indexing}"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource OnSurface}" />
