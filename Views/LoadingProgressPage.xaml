@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.LoadingProgressPage"
+             Title="{x:Static strings:AppResources.LoadingMedia}"
+             BackgroundColor="{DynamicResource AppBg}">
+    <Grid>
+        <Frame BackgroundColor="{DynamicResource Surface}"
+               CornerRadius="16"
+               Padding="18"
+               HasShadow="True"
+               HorizontalOptions="Center"
+               VerticalOptions="Center">
+            <VerticalStackLayout Spacing="12"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <ActivityIndicator IsRunning="True"
+                                   Color="{DynamicResource Accent}"
+                                   HeightRequest="32"
+                                   WidthRequest="32" />
+                <Label Text="{x:Static strings:AppResources.LoadingMedia}"
+                       FontSize="12"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

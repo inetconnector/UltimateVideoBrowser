@@ -83,8 +83,10 @@ public partial class MainPage : ContentPage
 
         private int gridSpan = 3;
         private Window? indexingWindow;
+        private Window? loadingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
+        private bool isLoadingWindowSuppressed;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -198,6 +200,11 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
+                        UpdateLoadingWindow();
+                        break;
+                    case nameof(MainViewModel.IsRefreshing):
+                        OnPropertyChanged(nameof(IsRefreshing));
+                        UpdateLoadingWindow();
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
@@ -315,6 +322,7 @@ public partial class MainPage : ContentPage
 
         public bool IsIndexing => vm.IsIndexing;
         public bool IsSourceSwitching => vm.IsSourceSwitching;
+        public bool IsRefreshing => vm.IsRefreshing;
 
         public bool IsIndexingOverlayVisible
         {
@@ -437,6 +445,59 @@ public partial class MainPage : ContentPage
 
             var window = indexingWindow;
             indexingWindow = null;
+            Application.Current?.CloseWindow(window);
+        }
+
+        private void UpdateLoadingWindow()
+        {
+            if (vm.IsRefreshing || vm.IsSourceSwitching)
+            {
+                if (isLoadingWindowSuppressed)
+                    return;
+
+                EnsureLoadingWindow();
+                return;
+            }
+
+            isLoadingWindowSuppressed = false;
+            CloseLoadingWindow();
+        }
+
+        private void EnsureLoadingWindow()
+        {
+            if (loadingWindow != null)
+                return;
+
+            var loadingPage = new LoadingProgressPage
+            {
+                BindingContext = this
+            };
+
+            var window = new Window(loadingPage)
+            {
+                Title = AppResources.LoadingMedia,
+                Width = 320,
+                Height = 220
+            };
+
+            window.Destroying += (_, _) =>
+            {
+                loadingWindow = null;
+                if (vm.IsRefreshing || vm.IsSourceSwitching)
+                    isLoadingWindowSuppressed = true;
+            };
+
+            loadingWindow = window;
+            Application.Current?.OpenWindow(window);
+        }
+
+        private void CloseLoadingWindow()
+        {
+            if (loadingWindow == null)
+                return;
+
+            var window = loadingWindow;
+            loadingWindow = null;
             Application.Current?.CloseWindow(window);
         }
 
