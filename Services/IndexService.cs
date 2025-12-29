@@ -107,6 +107,11 @@ public sealed class IndexService
         return q.ToListAsync();
     }
 
+    public Task<int> CountAsync()
+    {
+        return db.Db.Table<VideoItem>().CountAsync();
+    }
+
     public async Task RemoveAsync(IEnumerable<VideoItem> items)
     {
         foreach (var item in items)
