@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Threading;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -8,77 +9,137 @@ public sealed class IndexService
     private readonly AppDb db;
     private readonly MediaStoreScanner scanner;
 
+    // Prevent concurrent indexing runs across the whole app instance
+    private readonly SemaphoreSlim indexGate = new(1, 1);
+
     public IndexService(AppDb db, MediaStoreScanner scanner)
     {
         this.db = db;
         this.scanner = scanner;
     }
 
-    public async Task<int> IndexSourcesAsync(IEnumerable<MediaSource> sources, IProgress<IndexProgress>? progress,
+    public async Task<int> IndexSourcesAsync(
+        IEnumerable<MediaSource> sources,
+        IProgress<IndexProgress>? progress,
         CancellationToken ct)
     {
-        var inserted = 0;
-        var processedOverall = 0;
-        var totalOverall = 0;
-
-        foreach (var source in sources)
+        await indexGate.WaitAsync(ct).ConfigureAwait(false);
+        try
         {
-            ct.ThrowIfCancellationRequested();
+            var inserted = 0;
+            var processedOverall = 0;
+            var totalOverall = 0;
 
-            progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, null));
+            var sw = Stopwatch.StartNew();
+            const int minReportMs = 150;
 
-            try
+            void SafeReport(IndexProgress p)
             {
-                await foreach (var v in scanner.StreamSourceAsync(source, ct))
+                if (progress == null) return;
+                try { progress.Report(p); }
+                catch (Exception ex)
                 {
-                    ct.ThrowIfCancellationRequested();
-                    totalOverall++;
-                    progress?.Report(new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName,
-                        v.Path));
-
-                    try
-                    {
-                        var exists = await db.Db.FindAsync<VideoItem>(v.Path);
-                        if (exists == null)
-                        {
-                            await db.Db.InsertAsync(v);
-                            inserted++;
-                        }
-                        else
-                        {
-                            // Update name/duration if changed (cheap)
-                            if (exists.Name != v.Name || exists.DurationMs != v.DurationMs ||
-                                exists.SourceId != v.SourceId)
-                            {
-                                exists.Name = v.Name;
-                                exists.DurationMs = v.DurationMs;
-                                exists.SourceId = v.SourceId;
-                                exists.DateAddedSeconds = v.DateAddedSeconds;
-                                await db.Db.UpdateAsync(exists);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Indexing skipped item '{v.Path}': {ex}");
-                    }
-
-                    processedOverall++;
-                    progress?.Report(
-                        new IndexProgress(processedOverall, totalOverall, inserted, source.DisplayName, v.Path));
+                    Debug.WriteLine($"Progress handler crashed: {ex}");
+                    // Swallow to avoid bringing the app down
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Indexing failed for source '{source.DisplayName}': {ex}");
-            }
-        }
 
-        return inserted;
+            foreach (var source in sources)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                SafeReport(new IndexProgress(
+                    processedOverall,
+                    totalOverall,
+                    inserted,
+                    source.DisplayName ?? "",
+                    "")); // never null
+
+                try
+                {
+                    await foreach (var v in scanner.StreamSourceAsync(source, ct).ConfigureAwait(false))
+                    {
+                        ct.ThrowIfCancellationRequested();
+
+                        totalOverall++;
+
+                        // Throttle progress updates to protect UI thread
+                        if (sw.ElapsedMilliseconds >= minReportMs)
+                        {
+                            sw.Restart();
+                            SafeReport(new IndexProgress(
+                                processedOverall,
+                                totalOverall,
+                                inserted,
+                                source.DisplayName ?? "",
+                                v.Path ?? ""));
+                        }
+
+                        try
+                        {
+                            // If v.Path can be null/empty, skip early
+                            if (string.IsNullOrWhiteSpace(v.Path))
+                                continue;
+
+                            var exists = await db.Db.FindAsync<VideoItem>(v.Path).ConfigureAwait(false);
+                            if (exists == null)
+                            {
+                                await db.Db.InsertAsync(v).ConfigureAwait(false);
+                                inserted++;
+                            }
+                            else
+                            {
+                                if (exists.Name != v.Name ||
+                                    exists.DurationMs != v.DurationMs ||
+                                    exists.SourceId != v.SourceId ||
+                                    exists.DateAddedSeconds != v.DateAddedSeconds)
+                                {
+                                    exists.Name = v.Name;
+                                    exists.DurationMs = v.DurationMs;
+                                    exists.SourceId = v.SourceId;
+                                    exists.DateAddedSeconds = v.DateAddedSeconds;
+                                    await db.Db.UpdateAsync(exists).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Indexing skipped item '{v?.Path}': {ex}");
+                        }
+
+                        processedOverall++;
+
+                        // Final per-item report can also be throttled; keep it safe
+                        if (sw.ElapsedMilliseconds >= minReportMs)
+                        {
+                            sw.Restart();
+                            SafeReport(new IndexProgress(
+                                processedOverall,
+                                totalOverall,
+                                inserted,
+                                source.DisplayName ?? "",
+                                v.Path ?? ""));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Indexing failed for source '{source.DisplayName}': {ex}");
+                }
+            }
+
+            // One last report at the end (not throttled)
+            SafeReport(new IndexProgress(processedOverall, totalOverall, inserted, "", ""));
+
+            return inserted;
+        }
+        finally
+        {
+            indexGate.Release();
+        }
     }
 
-    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
-        DateTime? to)
+    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from, DateTime? to)
     {
         var q = db.Db.Table<VideoItem>();
 
@@ -94,6 +155,7 @@ public sealed class IndexService
             var toSeconds = to.HasValue
                 ? new DateTimeOffset(to.Value.Date.AddDays(1).AddTicks(-1)).ToUnixTimeSeconds()
                 : long.MaxValue;
+
             q = q.Where(v => v.DateAddedSeconds >= fromSeconds && v.DateAddedSeconds <= toSeconds);
         }
 
@@ -107,10 +169,7 @@ public sealed class IndexService
         return q.ToListAsync();
     }
 
-    public Task<int> CountAsync()
-    {
-        return db.Db.Table<VideoItem>().CountAsync();
-    }
+    public Task<int> CountAsync() => db.Db.Table<VideoItem>().CountAsync();
 
     public async Task RemoveAsync(IEnumerable<VideoItem> items)
     {
@@ -119,7 +178,7 @@ public sealed class IndexService
             if (string.IsNullOrWhiteSpace(item.Path))
                 continue;
 
-            await db.Db.DeleteAsync<VideoItem>(item.Path);
+            await db.Db.DeleteAsync<VideoItem>(item.Path).ConfigureAwait(false);
         }
     }
 }

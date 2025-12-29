@@ -1,4 +1,6 @@
 #if ANDROID && !WINDOWS
+using Android.Content;
+using Android.Database;
 using Android.Provider;
 using AndroidX.DocumentFile.Provider;
 using Uri = Android.Net.Uri;
@@ -79,25 +81,21 @@ public sealed class MediaStoreScanner
         if (!Directory.Exists(root))
             yield break;
 
-        var isNetworkPath = root.StartsWith(@"\\", StringComparison.OrdinalIgnoreCase);
-        var options = new EnumerationOptions
-        {
-            RecurseSubdirectories = true,
-            IgnoreInaccessible = true,
-            AttributesToSkip = isNetworkPath
-                ? System.IO.FileAttributes.System
-                : System.IO.FileAttributes.System | System.IO.FileAttributes.ReparsePoint
-        };
-
-        // Fix: try/catch darf kein yield enthalten, also Pfad-Ermittlung auslagern
-        var paths = GetVideoFilePaths(root, options);
-
-        foreach (var path in paths)
+        foreach (var path in EnumerateVideoFilesStreamingWindows(root, ct))
         {
             ct.ThrowIfCancellationRequested();
-            var info = new FileInfo(path);
-            var durationMs = 0L;
 
+            FileInfo? info;
+            try
+            {
+                info = new FileInfo(path);
+            }
+            catch
+            {
+                continue;
+            }
+
+            var durationMs = 0L;
             try
             {
                 var file = await StorageFile.GetFileFromPathAsync(path);
@@ -120,16 +118,49 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static List<string> GetVideoFilePaths(string root, EnumerationOptions options)
+    private static IEnumerable<string> EnumerateVideoFilesStreamingWindows(string root, CancellationToken ct)
     {
-        try
+        var queue = new Queue<string>();
+        queue.Enqueue(root);
+
+        while (queue.Count > 0)
         {
-            return Directory.EnumerateFiles(root, "*.*", options).Where(IsVideoFile).ToList();
-        }
-        catch
-        {
-            // Ignore inaccessible paths.
-            return new List<string>();
+            ct.ThrowIfCancellationRequested();
+
+            var dir = queue.Dequeue();
+
+            IEnumerable<string> files;
+            try
+            {
+                files = Directory.EnumerateFiles(dir, "*.*", SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                ct.ThrowIfCancellationRequested();
+                if (IsVideoFile(file))
+                    yield return file;
+            }
+
+            IEnumerable<string> subdirs;
+            try
+            {
+                subdirs = Directory.EnumerateDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var sub in subdirs)
+            {
+                ct.ThrowIfCancellationRequested();
+                queue.Enqueue(sub);
+            }
         }
     }
 
@@ -241,50 +272,107 @@ public sealed class MediaStoreScanner
     private static IEnumerable<VideoItem> ScanMediaStore(string? sourceId, CancellationToken ct)
     {
         var ctx = Platform.AppContext;
-        var resolver = ctx.ContentResolver;
+        var resolver = ctx?.ContentResolver;
         var externalUri = MediaStore.Video.Media.ExternalContentUri;
 
         if (resolver == null || externalUri == null)
             yield break;
 
+        // Use _ID to build a stable content:// Uri instead of relying on DATA (deprecated / restricted).
         string[] projection =
         {
+            MediaStore.Video.Media.InterfaceConsts.Id,
             MediaStore.Video.Media.InterfaceConsts.DisplayName,
-            MediaStore.Video.Media.InterfaceConsts.Data,
             MediaStore.Video.Media.InterfaceConsts.Duration,
             MediaStore.Video.Media.InterfaceConsts.DateAdded
         };
 
-        using var cursor = resolver.Query(
-            externalUri,
-            projection,
-            null,
-            null,
-            $"{MediaStore.Video.Media.InterfaceConsts.DateAdded} DESC");
-
-        if (cursor == null)
-            yield break;
-
-        var nameCol = cursor.GetColumnIndex(projection[0]);
-        var pathCol = cursor.GetColumnIndex(projection[1]);
-        var durCol = cursor.GetColumnIndex(projection[2]);
-        var addCol = cursor.GetColumnIndex(projection[3]);
-
-        while (cursor.MoveToNext())
+        ICursor? cursor = null;
+        try
         {
-            ct.ThrowIfCancellationRequested();
-            var path = cursor.GetString(pathCol) ?? "";
-            if (string.IsNullOrWhiteSpace(path))
-                continue;
+            cursor = resolver.Query(
+                externalUri,
+                projection,
+                null,
+                null,
+                $"{MediaStore.Video.Media.InterfaceConsts.DateAdded} DESC");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"MediaStore query failed: {ex}");
+            yield break;
+        }
 
-            yield return new VideoItem
+        using (cursor)
+        {
+            if (cursor == null)
+                yield break;
+
+            var idCol = cursor.GetColumnIndex(MediaStore.Video.Media.InterfaceConsts.Id);
+            var nameCol = cursor.GetColumnIndex(MediaStore.Video.Media.InterfaceConsts.DisplayName);
+            var durCol = cursor.GetColumnIndex(MediaStore.Video.Media.InterfaceConsts.Duration);
+            var addCol = cursor.GetColumnIndex(MediaStore.Video.Media.InterfaceConsts.DateAdded);
+
+            if (idCol < 0)
+                yield break;
+
+            while (true)
             {
-                Path = path,
-                Name = cursor.GetString(nameCol) ?? IOPath.GetFileName(path),
-                DurationMs = cursor.IsNull(durCol) ? 0 : cursor.GetLong(durCol),
-                DateAddedSeconds = cursor.IsNull(addCol) ? 0 : cursor.GetLong(addCol),
-                SourceId = sourceId
-            };
+                ct.ThrowIfCancellationRequested();
+
+                bool moved;
+                try { moved = cursor.MoveToNext(); }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Cursor iteration failed: {ex}");
+                    yield break;
+                }
+
+                if (!moved)
+                    yield break;
+
+                long id;
+                try { id = cursor.GetLong(idCol); }
+                catch { continue; }
+
+                var itemUri = ContentUris.WithAppendedId(externalUri, id);
+                var path = itemUri?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                string name = "";
+                if (nameCol >= 0 && !cursor.IsNull(nameCol))
+                {
+                    try { name = cursor.GetString(nameCol) ?? ""; }
+                    catch { name = ""; }
+                }
+
+                long durationMs = 0;
+                if (durCol >= 0 && !cursor.IsNull(durCol))
+                {
+                    try { durationMs = cursor.GetLong(durCol); }
+                    catch { durationMs = 0; }
+                }
+
+                long addedSeconds = 0;
+                if (addCol >= 0 && !cursor.IsNull(addCol))
+                {
+                    try { addedSeconds = cursor.GetLong(addCol); }
+                    catch { addedSeconds = 0; }
+                }
+
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"video_{id}";
+
+                yield return new VideoItem
+                {
+                    Path = path, // content://media/external/video/media/<id>
+                    Name = name,
+                    DurationMs = durationMs,
+                    DateAddedSeconds = addedSeconds,
+                    SourceId = sourceId
+                };
+            }
         }
     }
 
@@ -299,8 +387,18 @@ public sealed class MediaStoreScanner
     private static IEnumerable<VideoItem> ScanAndroidTreeUri(string rootPath, string? sourceId, CancellationToken ct)
     {
         var ctx = Platform.AppContext;
-        var uri = Uri.Parse(rootPath);
-        var root = DocumentFile.FromTreeUri(ctx, uri);
+        DocumentFile? root = null;
+
+        try
+        {
+            var uri = Uri.Parse(rootPath);
+            root = DocumentFile.FromTreeUri(ctx, uri);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"SAF tree uri parse/open failed: {ex}");
+            root = null;
+        }
 
         if (root == null)
             yield break;
@@ -309,33 +407,76 @@ public sealed class MediaStoreScanner
             yield return item;
     }
 
-    private static IEnumerable<VideoItem> TraverseDocumentTree(DocumentFile doc, string? sourceId,
-        CancellationToken ct)
+    private static IEnumerable<VideoItem> TraverseDocumentTree(DocumentFile root, string? sourceId, CancellationToken ct)
     {
-        foreach (var child in doc.ListFiles())
+        var stack = new Stack<DocumentFile>();
+        stack.Push(root);
+
+        while (stack.Count > 0)
         {
             ct.ThrowIfCancellationRequested();
-            if (child.IsDirectory)
+
+            var dir = stack.Pop();
+
+            DocumentFile[] children;
+            try
             {
-                foreach (var item in TraverseDocumentTree(child, sourceId, ct))
-                    yield return item;
+                children = dir.ListFiles() ?? Array.Empty<DocumentFile>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SAF ListFiles failed: {ex}");
                 continue;
             }
 
-            var name = child.Name ?? "";
-            if (!IsVideoFileName(name))
-                continue;
-
-            var lastModified = child.LastModified();
-            var added = lastModified > 0 ? lastModified / 1000 : DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            yield return new VideoItem
+            foreach (var child in children)
             {
-                Path = child.Uri?.ToString() ?? "",
-                Name = name,
-                DurationMs = 0,
-                DateAddedSeconds = added,
-                SourceId = sourceId
-            };
+                ct.ThrowIfCancellationRequested();
+
+                if (child == null)
+                    continue;
+
+                bool isDir;
+                try { isDir = child.IsDirectory; }
+                catch { continue; }
+
+                if (isDir)
+                {
+                    stack.Push(child);
+                    continue;
+                }
+
+                string name;
+                try { name = child.Name ?? ""; }
+                catch { continue; }
+
+                if (!IsVideoFileName(name))
+                    continue;
+
+                long lastModifiedMs = 0;
+                try { lastModifiedMs = child.LastModified(); }
+                catch { lastModifiedMs = 0; }
+
+                var added = lastModifiedMs > 0
+                    ? lastModifiedMs / 1000
+                    : DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                string path = "";
+                try { path = child.Uri?.ToString() ?? ""; }
+                catch { path = ""; }
+
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                yield return new VideoItem
+                {
+                    Path = path,
+                    Name = name,
+                    DurationMs = 0,
+                    DateAddedSeconds = added,
+                    SourceId = sourceId
+                };
+            }
         }
     }
 
@@ -344,18 +485,13 @@ public sealed class MediaStoreScanner
         if (!Directory.Exists(rootPath))
             yield break;
 
-        var options = new EnumerationOptions
-        {
-            RecurseSubdirectories = true,
-            IgnoreInaccessible = true
-        };
-
-        // Fix: try/catch darf kein yield enthalten, daher Pfad-Ermittlung auslagern
-        var files = GetVideoFilePathsAndroid(rootPath, options);
-
-        foreach (var path in files)
+        foreach (var path in EnumerateVideoFilesStreamingAndroid(rootPath, ct))
         {
             ct.ThrowIfCancellationRequested();
+
+            if (string.IsNullOrWhiteSpace(path))
+                continue;
+
             yield return new VideoItem
             {
                 Path = path,
@@ -367,18 +503,64 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static List<string> GetVideoFilePathsAndroid(string rootPath, EnumerationOptions options)
+    private static IEnumerable<string> EnumerateVideoFilesStreamingAndroid(string rootPath, CancellationToken ct)
     {
-        try
+        var queue = new Queue<string>();
+        queue.Enqueue(rootPath);
+
+        while (queue.Count > 0)
         {
-            return Directory.EnumerateFiles(rootPath, "*.*", options)
-                .Where(IsVideoFileName)
-                .ToList();
-        }
-        catch
-        {
-            // Ignore inaccessible paths.
-            return new List<string>();
+            ct.ThrowIfCancellationRequested();
+
+            var dir = queue.Dequeue();
+
+            IEnumerable<string> files;
+            try
+            {
+                files = Directory.EnumerateFiles(dir, "*.*", SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                if (SafeIsVideoFile(file))
+                    yield return file;
+            }
+
+            static bool SafeIsVideoFile(string file)
+            {
+                try
+                {
+                    return IsVideoFileName(file);
+                }
+                catch
+                {
+                    // Ignore malformed paths/extensions.
+                    return false;
+                }
+            }
+
+
+            IEnumerable<string> subdirs;
+            try
+            {
+                subdirs = Directory.EnumerateDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var sub in subdirs)
+            {
+                ct.ThrowIfCancellationRequested();
+                queue.Enqueue(sub);
+            }
         }
     }
 #endif
