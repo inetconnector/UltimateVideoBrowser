@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 
@@ -13,6 +14,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private bool isVideosIndexed;
+    [ObservableProperty] private bool isPhotosIndexed;
+    [ObservableProperty] private bool isDocumentsIndexed;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
 
@@ -43,6 +47,11 @@ public partial class SettingsViewModel : ObservableObject
         DateFilterTo = settingsService.DateFilterTo;
         NeedsReindex = settingsService.NeedsReindex;
         IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
+
+        var indexed = settingsService.IndexedMediaTypes;
+        IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
+        IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
+        IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -96,10 +105,63 @@ public partial class SettingsViewModel : ObservableObject
         settingsService.InternalPlayerEnabled = value;
     }
 
+    partial void OnIsVideosIndexedChanged(bool value)
+    {
+        if (!EnsureAtLeastOneIndexed(value, IsPhotosIndexed, IsDocumentsIndexed, () => IsVideosIndexed = true))
+            return;
+
+        ApplyIndexedMediaTypes();
+    }
+
+    partial void OnIsPhotosIndexedChanged(bool value)
+    {
+        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsDocumentsIndexed, () => IsPhotosIndexed = true))
+            return;
+
+        ApplyIndexedMediaTypes();
+    }
+
+    partial void OnIsDocumentsIndexedChanged(bool value)
+    {
+        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsPhotosIndexed, () => IsDocumentsIndexed = true))
+            return;
+
+        ApplyIndexedMediaTypes();
+    }
+
     private static void ApplyTheme(string themeKey)
     {
         var theme = themeKey == "light" ? AppTheme.Light : AppTheme.Dark;
         App.ApplyTheme(theme);
+    }
+
+    private void ApplyIndexedMediaTypes()
+    {
+        settingsService.IndexedMediaTypes = BuildIndexedMediaTypes();
+        settingsService.NeedsReindex = true;
+    }
+
+    private MediaType BuildIndexedMediaTypes()
+    {
+        var mediaTypes = MediaType.None;
+        if (IsVideosIndexed)
+            mediaTypes |= MediaType.Videos;
+        if (IsPhotosIndexed)
+            mediaTypes |= MediaType.Photos;
+        if (IsDocumentsIndexed)
+            mediaTypes |= MediaType.Documents;
+        return mediaTypes;
+    }
+
+    private static bool EnsureAtLeastOneIndexed(bool currentValue, bool otherOne, bool otherTwo, Action restore)
+    {
+        if (!currentValue && !otherOne && !otherTwo)
+        {
+            restore();
+            return false;
+        }
+
+        return true;
     }
 
     public sealed record ThemeOption(string Key, string Display);

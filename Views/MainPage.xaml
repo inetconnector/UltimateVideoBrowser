@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
@@ -12,7 +13,7 @@
         <ScrollView Grid.Row="0"
                     VerticalScrollBarVisibility="Always"
                     HorizontalScrollBarVisibility="Never">
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
             <!-- Top bar -->
             <Grid Padding="16,14"
                   ColumnDefinitions="*"
@@ -110,7 +111,7 @@
                            BorderColor="{DynamicResource BorderSubtle}">
                         <VerticalStackLayout Spacing="6">
                             <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
-                            <Label Text="{Binding IndexedVideoCount}"
+                            <Label Text="{Binding IndexedMediaCount}"
                                    FontSize="20"
                                    FontAttributes="Bold"
                                    TextColor="{DynamicResource OnSurface}" />
@@ -161,8 +162,7 @@
 
             <!-- Preview -->
             <Grid Grid.Row="3"
-                  Padding="12"
-                  IsVisible="{Binding IsInternalPlayerEnabled}">
+                  Padding="12">
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="16"
                        Padding="12"
@@ -173,26 +173,40 @@
                                TextColor="{DynamicResource OnSurface}" />
                         <Grid HeightRequest="220"
                               BackgroundColor="{DynamicResource Surface2}">
-                            <toolkit:MediaElement Source="{Binding CurrentVideoSource}"
+                            <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                                   ShouldAutoPlay="True"
                                                   ShowsPlaybackControls="True"
                                                   Aspect="AspectFit"
-                                                  IsVisible="{Binding ShowInternalPlayer}" />
+                                                  IsVisible="{Binding ShowVideoPlayer}" />
+                            <Image Source="{Binding CurrentMediaSource}"
+                                   Aspect="AspectFit"
+                                   IsVisible="{Binding ShowPhotoPreview}" />
+                            <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="6">
+                                <Image Source="chip_collection.svg"
+                                       HeightRequest="48"
+                                       WidthRequest="48" />
+                                <Label Text="{Binding CurrentMediaName}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource OnSurface}" />
+                            </VerticalStackLayout>
                             <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    HorizontalTextAlignment="Center"
                                    VerticalTextAlignment="Center"
-                                   IsVisible="{Binding ShowInternalPlayer, Converter={StaticResource InverseBoolConverter}}" />
+                                   IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2"
                                                       Command="{Binding TogglePlayerFullscreenCommand}" />
                             </Grid.GestureRecognizers>
                         </Grid>
-                        <Label Text="{Binding CurrentVideoName}"
+                        <Label Text="{Binding CurrentMediaName}"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}"
                                LineBreakMode="TailTruncation"
-                               IsVisible="{Binding ShowInternalPlayer}" />
+                               IsVisible="{Binding ShowPreview}" />
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
@@ -245,8 +259,50 @@
                         Margin="8,0,0,0" />
             </Grid>
 
-            <!-- Date filter -->
+            <!-- Media type filter -->
             <Grid Grid.Row="6"
+                  Padding="12"
+                  RowDefinitions="Auto,Auto"
+                  RowSpacing="8"
+                  BackgroundColor="{DynamicResource AppBg}">
+                <Label Text="{x:Static strings:AppResources.MediaTypeFilterTitle}"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}" />
+                <CollectionView Grid.Row="1"
+                                ItemsSource="{Binding MediaTypeFilters}"
+                                SelectionMode="None"
+                                HorizontalScrollBarVisibility="Never">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Button Text="{Binding Label}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    TextColor="{DynamicResource OnSurface}"
+                                    Command="{Binding BindingContext.ToggleMediaTypeFilterCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                    CommandParameter="{Binding MediaType}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource MediaTypeSelectedConverter}">
+                                                <Binding Path="BindingContext.SelectedMediaTypes"
+                                                         Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                <Binding Path="MediaType" />
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                        <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <!-- Date filter -->
+            <Grid Grid.Row="7"
                   Padding="12"
                   RowDefinitions="Auto,Auto"
                   RowSpacing="8"
@@ -285,7 +341,7 @@
             </Grid>
 
             <!-- Source tabs -->
-            <Grid Grid.Row="7"
+            <Grid Grid.Row="8"
                   Padding="12,0,12,12"
                   BackgroundColor="{DynamicResource AppBg}">
                 <CollectionView ItemsSource="{Binding Sources}"
@@ -342,7 +398,7 @@
             </Grid>
 
             <!-- Indexing banner -->
-            <Frame Grid.Row="8"
+            <Frame Grid.Row="9"
                    IsVisible="{Binding ShowIndexingBanner}"
                    BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
@@ -407,7 +463,7 @@
             </Frame>
 
             <!-- Browser grid -->
-            <Grid Grid.Row="9"
+            <Grid Grid.Row="10"
                   x:Name="BrowserGrid"
                   ColumnDefinitions="*,120"
                   RowDefinitions="*"
@@ -431,8 +487,8 @@
                                 <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
                                 <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
                                 <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
-                                <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
-                                <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                                <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
                                 <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
                             </VisualState.Setters>
                         </VisualState>
@@ -460,8 +516,8 @@
                                 <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
                                 <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
                                 <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
-                                <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
-                                <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                                <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -518,8 +574,8 @@
                 </CollectionView>
 
                 <CollectionView Grid.Column="0"
-                                ItemsSource="{Binding Videos}"
-                                x:Name="VideosView"
+                                ItemsSource="{Binding MediaItems}"
+                                x:Name="MediaItemsView"
                                 SelectionMode="None"
                                 VerticalScrollBarVisibility="Always"
                                 VerticalOptions="FillAndExpand"
@@ -580,11 +636,19 @@
                                 <Frame BackgroundColor="#CC0E0F14"
                                        CornerRadius="999"
                                        Padding="6"
-                                                       HorizontalOptions="End"
-                                                       VerticalOptions="End"
-                                                       Margin="8">
-                                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
-                                                </Frame>
+                                       HorizontalOptions="End"
+                                       VerticalOptions="End"
+                                       Margin="8"
+                                       IsVisible="False">
+                                    <Frame.Triggers>
+                                        <DataTrigger TargetType="Frame"
+                                                     Binding="{Binding MediaType}"
+                                                     Value="{x:Static models:MediaType.Videos}">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                    </Frame.Triggers>
+                                    <Image Source="icon_play.svg" HeightRequest="16" WidthRequest="16" />
+                                </Frame>
                                             </Grid>
 
                             <Grid Grid.Row="1"
@@ -611,20 +675,35 @@
                                         TextColor="{DynamicResource OnSurfaceMuted}" />
                             </Grid>
 
-                                            <Frame Grid.Row="2"
-                                                   BackgroundColor="{DynamicResource Surface2}"
-                                                   BorderColor="{DynamicResource BorderSubtle}"
-                                                   CornerRadius="8"
-                                                   Padding="8,4"
-                                                   HorizontalOptions="Start"
-                                                   Margin="0,6,0,2">
-                                                <HorizontalStackLayout Spacing="6">
-                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                                                    <Label Text="{Binding DurationText}"
-                                                           TextColor="{DynamicResource OnSurfaceMuted}"
-                                                           FontSize="11" />
-                                                </HorizontalStackLayout>
-                                            </Frame>
+                                            <HorizontalStackLayout Grid.Row="2"
+                                                                   Spacing="6"
+                                                                   Margin="0,6,0,2">
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_collection.svg" HeightRequest="12" WidthRequest="12" />
+                                                        <Label Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </HorizontalStackLayout>
 
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer
@@ -675,7 +754,15 @@
                                                            Padding="6"
                                                            HorizontalOptions="End"
                                                            VerticalOptions="End"
-                                                           Margin="8">
+                                                           Margin="8"
+                                                           IsVisible="False">
+                                                        <Frame.Triggers>
+                                                            <DataTrigger TargetType="Frame"
+                                                                         Binding="{Binding MediaType}"
+                                                                         Value="{x:Static models:MediaType.Videos}">
+                                                                <Setter Property="IsVisible" Value="True" />
+                                                            </DataTrigger>
+                                                        </Frame.Triggers>
                                                         <Image Source="icon_play.svg" HeightRequest="16"
                                                                WidthRequest="16" />
                                                     </Frame>
@@ -705,21 +792,37 @@
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                 </Grid>
 
-                                                <Frame Grid.Row="2"
-                                                       BackgroundColor="{DynamicResource Surface2}"
-                                                       BorderColor="{DynamicResource BorderSubtle}"
-                                                       CornerRadius="8"
-                                                       Padding="8,4"
-                                                       HorizontalOptions="Start"
-                                                       Margin="0,6,0,2">
-                                                    <HorizontalStackLayout Spacing="6">
-                                                        <Image Source="chip_clock.svg" HeightRequest="12"
-                                                               WidthRequest="12" />
-                                                        <Label Text="{Binding DurationText}"
-                                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                                               FontSize="11" />
-                                                    </HorizontalStackLayout>
-                                                </Frame>
+                                                <HorizontalStackLayout Grid.Row="2"
+                                                                       Spacing="6"
+                                                                       Margin="0,6,0,2">
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="8"
+                                                           Padding="8,4"
+                                                           HorizontalOptions="Start"
+                                                           IsVisible="{Binding HasDuration}">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_clock.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding DurationText}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="8"
+                                                           Padding="8,4"
+                                                           HorizontalOptions="Start">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_collection.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                </HorizontalStackLayout>
 
                                                 <Grid.GestureRecognizers>
                                                     <TapGestureRecognizer
@@ -771,7 +874,15 @@
                                                            Padding="6"
                                                            HorizontalOptions="End"
                                                            VerticalOptions="End"
-                                                           Margin="8">
+                                                           Margin="8"
+                                                           IsVisible="False">
+                                                        <Frame.Triggers>
+                                                            <DataTrigger TargetType="Frame"
+                                                                         Binding="{Binding MediaType}"
+                                                                         Value="{x:Static models:MediaType.Videos}">
+                                                                <Setter Property="IsVisible" Value="True" />
+                                                            </DataTrigger>
+                                                        </Frame.Triggers>
                                                         <Image Source="icon_play.svg" HeightRequest="16"
                                                                WidthRequest="16" />
                                                     </Frame>
@@ -801,21 +912,37 @@
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                 </Grid>
 
-                                                <Frame Grid.Row="2"
-                                                       BackgroundColor="{DynamicResource Surface2}"
-                                                       BorderColor="{DynamicResource BorderSubtle}"
-                                                       CornerRadius="8"
-                                                       Padding="8,4"
-                                                       HorizontalOptions="Start"
-                                                       Margin="0,6,0,2">
-                                                    <HorizontalStackLayout Spacing="6">
-                                                        <Image Source="chip_clock.svg" HeightRequest="12"
-                                                               WidthRequest="12" />
-                                                        <Label Text="{Binding DurationText}"
-                                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                                               FontSize="11" />
-                                                    </HorizontalStackLayout>
-                                                </Frame>
+                                                <HorizontalStackLayout Grid.Row="2"
+                                                                       Spacing="6"
+                                                                       Margin="0,6,0,2">
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="8"
+                                                           Padding="8,4"
+                                                           HorizontalOptions="Start"
+                                                           IsVisible="{Binding HasDuration}">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_clock.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding DurationText}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="8"
+                                                           Padding="8,4"
+                                                           HorizontalOptions="Start">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_collection.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                </HorizontalStackLayout>
 
                                                 <Grid.GestureRecognizers>
                                                     <TapGestureRecognizer
@@ -845,13 +972,13 @@
                        CornerRadius="18"
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <toolkit:MediaElement Source="{Binding CurrentVideoSource}"
+                    <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                           ShouldAutoPlay="True"
                                           ShowsPlaybackControls="True"
                                           Aspect="AspectFit" />
                 </Frame>
                 <Label Grid.Row="1"
-                       Text="{Binding CurrentVideoName}"
+                       Text="{Binding CurrentMediaName}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}"
                        HorizontalTextAlignment="Center"

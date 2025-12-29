@@ -43,7 +43,7 @@ public partial class MainPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is not TimelineEntry entry)
             return;
 
-        VideosView.ScrollTo(entry.AnchorVideo, position: ScrollToPosition.Start, animate: true);
+        MediaItemsView.ScrollTo(entry.AnchorMedia, position: ScrollToPosition.Start, animate: true);
         ((CollectionView)sender).SelectedItem = null;
     }
 
@@ -76,6 +76,7 @@ public partial class MainPage : ContentPage
             CancelIndexCommand = vm.CancelIndexCommand;
             PlayCommand = vm.PlayCommand;
             TogglePlayerFullscreenCommand = vm.TogglePlayerFullscreenCommand;
+            ToggleMediaTypeFilterCommand = vm.ToggleMediaTypeFilterCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
@@ -132,14 +133,14 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.HasMediaPermission):
                         OnPropertyChanged(nameof(HasMediaPermission));
                         break;
-                    case nameof(MainViewModel.Videos):
-                        OnPropertyChanged(nameof(Videos));
+                    case nameof(MainViewModel.MediaItems):
+                        OnPropertyChanged(nameof(MediaItems));
                         break;
-                    case nameof(MainViewModel.VideoCount):
-                        OnPropertyChanged(nameof(VideoCount));
+                    case nameof(MainViewModel.MediaCount):
+                        OnPropertyChanged(nameof(MediaCount));
                         break;
-                    case nameof(MainViewModel.IndexedVideoCount):
-                        OnPropertyChanged(nameof(IndexedVideoCount));
+                    case nameof(MainViewModel.IndexedMediaCount):
+                        OnPropertyChanged(nameof(IndexedMediaCount));
                         break;
                     case nameof(MainViewModel.TimelineEntries):
                         OnPropertyChanged(nameof(TimelineEntries));
@@ -174,14 +175,28 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
-                        OnPropertyChanged(nameof(ShowInternalPlayer));
+                        OnPropertyChanged(nameof(ShowVideoPlayer));
+                        OnPropertyChanged(nameof(ShowPreview));
                         break;
-                    case nameof(MainViewModel.CurrentVideoSource):
-                        OnPropertyChanged(nameof(CurrentVideoSource));
-                        OnPropertyChanged(nameof(ShowInternalPlayer));
+                    case nameof(MainViewModel.CurrentMediaSource):
+                        OnPropertyChanged(nameof(CurrentMediaSource));
+                        OnPropertyChanged(nameof(ShowVideoPlayer));
+                        OnPropertyChanged(nameof(ShowPreview));
+                        OnPropertyChanged(nameof(ShowPhotoPreview));
+                        OnPropertyChanged(nameof(ShowDocumentPreview));
                         break;
-                    case nameof(MainViewModel.CurrentVideoName):
-                        OnPropertyChanged(nameof(CurrentVideoName));
+                    case nameof(MainViewModel.CurrentMediaName):
+                        OnPropertyChanged(nameof(CurrentMediaName));
+                        break;
+                    case nameof(MainViewModel.CurrentMediaType):
+                        OnPropertyChanged(nameof(CurrentMediaType));
+                        OnPropertyChanged(nameof(ShowVideoPlayer));
+                        OnPropertyChanged(nameof(ShowPhotoPreview));
+                        OnPropertyChanged(nameof(ShowDocumentPreview));
+                        OnPropertyChanged(nameof(ShowPreview));
+                        break;
+                    case nameof(MainViewModel.SelectedMediaTypes):
+                        OnPropertyChanged(nameof(SelectedMediaTypes));
                         break;
                     case nameof(MainViewModel.IsPlayerFullscreen):
                         OnPropertyChanged(nameof(IsPlayerFullscreen));
@@ -200,6 +215,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand PlayCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
+        public IRelayCommand ToggleMediaTypeFilterCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
@@ -302,13 +318,14 @@ public partial class MainPage : ContentPage
         public string IndexCurrentFolder => vm.IndexCurrentFolder;
         public string IndexCurrentFile => vm.IndexCurrentFile;
         public bool HasMediaPermission => vm.HasMediaPermission;
-        public int VideoCount => vm.VideoCount;
-        public int IndexedVideoCount => vm.IndexedVideoCount;
+        public int MediaCount => vm.MediaCount;
+        public int IndexedMediaCount => vm.IndexedMediaCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
         public string SourcesSummary => vm.SourcesSummary;
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
+        public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
         public List<MediaSource> Sources => vm.Sources;
         public string ActiveSourceId => vm.ActiveSourceId;
 
@@ -326,13 +343,18 @@ public partial class MainPage : ContentPage
             }
         }
 
-        public List<VideoItem> Videos => vm.Videos;
+        public List<MediaItem> MediaItems => vm.MediaItems;
         public List<TimelineEntry> TimelineEntries => vm.TimelineEntries;
-        public string? CurrentVideoSource => vm.CurrentVideoSource;
-        public string CurrentVideoName => vm.CurrentVideoName;
+        public string? CurrentMediaSource => vm.CurrentMediaSource;
+        public string CurrentMediaName => vm.CurrentMediaName;
+        public MediaType CurrentMediaType => vm.CurrentMediaType;
         public bool IsInternalPlayerEnabled => vm.IsInternalPlayerEnabled;
         public bool IsPlayerFullscreen => vm.IsPlayerFullscreen;
-        public bool ShowInternalPlayer => IsInternalPlayerEnabled && CurrentVideoSource != null;
+        public bool ShowVideoPlayer => vm.ShowVideoPlayer;
+        public bool ShowPhotoPreview => vm.ShowPhotoPreview;
+        public bool ShowDocumentPreview => vm.ShowDocumentPreview;
+        public bool ShowPreview => vm.ShowPreview;
+        public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
 
         private async Task OpenSourcesAsync()
         {

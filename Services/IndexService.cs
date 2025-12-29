@@ -19,6 +19,7 @@ public sealed class IndexService
 
     public async Task<int> IndexSourcesAsync(
         IEnumerable<MediaSource> sources,
+        MediaType indexedTypes,
         IProgress<IndexProgress>? progress,
         CancellationToken ct)
     {
@@ -59,7 +60,7 @@ public sealed class IndexService
 
                 try
                 {
-                    await foreach (var v in scanner.StreamSourceAsync(source, ct).ConfigureAwait(false))
+                    await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, ct).ConfigureAwait(false))
                     {
                         ct.ThrowIfCancellationRequested();
 
@@ -83,7 +84,7 @@ public sealed class IndexService
                             if (string.IsNullOrWhiteSpace(v.Path))
                                 continue;
 
-                            var exists = await db.Db.FindAsync<VideoItem>(v.Path).ConfigureAwait(false);
+                            var exists = await db.Db.FindAsync<MediaItem>(v.Path).ConfigureAwait(false);
                             if (exists == null)
                             {
                                 await db.Db.InsertAsync(v).ConfigureAwait(false);
@@ -93,11 +94,13 @@ public sealed class IndexService
                             {
                                 if (exists.Name != v.Name ||
                                     exists.DurationMs != v.DurationMs ||
+                                    exists.MediaType != v.MediaType ||
                                     exists.SourceId != v.SourceId ||
                                     exists.DateAddedSeconds != v.DateAddedSeconds)
                                 {
                                     exists.Name = v.Name;
                                     exists.DurationMs = v.DurationMs;
+                                    exists.MediaType = v.MediaType;
                                     exists.SourceId = v.SourceId;
                                     exists.DateAddedSeconds = v.DateAddedSeconds;
                                     await db.Db.UpdateAsync(exists).ConfigureAwait(false);
@@ -141,10 +144,13 @@ public sealed class IndexService
         }
     }
 
-    public Task<List<VideoItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
-        DateTime? to)
+    public Task<List<MediaItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
+        DateTime? to, MediaType mediaTypes)
     {
-        var q = db.Db.Table<VideoItem>();
+        var q = db.Db.Table<MediaItem>();
+        var allowedTypes = BuildAllowedTypes(mediaTypes);
+        if (allowedTypes.Count > 0)
+            q = q.Where(v => allowedTypes.Contains(v.MediaType));
 
         if (!string.IsNullOrWhiteSpace(sourceId))
             q = q.Where(v => v.SourceId == sourceId);
@@ -172,30 +178,34 @@ public sealed class IndexService
         return q.ToListAsync();
     }
 
-    public Task<int> CountAsync()
+    public Task<int> CountAsync(MediaType mediaTypes)
     {
-        return db.Db.Table<VideoItem>().CountAsync();
+        var q = db.Db.Table<MediaItem>();
+        var allowedTypes = BuildAllowedTypes(mediaTypes);
+        if (allowedTypes.Count > 0)
+            q = q.Where(v => allowedTypes.Contains(v.MediaType));
+        return q.CountAsync();
     }
 
-    public async Task RemoveAsync(IEnumerable<VideoItem> items)
+    public async Task RemoveAsync(IEnumerable<MediaItem> items)
     {
         foreach (var item in items)
         {
             if (string.IsNullOrWhiteSpace(item.Path))
                 continue;
 
-            await db.Db.DeleteAsync<VideoItem>(item.Path).ConfigureAwait(false);
+            await db.Db.DeleteAsync<MediaItem>(item.Path).ConfigureAwait(false);
         }
     }
 
-    public async Task<bool> RenameAsync(VideoItem item, string newPath, string newName)
+    public async Task<bool> RenameAsync(MediaItem item, string newPath, string newName)
     {
         if (item == null || string.IsNullOrWhiteSpace(newPath))
             return false;
 
         try
         {
-            var existing = await db.Db.FindAsync<VideoItem>(newPath).ConfigureAwait(false);
+            var existing = await db.Db.FindAsync<MediaItem>(newPath).ConfigureAwait(false);
             if (existing != null && !string.Equals(existing.Path, item.Path, StringComparison.OrdinalIgnoreCase))
                 return false;
 
@@ -206,7 +216,7 @@ public sealed class IndexService
 
             if (!string.IsNullOrWhiteSpace(oldPath) &&
                 !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
-                await db.Db.DeleteAsync<VideoItem>(oldPath).ConfigureAwait(false);
+                await db.Db.DeleteAsync<MediaItem>(oldPath).ConfigureAwait(false);
 
             return true;
         }
@@ -214,5 +224,17 @@ public sealed class IndexService
         {
             return false;
         }
+    }
+
+    private static List<MediaType> BuildAllowedTypes(MediaType mediaTypes)
+    {
+        var allowed = new List<MediaType>();
+        if (mediaTypes.HasFlag(MediaType.Videos))
+            allowed.Add(MediaType.Videos);
+        if (mediaTypes.HasFlag(MediaType.Photos))
+            allowed.Add(MediaType.Photos);
+        if (mediaTypes.HasFlag(MediaType.Documents))
+            allowed.Add(MediaType.Documents);
+        return allowed;
     }
 }

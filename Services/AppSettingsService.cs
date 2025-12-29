@@ -1,3 +1,5 @@
+using UltimateVideoBrowser.Models;
+
 namespace UltimateVideoBrowser.Services;
 
 public sealed class AppSettingsService
@@ -11,6 +13,8 @@ public sealed class AppSettingsService
     private const string NeedsReindexKey = "needs_reindex";
     private const string ThemePreferenceKey = "theme_preference";
     private const string InternalPlayerEnabledKey = "internal_player_enabled";
+    private const string IndexedMediaTypesKey = "indexed_media_types";
+    private const string VisibleMediaTypesKey = "visible_media_types";
 
     public string ActiveSourceId
     {
@@ -72,5 +76,17 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(InternalPlayerEnabledKey, false);
         set => Preferences.Default.Set(InternalPlayerEnabledKey, value);
+    }
+
+    public MediaType IndexedMediaTypes
+    {
+        get => (MediaType)Preferences.Default.Get(IndexedMediaTypesKey, (int)MediaType.All);
+        set => Preferences.Default.Set(IndexedMediaTypesKey, (int)value);
+    }
+
+    public MediaType VisibleMediaTypes
+    {
+        get => (MediaType)Preferences.Default.Get(VisibleMediaTypesKey, (int)MediaType.All);
+        set => Preferences.Default.Set(VisibleMediaTypesKey, (int)value);
     }
 }
