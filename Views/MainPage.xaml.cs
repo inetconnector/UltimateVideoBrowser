@@ -159,6 +159,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.DateFilterTo):
                         OnPropertyChanged(nameof(DateFilterTo));
                         break;
+                    case nameof(MainViewModel.IsSourceSwitching):
+                        OnPropertyChanged(nameof(IsSourceSwitching));
+                        break;
                 }
             };
         }
@@ -238,6 +241,7 @@ public partial class MainPage : ContentPage
         }
 
         public bool IsIndexing => vm.IsIndexing;
+        public bool IsSourceSwitching => vm.IsSourceSwitching;
 
         public bool IsIndexingOverlayVisible
         {
@@ -366,7 +370,7 @@ public partial class MainPage : ContentPage
             if (width <= 0)
                 width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 
-            var targetTile = mode == UiMode.Tv ? 300 : mode == UiMode.Tablet ? 260 : 240;
+            var targetTile = mode == UiMode.Tv ? 320 : mode == UiMode.Tablet ? 300 : 260;
             var span = Math.Max(2, (int)(width / targetTile));
 
             GridSpan = Math.Min(8, span);
