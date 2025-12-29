@@ -101,6 +101,7 @@ public partial class MainViewModel : ObservableObject
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
         this.peopleTagService = peopleTagService;
+        this.settingsService.NeedsReindexChanged += OnNeedsReindexChanged;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
         SortOptions = new[]
@@ -117,6 +118,20 @@ public partial class MainViewModel : ObservableObject
             new MediaTypeFilterOption(MediaType.Photos, AppResources.MediaTypePhotos),
             new MediaTypeFilterOption(MediaType.Documents, AppResources.MediaTypeDocuments)
         };
+    }
+
+    private void OnNeedsReindexChanged(object? sender, bool needsReindex)
+    {
+        if (!needsReindex || IsIndexing)
+            return;
+
+        if (!isInitialized)
+        {
+            _ = InitializeAsync();
+            return;
+        }
+
+        _ = RunIndexAsync();
     }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
