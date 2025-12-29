@@ -48,9 +48,13 @@ public partial class MainViewModel : ObservableObject
 
     private readonly PropertyChangedEventHandler videoMarkedHandler;
     private List<VideoItem> subscribedVideos = new();
-    private int indexLastInserted;
+    private int indexLastRefreshInserted;
+    private int indexPendingRefreshInserted;
+    private DateTime indexLastRefreshAt = DateTime.MinValue;
+    private bool indexRefreshScheduled;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly object indexProgressLock = new();
+    private readonly object indexRefreshLock = new();
     private bool isApplyingIndexProgress;
     private IndexProgress? pendingIndexProgress;
     private int indexStartingCount;
@@ -211,7 +215,10 @@ public partial class MainViewModel : ObservableObject
             indexStartingCount = await indexService.CountAsync();
             await MainThread.InvokeOnMainThreadAsync(() => IndexedVideoCount = indexStartingCount);
             var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
-            indexLastInserted = 0;
+            indexLastRefreshInserted = 0;
+            indexPendingRefreshInserted = 0;
+            indexLastRefreshAt = DateTime.MinValue;
+            indexRefreshScheduled = false;
             var progress = new Progress<IndexProgress>(p =>
             {
                 MainThread.BeginInvokeOnMainThread(() => QueueIndexProgress(p));
@@ -601,10 +608,48 @@ public partial class MainViewModel : ObservableObject
         IndexedCount = progress.Inserted;
         IndexedVideoCount = indexStartingCount + progress.Inserted;
 
-        if (progress.Inserted > indexLastInserted)
+        QueueIndexRefresh(progress.Inserted);
+    }
+
+    private void QueueIndexRefresh(int inserted)
+    {
+        var now = DateTime.UtcNow;
+        var shouldSchedule = false;
+
+        lock (indexRefreshLock)
         {
-            indexLastInserted = progress.Inserted;
-            _ = RefreshAsync();
+            indexPendingRefreshInserted = Math.Max(indexPendingRefreshInserted, inserted);
+            var batchReached = indexPendingRefreshInserted - indexLastRefreshInserted >= 25;
+            var timeElapsed = now - indexLastRefreshAt >= TimeSpan.FromMilliseconds(500);
+
+            if (!batchReached && !timeElapsed)
+                return;
+
+            if (indexRefreshScheduled)
+                return;
+
+            indexRefreshScheduled = true;
+            shouldSchedule = true;
+        }
+
+        if (shouldSchedule)
+            _ = RefreshIndexResultsAsync();
+    }
+
+    private async Task RefreshIndexResultsAsync()
+    {
+        try
+        {
+            await RefreshAsync();
+        }
+        finally
+        {
+            lock (indexRefreshLock)
+            {
+                indexLastRefreshInserted = indexPendingRefreshInserted;
+                indexLastRefreshAt = DateTime.UtcNow;
+                indexRefreshScheduled = false;
+            }
         }
     }
 
