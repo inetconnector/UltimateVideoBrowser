@@ -82,6 +82,7 @@ public partial class MainPage : ContentPage
             MoveMarkedCommand = vm.MoveMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
+            OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
@@ -220,6 +221,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
         public IAsyncRelayCommand RenameCommand { get; }
+        public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
         public int GridSpan
