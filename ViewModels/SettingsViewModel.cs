@@ -21,6 +21,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string photoExtensionsText = string.Empty;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
     [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private bool isPeopleTaggingEnabled;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
 
@@ -61,6 +62,7 @@ public partial class SettingsViewModel : ObservableObject
         PhotoExtensionsText = settingsService.PhotoExtensions;
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
+        IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -162,6 +164,11 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnAllowFileChangesChanged(bool value)
     {
         settingsService.AllowFileChanges = value;
+    }
+
+    partial void OnIsPeopleTaggingEnabledChanged(bool value)
+    {
+        settingsService.PeopleTaggingEnabled = value;
     }
 
     private static void ApplyTheme(string themeKey)

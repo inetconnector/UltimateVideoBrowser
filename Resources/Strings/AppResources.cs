@@ -169,6 +169,20 @@ public static class AppResources
 
     public static string SettingsFileChangesHint =>
         GetString(nameof(SettingsFileChangesHint), "Enable this to show actions that change files on disk.");
+    public static string SettingsPeopleTaggingTitle =>
+        GetString(nameof(SettingsPeopleTaggingTitle), "People tagging");
+    public static string SettingsPeopleTaggingLabel =>
+        GetString(nameof(SettingsPeopleTaggingLabel), "Enable people tagging");
+    public static string SettingsPeopleTaggingHint =>
+        GetString(nameof(SettingsPeopleTaggingHint), "Turn this on to tag people in photos and videos from the library.");
+    public static string TagPeopleAction =>
+        GetString(nameof(TagPeopleAction), "Tag people");
+    public static string TagPeopleTitle =>
+        GetString(nameof(TagPeopleTitle), "Tag people");
+    public static string TagPeopleMessage =>
+        GetString(nameof(TagPeopleMessage), "Enter names separated by commas.");
+    public static string TagPeoplePlaceholder =>
+        GetString(nameof(TagPeoplePlaceholder), "e.g. Alex, Sam, Priya");
 
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
     public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");

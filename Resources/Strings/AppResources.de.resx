@@ -294,6 +294,27 @@
   <data name="SettingsFileChangesHint" xml:space="preserve">
     <value>Nur dann werden Aktionen angezeigt, die Dateien auf der Festplatte verändern.</value>
   </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Personen-Tags</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Personen-Tags aktivieren</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Aktiviere dies, um Personen in Fotos und Videos zu taggen.</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Personen taggen</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Personen taggen</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Namen durch Kommas getrennt eingeben.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>z. B. Alex, Sam, Priya</value>
+  </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Vorschau</value>
   </data>

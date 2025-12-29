@@ -18,6 +18,7 @@ public partial class MainViewModel : ObservableObject
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
     private readonly PermissionService permissionService;
+    private readonly PeopleTagService peopleTagService;
     private readonly PlaybackService playbackService;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly AppSettingsService settingsService;
@@ -68,6 +69,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int mediaCount;
     [ObservableProperty] private bool isSourceSwitching;
     [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private bool isPeopleTaggingEnabled;
 
     [ObservableProperty] private List<MediaItem> mediaItems = new();
     private bool hasMoreMediaItems;
@@ -87,7 +89,8 @@ public partial class MainViewModel : ObservableObject
         PlaybackService playbackService,
         PermissionService permissionService,
         IFileExportService fileExportService,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        PeopleTagService peopleTagService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
@@ -97,6 +100,7 @@ public partial class MainViewModel : ObservableObject
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
+        this.peopleTagService = peopleTagService;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
         SortOptions = new[]
@@ -526,6 +530,40 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task TagPeopleAsync(MediaItem item)
+    {
+        if (!IsPeopleTaggingEnabled)
+            return;
+
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        var existingTags = await peopleTagService.GetTagsForMediaAsync(item.Path);
+        var initialValue = existingTags.Count > 0 ? string.Join(", ", existingTags) : null;
+
+        var prompt = await dialogService.DisplayPromptAsync(
+            AppResources.TagPeopleTitle,
+            AppResources.TagPeopleMessage,
+            AppResources.TagPeopleAction,
+            AppResources.CancelButton,
+            AppResources.TagPeoplePlaceholder,
+            256,
+            Keyboard.Text,
+            initialValue);
+
+        if (prompt == null)
+            return;
+
+        var tags = prompt
+            .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        await peopleTagService.SetTagsForMediaAsync(item.Path, tags);
+        item.PeopleTagsSummary = string.Join(", ", tags);
+    }
+
+    [RelayCommand]
     public async Task OpenFolderAsync(MediaItem item)
     {
         if (item == null || string.IsNullOrWhiteSpace(item.Path))
@@ -746,6 +784,37 @@ public partial class MainViewModel : ObservableObject
         });
     }
 
+    private async Task RefreshPeopleTagsAsync(List<MediaItem> items, int currentVersion)
+    {
+        if (!IsPeopleTaggingEnabled || items.Count == 0)
+            return;
+
+        try
+        {
+            var tagMap = await peopleTagService
+                .GetTagsForMediaAsync(items.Select(item => item.Path))
+                .ConfigureAwait(false);
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (mediaItemsVersion != currentVersion)
+                    return;
+
+                foreach (var item in items)
+                {
+                    if (tagMap.TryGetValue(item.Path, out var tags))
+                        item.PeopleTagsSummary = string.Join(", ", tags);
+                    else
+                        item.PeopleTagsSummary = string.Empty;
+                }
+            });
+        }
+        catch
+        {
+            // ignore tag refresh failures to avoid disrupting browsing
+        }
+    }
+
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
@@ -773,6 +842,7 @@ public partial class MainViewModel : ObservableObject
         SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
         ApplyPlaybackSettings();
         ApplyFileChangeSettings();
+        ApplyPeopleTaggingSettings();
     }
 
     public void ApplyPlaybackSettings()
@@ -785,6 +855,11 @@ public partial class MainViewModel : ObservableObject
     public void ApplyFileChangeSettings()
     {
         AllowFileChanges = settingsService.AllowFileChanges;
+    }
+
+    public void ApplyPeopleTaggingSettings()
+    {
+        IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
     }
 
     private void ClearPlayerState()
@@ -835,8 +910,21 @@ public partial class MainViewModel : ObservableObject
                 MarkedCount = task.Result.markedCount;
                 SubscribeToMarkedChanges(snapshot);
                 StartThumbnailPipeline();
+                _ = RefreshPeopleTagsAsync(snapshot, currentVersion);
             });
         });
+    }
+
+    partial void OnIsPeopleTaggingEnabledChanged(bool value)
+    {
+        if (!value)
+        {
+            foreach (var item in MediaItems)
+                item.PeopleTagsSummary = string.Empty;
+            return;
+        }
+
+        _ = RefreshPeopleTagsAsync(MediaItems, mediaItemsVersion);
     }
 
     partial void OnMarkedCountChanged(int value)

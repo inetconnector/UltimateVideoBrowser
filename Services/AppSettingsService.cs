@@ -19,6 +19,7 @@ public sealed class AppSettingsService
     private const string PhotoExtensionsKey = "photo_extensions";
     private const string DocumentExtensionsKey = "document_extensions";
     private const string AllowFileChangesKey = "allow_file_changes";
+    private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
     private static readonly string[] DefaultPhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
@@ -121,6 +122,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(AllowFileChangesKey, false);
         set => Preferences.Default.Set(AllowFileChangesKey, value);
+    }
+
+    public bool PeopleTaggingEnabled
+    {
+        get => Preferences.Default.Get(PeopleTaggingEnabledKey, false);
+        set => Preferences.Default.Set(PeopleTaggingEnabledKey, value);
     }
 
     public IReadOnlySet<string> GetVideoExtensions() => ParseExtensions(VideoExtensions, DefaultVideoExtensions);
