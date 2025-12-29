@@ -10,7 +10,7 @@
     <AbsoluteLayout>
         <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
             <!-- Top bar -->
             <Grid Padding="16,14"
                   ColumnDefinitions="*,Auto,Auto,Auto"
@@ -148,7 +148,7 @@
                        BorderColor="{DynamicResource BorderSubtle}">
                     <VerticalStackLayout Spacing="6">
                         <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
-                        <Label Text="{Binding VideoCount}"
+                        <Label Text="{Binding IndexedVideoCount}"
                                FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
@@ -311,8 +311,65 @@
             </Grid>
             </Grid>
 
+        <!-- Source tabs -->
+            <Grid Grid.Row="7"
+                  Padding="12,0,12,12"
+                  BackgroundColor="{DynamicResource AppBg}">
+            <CollectionView ItemsSource="{Binding Sources}"
+                            SelectionMode="None"
+                            HorizontalScrollBarVisibility="Never">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="{DynamicResource Surface2}"
+                               BorderColor="{DynamicResource BorderSubtle}"
+                               CornerRadius="12"
+                               Padding="12,6"
+                               HasShadow="False">
+                            <Frame.Triggers>
+                                <DataTrigger TargetType="Frame" Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                            <Binding Path="Id" />
+                                            <Binding Path="BindingContext.ActiveSourceId"
+                                                     Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                    <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                </DataTrigger>
+                            </Frame.Triggers>
+                            <Label Text="{Binding DisplayName}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource OnSurface}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                <Binding Path="Id" />
+                                                <Binding Path="BindingContext.ActiveSourceId"
+                                                         Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.SelectSourceCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            </Grid>
+
         <!-- Indexing banner -->
-            <Frame Grid.Row="7"
+            <Frame Grid.Row="8"
                    IsVisible="{Binding ShowIndexingBanner}"
                    BackgroundColor="{DynamicResource Surface}"
                    CornerRadius="12"
@@ -377,7 +434,7 @@
             </Frame>
 
         <!-- Browser grid -->
-            <Grid Grid.Row="8" x:Name="BrowserGrid" ColumnDefinitions="*,96">
+            <Grid Grid.Row="9" x:Name="BrowserGrid" ColumnDefinitions="96,*">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">
@@ -392,13 +449,13 @@
                             </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*" />
-                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="Auto,*" />
+                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
                             <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
                             <Setter TargetName="TimelineView" Property="Grid.Column" Value="0" />
-                            <Setter TargetName="TimelineView" Property="Margin" Value="12,0,12,8" />
-                            <Setter TargetName="VideosView" Property="Grid.Row" Value="1" />
-                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="96,*" />
                         </VisualState.Setters>
                     </VisualState>
 
@@ -420,13 +477,13 @@
                             </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,96" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="96,*" />
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
                             <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="0" />
                             <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
                             <Setter TargetName="VideosView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="VideosView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="VideosView" Property="Grid.Column" Value="1" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -439,7 +496,7 @@
                             BackgroundColor="{DynamicResource AppBg}"
                             VerticalScrollBarVisibility="Always"
                             Margin="8,0,8,0"
-                            Grid.Column="1">
+                            Grid.Column="0">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
                 </CollectionView.ItemsLayout>
@@ -474,7 +531,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <CollectionView Grid.Column="0"
+            <CollectionView Grid.Column="1"
                             ItemsSource="{Binding Videos}"
                             x:Name="VideosView"
                             SelectionMode="None"
@@ -740,12 +797,34 @@
 
             </CollectionView>
             </Grid>
+            <!-- Status bar -->
+            <Grid Grid.Row="9"
+                  Padding="16,6"
+                  ColumnDefinitions="*,Auto"
+                  BackgroundColor="{DynamicResource Surface}">
+                <Label x:Name="IndexingStatusLabel"
+                       Text="{x:Static strings:AppResources.Indexing}"
+                       IsVisible="{Binding IsIndexing}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Accent}" />
+
+                <HorizontalStackLayout Grid.Column="1"
+                                       Spacing="6"
+                                       VerticalOptions="Center">
+                    <Label Text="{Binding IndexedVideoCount}"
+                           FontAttributes="Bold"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </HorizontalStackLayout>
+            </Grid>
         </Grid>
 
         <!-- Indexing overlay (single, clean, full-page) -->
-        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All"
-              IsVisible="{Binding IsIndexingOverlayVisible}"
+        <Grid IsVisible="{Binding IsIndexingOverlayVisible}"
               BackgroundColor="#99000000"
               Padding="24"
               HorizontalOptions="Fill"
@@ -808,5 +887,5 @@
 
             </Frame>
         </Grid>
-    </AbsoluteLayout>
+    </Grid>
 </ContentPage>

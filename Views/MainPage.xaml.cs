@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services;
@@ -8,12 +9,14 @@ namespace UltimateVideoBrowser.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
+    private const string IndexingBlinkAnimationName = "IndexingBlink";
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
         InitializeComponent();
         this.vm = vm;
         BindingContext = new MainPageBinding(vm, deviceMode, this);
+        vm.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     protected override async void OnAppearing()
@@ -21,6 +24,51 @@ public partial class MainPage : ContentPage
         base.OnAppearing();
         await vm.InitializeAsync();
         await ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
+        UpdateIndexingBlinkState();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        StopIndexingBlink();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.IsIndexing))
+            MainThread.BeginInvokeOnMainThread(UpdateIndexingBlinkState);
+    }
+
+    private void UpdateIndexingBlinkState()
+    {
+        if (IndexingStatusLabel == null)
+            return;
+
+        if (vm.IsIndexing)
+        {
+            if (IndexingStatusLabel.AnimationIsRunning(IndexingBlinkAnimationName))
+                return;
+
+            IndexingStatusLabel.Opacity = 1;
+            var animation = new Animation();
+            animation.Add(0, 0.5, new Animation(v => IndexingStatusLabel.Opacity = v, 1, 0.2));
+            animation.Add(0.5, 1, new Animation(v => IndexingStatusLabel.Opacity = v, 0.2, 1));
+            IndexingStatusLabel.Animate(IndexingBlinkAnimationName, animation, length: 1000,
+                repeat: () => vm.IsIndexing);
+        }
+        else
+        {
+            StopIndexingBlink();
+        }
+    }
+
+    private void StopIndexingBlink()
+    {
+        if (IndexingStatusLabel == null)
+            return;
+
+        IndexingStatusLabel.AbortAnimation(IndexingBlinkAnimationName);
+        IndexingStatusLabel.Opacity = 1;
     }
 
     private void OnTimelineSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -63,6 +111,7 @@ public partial class MainPage : ContentPage
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
+            SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
@@ -116,6 +165,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.VideoCount):
                         OnPropertyChanged(nameof(VideoCount));
                         break;
+                    case nameof(MainViewModel.IndexedVideoCount):
+                        OnPropertyChanged(nameof(IndexedVideoCount));
+                        break;
                     case nameof(MainViewModel.TimelineEntries):
                         OnPropertyChanged(nameof(TimelineEntries));
                         break;
@@ -128,6 +180,12 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.MarkedCount):
                         OnPropertyChanged(nameof(MarkedCount));
                         OnPropertyChanged(nameof(HasMarked));
+                        break;
+                    case nameof(MainViewModel.Sources):
+                        OnPropertyChanged(nameof(Sources));
+                        break;
+                    case nameof(MainViewModel.ActiveSourceId):
+                        OnPropertyChanged(nameof(ActiveSourceId));
                         break;
                     case nameof(MainViewModel.IsDateFilterEnabled):
                         OnPropertyChanged(nameof(IsDateFilterEnabled));
@@ -154,6 +212,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
+        public IAsyncRelayCommand SelectSourceCommand { get; }
 
         public int GridSpan
         {
@@ -242,11 +301,14 @@ public partial class MainPage : ContentPage
         public string IndexCurrentFile => vm.IndexCurrentFile;
         public bool HasMediaPermission => vm.HasMediaPermission;
         public int VideoCount => vm.VideoCount;
+        public int IndexedVideoCount => vm.IndexedVideoCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
         public string SourcesSummary => vm.SourcesSummary;
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
+        public List<MediaSource> Sources => vm.Sources;
+        public string ActiveSourceId => vm.ActiveSourceId;
 
         public SortOption? SelectedSortOption
         {
