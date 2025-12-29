@@ -129,6 +129,7 @@ public partial class MainViewModel : ObservableObject
             var videos = string.IsNullOrWhiteSpace(normalizedSourceId)
                 ? new List<VideoItem>()
                 : await indexService.QueryAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo);
+            var totalCount = await indexService.CountAsync();
             var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
             await MainThread.InvokeOnMainThreadAsync(() =>

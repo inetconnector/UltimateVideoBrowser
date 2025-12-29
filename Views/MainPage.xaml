@@ -839,7 +839,7 @@
                    HasShadow="False">
 
                 <VerticalStackLayout Spacing="10">
-                    <Label x:Name="IndexingStatusLabel"
+                    <Label x:Name="IndexingStatusOverlayLabel"
                            Text="{x:Static strings:AppResources.Indexing}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
@@ -887,5 +887,5 @@
 
             </Frame>
         </Grid>
-    </Grid>
+    </AbsoluteLayout>
 </ContentPage>
