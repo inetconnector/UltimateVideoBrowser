@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="UltimateVideoBrowser.Views.MainPage"
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
@@ -172,11 +173,11 @@
                                TextColor="{DynamicResource OnSurface}" />
                         <Grid HeightRequest="220"
                               BackgroundColor="{DynamicResource Surface2}">
-                            <MediaElement Source="{Binding CurrentVideoSource}"
-                                          ShouldAutoPlay="True"
-                                          ShowsPlaybackControls="True"
-                                          Aspect="AspectFit"
-                                          IsVisible="{Binding ShowInternalPlayer}" />
+                            <toolkit:MediaElement Source="{Binding CurrentVideoSource}"
+                                                  ShouldAutoPlay="True"
+                                                  ShowsPlaybackControls="True"
+                                                  Aspect="AspectFit"
+                                                  IsVisible="{Binding ShowInternalPlayer}" />
                             <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    HorizontalTextAlignment="Center"
@@ -844,10 +845,10 @@
                        CornerRadius="18"
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <MediaElement Source="{Binding CurrentVideoSource}"
-                                  ShouldAutoPlay="True"
-                                  ShowsPlaybackControls="True"
-                                  Aspect="AspectFit" />
+                    <toolkit:MediaElement Source="{Binding CurrentVideoSource}"
+                                          ShouldAutoPlay="True"
+                                          ShowsPlaybackControls="True"
+                                          Aspect="AspectFit" />
                 </Frame>
                 <Label Grid.Row="1"
                        Text="{Binding CurrentVideoName}"
