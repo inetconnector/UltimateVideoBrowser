@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using MauiMediaSource = Microsoft.Maui.Controls.MediaSource;
 using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
@@ -328,7 +329,7 @@ public partial class MainPage : ContentPage
 
         public List<VideoItem> Videos => vm.Videos;
         public List<TimelineEntry> TimelineEntries => vm.TimelineEntries;
-        public MediaSource? CurrentVideoSource => vm.CurrentVideoSource;
+        public MauiMediaSource? CurrentVideoSource => vm.CurrentVideoSource;
         public string CurrentVideoName => vm.CurrentVideoName;
         public bool IsInternalPlayerEnabled => vm.IsInternalPlayerEnabled;
         public bool IsPlayerFullscreen => vm.IsPlayerFullscreen;
