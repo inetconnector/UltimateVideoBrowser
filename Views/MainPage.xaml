@@ -619,12 +619,22 @@
                                                 </Frame>
                                             </Grid>
 
-                                            <Label Grid.Row="1"
-                                                   Text="{Binding Name}"
-                                                   TextColor="{DynamicResource OnSurface}"
-                                                   FontSize="13"
-                                                   LineBreakMode="TailTruncation"
-                                                   Margin="0,10,0,0" />
+                                            <HorizontalStackLayout Grid.Row="1"
+                                                                   Spacing="8"
+                                                                   Margin="0,10,0,0">
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="13"
+                                                       LineBreakMode="TailTruncation"
+                                                       HorizontalOptions="StartAndExpand" />
+                                                <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                            </HorizontalStackLayout>
 
                                             <Frame Grid.Row="2"
                                                    BackgroundColor="{DynamicResource Surface2}"
@@ -699,12 +709,22 @@
                                                     </Frame>
                                                 </Grid>
 
-                                                <Label Grid.Row="1"
-                                                       Text="{Binding Name}"
-                                                       TextColor="{DynamicResource OnSurface}"
-                                                       FontSize="13"
-                                                       LineBreakMode="TailTruncation"
-                                                       Margin="0,10,0,0" />
+                                                <HorizontalStackLayout Grid.Row="1"
+                                                                       Spacing="8"
+                                                                       Margin="0,10,0,0">
+                                                    <Label Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="13"
+                                                           LineBreakMode="TailTruncation"
+                                                           HorizontalOptions="StartAndExpand" />
+                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            FontSize="11"
+                                                            Padding="10,2"
+                                                            BackgroundColor="{DynamicResource Surface2}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                </HorizontalStackLayout>
 
                                                 <Frame Grid.Row="2"
                                                        BackgroundColor="{DynamicResource Surface2}"
@@ -781,12 +801,22 @@
                                                     </Frame>
                                                 </Grid>
 
-                                                <Label Grid.Row="1"
-                                                       Text="{Binding Name}"
-                                                       TextColor="{DynamicResource OnSurface}"
-                                                       FontSize="13"
-                                                       LineBreakMode="TailTruncation"
-                                                       Margin="0,10,0,0" />
+                                                <HorizontalStackLayout Grid.Row="1"
+                                                                       Spacing="8"
+                                                                       Margin="0,10,0,0">
+                                                    <Label Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="13"
+                                                           LineBreakMode="TailTruncation"
+                                                           HorizontalOptions="StartAndExpand" />
+                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            FontSize="11"
+                                                            Padding="10,2"
+                                                            BackgroundColor="{DynamicResource Surface2}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                </HorizontalStackLayout>
 
                                                 <Frame Grid.Row="2"
                                                        BackgroundColor="{DynamicResource Surface2}"

@@ -17,11 +17,11 @@ public partial class MainPage : ContentPage
         BindingContext = new MainPageBinding(vm, deviceMode, this);
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await vm.InitializeAsync();
-        await ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
+        _ = vm.InitializeAsync();
+        _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
     }
 
     protected override void OnDisappearing()
@@ -70,6 +70,7 @@ public partial class MainPage : ContentPage
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
+            RenameCommand = vm.RenameCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
@@ -174,6 +175,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
+        public IAsyncRelayCommand RenameCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
         public int GridSpan

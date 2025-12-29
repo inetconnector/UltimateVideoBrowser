@@ -132,6 +132,30 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>„Speichern unter“ wird auf diesem Gerät nicht unterstützt.</value>
   </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Video umbenennen</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Gib einen neuen Namen für dieses Video an.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Videoname</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Umbenennen fehlgeschlagen</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Das Video konnte nicht umbenannt werden. Bitte versuche es erneut.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Umbenennen wird auf diesem Gerät nicht unterstützt.</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Ein Video mit diesem Namen existiert bereits in diesem Ordner.</value>
+  </data>
   <data name="MarkedCountFormat" xml:space="preserve">
     <value>Markiert: {0}</value>
   </data>

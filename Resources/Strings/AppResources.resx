@@ -135,6 +135,30 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>Save as isn't supported on this device.</value>
   </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Rename video</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Enter a new name for this video.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Video name</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Rename failed</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>We couldn't rename this video. Please try again.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Renaming isn't supported on this device.</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>A video with that name already exists in this folder.</value>
+  </data>
   <data name="MarkedCountFormat" xml:space="preserve">
     <value>Marked: {0}</value>
   </data>
