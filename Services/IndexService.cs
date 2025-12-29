@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using SQLite;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -147,35 +148,24 @@ public sealed class IndexService
     public Task<List<MediaItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
         DateTime? to, MediaType mediaTypes)
     {
-        var q = db.Db.Table<MediaItem>();
-        var allowedTypes = BuildAllowedTypes(mediaTypes);
-        if (allowedTypes.Count > 0)
-            q = q.Where(v => allowedTypes.Contains(v.MediaType));
-
-        if (!string.IsNullOrWhiteSpace(sourceId))
-            q = q.Where(v => v.SourceId == sourceId);
-
-        if (!string.IsNullOrWhiteSpace(search))
-            q = q.Where(v => v.Name.Contains(search));
-
-        if (from.HasValue || to.HasValue)
-        {
-            var fromSeconds = from.HasValue ? new DateTimeOffset(from.Value.Date).ToUnixTimeSeconds() : 0;
-            var toSeconds = to.HasValue
-                ? new DateTimeOffset(to.Value.Date.AddDays(1).AddTicks(-1)).ToUnixTimeSeconds()
-                : long.MaxValue;
-
-            q = q.Where(v => v.DateAddedSeconds >= fromSeconds && v.DateAddedSeconds <= toSeconds);
-        }
-
-        q = sortKey switch
-        {
-            "date" => q.OrderByDescending(v => v.DateAddedSeconds),
-            "duration" => q.OrderByDescending(v => v.DurationMs),
-            _ => q.OrderBy(v => v.Name)
-        };
-
+        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes);
         return q.ToListAsync();
+    }
+
+    public Task<List<MediaItem>> QueryPageAsync(string search, string? sourceId, string sortKey, DateTime? from,
+        DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes)
+            .Skip(offset)
+            .Take(limit);
+        return q.ToListAsync();
+    }
+
+    public Task<int> CountQueryAsync(string search, string? sourceId, DateTime? from, DateTime? to,
+        MediaType mediaTypes)
+    {
+        var q = BuildQuery(search, sourceId, "name", from, to, mediaTypes);
+        return q.CountAsync();
     }
 
     public Task<int> CountAsync(MediaType mediaTypes)
@@ -236,5 +226,39 @@ public sealed class IndexService
         if (mediaTypes.HasFlag(MediaType.Documents))
             allowed.Add(MediaType.Documents);
         return allowed;
+    }
+
+    private AsyncTableQuery<MediaItem> BuildQuery(string search, string? sourceId, string sortKey, DateTime? from,
+        DateTime? to, MediaType mediaTypes)
+    {
+        var q = db.Db.Table<MediaItem>();
+        var allowedTypes = BuildAllowedTypes(mediaTypes);
+        if (allowedTypes.Count > 0)
+            q = q.Where(v => allowedTypes.Contains(v.MediaType));
+
+        if (!string.IsNullOrWhiteSpace(sourceId))
+            q = q.Where(v => v.SourceId == sourceId);
+
+        if (!string.IsNullOrWhiteSpace(search))
+            q = q.Where(v => v.Name.Contains(search));
+
+        if (from.HasValue || to.HasValue)
+        {
+            var fromSeconds = from.HasValue ? new DateTimeOffset(from.Value.Date).ToUnixTimeSeconds() : 0;
+            var toSeconds = to.HasValue
+                ? new DateTimeOffset(to.Value.Date.AddDays(1).AddTicks(-1)).ToUnixTimeSeconds()
+                : long.MaxValue;
+
+            q = q.Where(v => v.DateAddedSeconds >= fromSeconds && v.DateAddedSeconds <= toSeconds);
+        }
+
+        q = sortKey switch
+        {
+            "date" => q.OrderByDescending(v => v.DateAddedSeconds),
+            "duration" => q.OrderByDescending(v => v.DurationMs),
+            _ => q.OrderBy(v => v.Name)
+        };
+
+        return q;
     }
 }
