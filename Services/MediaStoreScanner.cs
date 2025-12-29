@@ -10,13 +10,14 @@ using Windows.Storage;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
+using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 using IOPath = System.IO.Path;
 
 namespace UltimateVideoBrowser.Services;
 
 public sealed class MediaStoreScanner
 {
-    public async IAsyncEnumerable<MediaItem> StreamSourceAsync(MediaSource source, MediaType indexedTypes,
+    public async IAsyncEnumerable<MediaItem> StreamSourceAsync(MediaSource source, ModelMediaType indexedTypes,
         [EnumeratorCancellation] CancellationToken ct)
     {
         var sourceId = source.Id;
@@ -51,14 +52,14 @@ public sealed class MediaStoreScanner
     }
 
 #if WINDOWS
-    private static IEnumerable<string> GetWindowsDefaultRoots(MediaType indexedTypes)
+    private static IEnumerable<string> GetWindowsDefaultRoots(ModelMediaType indexedTypes)
     {
         var roots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (indexedTypes.HasFlag(MediaType.Videos))
+        if (indexedTypes.HasFlag(ModelMediaType.Videos))
             roots.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos));
-        if (indexedTypes.HasFlag(MediaType.Photos))
+        if (indexedTypes.HasFlag(ModelMediaType.Photos))
             roots.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
-        if (indexedTypes.HasFlag(MediaType.Documents))
+        if (indexedTypes.HasFlag(ModelMediaType.Documents))
             roots.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
         return roots.Where(root => !string.IsNullOrWhiteSpace(root));
     }
@@ -68,20 +69,20 @@ public sealed class MediaStoreScanner
     private static readonly string[] DocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
-    private static MediaType GetMediaTypeFromPath(string path)
+    private static ModelMediaType GetMediaTypeFromPath(string path)
     {
         var ext = Path.GetExtension(path);
         if (VideoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Videos;
+            return ModelMediaType.Videos;
         if (PhotoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Photos;
+            return ModelMediaType.Photos;
         if (DocumentExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Documents;
-        return MediaType.None;
+            return ModelMediaType.Documents;
+        return ModelMediaType.None;
     }
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsAsync(string? rootPath, string? sourceId,
-        string? accessToken, MediaType indexedTypes,
+        string? accessToken, ModelMediaType indexedTypes,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var root = rootPath;
@@ -124,11 +125,11 @@ public sealed class MediaStoreScanner
             }
 
             var mediaType = GetMediaTypeFromPath(path);
-            if (mediaType == MediaType.None || !indexedTypes.HasFlag(mediaType))
+            if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                 continue;
 
             var durationMs = 0L;
-            if (mediaType == MediaType.Videos)
+            if (mediaType == ModelMediaType.Videos)
             {
                 try
                 {
@@ -154,7 +155,7 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<string> EnumerateMediaFilesStreamingWindows(string root, MediaType indexedTypes,
+    private static IEnumerable<string> EnumerateMediaFilesStreamingWindows(string root, ModelMediaType indexedTypes,
         CancellationToken ct)
     {
         var queue = new Queue<string>();
@@ -180,7 +181,7 @@ public sealed class MediaStoreScanner
             {
                 ct.ThrowIfCancellationRequested();
                 var mediaType = GetMediaTypeFromPath(file);
-                if (mediaType != MediaType.None && indexedTypes.HasFlag(mediaType))
+                if (mediaType != ModelMediaType.None && indexedTypes.HasFlag(mediaType))
                     yield return file;
             }
 
@@ -229,7 +230,7 @@ public sealed class MediaStoreScanner
     }
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsFolderAsync(StorageFolder root, string? sourceId,
-        MediaType indexedTypes, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
+        ModelMediaType indexedTypes, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var queue = new Queue<StorageFolder>();
         queue.Enqueue(root);
@@ -252,11 +253,11 @@ public sealed class MediaStoreScanner
             {
                 ct.ThrowIfCancellationRequested();
                 var mediaType = GetMediaTypeFromPath(file.Name);
-                if (mediaType == MediaType.None || !indexedTypes.HasFlag(mediaType))
+                if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                     continue;
 
                 var durationMs = 0L;
-                if (mediaType == MediaType.Videos)
+                if (mediaType == ModelMediaType.Videos)
                 {
                     try
                     {
@@ -306,33 +307,33 @@ public sealed class MediaStoreScanner
     private static readonly string[] DocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
-    private static MediaType GetMediaTypeFromName(string? name)
+    private static ModelMediaType GetMediaTypeFromName(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return MediaType.None;
+            return ModelMediaType.None;
 
         var ext = Path.GetExtension(name);
         if (VideoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Videos;
+            return ModelMediaType.Videos;
         if (PhotoExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Photos;
+            return ModelMediaType.Photos;
         if (DocumentExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
-            return MediaType.Documents;
-        return MediaType.None;
+            return ModelMediaType.Documents;
+        return ModelMediaType.None;
     }
 
-    private static IEnumerable<MediaItem> ScanMediaStore(string? sourceId, MediaType indexedTypes,
+    private static IEnumerable<MediaItem> ScanMediaStore(string? sourceId, ModelMediaType indexedTypes,
         CancellationToken ct)
     {
-        if (indexedTypes.HasFlag(MediaType.Videos))
+        if (indexedTypes.HasFlag(ModelMediaType.Videos))
             foreach (var item in ScanMediaStoreVideos(sourceId, ct))
                 yield return item;
 
-        if (indexedTypes.HasFlag(MediaType.Photos))
+        if (indexedTypes.HasFlag(ModelMediaType.Photos))
             foreach (var item in ScanMediaStoreImages(sourceId, ct))
                 yield return item;
 
-        if (indexedTypes.HasFlag(MediaType.Documents))
+        if (indexedTypes.HasFlag(ModelMediaType.Documents))
             foreach (var item in ScanMediaStoreDocuments(sourceId, ct))
                 yield return item;
     }
@@ -460,7 +461,7 @@ public sealed class MediaStoreScanner
                     DurationMs = durationMs,
                     DateAddedSeconds = addedSeconds,
                     SourceId = sourceId,
-                    MediaType = MediaType.Videos
+                    MediaType = ModelMediaType.Videos
                 };
             }
         }
@@ -575,7 +576,7 @@ public sealed class MediaStoreScanner
                     DurationMs = 0,
                     DateAddedSeconds = addedSeconds,
                     SourceId = sourceId,
-                    MediaType = MediaType.Photos
+                    MediaType = ModelMediaType.Photos
                 };
             }
         }
@@ -666,7 +667,7 @@ public sealed class MediaStoreScanner
                     }
 
                 var mediaType = GetMediaTypeFromName(name);
-                if (mediaType != MediaType.Documents)
+                if (mediaType != ModelMediaType.Documents)
                     continue;
 
                 var itemUri = ContentUris.WithAppendedId(externalUri, id);
@@ -695,13 +696,13 @@ public sealed class MediaStoreScanner
                     DurationMs = 0,
                     DateAddedSeconds = addedSeconds,
                     SourceId = sourceId,
-                    MediaType = MediaType.Documents
+                    MediaType = ModelMediaType.Documents
                 };
             }
         }
     }
 
-    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId, MediaType indexedTypes,
+    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId, ModelMediaType indexedTypes,
         CancellationToken ct)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
@@ -711,7 +712,7 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<MediaItem> ScanAndroidTreeUri(string rootPath, string? sourceId,
-        MediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, CancellationToken ct)
     {
         var ctx = Platform.AppContext;
         DocumentFile? root = null;
@@ -735,7 +736,7 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<MediaItem> TraverseDocumentTree(DocumentFile root, string? sourceId,
-        MediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, CancellationToken ct)
     {
         var stack = new Stack<DocumentFile>();
         stack.Push(root);
@@ -791,7 +792,7 @@ public sealed class MediaStoreScanner
                 }
 
                 var mediaType = GetMediaTypeFromName(name);
-                if (mediaType == MediaType.None || !indexedTypes.HasFlag(mediaType))
+                if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                     continue;
 
                 long lastModifiedMs = 0;
@@ -835,7 +836,7 @@ public sealed class MediaStoreScanner
     }
 
     private static IEnumerable<MediaItem> ScanAndroidFileSystem(string rootPath, string? sourceId,
-        MediaType indexedTypes, CancellationToken ct)
+        ModelMediaType indexedTypes, CancellationToken ct)
     {
         if (!Directory.Exists(rootPath))
             yield break;
@@ -848,7 +849,7 @@ public sealed class MediaStoreScanner
                 continue;
 
             var mediaType = GetMediaTypeFromName(path);
-            if (mediaType == MediaType.None || !indexedTypes.HasFlag(mediaType))
+            if (mediaType == ModelMediaType.None || !indexedTypes.HasFlag(mediaType))
                 continue;
 
             yield return new MediaItem
@@ -863,7 +864,7 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<string> EnumerateMediaFilesStreamingAndroid(string rootPath, MediaType indexedTypes,
+    private static IEnumerable<string> EnumerateMediaFilesStreamingAndroid(string rootPath, ModelMediaType indexedTypes,
         CancellationToken ct)
     {
         var queue = new Queue<string>();
@@ -893,12 +894,12 @@ public sealed class MediaStoreScanner
                     yield return file;
             }
 
-            static bool SafeIsMediaFile(string file, MediaType indexedTypes)
+            static bool SafeIsMediaFile(string file, ModelMediaType indexedTypes)
             {
                 try
                 {
                     var mediaType = GetMediaTypeFromName(file);
-                    return mediaType != MediaType.None && indexedTypes.HasFlag(mediaType);
+                    return mediaType != ModelMediaType.None && indexedTypes.HasFlag(mediaType);
                 }
                 catch
                 {
