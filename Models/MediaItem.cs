@@ -4,7 +4,7 @@ using SQLite;
 
 namespace UltimateVideoBrowser.Models;
 
-public class VideoItem : INotifyPropertyChanged
+public class MediaItem : INotifyPropertyChanged
 {
     private bool isMarked;
     private string name = "";
@@ -39,6 +39,9 @@ public class VideoItem : INotifyPropertyChanged
         }
     }
 
+    [Indexed]
+    public MediaType MediaType { get; set; }
+
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
 
@@ -59,6 +62,9 @@ public class VideoItem : INotifyPropertyChanged
 
     [Ignore]
     public string DurationText => DurationMs <= 0 ? "" : TimeSpan.FromMilliseconds(DurationMs).ToString(@"hh\:mm\:ss");
+
+    [Ignore]
+    public bool HasDuration => DurationMs > 0;
 
     [Ignore]
     public bool IsMarked

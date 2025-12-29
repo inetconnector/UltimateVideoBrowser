@@ -18,7 +18,7 @@ public sealed class FileExportService : IFileExportService
         this.dialogService = dialogService;
     }
 
-    public async Task SaveAsAsync(VideoItem item)
+    public async Task SaveAsAsync(MediaItem item)
     {
 #if WINDOWS
         try
@@ -70,22 +70,22 @@ public sealed class FileExportService : IFileExportService
 #endif
     }
 
-    public async Task CopyToFolderAsync(IEnumerable<VideoItem> items)
+    public async Task CopyToFolderAsync(IEnumerable<MediaItem> items)
     {
         await TransferToFolderAsync(items, false);
     }
 
-    public Task<IReadOnlyList<VideoItem>> MoveToFolderAsync(IEnumerable<VideoItem> items)
+    public Task<IReadOnlyList<MediaItem>> MoveToFolderAsync(IEnumerable<MediaItem> items)
     {
         return TransferToFolderAsync(items, true);
     }
 
-    private async Task<IReadOnlyList<VideoItem>> TransferToFolderAsync(IEnumerable<VideoItem> items, bool isMove)
+    private async Task<IReadOnlyList<MediaItem>> TransferToFolderAsync(IEnumerable<MediaItem> items, bool isMove)
     {
 #if WINDOWS
         var list = items.Where(i => i != null && !string.IsNullOrWhiteSpace(i.Path)).ToList();
         if (list.Count == 0)
-            return Array.Empty<VideoItem>();
+            return Array.Empty<MediaItem>();
 
         var window = Application.Current?.Windows.FirstOrDefault();
         if (window?.Handler?.PlatformView is not MauiWinUIWindow mauiWindow)
@@ -94,7 +94,7 @@ public sealed class FileExportService : IFileExportService
                 AppResources.TransferFailedTitle,
                 AppResources.TransferFailedMessage,
                 AppResources.OkButton);
-            return Array.Empty<VideoItem>();
+            return Array.Empty<MediaItem>();
         }
 
         var picker = new FolderPicker();
@@ -102,9 +102,9 @@ public sealed class FileExportService : IFileExportService
         InitializeWithWindow.Initialize(picker, mauiWindow.WindowHandle);
         var rootFolder = await picker.PickSingleFolderAsync();
         if (rootFolder is null)
-            return Array.Empty<VideoItem>();
+            return Array.Empty<MediaItem>();
         var targetPath = rootFolder.Path;
-        var succeeded = new List<VideoItem>();
+        var succeeded = new List<MediaItem>();
         var skipped = 0;
         var failed = 0;
 
@@ -152,7 +152,7 @@ public sealed class FileExportService : IFileExportService
             AppResources.TransferFailedTitle,
             AppResources.TransferNotSupportedMessage,
             AppResources.OkButton);
-        return Array.Empty<VideoItem>();
+        return Array.Empty<MediaItem>();
 #endif
     }
 }

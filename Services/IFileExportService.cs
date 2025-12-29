@@ -4,7 +4,7 @@ namespace UltimateVideoBrowser.Services;
 
 public interface IFileExportService
 {
-    Task SaveAsAsync(VideoItem item);
-    Task CopyToFolderAsync(IEnumerable<VideoItem> items);
-    Task<IReadOnlyList<VideoItem>> MoveToFolderAsync(IEnumerable<VideoItem> items);
+    Task SaveAsAsync(MediaItem item);
+    Task CopyToFolderAsync(IEnumerable<MediaItem> items);
+    Task<IReadOnlyList<MediaItem>> MoveToFolderAsync(IEnumerable<MediaItem> items);
 }

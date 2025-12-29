@@ -38,7 +38,7 @@ public sealed class PermissionService
 
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
-            var mediaStatus = await Permissions.CheckStatusAsync<MediaVideoPermission>();
+            var mediaStatus = await Permissions.CheckStatusAsync<MediaLibraryPermission>();
             return mediaStatus == PermissionStatus.Granted;
         }
 
@@ -49,7 +49,7 @@ public sealed class PermissionService
     {
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
-            var mediaStatus = await Permissions.RequestAsync<MediaVideoPermission>();
+            var mediaStatus = await Permissions.RequestAsync<MediaLibraryPermission>();
             return mediaStatus == PermissionStatus.Granted;
         }
 
@@ -58,12 +58,13 @@ public sealed class PermissionService
     }
 
     [SupportedOSPlatform("android33.0")]
-    private sealed class MediaVideoPermission : Permissions.BasePlatformPermission
+    private sealed class MediaLibraryPermission : Permissions.BasePlatformPermission
     {
         public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
             new[]
             {
-                (Manifest.Permission.ReadMediaVideo, true)
+                (Manifest.Permission.ReadMediaVideo, true),
+                (Manifest.Permission.ReadMediaImages, true)
             };
     }
 #endif

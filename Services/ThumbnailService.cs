@@ -28,13 +28,13 @@ public sealed class ThumbnailService
         Directory.CreateDirectory(cacheDir);
     }
 
-    public string GetThumbnailPath(VideoItem item)
+    public string GetThumbnailPath(MediaItem item)
     {
         var safe = MakeSafeFileName(item.Path);
         return IOPath.Combine(cacheDir, safe + ".jpg");
     }
 
-    public async Task<string?> EnsureThumbnailAsync(VideoItem item, CancellationToken ct)
+    public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
     {
         var thumbPath = GetThumbnailPath(item);
         if (File.Exists(thumbPath))
@@ -47,20 +47,13 @@ public sealed class ThumbnailService
             {
                 ct.ThrowIfCancellationRequested();
 
-                using var retriever = new MediaMetadataRetriever();
-                if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+                using Bitmap? bmp = item.MediaType switch
                 {
-                    var uri = Uri.Parse(item.Path);
-                    retriever.SetDataSource(Platform.AppContext, uri);
-                }
-                else
-                {
-                    retriever.SetDataSource(item.Path);
-                }
+                    MediaType.Photos => LoadImageBitmap(item.Path),
+                    MediaType.Videos => LoadVideoBitmap(item),
+                    _ => null
+                };
 
-                // pick ~10% of duration, fallback to 1 second
-                var tUs = Math.Max(1_000_000L, item.DurationMs * 1000L / 10L);
-                using var bmp = retriever.GetFrameAtTime(tUs, Option.ClosestSync);
                 if (bmp == null)
                     return null;
 
@@ -85,10 +78,10 @@ public sealed class ThumbnailService
                 return null;
 
             using var thumb =
- await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320, ThumbnailOptions.UseCurrentScale);
+                await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), 320, ThumbnailOptions.UseCurrentScale);
             if (thumb == null || thumb.Size == 0)
             {
-                using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.VideosView, 320);
+                using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320);
                 if (fallbackThumb == null || fallbackThumb.Size == 0)
                     return null;
 
@@ -115,7 +108,7 @@ public sealed class ThumbnailService
     }
 
 #if WINDOWS
-    private async Task<StorageFile?> GetStorageFileAsync(VideoItem item)
+    private async Task<StorageFile?> GetStorageFileAsync(MediaItem item)
     {
         try
         {
@@ -178,6 +171,62 @@ public sealed class ThumbnailService
             current = await current.GetFolderAsync(segments[i]);
 
         return await current.GetFileAsync(segments[^1]);
+    }
+#endif
+
+#if ANDROID && !WINDOWS
+    private static Bitmap? LoadImageBitmap(string path)
+    {
+        try
+        {
+            if (path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+            {
+                using var stream = Platform.AppContext.ContentResolver?.OpenInputStream(Uri.Parse(path));
+                return stream == null ? null : BitmapFactory.DecodeStream(stream);
+            }
+
+            return BitmapFactory.DecodeFile(path);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static Bitmap? LoadVideoBitmap(MediaItem item)
+    {
+        try
+        {
+            using var retriever = new MediaMetadataRetriever();
+            if (item.Path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+            {
+                var uri = Uri.Parse(item.Path);
+                retriever.SetDataSource(Platform.AppContext, uri);
+            }
+            else
+            {
+                retriever.SetDataSource(item.Path);
+            }
+
+            var tUs = Math.Max(1_000_000L, item.DurationMs * 1000L / 10L);
+            return retriever.GetFrameAtTime(tUs, Option.ClosestSync);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+#endif
+
+#if WINDOWS
+    private static ThumbnailMode GetThumbnailMode(MediaType mediaType)
+    {
+        return mediaType switch
+        {
+            MediaType.Photos => ThumbnailMode.PicturesView,
+            MediaType.Documents => ThumbnailMode.DocumentsView,
+            _ => ThumbnailMode.VideosView
+        };
     }
 #endif
 

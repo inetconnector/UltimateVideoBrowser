@@ -23,7 +23,7 @@ public sealed class SourceService : ISourceService
         if (existing != null)
             return;
 
-        // Default "All device videos" virtual source (empty path = MediaStore)
+        // Default "All device media" virtual source (empty path = MediaStore)
         var src = new MediaSource
         {
             Id = "device_all",
@@ -47,7 +47,7 @@ public sealed class SourceService : ISourceService
 
     private async Task DeleteSourceAsync(MediaSource src)
     {
-        await db.Db.ExecuteAsync("DELETE FROM VideoItem WHERE SourceId = ?", src.Id);
+        await db.Db.ExecuteAsync("DELETE FROM MediaItem WHERE SourceId = ?", src.Id);
         await db.Db.DeleteAsync(src);
 #if WINDOWS
         if (!string.IsNullOrWhiteSpace(src.AccessToken))

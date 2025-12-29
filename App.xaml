@@ -12,6 +12,8 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:StringNullOrEmptyToFallbackConverter x:Key="StringFallbackConverter" />
             <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter" />
+            <converters:MediaTypeSelectedConverter x:Key="MediaTypeSelectedConverter" />
+            <converters:MediaTypeLabelConverter x:Key="MediaTypeLabelConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <styles:ColorsLight />
                 <ResourceDictionary Source="Resources/Styles/Theme.xaml" />

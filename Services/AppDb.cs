@@ -10,9 +10,10 @@ public sealed class AppDb
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "ultimatevideobrowser.db");
         Db = new SQLiteAsyncConnection(dbPath);
         Db.CreateTableAsync<MediaSource>().Wait();
-        Db.CreateTableAsync<VideoItem>().Wait();
-        Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_video_name ON VideoItem(Name);").Wait();
-        Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_video_source ON VideoItem(SourceId);").Wait();
+        Db.CreateTableAsync<MediaItem>().Wait();
+        Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);").Wait();
+        Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);").Wait();
+        Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);").Wait();
         TryAddMediaSourceAccessToken();
     }
 
