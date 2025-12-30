@@ -80,11 +80,14 @@ public partial class MainPage : ContentPage
         private readonly MainViewModel vm;
 
         private int gridSpan = 3;
-        private Window? indexingWindow;
-        private Window? loadingWindow;
+        private Window? indexingWindow; 
         private bool isIndexingOverlaySuppressed;
-        private bool isIndexingOverlayVisible;
-        private bool isLoadingWindowSuppressed;
+        private bool isIndexingOverlayVisible; 
+        private bool isBusyCursor;
+#if WINDOWS
+    private object? previousCursor;
+#endif
+
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -130,19 +133,18 @@ public partial class MainPage : ContentPage
                         {
                             isIndexingOverlaySuppressed = false;
                             IsIndexingOverlayVisible = false;
-                            isLoadingWindowSuppressed = false;
-                            UpdateLoadingWindow();
                         }
                         else
                         {
-                            CloseLoadingWindow();
-                            isLoadingWindowSuppressed = true;
                             IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
                         }
+
+                        UpdateBusyCursor();
 
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
+
                     case nameof(MainViewModel.IndexedCount):
                         OnPropertyChanged(nameof(IndexedCount));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
@@ -207,11 +209,11 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
-                        UpdateLoadingWindow();
+                        UpdateBusyCursor();
                         break;
                     case nameof(MainViewModel.IsRefreshing):
                         OnPropertyChanged(nameof(IsRefreshing));
-                        UpdateLoadingWindow();
+                        UpdateBusyCursor();
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
@@ -249,6 +251,7 @@ public partial class MainPage : ContentPage
                         break;
                 }
             };
+            UpdateBusyCursor();
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
@@ -466,65 +469,64 @@ public IAsyncRelayCommand DeleteItemCommand { get; }
             Application.Current?.CloseWindow(window);
         }
 
-        private void UpdateLoadingWindow()
+        private void UpdateBusyCursor()
         {
-            if (vm.IsIndexing)
-            {
-                CloseLoadingWindow();
-                isLoadingWindowSuppressed = true;
+            // Busy cursor should be active whenever the app is doing visible background work.
+            var shouldBeBusy = vm.IsIndexing || vm.IsRefreshing || vm.IsSourceSwitching;
+
+            if (shouldBeBusy == isBusyCursor)
                 return;
+
+            isBusyCursor = shouldBeBusy;
+
+#if WINDOWS
+    SetWindowsBusyCursor(shouldBeBusy);
+#endif
+        }
+
+#if WINDOWS
+private void SetWindowsBusyCursor(bool busy)
+{
+    try
+    {
+        var platformView = page?.Handler?.PlatformView;
+        if (platformView is not Microsoft.UI.Xaml.FrameworkElement fe)
+            return;
+
+        var prop = fe.GetType().GetProperty("ProtectedCursor");
+        if (prop == null || !prop.CanWrite)
+            return;
+
+        if (busy)
+        {
+            previousCursor ??= prop.GetValue(fe);
+            var waitCursor = Microsoft.UI.Input.InputSystemCursor.Create(
+                Microsoft.UI.Input.InputSystemCursorShape.Wait);
+            prop.SetValue(fe, waitCursor);
+        }
+        else
+        {
+            if (previousCursor != null)
+            {
+                prop.SetValue(fe, previousCursor);
+                previousCursor = null;
             }
-
-            if (vm.IsRefreshing || vm.IsSourceSwitching)
+            else
             {
-                if (isLoadingWindowSuppressed)
-                    return;
-
-                EnsureLoadingWindow();
-                return;
+                var arrowCursor = Microsoft.UI.Input.InputSystemCursor.Create(
+                    Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+                prop.SetValue(fe, arrowCursor);
             }
-
-            isLoadingWindowSuppressed = false;
-            CloseLoadingWindow();
         }
+    }
+    catch
+    {
+        // Ignore cursor failures (e.g., if platform view is not ready yet).
+    }
+}
+#endif
 
-        private void EnsureLoadingWindow()
-        {
-            if (loadingWindow != null)
-                return;
 
-            var loadingPage = new LoadingProgressPage
-            {
-                BindingContext = this
-            };
-
-            var window = new Window(loadingPage)
-            {
-                Title = AppResources.LoadingMedia,
-                Width = 320,
-                Height = 220
-            };
-
-            window.Destroying += (_, _) =>
-            {
-                loadingWindow = null;
-                if (vm.IsRefreshing || vm.IsSourceSwitching)
-                    isLoadingWindowSuppressed = true;
-            };
-
-            loadingWindow = window;
-            Application.Current?.OpenWindow(window);
-        }
-
-        private void CloseLoadingWindow()
-        {
-            if (loadingWindow == null)
-                return;
-
-            var window = loadingWindow;
-            loadingWindow = null;
-            Application.Current?.CloseWindow(window);
-        }
 
         public Task ApplyGridSpanAsync()
         {

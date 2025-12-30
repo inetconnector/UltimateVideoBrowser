@@ -175,7 +175,9 @@ public partial class MainViewModel : ObservableObject
         await UpdateSourceStatsAsync(sources);
         Sources = sources.Where(s => s.IsEnabled).ToList();
 
-        HasMediaPermission = await permissionService.CheckMediaReadAsync();
+        // Ensure permission is requested when needed (Android). Using CheckMediaReadAsync here
+        // can leave the app in a state where nothing loads on a fresh install.
+        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
 
         if (!HasMediaPermission)
         {
@@ -187,7 +189,9 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        _ = RefreshAsync();
+        // Await the initial refresh so exceptions aren't silently swallowed
+        // and the UI gets populated deterministically.
+        await RefreshAsync();
 
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
