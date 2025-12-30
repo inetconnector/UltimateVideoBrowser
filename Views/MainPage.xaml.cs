@@ -129,16 +129,20 @@ public partial class MainPage : ContentPage
                         {
                             isIndexingOverlaySuppressed = false;
                             IsIndexingOverlayVisible = false;
+                            isLoadingWindowSuppressed = false;
+                            UpdateLoadingWindow();
+                        }
+                        else
+                        {
+                            CloseLoadingWindow();
+                            isLoadingWindowSuppressed = true;
+                            IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
                         }
 
-                        IsIndexingOverlayVisible = vm.IsIndexing && vm.IndexedCount > 0 && !isIndexingOverlaySuppressed;
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
                     case nameof(MainViewModel.IndexedCount):
-                        if (vm.IsIndexing && vm.IndexedCount > 0 && !isIndexingOverlaySuppressed)
-                            IsIndexingOverlayVisible = true;
-
                         OnPropertyChanged(nameof(IndexedCount));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
@@ -355,7 +359,7 @@ public partial class MainPage : ContentPage
             }
         }
 
-        public bool ShowIndexingBanner => vm.IsIndexing && vm.IndexedCount > 0 && !IsIndexingOverlayVisible;
+        public bool ShowIndexingBanner => vm.IsIndexing && !IsIndexingOverlayVisible;
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;
@@ -457,6 +461,13 @@ public partial class MainPage : ContentPage
 
         private void UpdateLoadingWindow()
         {
+            if (vm.IsIndexing)
+            {
+                CloseLoadingWindow();
+                isLoadingWindowSuppressed = true;
+                return;
+            }
+
             if (vm.IsRefreshing || vm.IsSourceSwitching)
             {
                 if (isLoadingWindowSuppressed)

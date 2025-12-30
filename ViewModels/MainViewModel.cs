@@ -123,6 +123,20 @@ public partial class MainViewModel : ObservableObject
         };
     }
 
+    private void OnNeedsReindexChanged(object? sender, bool needsReindex)
+    {
+        if (!needsReindex || IsIndexing)
+            return;
+
+        if (!isInitialized)
+        {
+            _ = InitializeAsync();
+            return;
+        }
+
+        _ = RunIndexAsync();
+    }
+
     public IReadOnlyList<SortOption> SortOptions { get; }
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
 
