@@ -4,6 +4,8 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class AppSettingsService
 {
+    public event EventHandler<bool>? NeedsReindexChanged;
+
     private const string ActiveSourceKey = "active_source_id";
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
@@ -73,7 +75,19 @@ public sealed class AppSettingsService
     public bool NeedsReindex
     {
         get => Preferences.Default.Get(NeedsReindexKey, true);
-        set => Preferences.Default.Set(NeedsReindexKey, value);
+        set
+        {
+            var current = Preferences.Default.Get(NeedsReindexKey, true);
+            if (current == value)
+            {
+                if (value)
+                    NeedsReindexChanged?.Invoke(this, value);
+                return;
+            }
+
+            Preferences.Default.Set(NeedsReindexKey, value);
+            NeedsReindexChanged?.Invoke(this, value);
+        }
     }
 
     public string ThemePreference
