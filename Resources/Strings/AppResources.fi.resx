@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Kaikki laitteen videot</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>Henkilökohtainen kirjastosi</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Laitteen mediakirjasto</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Tyhjennä valinta</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Kopioi</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Luo</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Poistettu: {0}, epäonnistui: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Poisto valmis</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Poistetaanko {0} kohde(tta) pysyvästi? Tätä ei voi kumota.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Poistetaanko levyltä?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Poisto epäonnistui</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Poista pysyvästi</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Pysyvä poisto ei ole tuettu tässä laitteessa.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Ladataan mediaa...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Valittu: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Asiakirjat</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Mediatyypit</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Valokuvat</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videot</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Siirrä</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Avaa</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Avaa kansio</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Kansio ei auennut. Yritä uudelleen.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Kansion avaus epäonnistui</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Kansioiden avausta ei tueta tässä laitteessa.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Henkilöt</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Ei vielä henkilöitä. Ota henkilöiden tunnistus käyttöön ja indeksoi valokuvat nähdäksesi ne täällä.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Henkilöt</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Henkilöt</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Hae henkilöitä...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Ei vielä kuvia.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Henkilö</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Valitse tiedosto esikatseltavaksi tähän.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Esikatselu</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Päivitä</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Nimeä uudelleen</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Nimetäänkö &quot;{0}&quot; uudelleen nimelle &quot;{1}&quot;?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Vahvista uudelleennimeäminen</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Samanniminen tiedosto on jo tässä kansiossa.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Tiedoston uudelleennimeäminen epäonnistui. Yritä uudelleen.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Uudelleennimeäminen epäonnistui</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Anna tiedostolle uusi nimi.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Uudelleennimeämistä ei tueta tässä laitteessa.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Tiedoston nimi</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Nimeä tiedosto uudelleen</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Tallenna</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Erottele päätteet pilkuilla (esim. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Tiedostopäätteet</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Ota tämä käyttöön näyttääksesi toimintoja, jotka muuttavat levyltä löytyviä tiedostoja.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Salli uudelleennimeäminen, siirtäminen, kopiointi ja poistaminen</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Tiedostomuutokset</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Käytä sisäistä videosoitinta videoille</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Valitse, mitkä tyypit indeksoidaan kirjastoosi.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Mediatyypit</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Ota tämä käyttöön merkitäksesi henkilöitä kirjaston valokuviin ja videoihin.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Ota henkilöiden merkintä käyttöön</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Henkilöiden merkintä</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Toisto</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Merkitse henkilöitä</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>Tälle kuvalle ei havaittu kasvoja.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Nimeä kasvot</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Merkitse henkilöitä</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Syötä nimet pilkuilla erotettuna.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>esim. Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Merkitse henkilöitä</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Merkityt kuvat</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Ei vielä merkittyjä kuvia. Merkitse henkilöitä kuvassa nähdäksesi sen täällä.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Merkityt kuvat</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Merkityt kuvat</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Hae henkilön nimellä...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Onnistui: {0}, ohitettu: {1}, epäonnistui: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Kopiointi valmis</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Valittuja tiedostoja ei voitu kopioida tai siirtää.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Siirto epäonnistui</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Valitse nimi uudelle kansiolle.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Kansion nimi</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Luo kohdekansio</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Siirto valmis</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Kopiointia tai siirtoa ei tueta tässä laitteessa.</value>
   </data>
 </root>

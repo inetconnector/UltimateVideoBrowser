@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Todos os vídeos do dispositivo</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>A sua biblioteca pessoal</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Biblioteca de multimédia do dispositivo</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Limpar seleção</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Criar</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Eliminados: {0}, falharam: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Eliminação concluída</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Eliminar permanentemente {0} item(ns)? Isto não pode ser desfeito.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Eliminar do disco?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Falha ao eliminar</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Eliminar permanentemente</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>A eliminação permanente não é suportada neste dispositivo.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>A carregar multimédia...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Selecionados: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Tipos de multimédia</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotos</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Vídeos</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Mover</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Abrir pasta</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Não foi possível abrir esta pasta. Tente novamente.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Falha ao abrir pasta</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>A abertura de pastas não é suportada neste dispositivo.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Ainda não há pessoas. Ative a marcação de pessoas e indexe fotos para as ver aqui.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Pesquisar pessoas...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Ainda não há fotos.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Pessoa</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Selecione um ficheiro para pré-visualizar aqui.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Pré-visualização</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Renomear</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Renomear &quot;{0}&quot; para &quot;{1}&quot;?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Confirmar renomeação</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Já existe um ficheiro com esse nome nesta pasta.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Não foi possível renomear este ficheiro. Tente novamente.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Falha ao renomear</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Introduza um novo nome para este ficheiro.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Renomear não é suportado neste dispositivo.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Nome do ficheiro</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Renomear ficheiro</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Separe extensões com vírgulas (ex.: .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Extensões de ficheiro</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Ative para mostrar ações que alteram ficheiros no disco.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Permitir renomear, mover, copiar e eliminar</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Alterações de ficheiros</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Usar leitor de vídeo interno para vídeos</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Escolha quais tipos indexar na sua biblioteca.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Tipos de multimédia</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Ative para marcar pessoas em fotos e vídeos da biblioteca.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Ativar marcação de pessoas</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Marcação de pessoas</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Reprodução</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Marcar pessoas</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>Não foram detetados rostos nesta foto.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Dar nome aos rostos</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Marcar pessoas</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Introduza nomes separados por vírgulas.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>ex.: Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Marcar pessoas</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Fotos marcadas</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Ainda não há fotos marcadas. Marque pessoas numa foto para a ver aqui.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Fotos marcadas</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Fotos marcadas</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Pesquisar por nome da pessoa...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Sucesso: {0}, ignorados: {1}, falharam: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Cópia concluída</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Não foi possível copiar ou mover os ficheiros selecionados.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Falha na transferência</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Escolha um nome para a nova pasta.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Nome da pasta</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Criar pasta de destino</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Movimento concluído</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Copiar ou mover não é suportado neste dispositivo.</value>
   </data>
 </root>

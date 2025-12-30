@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>डिवाइस के सभी वीडियो</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>आपकी व्यक्तिगत लाइब्रेरी</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -148,7 +148,7 @@
     <value>हम यह वीडियो सहेज नहीं सके। कृपया कोई अन्य स्थान आज़माएँ।</value>
   </data>
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
-    <value>इस डिवाइस पर "इस रूप में सहेजें" समर्थित नहीं है।</value>
+    <value>इस डिवाइस पर &quot;इस रूप में सहेजें&quot; समर्थित नहीं है।</value>
   </data>
   <data name="BackButton" xml:space="preserve">
     <value>वापस</value>
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>डिवाइस मीडिया लाइब्रेरी</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>चयन साफ़ करें</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>कॉपी</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>बनाएँ</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>हटाया गया: {0}, विफल: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>हटाना पूरा हुआ</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>{0} आइटम स्थायी रूप से हटाएँ? इसे वापस नहीं किया जा सकता।</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>डिस्क से हटाएँ?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>हटाना विफल</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>स्थायी रूप से हटाएँ</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>इस डिवाइस पर स्थायी हटाना समर्थित नहीं है।</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>मीडिया लोड हो रहा है...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>चयनित: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>दस्तावेज़</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>मीडिया प्रकार</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>फ़ोटो</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>वीडियो</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>स्थानांतरित करें</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>खोलें</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>फ़ोल्डर खोलें</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>हम यह फ़ोल्डर नहीं खोल सके। कृपया फिर से कोशिश करें।</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>फ़ोल्डर खोलना विफल</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>इस डिवाइस पर फ़ोल्डर खोलना समर्थित नहीं है।</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>लोग</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>अभी कोई लोग नहीं। लोगों को टैग करना सक्षम करें और फ़ोटो इंडेक्स करें ताकि उन्हें यहाँ देखें।</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>लोग</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>लोग</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>लोगों को खोजें...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>अभी कोई फ़ोटो नहीं।</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>व्यक्ति</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>यहाँ पूर्वावलोकन के लिए एक फ़ाइल चुनें।</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>पूर्वावलोकन</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>रीफ़्रेश</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>नाम बदलें</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>&quot;{0}&quot; का नाम &quot;{1}&quot; रखें?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>नाम बदलने की पुष्टि करें</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>इस फ़ोल्डर में इस नाम की फ़ाइल पहले से मौजूद है।</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>हम इस फ़ाइल का नाम नहीं बदल सके। कृपया फिर से कोशिश करें।</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>नाम बदलना विफल</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>इस फ़ाइल के लिए नया नाम दर्ज करें।</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>इस डिवाइस पर नाम बदलना समर्थित नहीं है।</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>फ़ाइल नाम</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>फ़ाइल का नाम बदलें</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>सहेजें</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>एक्सटेंशन को कॉमा से अलग करें (जैसे .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>फ़ाइल एक्सटेंशन</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>डिस्क पर फ़ाइलें बदलने वाली कार्रवाइयाँ दिखाने के लिए इसे सक्षम करें।</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>नाम बदलना, स्थानांतरण, कॉपी और हटाना अनुमति दें</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>फ़ाइल परिवर्तन</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>वीडियो के लिए आंतरिक वीडियो प्लेयर उपयोग करें</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>अपनी लाइब्रेरी में किन प्रकारों को इंडेक्स करना है चुनें।</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>मीडिया प्रकार</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>लाइब्रेरी की फ़ोटो और वीडियो में लोगों को टैग करने के लिए इसे चालू करें।</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>लोगों को टैग करना सक्षम करें</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>लोग टैगिंग</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>प्लेबैक</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>लोगों को टैग करें</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>इस फ़ोटो में कोई चेहरा नहीं मिला।</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>चेहरों के नाम</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>लोगों को टैग करें</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>कॉमा से अलग किए गए नाम दर्ज करें।</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>जैसे Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>लोगों को टैग करें</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>टैग की गई फ़ोटो</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>अभी कोई टैग की गई फ़ोटो नहीं। यहाँ देखने के लिए फ़ोटो में लोगों को टैग करें।</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>टैग की गई फ़ोटो</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>टैग की गई फ़ोटो</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>व्यक्ति के नाम से खोजें...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>सफल: {0}, छोड़ा गया: {1}, विफल: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>कॉपी पूरी हुई</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>हम चयनित फ़ाइलें कॉपी या स्थानांतरित नहीं कर सके।</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>ट्रांसफ़र विफल</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>नए फ़ोल्डर के लिए नाम चुनें।</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>फ़ोल्डर नाम</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>गंतव्य फ़ोल्डर बनाएँ</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>स्थानांतरण पूरा हुआ</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>इस डिवाइस पर कॉपी या स्थानांतरण समर्थित नहीं है।</value>
   </data>
 </root>

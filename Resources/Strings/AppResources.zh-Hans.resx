@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>设备上的所有视频</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>您的个人媒体库</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>设备媒体库</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>清除选择</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>已删除：{0}，失败：{1}。</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>删除完成</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>永久删除 {0} 个项目？此操作无法撤销。</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>从磁盘删除？</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>删除失败</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>永久删除</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>此设备不支持永久删除。</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>正在加载媒体...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>已选择：{0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>文档</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>媒体类型</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>照片</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>视频</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>移动</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>无法打开此文件夹。请重试。</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>打开文件夹失败</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>此设备不支持打开文件夹。</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>人物</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>暂无人物。启用人物标记并索引照片后可在此查看。</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>人物</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>人物</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>搜索人物...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>暂无照片。</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>人物</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>选择一个文件以在此预览。</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>将“{0}”重命名为“{1}”？</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>确认重命名</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>该文件夹中已存在同名文件。</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>无法重命名此文件。请重试。</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>重命名失败</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>请输入此文件的新名称。</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>此设备不支持重命名。</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>文件名</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>重命名文件</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>用逗号分隔扩展名（例如 .mp4, .mkv）。</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>文件扩展名</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>启用后将显示会更改磁盘上文件的操作。</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>允许重命名、移动、复制和删除</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>文件更改</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>视频使用内置播放器</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>选择要在库中索引的类型。</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>媒体类型</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>启用后可在库中的照片和视频里标记人物。</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>启用人物标记</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>人物标记</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>播放</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>标记人物</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>此照片未检测到人脸。</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>为人脸命名</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>标记人物</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>请输入以逗号分隔的姓名。</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>例如 Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>标记人物</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>已标记照片</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>暂无已标记照片。在照片中标记人物后可在此查看。</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>已标记照片</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>已标记照片</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>按人物姓名搜索...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>成功：{0}，跳过：{1}，失败：{2}。</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>复制完成</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>无法复制或移动所选文件。</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>传输失败</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>为新文件夹选择一个名称。</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>文件夹名称</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>创建目标文件夹</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>移动完成</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>此设备不支持复制或移动。</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Все видео на устройстве</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>Ваша личная библиотека</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Медиатека устройства</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Очистить выбор</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Удалено: {0}, не удалось: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Удаление завершено</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Удалить {0} элемент(ов) навсегда? Это действие нельзя отменить.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Удалить с диска?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Не удалось удалить</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Удалить навсегда</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Удаление навсегда не поддерживается на этом устройстве.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Загрузка медиа...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Выбрано: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Типы медиа</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Фото</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Видео</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Переместить</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Открыть папку</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Не удалось открыть эту папку. Попробуйте снова.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Не удалось открыть папку</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Открытие папок не поддерживается на этом устройстве.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Люди</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Пока нет людей. Включите распознавание людей и проиндексируйте фото, чтобы увидеть их здесь.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Люди</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Люди</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Поиск людей...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Пока нет фото.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Человек</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Выберите файл для предпросмотра здесь.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Предпросмотр</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Переименовать &quot;{0}&quot; в &quot;{1}&quot;?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Подтвердить переименование</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Файл с таким именем уже существует в этой папке.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Не удалось переименовать этот файл. Попробуйте снова.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Не удалось переименовать</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Введите новое имя для этого файла.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Переименование не поддерживается на этом устройстве.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Имя файла</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Переименовать файл</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Разделяйте расширения запятыми (например .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Расширения файлов</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Включите, чтобы показывать действия, изменяющие файлы на диске.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Разрешить переименование, перемещение, копирование и удаление</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Изменения файлов</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Использовать встроенный видеоплеер для видео</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Выберите типы для индексации в вашей библиотеке.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Типы медиа</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Включите, чтобы распознавать людей на фото и видео из библиотеки.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Включить распознавание людей</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Распознавание людей</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Воспроизведение</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Отметить людей</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>На этом фото не обнаружено лиц.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Назвать лица</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Отметить людей</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Введите имена, разделённые запятыми.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>например Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Отметить людей</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Отмеченные фото</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Пока нет отмеченных фото. Отметьте людей на фото, чтобы увидеть его здесь.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Отмеченные фото</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Отмеченные фото</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Поиск по имени человека...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Успешно: {0}, пропущено: {1}, не удалось: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Копирование завершено</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Не удалось скопировать или переместить выбранные файлы.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Не удалось перенести</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Выберите имя для новой папки.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Имя папки</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Создать папку назначения</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Перемещение завершено</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Копирование или перемещение не поддерживается на этом устройстве.</value>
   </data>
 </root>

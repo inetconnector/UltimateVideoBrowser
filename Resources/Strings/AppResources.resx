@@ -65,7 +65,10 @@
   </data>
   <data name="IndexingStatusFormat" xml:space="preserve">
     <value>Indexing {0} • {1}/{2}</value>
-  </data> 
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Loading media...</value>
+  </data>
   <data name="IndexingFolderFormat" xml:space="preserve">
     <value>Folder: {0}</value>
   </data>

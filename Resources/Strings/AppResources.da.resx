@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Alle videoer på enheden</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>Dit personlige bibliotek</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Enhedens mediebibliotek</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Annuller</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Ryd markering</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Kopiér</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Opret</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Slettet: {0}, mislykket: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Sletning fuldført</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Slet {0} element(er) permanent? Dette kan ikke fortrydes.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Slet fra disk?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Sletning mislykkedes</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Slet permanent</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Permanent sletning understøttes ikke på denne enhed.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Indlæser medier...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Markerede: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Dokumenter</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Medietyper</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotos</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videoer</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Flyt</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Åbn</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Åbn mappe</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Vi kunne ikke åbne denne mappe. Prøv igen.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Åbning af mappe mislykkedes</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Åbning af mapper understøttes ikke på denne enhed.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Personer</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Ingen personer endnu. Aktivér personmærkning og indeksér fotos for at se dem her.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Personer</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Personer</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Søg efter personer...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Ingen fotos endnu.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Vælg en fil for at forhåndsvise den her.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Forhåndsvisning</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Opdater</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Omdøb</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Omdøb &quot;{0}&quot; til &quot;{1}&quot;?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Bekræft omdøbning</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>En fil med det navn findes allerede i denne mappe.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Vi kunne ikke omdøbe denne fil. Prøv igen.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Omdøbning mislykkedes</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Indtast et nyt navn til denne fil.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Omdøbning understøttes ikke på denne enhed.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Filnavn</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Omdøb fil</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Gem</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Adskil filendelser med kommaer (f.eks. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Filendelser</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Aktivér dette for at vise handlinger, der ændrer filer på disken.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Tillad omdøbning, flytning, kopiering og sletning</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Filændringer</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Brug intern videoafspiller til videoer</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Vælg hvilke typer der skal indekseres i dit bibliotek.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Medietyper</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Slå dette til for at mærke personer i fotos og videoer fra biblioteket.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Aktivér personmærkning</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Personmærkning</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Afspilning</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Mærk personer</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>Ingen ansigter blev fundet i dette foto.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Navngiv ansigter</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Mærk personer</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Indtast navne adskilt af kommaer.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>f.eks. Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Mærk personer</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Mærkede fotos</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Ingen mærkede fotos endnu. Mærk personer i et foto for at se det her.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Mærkede fotos</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Mærkede fotos</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Søg efter personnavn...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Succes: {0}, sprunget over: {1}, mislykket: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Kopiering fuldført</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Vi kunne ikke kopiere eller flytte de valgte filer.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Overførsel mislykkedes</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Vælg et navn til den nye mappe.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Mappenavn</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Opret destinationsmappe</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Flytning fuldført</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Kopiering eller flytning understøttes ikke på denne enhed.</value>
   </data>
 </root>

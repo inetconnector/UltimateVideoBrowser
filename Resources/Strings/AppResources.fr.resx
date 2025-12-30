@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Toutes les vidéos de l'appareil</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>Votre bibliothèque personnelle</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Bibliothèque multimédia de l'appareil</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Effacer la sélection</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Créer</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Supprimé : {0}, échec : {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Suppression terminée</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Supprimer définitivement {0} élément(s) ? Cette action est irréversible.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Supprimer du disque ?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Échec de la suppression</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Supprimer définitivement</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>La suppression définitive n’est pas prise en charge sur cet appareil.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Chargement des médias...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Sélection : {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Types de médias</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Photos</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Vidéos</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Déplacer</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Ouvrir le dossier</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Impossible d’ouvrir ce dossier. Veuillez réessayer.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Échec de l’ouverture du dossier</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>L’ouverture de dossiers n’est pas prise en charge sur cet appareil.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Personnes</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Aucune personne pour le moment. Activez l’identification des personnes et indexez des photos pour les voir ici.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Personnes</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Personnes</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Rechercher des personnes...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Aucune photo pour le moment.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Personne</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Sélectionnez un fichier pour l’apercevoir ici.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Aperçu</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Renommer « {0} » en « {1} » ?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Confirmer le renommage</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Un fichier portant ce nom existe déjà dans ce dossier.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Impossible de renommer ce fichier. Veuillez réessayer.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Échec du renommage</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Saisissez un nouveau nom pour ce fichier.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Le renommage n’est pas pris en charge sur cet appareil.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Nom du fichier</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Renommer le fichier</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Séparez les extensions par des virgules (ex. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Extensions de fichier</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Activez ceci pour afficher les actions qui modifient les fichiers sur le disque.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Autoriser le renommage, le déplacement, la copie et la suppression</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Modifications de fichiers</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Utiliser le lecteur vidéo interne pour les vidéos</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Choisissez les types à indexer dans votre bibliothèque.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Types de médias</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Activez ceci pour identifier des personnes dans les photos et vidéos de la bibliothèque.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Activer l’identification des personnes</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Identification des personnes</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Lecture</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Identifier des personnes</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>Aucun visage détecté pour cette photo.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Nommer les visages</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Identifier des personnes</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Entrez des noms séparés par des virgules.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>ex. Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Identifier des personnes</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Photos identifiées</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Aucune photo identifiée pour le moment. Identifiez des personnes sur une photo pour la voir ici.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Photos identifiées</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Photos identifiées</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Rechercher par nom de personne...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Réussite : {0}, ignoré : {1}, échec : {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Copie terminée</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Impossible de copier ou déplacer les fichiers sélectionnés.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Échec du transfert</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Choisissez un nom pour le nouveau dossier.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Nom du dossier</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Créer le dossier de destination</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Déplacement terminé</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>La copie ou le déplacement n’est pas pris en charge sur cet appareil.</value>
   </data>
 </root>

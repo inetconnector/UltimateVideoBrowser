@@ -377,7 +377,10 @@
   </data>
   <data name="PreviewEmptyMessage" xml:space="preserve">
     <value>Wähle eine Datei aus, um sie hier zu sehen.</value>
-  </data> 
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Medien werden geladen...</value>
+  </data>
   <data name="ThemeLight" xml:space="preserve">
     <value>Hell</value>
   </data>

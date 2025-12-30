@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Toate videoclipurile de pe dispozitiv</value>
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  <data name="HeroEyebrow" xml:space="preserve">
     <value>Biblioteca ta personală</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -275,5 +275,242 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Biblioteca media a dispozitivului</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anulează</value>
+  </data>
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Golește selecția</value>
+  </data>
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Copiază</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Creează</value>
+  </data>
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Șterse: {0}, eșuate: {1}.</value>
+  </data>
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Ștergerea s-a încheiat</value>
+  </data>
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Ștergeți definitiv {0} element(e)? Nu se poate anula.</value>
+  </data>
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Ștergeți de pe disc?</value>
+  </data>
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Ștergerea a eșuat</value>
+  </data>
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Șterge definitiv</value>
+  </data>
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Ștergerea definitivă nu este acceptată pe acest dispozitiv.</value>
+  </data>
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Se încarcă media...</value>
+  </data>
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Selectate: {0}</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documente</value>
+  </data>
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Tipuri media</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotografii</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videoclipuri</value>
+  </data>
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Mută</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Deschide</value>
+  </data>
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Deschide folderul</value>
+  </data>
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>Nu am putut deschide acest folder. Încercați din nou.</value>
+  </data>
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Deschiderea folderului a eșuat</value>
+  </data>
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Deschiderea folderelor nu este acceptată pe acest dispozitiv.</value>
+  </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Persoane</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Încă nu există persoane. Activați etichetarea persoanelor și indexați fotografii pentru a le vedea aici.</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Persoane</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Persoane</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Caută persoane...</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Încă nu există fotografii.</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Persoană</value>
+  </data>
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Selectați un fișier pentru previzualizare aici.</value>
+  </data>
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Previzualizare</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Reîmprospătează</value>
+  </data>
+  <data name="RenameAction" xml:space="preserve">
+    <value>Redenumește</value>
+  </data>
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Redenumiți &quot;{0}&quot; în &quot;{1}&quot;?</value>
+  </data>
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Confirmă redenumirea</value>
+  </data>
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>Există deja un fișier cu acest nume în acest folder.</value>
+  </data>
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>Nu am putut redenumi acest fișier. Încercați din nou.</value>
+  </data>
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Redenumirea a eșuat</value>
+  </data>
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Introduceți un nume nou pentru acest fișier.</value>
+  </data>
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Redenumirea nu este acceptată pe acest dispozitiv.</value>
+  </data>
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>Nume fișier</value>
+  </data>
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Redenumește fișierul</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Salvează</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Separați extensiile cu virgule (ex.: .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Extensii fișier</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Activați pentru a afișa acțiuni care modifică fișiere pe disc.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Permite redenumirea, mutarea, copierea și ștergerea</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Modificări ale fișierelor</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Folosește playerul video intern pentru videoclipuri</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Alegeți ce tipuri să fie indexate în bibliotecă.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Tipuri media</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Activați pentru a eticheta persoane în fotografii și videoclipuri din bibliotecă.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Activează etichetarea persoanelor</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Etichetarea persoanelor</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Redare</value>
+  </data>
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Etichetează persoane</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>Nu au fost detectate fețe în această fotografie.</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Numește fețele</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Etichetează persoane</value>
+  </data>
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Introduceți nume separate prin virgule.</value>
+  </data>
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>ex.: Alex, Sam, Priya</value>
+  </data>
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Etichetează persoane</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Fotografii etichetate</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Încă nu există fotografii etichetate. Etichetați persoane într-o fotografie pentru a o vedea aici.</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Fotografii etichetate</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Fotografii etichetate</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Caută după numele persoanei...</value>
+  </data>
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Reușit: {0}, omise: {1}, eșuate: {2}.</value>
+  </data>
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Copiere finalizată</value>
+  </data>
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>Nu am putut copia sau muta fișierele selectate.</value>
+  </data>
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Transfer eșuat</value>
+  </data>
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Alegeți un nume pentru folderul nou.</value>
+  </data>
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Nume folder</value>
+  </data>
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Creează folderul de destinație</value>
+  </data>
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Mutare finalizată</value>
+  </data>
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Copierea sau mutarea nu este acceptată pe acest dispozitiv.</value>
   </data>
 </root>
