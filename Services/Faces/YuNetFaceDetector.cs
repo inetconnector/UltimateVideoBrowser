@@ -3,8 +3,6 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using Color = SixLabors.ImageSharp.Color;
-using Point = SixLabors.ImageSharp.Point;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
@@ -12,29 +10,23 @@ public sealed class YuNetFaceDetector : IDisposable
 {
     private const int NetWidth = 320;
     private const int NetHeight = 320;
-    private readonly SemaphoreSlim initLock = new(1, 1);
 
     private readonly ModelFileService modelFileService;
-    private string confOutput = "";
+    private readonly SemaphoreSlim initLock = new(1, 1);
     private InferenceSession? detector;
+    private InferenceSession? postProcessor;
     private string detectorInput = "";
-    private string iouOutput = "";
     private string locOutput = "";
+    private string confOutput = "";
+    private string iouOutput = "";
+    private string postLocInput = "";
     private string postConfInput = "";
     private string postIouInput = "";
-    private string postLocInput = "";
     private string postOutput = "";
-    private InferenceSession? postProcessor;
 
     public YuNetFaceDetector(ModelFileService modelFileService)
     {
         this.modelFileService = modelFileService;
-    }
-
-    public void Dispose()
-    {
-        detector?.Dispose();
-        postProcessor?.Dispose();
     }
 
     public async Task<IReadOnlyList<DetectedFace>> DetectFacesAsync(Image<Rgba32> image, float minScore,
@@ -195,13 +187,13 @@ public sealed class YuNetFaceDetector : IDisposable
         dy = (dstH - newH) / 2f;
 
         var resized = source.Clone(ctx => ctx.Resize(newW, newH, KnownResamplers.Bicubic));
-        boxed = new Image<Rgba32>(dstW, dstH, Color.Black);
+        boxed = new Image<Rgba32>(dstW, dstH, SixLabors.ImageSharp.Color.Black);
         var offsetX = dx;
         var offsetY = dy;
         boxed.Mutate(ctx =>
         {
             ctx.DrawImage(resized,
-                new Point((int)MathF.Round(offsetX), (int)MathF.Round(offsetY)),
+                new SixLabors.ImageSharp.Point((int)MathF.Round(offsetX), (int)MathF.Round(offsetY)),
                 1f);
         });
         resized.Dispose();
@@ -213,5 +205,11 @@ public sealed class YuNetFaceDetector : IDisposable
         if (key == null)
             throw new InvalidOperationException($"Missing tensor '{needle}'. Available: {string.Join(", ", keys)}");
         return key;
+    }
+
+    public void Dispose()
+    {
+        detector?.Dispose();
+        postProcessor?.Dispose();
     }
 }

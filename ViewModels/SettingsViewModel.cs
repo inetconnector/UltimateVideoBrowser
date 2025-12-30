@@ -8,22 +8,22 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppSettingsService settingsService;
-    [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
-    [ObservableProperty] private string documentExtensionsText = string.Empty;
     [ObservableProperty] private bool isDateFilterEnabled;
-    [ObservableProperty] private bool isDocumentsIndexed;
-    [ObservableProperty] private bool isInternalPlayerEnabled;
-    [ObservableProperty] private bool isPeopleTaggingEnabled;
-    [ObservableProperty] private bool isPhotosIndexed;
-    [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
-    [ObservableProperty] private string photoExtensionsText = string.Empty;
+    [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private bool isVideosIndexed;
+    [ObservableProperty] private bool isPhotosIndexed;
+    [ObservableProperty] private bool isDocumentsIndexed;
+    [ObservableProperty] private string videoExtensionsText = string.Empty;
+    [ObservableProperty] private string photoExtensionsText = string.Empty;
+    [ObservableProperty] private string documentExtensionsText = string.Empty;
+    [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private bool isPeopleTaggingEnabled;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
-    [ObservableProperty] private string videoExtensionsText = string.Empty;
 
     public SettingsViewModel(AppSettingsService settingsService)
     {

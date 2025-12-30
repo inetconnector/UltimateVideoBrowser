@@ -6,10 +6,8 @@ public sealed class ModelFileService
 {
     private const string YuNetUrl =
         "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx";
-
     private const string YuNetPostUrl =
         "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/postproc_yunet_top50_th60_320x320.onnx";
-
     private const string SFaceUrl =
         "https://github.com/opencv/opencv_zoo/raw/main/models/face_recognition_sface/face_recognition_sface_2021dec.onnx";
 
@@ -17,19 +15,13 @@ public sealed class ModelFileService
     private readonly HttpClient httpClient = new();
 
     public Task<string> GetYuNetModelAsync(CancellationToken ct)
-    {
-        return GetModelAsync("face_detection_yunet_2023mar.onnx", YuNetUrl, ct);
-    }
+        => GetModelAsync("face_detection_yunet_2023mar.onnx", YuNetUrl, ct);
 
     public Task<string> GetYuNetPostModelAsync(CancellationToken ct)
-    {
-        return GetModelAsync("postproc_yunet_top50_th60_320x320.onnx", YuNetPostUrl, ct);
-    }
+        => GetModelAsync("postproc_yunet_top50_th60_320x320.onnx", YuNetPostUrl, ct);
 
     public Task<string> GetSFaceModelAsync(CancellationToken ct)
-    {
-        return GetModelAsync("face_recognition_sface_2021dec.onnx", SFaceUrl, ct);
-    }
+        => GetModelAsync("face_recognition_sface_2021dec.onnx", SFaceUrl, ct);
 
     private Task<string> GetModelAsync(string fileName, string url, CancellationToken ct)
     {

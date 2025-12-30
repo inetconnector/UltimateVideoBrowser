@@ -40,7 +40,8 @@ public class MediaItem : INotifyPropertyChanged
         }
     }
 
-    [Indexed] public MediaType MediaType { get; set; }
+    [Indexed]
+    public MediaType MediaType { get; set; }
 
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
@@ -63,7 +64,8 @@ public class MediaItem : INotifyPropertyChanged
     [Ignore]
     public string DurationText => DurationMs <= 0 ? "" : TimeSpan.FromMilliseconds(DurationMs).ToString(@"hh\:mm\:ss");
 
-    [Ignore] public bool HasDuration => DurationMs > 0;
+    [Ignore]
+    public bool HasDuration => DurationMs > 0;
 
     [Ignore]
     public bool IsMarked
@@ -94,7 +96,8 @@ public class MediaItem : INotifyPropertyChanged
         }
     }
 
-    [Ignore] public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
+    [Ignore]
+    public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
 
     [Ignore]
     public string FirstLetter

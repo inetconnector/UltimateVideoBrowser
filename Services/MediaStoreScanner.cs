@@ -7,11 +7,11 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 #endif
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 #if WINDOWS
 using System.Threading.Channels;
 #endif
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 using IOPath = System.IO.Path;
@@ -356,8 +356,7 @@ public sealed class MediaStoreScanner
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                     {
-                        var item =
- await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
+                        var item = await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
                             .ConfigureAwait(false);
                         if (item != null)
                             await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
@@ -833,8 +832,7 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId,
-        ModelMediaType indexedTypes,
+    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId, ModelMediaType indexedTypes,
         ExtensionLookup extensions, CancellationToken ct)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))

@@ -4,6 +4,8 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class AppSettingsService
 {
+    public event EventHandler<bool>? NeedsReindexChanged;
+
     private const string ActiveSourceKey = "active_source_id";
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
@@ -22,10 +24,7 @@ public sealed class AppSettingsService
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
-
-    private static readonly string[] DefaultPhotoExtensions =
-        { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
-
+    private static readonly string[] DefaultPhotoExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".heic" };
     private static readonly string[] DefaultDocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
@@ -145,22 +144,9 @@ public sealed class AppSettingsService
         set => Preferences.Default.Set(PeopleTaggingEnabledKey, value);
     }
 
-    public event EventHandler<bool>? NeedsReindexChanged;
-
-    public IReadOnlySet<string> GetVideoExtensions()
-    {
-        return ParseExtensions(VideoExtensions, DefaultVideoExtensions);
-    }
-
-    public IReadOnlySet<string> GetPhotoExtensions()
-    {
-        return ParseExtensions(PhotoExtensions, DefaultPhotoExtensions);
-    }
-
-    public IReadOnlySet<string> GetDocumentExtensions()
-    {
-        return ParseExtensions(DocumentExtensions, DefaultDocumentExtensions);
-    }
+    public IReadOnlySet<string> GetVideoExtensions() => ParseExtensions(VideoExtensions, DefaultVideoExtensions);
+    public IReadOnlySet<string> GetPhotoExtensions() => ParseExtensions(PhotoExtensions, DefaultPhotoExtensions);
+    public IReadOnlySet<string> GetDocumentExtensions() => ParseExtensions(DocumentExtensions, DefaultDocumentExtensions);
 
     private static HashSet<string> ParseExtensions(string? raw, IEnumerable<string> fallback)
     {
@@ -179,8 +165,10 @@ public sealed class AppSettingsService
         }
 
         if (extensions.Count == 0)
+        {
             foreach (var ext in fallback)
                 extensions.Add(ext);
+        }
 
         return extensions;
     }

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -80,10 +81,10 @@ public partial class MainPage : ContentPage
 
         private int gridSpan = 3;
         private Window? indexingWindow;
+        private Window? loadingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
         private bool isLoadingWindowSuppressed;
-        private Window? loadingWindow;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -107,6 +108,10 @@ public partial class MainPage : ContentPage
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = vm.TagPeopleCommand;
+            ShareCommand = vm.ShareCommand;
+            SaveAsCommand = vm.SaveAsCommand;
+            CopyItemCommand = vm.CopyItemCommand;
+            DeleteItemCommand = vm.DeleteItemCommand;
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
@@ -266,6 +271,12 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand TagPeopleCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
+
+
+public IAsyncRelayCommand ShareCommand { get; }
+public IAsyncRelayCommand SaveAsCommand { get; }
+public IAsyncRelayCommand CopyItemCommand { get; }
+public IAsyncRelayCommand DeleteItemCommand { get; }
 
         public int GridSpan
         {
