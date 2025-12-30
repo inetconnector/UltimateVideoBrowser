@@ -30,6 +30,8 @@ public sealed class AppDb
             await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
             await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
+            await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
+            await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);")
@@ -39,6 +41,10 @@ public sealed class AppDb
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_name ON PersonTag(PersonName);")
+                .ConfigureAwait(false);
+            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);")
+                .ConfigureAwait(false);
+            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
             isInitialized = true;

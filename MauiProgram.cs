@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using UltimateVideoBrowser.Services;
+using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
 #if ANDROID
@@ -40,6 +41,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<ThumbnailService>();
         builder.Services.AddSingleton<IndexService>();
         builder.Services.AddSingleton<PeopleTagService>();
+        builder.Services.AddSingleton<ModelFileService>();
+        builder.Services.AddSingleton<YuNetFaceDetector>();
+        builder.Services.AddSingleton<SFaceRecognizer>();
+        builder.Services.AddSingleton<PeopleRecognitionService>();
         builder.Services.AddSingleton<ISourceService, SourceService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
