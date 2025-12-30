@@ -47,7 +47,7 @@ public sealed class ThumbnailService
             {
                 ct.ThrowIfCancellationRequested();
 
-                using Bitmap? bmp = item.MediaType switch
+                using var bmp = item.MediaType switch
                 {
                     MediaType.Photos => LoadImageBitmap(item.Path),
                     MediaType.Videos => LoadVideoBitmap(item),

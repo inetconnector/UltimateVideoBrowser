@@ -12,7 +12,12 @@ public partial class SettingsPage : ContentPage
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
+        // Make the UI react instantly: disable the button immediately, then yield one frame.
+        // Any longer work (refreshing queries, indexing, etc.) is handled asynchronously when the MainPage appears.
+        BackButton.IsEnabled = false;
+        await Task.Yield();
+
         if (Navigation.NavigationStack.Count > 1)
-            await Navigation.PopAsync();
+            await Navigation.PopAsync(false);
     }
 }

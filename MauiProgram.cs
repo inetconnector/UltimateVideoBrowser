@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;

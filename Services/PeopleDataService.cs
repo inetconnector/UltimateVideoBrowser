@@ -1,4 +1,3 @@
-using SQLite;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Services.Faces;
 
@@ -25,17 +24,6 @@ public sealed class PeopleDataService
     {
         this.db = db;
         this.recognitionService = recognitionService;
-    }
-
-    private sealed class PersonCountRow
-    {
-        public string PersonId { get; set; } = string.Empty;
-        public int Cnt { get; set; }
-    }
-
-    private sealed class MediaPathRow
-    {
-        public string MediaPath { get; set; } = string.Empty;
     }
 
     public async Task<IReadOnlyList<PersonOverview>> GetPeopleOverviewAsync(string? search, CancellationToken ct)
@@ -115,7 +103,8 @@ public sealed class PeopleDataService
             ct.ThrowIfCancellationRequested();
             var chunk = paths.Skip(i).Take(chunkSize).ToList();
             var placeholders = string.Join(",", chunk.Select(_ => "?"));
-            var sql = $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
+            var sql =
+                $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
             var args = chunk.Cast<object>().ToList();
             args.Add((int)MediaType.Photos);
             var result = await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
@@ -160,5 +149,16 @@ public sealed class PeopleDataService
     public Task RenamePersonAsync(string personId, string newName, CancellationToken ct)
     {
         return recognitionService.RenamePersonAsync(personId, newName, ct);
+    }
+
+    private sealed class PersonCountRow
+    {
+        public string PersonId { get; } = string.Empty;
+        public int Cnt { get; set; }
+    }
+
+    private sealed class MediaPathRow
+    {
+        public string MediaPath { get; } = string.Empty;
     }
 }

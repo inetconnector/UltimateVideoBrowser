@@ -117,6 +117,7 @@ public static class AppResources
 
     public static string DeleteNotSupportedMessage =>
         GetString(nameof(DeleteNotSupportedMessage), "Permanent delete isn't supported on this device.");
+
     public static string TransferFolderTitle => GetString(nameof(TransferFolderTitle), "Create destination folder");
 
     public static string TransferFolderMessage =>
@@ -170,18 +171,26 @@ public static class AppResources
 
     public static string SettingsFileChangesHint =>
         GetString(nameof(SettingsFileChangesHint), "Enable this to show actions that change files on disk.");
+
     public static string SettingsPeopleTaggingTitle =>
         GetString(nameof(SettingsPeopleTaggingTitle), "People tagging");
+
     public static string SettingsPeopleTaggingLabel =>
         GetString(nameof(SettingsPeopleTaggingLabel), "Enable people tagging");
+
     public static string SettingsPeopleTaggingHint =>
-        GetString(nameof(SettingsPeopleTaggingHint), "Turn this on to tag people in photos and videos from the library.");
+        GetString(nameof(SettingsPeopleTaggingHint),
+            "Turn this on to tag people in photos and videos from the library.");
+
     public static string TagPeopleAction =>
         GetString(nameof(TagPeopleAction), "Tag people");
+
     public static string TagPeopleTitle =>
         GetString(nameof(TagPeopleTitle), "Tag people");
+
     public static string TagPeopleMessage =>
         GetString(nameof(TagPeopleMessage), "Enter names separated by commas.");
+
     public static string TagPeoplePlaceholder =>
         GetString(nameof(TagPeoplePlaceholder), "e.g. Alex, Sam, Priya");
 
@@ -192,14 +201,17 @@ public static class AppResources
     public static string PeoplePageTitle => GetString(nameof(PeoplePageTitle), "People");
     public static string PeoplePageHeader => GetString(nameof(PeoplePageHeader), "People");
     public static string PeopleSearchPlaceholder => GetString(nameof(PeopleSearchPlaceholder), "Search people...");
+
     public static string PeopleEmptyHint =>
         GetString(nameof(PeopleEmptyHint), "No people yet. Enable people tagging and index photos to see them here.");
 
     public static string TaggedPhotosButton => GetString(nameof(TaggedPhotosButton), "Tagged photos");
     public static string TaggedPhotosPageTitle => GetString(nameof(TaggedPhotosPageTitle), "Tagged photos");
     public static string TaggedPhotosPageHeader => GetString(nameof(TaggedPhotosPageHeader), "Tagged photos");
+
     public static string TaggedPhotosSearchPlaceholder =>
         GetString(nameof(TaggedPhotosSearchPlaceholder), "Search by person name...");
+
     public static string TaggedPhotosEmptyHint =>
         GetString(nameof(TaggedPhotosEmptyHint), "No tagged photos yet. Tag people in a photo to see it here.");
 
@@ -209,11 +221,15 @@ public static class AppResources
 
     public static string TagPeopleEditorTitle => GetString(nameof(TagPeopleEditorTitle), "Tag people");
     public static string TagPeopleEditorHeader => GetString(nameof(TagPeopleEditorHeader), "Name faces");
+
     public static string TagPeopleEditorEmptyHint =>
         GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
 
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
-    public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");
+
+    public static string PreviewEmptyMessage =>
+        GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");
+
     public static string LoadingMedia => GetString(nameof(LoadingMedia), "Loading media...");
     public static string SourcesPageTitle => GetString(nameof(SourcesPageTitle), "Sources");
 
@@ -268,14 +284,20 @@ public static class AppResources
     public static string MediaTypeDocuments => GetString(nameof(MediaTypeDocuments), "Documents");
     public static string MediaTypeFilterTitle => GetString(nameof(MediaTypeFilterTitle), "Media types");
     public static string SettingsMediaTypesTitle => GetString(nameof(SettingsMediaTypesTitle), "Media types");
+
     public static string SettingsMediaTypesMessage => GetString(nameof(SettingsMediaTypesMessage),
         "Choose which types to index in your library.");
+
     public static string SettingsExtensionsTitle => GetString(nameof(SettingsExtensionsTitle), "File extensions");
+
     public static string SettingsExtensionsHint => GetString(nameof(SettingsExtensionsHint),
         "Separate extensions with commas (e.g. .mp4, .mkv).");
+
     public static string SettingsExtensionsPlaceholder =>
         GetString(nameof(SettingsExtensionsPlaceholder), ".mp4, .mkv, .avi");
+
     public static string RenameConfirmTitle => GetString(nameof(RenameConfirmTitle), "Confirm rename");
+
     public static string RenameConfirmMessage =>
         GetString(nameof(RenameConfirmMessage), "Rename \"{0}\" to \"{1}\"?");
 

@@ -7,14 +7,14 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public sealed partial class PeopleViewModel : ObservableObject
 {
-    private readonly PeopleDataService peopleData;
     private readonly FaceThumbnailService faceThumbnails;
-
-    private CancellationTokenSource? searchCts;
+    private readonly PeopleDataService peopleData;
 
     [ObservableProperty] private bool isBusy;
-    [ObservableProperty] private string searchText = string.Empty;
     [ObservableProperty] private ObservableCollection<PersonListItemViewModel> people = new();
+
+    private CancellationTokenSource? searchCts;
+    [ObservableProperty] private string searchText = string.Empty;
 
     public PeopleViewModel(PeopleDataService peopleData, FaceThumbnailService faceThumbnails)
     {
@@ -81,6 +81,8 @@ public sealed partial class PeopleViewModel : ObservableObject
 
 public sealed partial class PersonListItemViewModel : ObservableObject
 {
+    [ObservableProperty] private string name;
+
     public PersonListItemViewModel(string id, string name, int photoCount, string? coverThumbnailPath)
     {
         Id = id;
@@ -90,8 +92,6 @@ public sealed partial class PersonListItemViewModel : ObservableObject
     }
 
     public string Id { get; }
-
-    [ObservableProperty] private string name;
     public int PhotoCount { get; }
 
     public string PhotoCountText => PhotoCount == 1 ? "1 photo" : $"{PhotoCount} photos";

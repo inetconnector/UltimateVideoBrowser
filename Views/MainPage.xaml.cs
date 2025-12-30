@@ -9,7 +9,9 @@ namespace UltimateVideoBrowser.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
+    private CancellationTokenSource? appearingCts;
     private bool isTimelineSelectionSyncing;
+
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
         InitializeComponent();
@@ -20,11 +22,34 @@ public partial class MainPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        // Apply user-visible flags synchronously so the UI updates immediately.
         vm.ApplyPlaybackSettings();
         vm.ApplyFileChangeSettings();
         vm.ApplyPeopleTaggingSettings();
-        _ = vm.InitializeAsync();
-        _ = vm.RefreshAsync();
+
+        // Navigation back from Settings/Sources should feel instant.
+        // Heavy work (DB queries, thumbnail pipeline, etc.) is queued so the first frame can render.
+        appearingCts?.Cancel();
+        appearingCts?.Dispose();
+        appearingCts = new CancellationTokenSource();
+        var ct = appearingCts.Token;
+
+        Dispatcher.Dispatch(async () =>
+        {
+            try
+            {
+                await Task.Yield();
+                if (ct.IsCancellationRequested)
+                    return;
+
+                await vm.OnMainPageAppearingAsync();
+            }
+            catch
+            {
+                // Ignore
+            }
+        });
+
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
     }
@@ -32,6 +57,9 @@ public partial class MainPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        appearingCts?.Cancel();
+        appearingCts?.Dispose();
+        appearingCts = null;
         SizeChanged -= OnPageSizeChanged;
     }
 
@@ -85,6 +113,7 @@ public partial class MainPage : ContentPage
         private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
+
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
             this.vm = vm;

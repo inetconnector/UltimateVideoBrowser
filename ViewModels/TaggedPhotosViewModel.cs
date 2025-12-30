@@ -8,20 +8,15 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public sealed partial class TaggedPhotosViewModel : ObservableObject
 {
-    private sealed class PathRow
-    {
-        public string MediaPath { get; set; } = string.Empty;
-    }
-
     private readonly AppDb db;
     private readonly PeopleTagService peopleTags;
     private readonly ThumbnailService thumbnails;
 
-    [ObservableProperty] private bool isBusy;
-    [ObservableProperty] private string searchText = string.Empty;
-    [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
-
     private CancellationTokenSource? debounceCts;
+
+    [ObservableProperty] private bool isBusy;
+    [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
+    [ObservableProperty] private string searchText = string.Empty;
 
     public TaggedPhotosViewModel(AppDb db, PeopleTagService peopleTags, ThumbnailService thumbnails)
     {
@@ -67,18 +62,14 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
             List<PathRow> rows;
             if (string.IsNullOrWhiteSpace(term))
-            {
                 rows = await db.Db.QueryAsync<PathRow>(
                         "SELECT DISTINCT MediaPath FROM PersonTag ORDER BY MediaPath DESC;")
                     .ConfigureAwait(false);
-            }
             else
-            {
                 rows = await db.Db.QueryAsync<PathRow>(
                         "SELECT DISTINCT MediaPath FROM PersonTag WHERE PersonName LIKE ? ORDER BY MediaPath DESC;",
                         $"%{term}%")
                     .ConfigureAwait(false);
-            }
 
             var paths = rows
                 .Select(r => r.MediaPath)
@@ -101,7 +92,8 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
                 var chunk = paths.Skip(i).Take(chunkSize).ToList();
                 var placeholders = string.Join(", ", chunk.Select(_ => "?"));
-                var sql = $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
+                var sql =
+                    $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
 
                 var args = chunk.Cast<object>().ToList();
                 args.Add((int)MediaType.Photos);
@@ -120,10 +112,7 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
                     item.PeopleTagsSummary = string.Empty;
             }
 
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Photos = new ObservableCollection<MediaItem>(items);
-            });
+            await MainThread.InvokeOnMainThreadAsync(() => { Photos = new ObservableCollection<MediaItem>(items); });
 
             foreach (var item in items)
                 _ = thumbnails.EnsureThumbnailAsync(item, CancellationToken.None);
@@ -136,5 +125,10 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
         }
+    }
+
+    private sealed class PathRow
+    {
+        public string MediaPath { get; } = string.Empty;
     }
 }

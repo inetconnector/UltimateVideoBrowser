@@ -72,11 +72,52 @@ public sealed class AppDb
     {
         // These columns were added later to support the People UI (face crops / boxes).
         // Each ALTER is idempotent via try/catch to keep startup resilient.
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN X REAL;").ConfigureAwait(false); } catch { }
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN Y REAL;").ConfigureAwait(false); } catch { }
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN W REAL;").ConfigureAwait(false); } catch { }
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN H REAL;").ConfigureAwait(false); } catch { }
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageWidth INTEGER;").ConfigureAwait(false); } catch { }
-        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageHeight INTEGER;").ConfigureAwait(false); } catch { }
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN X REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN Y REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN W REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN H REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageWidth INTEGER;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageHeight INTEGER;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
     }
 }

@@ -1,8 +1,6 @@
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
-using UltimateVideoBrowser.Services;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
 namespace UltimateVideoBrowser.Services.Faces;
@@ -13,9 +11,9 @@ public sealed class PeopleRecognitionService
     private const float DefaultMinScore = 0.6f;
 
     private readonly AppDb db;
-    private readonly PeopleTagService peopleTagService;
     private readonly YuNetFaceDetector faceDetector;
     private readonly SFaceRecognizer faceRecognizer;
+    private readonly PeopleTagService peopleTagService;
 
     public PeopleRecognitionService(
         AppDb db,
@@ -93,7 +91,8 @@ public sealed class PeopleRecognitionService
             })
             .ToList();
 
-        await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values).ConfigureAwait(false);
+        await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values)
+            .ConfigureAwait(false);
         return matches;
     }
 
@@ -174,11 +173,13 @@ public sealed class PeopleRecognitionService
 
         // Refresh tags for the current media after potential merges.
         var updatedPeople = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
-        await UpdateMediaTagsAsync(item.Path, await GetPersonIdsForMediaAsync(item.Path).ConfigureAwait(false), updatedPeople)
+        await UpdateMediaTagsAsync(item.Path, await GetPersonIdsForMediaAsync(item.Path).ConfigureAwait(false),
+                updatedPeople)
             .ConfigureAwait(false);
     }
 
-    public async Task ScanAndTagAsync(IEnumerable<MediaItem> items, IProgress<(int processed, int total, string path)>? progress,
+    public async Task ScanAndTagAsync(IEnumerable<MediaItem> items,
+        IProgress<(int processed, int total, string path)>? progress,
         CancellationToken ct)
     {
         var list = items.Where(item => item.MediaType == MediaType.Photos && !string.IsNullOrWhiteSpace(item.Path))
@@ -318,7 +319,8 @@ public sealed class PeopleRecognitionService
                 .ConfigureAwait(false);
     }
 
-    private async Task UpdateMediaTagsAsync(string mediaPath, IEnumerable<string> personIds, IEnumerable<PersonProfile> people)
+    private async Task UpdateMediaTagsAsync(string mediaPath, IEnumerable<string> personIds,
+        IEnumerable<PersonProfile> people)
     {
         var names = personIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
@@ -369,15 +371,13 @@ public sealed class PeopleRecognitionService
         var bestSimilarity = float.NegativeInfinity;
 
         foreach (var (personId, embeddings) in personEmbeddings)
+        foreach (var candidate in embeddings)
         {
-            foreach (var candidate in embeddings)
+            var similarity = SFaceRecognizer.CosineSimilarity(embedding, candidate);
+            if (similarity > bestSimilarity)
             {
-                var similarity = SFaceRecognizer.CosineSimilarity(embedding, candidate);
-                if (similarity > bestSimilarity)
-                {
-                    bestSimilarity = similarity;
-                    bestPerson = personId;
-                }
+                bestSimilarity = similarity;
+                bestPerson = personId;
             }
         }
 

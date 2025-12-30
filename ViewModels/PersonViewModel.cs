@@ -12,8 +12,8 @@ public sealed partial class PersonViewModel : ObservableObject
     private readonly ThumbnailService thumbnails;
 
     [ObservableProperty] private bool isBusy;
-    [ObservableProperty] private string personId = string.Empty;
     [ObservableProperty] private string name = string.Empty;
+    [ObservableProperty] private string personId = string.Empty;
     [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
 
     public PersonViewModel(PeopleDataService peopleData, ThumbnailService thumbnails)
@@ -39,10 +39,7 @@ public sealed partial class PersonViewModel : ObservableObject
             IsBusy = true;
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
             var result = await peopleData.GetMediaForPersonAsync(PersonId, cts.Token).ConfigureAwait(false);
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Photos = new ObservableCollection<MediaItem>(result);
-            });
+            await MainThread.InvokeOnMainThreadAsync(() => { Photos = new ObservableCollection<MediaItem>(result); });
 
             // Generate thumbnails lazily in the background so the UI stays responsive.
             foreach (var item in result)

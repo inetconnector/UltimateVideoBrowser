@@ -5,8 +5,8 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class TaggedPhotosPage : ContentPage
 {
-    private readonly TaggedPhotosViewModel vm;
     private readonly PhotoPeopleEditorPage editorPage;
+    private readonly TaggedPhotosViewModel vm;
 
     public TaggedPhotosPage(TaggedPhotosViewModel vm, PhotoPeopleEditorPage editorPage)
     {

@@ -19,15 +19,21 @@ public sealed class SFaceRecognizer : IDisposable
         (70.7299, 92.2041)
     ];
 
-    private readonly ModelFileService modelFileService;
     private readonly SemaphoreSlim initLock = new(1, 1);
-    private InferenceSession? session;
+
+    private readonly ModelFileService modelFileService;
     private string inputName = "";
     private string outputName = "";
+    private InferenceSession? session;
 
     public SFaceRecognizer(ModelFileService modelFileService)
     {
         this.modelFileService = modelFileService;
+    }
+
+    public void Dispose()
+    {
+        session?.Dispose();
     }
 
     public async Task<float[]> ExtractEmbeddingAsync(Image<Rgba32> source, DetectedFace face, CancellationToken ct)
@@ -190,10 +196,8 @@ public sealed class SFaceRecognizer : IDisposable
                     throw new InvalidOperationException("Singular transform matrix.");
 
                 if (pivot != col)
-                {
                     for (var c = col; c < 5; c++)
                         (m[col, c], m[pivot, c]) = (m[pivot, c], m[col, c]);
-                }
 
                 var diag = m[col, col];
                 for (var c = col; c < 5; c++)
@@ -217,7 +221,7 @@ public sealed class SFaceRecognizer : IDisposable
     private static Image<Rgba32> WarpAffine(Image<Rgba32> src, double a, double b, double tx, double ty, int dstW,
         int dstH)
     {
-        var denom = (a * a) + (b * b);
+        var denom = a * a + b * b;
         if (denom < 1e-12)
             throw new InvalidOperationException("Invalid affine transform.");
 
@@ -236,8 +240,8 @@ public sealed class SFaceRecognizer : IDisposable
                 {
                     var xf = x - tx;
                     var yf = y - ty;
-                    var sx = (inv00 * xf) + (inv01 * yf);
-                    var sy = (inv10 * xf) + (inv11 * yf);
+                    var sx = inv00 * xf + inv01 * yf;
+                    var sy = inv10 * xf + inv11 * yf;
                     row[x] = SampleBilinear(src, sx, sy);
                 }
             }
@@ -264,7 +268,10 @@ public sealed class SFaceRecognizer : IDisposable
         var p01 = image[x0, y1];
         var p11 = image[x1, y1];
 
-        byte Lerp(byte a, byte b, double t) => (byte)Math.Clamp(a + (t * (b - a)), 0, 255);
+        byte Lerp(byte a, byte b, double t)
+        {
+            return (byte)Math.Clamp(a + t * (b - a), 0, 255);
+        }
 
         var r0 = Lerp(p00.R, p10.R, dx);
         var g0 = Lerp(p00.G, p10.G, dx);
@@ -280,6 +287,4 @@ public sealed class SFaceRecognizer : IDisposable
             Lerp(b0, b1, dy),
             255);
     }
-
-    public void Dispose() => session?.Dispose();
 }

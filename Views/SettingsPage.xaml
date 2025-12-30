@@ -10,7 +10,8 @@
     <Grid RowDefinitions="Auto,*"
           Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-            <Button Text="{x:Static strings:AppResources.BackButton}"
+            <Button x:Name="BackButton"
+                    Text="{x:Static strings:AppResources.BackButton}"
                     Clicked="OnBackClicked" />
             <Label Grid.Column="1"
                    Text="{x:Static strings:AppResources.SettingsPageHeader}"

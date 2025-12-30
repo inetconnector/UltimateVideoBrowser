@@ -9,13 +9,13 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
 {
+    private readonly FaceThumbnailService faceThumbnails;
     private readonly PeopleDataService peopleData;
     private readonly PeopleRecognitionService recognitionService;
-    private readonly FaceThumbnailService faceThumbnails;
+    [ObservableProperty] private ObservableCollection<FaceTagItemViewModel> faces = new();
 
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string mediaPath = string.Empty;
-    [ObservableProperty] private ObservableCollection<FaceTagItemViewModel> faces = new();
 
     public PhotoPeopleEditorViewModel(
         PeopleDataService peopleData,
@@ -91,7 +91,7 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
                 .Select(f => new { f.PersonId, Name = (f.Name ?? string.Empty).Trim() })
                 .Where(x => !string.IsNullOrWhiteSpace(x.PersonId) && !string.IsNullOrWhiteSpace(x.Name))
                 .GroupBy(x => x.PersonId, StringComparer.OrdinalIgnoreCase)
-                .Select(g => new { PersonId = g.Key, Name = g.Last().Name })
+                .Select(g => new { PersonId = g.Key, g.Last().Name })
                 .ToList();
 
             foreach (var u in updates)
@@ -116,6 +116,8 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
 
 public sealed partial class FaceTagItemViewModel : ObservableObject
 {
+    [ObservableProperty] private string name;
+
     public FaceTagItemViewModel(string personId, string name, int faceIndex, string? thumbnailPath)
     {
         PersonId = personId;
@@ -126,8 +128,6 @@ public sealed partial class FaceTagItemViewModel : ObservableObject
 
     public string PersonId { get; }
     public int FaceIndex { get; }
-
-    [ObservableProperty] private string name;
     public string? ThumbnailPath { get; }
     public bool HasThumbnail => !string.IsNullOrWhiteSpace(ThumbnailPath);
 }

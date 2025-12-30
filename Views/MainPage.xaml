@@ -602,17 +602,19 @@
                                             </Frame.Triggers>
                                             <Frame.ContextFlyout>
                                                 <MenuFlyout>
-                                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.CopyMarkedAction}"
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CopyItemCommand}"
-                                                                    CommandParameter="{Binding .}" />
+                                                    <MenuFlyoutItem
+                                                        Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CopyItemCommand}"
+                                                        CommandParameter="{Binding .}" />
                                                     <MenuFlyoutItem Text="{x:Static strings:AppResources.ShareAction}"
                                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
                                                                     CommandParameter="{Binding .}" />
                                                     <MenuFlyoutSeparator />
-                                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.DeleteMarkedAction}"
-                                                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteItemCommand}"
-                                                                    CommandParameter="{Binding .}" />
+                                                    <MenuFlyoutItem
+                                                        Text="{x:Static strings:AppResources.DeleteMarkedAction}"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteItemCommand}"
+                                                        CommandParameter="{Binding .}" />
                                                 </MenuFlyout>
                                             </Frame.ContextFlyout>
                                             <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
@@ -767,10 +769,11 @@
                                                                 Value="{DynamicResource Surface2}" />
                                                     </DataTrigger>
                                                 </Frame.Triggers>
-                                            <Frame.Behaviors>
-                                                <toolkit:TouchBehavior LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
-                                                                       LongPressCommandParameter="{Binding .}" />
-                                            </Frame.Behaviors>
+                                                <Frame.Behaviors>
+                                                    <toolkit:TouchBehavior
+                                                        LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
+                                                        LongPressCommandParameter="{Binding .}" />
+                                                </Frame.Behaviors>
                                                 <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                                     <Grid RowDefinitions="*"
                                                           BackgroundColor="{DynamicResource Surface2}"
@@ -1092,5 +1095,5 @@
             </Frame>
         </Grid>
 
-        </Grid>
+    </Grid>
 </ContentPage>

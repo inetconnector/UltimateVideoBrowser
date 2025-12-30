@@ -2,7 +2,6 @@ using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
-
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpRectangle = SixLabors.ImageSharp.Rectangle;
 using ImageSharpSize = SixLabors.ImageSharp.Size;

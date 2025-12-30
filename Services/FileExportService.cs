@@ -1,8 +1,8 @@
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 #if !WINDOWS
-using Microsoft.Maui.ApplicationModel.DataTransfer;
 #endif
+
 #if WINDOWS
 using Microsoft.Maui.Platform;
 using Windows.Storage;

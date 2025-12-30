@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -78,9 +78,10 @@
                            Padding="0"
                            Margin="0,0,0,10">
                         <Grid>
-                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                   Aspect="AspectFill"
-                                   HeightRequest="110" />
+                            <Image
+                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                Aspect="AspectFill"
+                                HeightRequest="110" />
 
                             <Frame BackgroundColor="#CC0E0F14"
                                    CornerRadius="10"

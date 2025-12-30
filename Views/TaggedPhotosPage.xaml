@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
-             xmlns:vm="clr-namespace:UltimateVideoBrowser.ViewModels"
              x:Class="UltimateVideoBrowser.Views.TaggedPhotosPage"
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.TaggedPhotosPageTitle}">
@@ -69,9 +68,10 @@
                            Padding="0"
                            Margin="0,0,0,10">
                         <Grid RowDefinitions="Auto,Auto">
-                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                   Aspect="AspectFill"
-                                   HeightRequest="120" />
+                            <Image
+                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                Aspect="AspectFill"
+                                HeightRequest="120" />
 
                             <Label Grid.Row="1"
                                    Text="{Binding PeopleTagsSummary}"
