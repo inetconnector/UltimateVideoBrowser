@@ -90,6 +90,7 @@
                                             Command="{Binding OpenSourcesCommand}" />
                                     <Button Text="{x:Static strings:AppResources.PeopleButton}"
                                             ImageSource="icon_people.svg"
+                                            IsVisible="{Binding IsPeopleTaggingEnabled}"
                                             Command="{Binding OpenPeopleCommand}" />
                                     <Button Text="{x:Static strings:AppResources.SettingsButton}"
                                             Command="{Binding OpenSettingsCommand}" />
@@ -821,6 +822,14 @@
                                                                     Padding="10,2"
                                                                     BackgroundColor="{DynamicResource Surface2}"
                                                                     TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                            <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
+                                                                    FontSize="11"
+                                                                    Padding="10,2"
+                                                                    BackgroundColor="{DynamicResource Surface2}"
+                                                                    TextColor="{DynamicResource OnSurfaceMuted}" />
                                                             <Button
                                                                 Text="{x:Static strings:AppResources.OpenFolderAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
@@ -955,6 +964,14 @@
                                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
                                                                     CommandParameter="{Binding .}"
                                                                     IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                                    FontSize="11"
+                                                                    Padding="10,2"
+                                                                    BackgroundColor="{DynamicResource Surface2}"
+                                                                    TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                            <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
                                                                     FontSize="11"
                                                                     Padding="10,2"
                                                                     BackgroundColor="{DynamicResource Surface2}"
