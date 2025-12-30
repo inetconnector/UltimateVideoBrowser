@@ -113,7 +113,7 @@
                 <!-- Highlights -->
                 <Grid Grid.Row="2"
                       Padding="16,0,16,12"
-                      RowDefinitions="Auto,Auto"
+                      RowDefinitions="Auto,Auto,Auto"
                       RowSpacing="10">
                     <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
                            FontAttributes="Bold"
@@ -174,11 +174,37 @@
                             </VerticalStackLayout>
                         </Frame>
                     </Grid>
+
+                    <Frame Grid.Row="2"
+                           BackgroundColor="{DynamicResource Surface}"
+                           CornerRadius="16"
+                           Padding="12"
+                           BorderColor="{DynamicResource BorderSubtle}"
+                           IsVisible="{Binding IsPeopleTaggingEnabled}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Image Source="icon_people.svg"
+                                   HeightRequest="18"
+                                   WidthRequest="18"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="2"
+                                   Text="{Binding TaggedPeopleCount}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Frame>
                 </Grid>
 
-                <!-- Preview -->
+                <!-- Preview (moved to bottom dock) -->
                 <Grid Grid.Row="3"
-                      Padding="12">
+                      Padding="12"
+                      IsVisible="False">
                     <Frame BackgroundColor="{DynamicResource Surface}"
                            CornerRadius="16"
                            Padding="12"
@@ -1076,42 +1102,94 @@
                                       Command="{Binding TogglePlayerFullscreenCommand}" />
             </Grid.GestureRecognizers>
         </Grid>
-
-        <!-- Marked actions pinned to bottom -->
+        <!-- Bottom dock (preview + marked actions) -->
         <Grid Grid.Row="1"
               Padding="12"
               BackgroundColor="{DynamicResource AppBg}"
-              IsVisible="{Binding HasMarked}">
-            <Frame BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="12"
-                   BorderColor="{DynamicResource BorderSubtle}"
-                   Padding="12"
-                   HasShadow="False">
-                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
-                      ColumnSpacing="8">
-                    <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
-                           FontAttributes="Bold"
-                           TextColor="{DynamicResource OnSurface}" />
-                    <Button Grid.Column="1"
-                            Text="{x:Static strings:AppResources.SaveAsAction}"
-                            Command="{Binding SaveAsMarkedCommand}" />
-                    <Button Grid.Column="2"
-                            Text="{x:Static strings:AppResources.CopyMarkedAction}"
-                            IsVisible="{Binding AllowFileChanges}"
-                            Command="{Binding CopyMarkedCommand}" />
-                    <Button Grid.Column="3"
-                            Text="{x:Static strings:AppResources.MoveMarkedAction}"
-                            IsVisible="{Binding AllowFileChanges}"
-                            Command="{Binding MoveMarkedCommand}" />
-                    <Button Grid.Column="4"
-                            Text="{x:Static strings:AppResources.DeleteMarkedAction}"
-                            IsVisible="{Binding AllowFileChanges}"
-                            Command="{Binding DeleteMarkedCommand}" />
-                    <Button Grid.Column="5"
-                            Text="{x:Static strings:AppResources.ClearMarkedAction}"
-                            Command="{Binding ClearMarkedCommand}" />
-                </Grid>
-            </Frame>
+              IsVisible="{Binding ShowBottomDock}">
+            <VerticalStackLayout Spacing="12">
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}"
+                       IsVisible="{Binding IsInternalPlayerEnabled}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.PreviewTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Grid HeightRequest="220"
+                              BackgroundColor="{DynamicResource Surface2}">
+                            <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
+                                                  ShouldAutoPlay="True"
+                                                  ShowsPlaybackControls="True"
+                                                  Aspect="AspectFit"
+                                                  IsVisible="{Binding ShowVideoPlayer}" />
+                            <Image Source="{Binding CurrentMediaSource}"
+                                   Aspect="AspectFit"
+                                   IsVisible="{Binding ShowPhotoPreview}" />
+                            <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="6">
+                                <Image Source="chip_collection.svg"
+                                       HeightRequest="48"
+                                       WidthRequest="48" />
+                                <Label Text="{Binding CurrentMediaName}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource OnSurface}" />
+                            </VerticalStackLayout>
+                            <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"
+                                   IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      Command="{Binding TogglePlayerFullscreenCommand}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <Label Text="{Binding CurrentMediaName}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="TailTruncation"
+                               IsVisible="{Binding ShowPreview}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="12"
+                       BorderColor="{DynamicResource BorderSubtle}"
+                       Padding="12"
+                       HasShadow="False"
+                       IsVisible="{Binding HasMarked}">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
+                          ColumnSpacing="8">
+                        <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Button Grid.Column="1"
+                                Text="{x:Static strings:AppResources.SaveAsAction}"
+                                Command="{Binding SaveAsMarkedCommand}" />
+                        <Button Grid.Column="2"
+                                Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                                IsVisible="{Binding AllowFileChanges}"
+                                Command="{Binding CopyMarkedCommand}" />
+                        <Button Grid.Column="3"
+                                Text="{x:Static strings:AppResources.MoveMarkedAction}"
+                                IsVisible="{Binding AllowFileChanges}"
+                                Command="{Binding MoveMarkedCommand}" />
+                        <Button Grid.Column="4"
+                                Text="{x:Static strings:AppResources.DeleteMarkedAction}"
+                                IsVisible="{Binding AllowFileChanges}"
+                                Command="{Binding DeleteMarkedCommand}" />
+                        <Button Grid.Column="5"
+                                Text="{x:Static strings:AppResources.ClearMarkedAction}"
+                                Command="{Binding ClearMarkedCommand}" />
+                    </Grid>
+                </Frame>
+
+            </VerticalStackLayout>
         </Grid>
 
     </Grid>

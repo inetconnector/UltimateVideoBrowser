@@ -214,9 +214,13 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.SourcesSummary):
                         OnPropertyChanged(nameof(SourcesSummary));
                         break;
+                    case nameof(MainViewModel.TaggedPeopleCount):
+                        OnPropertyChanged(nameof(TaggedPeopleCount));
+                        break;
                     case nameof(MainViewModel.MarkedCount):
                         OnPropertyChanged(nameof(MarkedCount));
                         OnPropertyChanged(nameof(HasMarked));
+                        OnPropertyChanged(nameof(ShowBottomDock));
                         break;
                     case nameof(MainViewModel.Sources):
                         OnPropertyChanged(nameof(Sources));
@@ -245,6 +249,7 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
                         OnPropertyChanged(nameof(ShowVideoPlayer));
                         OnPropertyChanged(nameof(ShowPreview));
+                        OnPropertyChanged(nameof(ShowBottomDock));
                         break;
                     case nameof(MainViewModel.CurrentMediaSource):
                         OnPropertyChanged(nameof(CurrentMediaSource));
@@ -410,9 +415,11 @@ public partial class MainPage : ContentPage
         public int MediaCount => vm.MediaCount;
         public int IndexedMediaCount => vm.IndexedMediaCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
+        public int TaggedPeopleCount => vm.TaggedPeopleCount;
         public string SourcesSummary => vm.SourcesSummary;
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
+        public bool ShowBottomDock => vm.ShowBottomDock;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
         public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
         public List<MediaSource> Sources => vm.Sources;

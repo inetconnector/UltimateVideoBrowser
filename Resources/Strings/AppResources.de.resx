@@ -75,7 +75,10 @@
   <data name="HighlightsTipText" xml:space="preserve">
     <value>Nutze Suche + Filter und indiziere nach dem Hinzufügen neuer Ordner erneut, um die besten Ergebnisse zu erhalten.</value>
   </data>
-  <data name="Indexing" xml:space="preserve">
+    <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
+    <value>Getaggte Personen</value>
+  </data>
+<data name="Indexing" xml:space="preserve">
     <value>Indizierung...</value>
   </data>
   <data name="IndexingStatusFormat" xml:space="preserve">

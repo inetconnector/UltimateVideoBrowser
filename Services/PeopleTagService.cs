@@ -116,4 +116,31 @@ public sealed class PeopleTagService
 
         return results.Select(tag => tag.MediaPath).ToList();
     }
+
+
+    public async Task<int> CountDistinctPeopleAsync()
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        try
+        {
+            // Use a lightweight COUNT(DISTINCT ...) query to avoid loading all tags into memory.
+            var rows = await db.Db.QueryAsync<CountRow>(
+                    "SELECT COUNT(DISTINCT PersonName) AS Count FROM PersonTag;")
+                .ConfigureAwait(false);
+
+            return rows.FirstOrDefault()?.Count ?? 0;
+        }
+        catch
+        {
+            // Keep callers resilient (UI should not break if DB query fails).
+            return 0;
+        }
+    }
+
+    private sealed class CountRow
+    {
+        public int Count { get; set; }
+    }
+
 }

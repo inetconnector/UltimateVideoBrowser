@@ -102,6 +102,9 @@
   <data name="HighlightsTipText" xml:space="preserve">
     <value>Use search + filters, then reindex after adding new folders for the best results.</value>
   </data>
+  <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
+    <value>People tagged</value>
+  </data>
   <data name="SourcesSummaryFormat" xml:space="preserve">
     <value>{0} of {1} sources active</value>
   </data>

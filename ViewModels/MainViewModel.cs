@@ -64,6 +64,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isInternalPlayerEnabled;
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
+    [ObservableProperty] private int taggedPeopleCount;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
@@ -133,6 +134,8 @@ public partial class MainViewModel : ObservableObject
 
     public bool HasMarked => MarkedCount > 0;
 
+    public bool ShowBottomDock => IsInternalPlayerEnabled || HasMarked;
+
     public bool ShowVideoPlayer => IsInternalPlayerEnabled && CurrentMediaType == MediaType.Videos
                                                            && !string.IsNullOrWhiteSpace(CurrentMediaSource);
 
@@ -186,6 +189,8 @@ public partial class MainViewModel : ObservableObject
 
         _ = RefreshAsync();
 
+        _ = RefreshTaggedPeopleCountAsync();
+
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
     }
@@ -204,6 +209,7 @@ public partial class MainViewModel : ObservableObject
 
         ReloadSettingsFromService();
         await RefreshAsync().ConfigureAwait(false);
+        _ = RefreshTaggedPeopleCountAsync();
     }
 
     [RelayCommand]
@@ -642,6 +648,7 @@ public partial class MainViewModel : ObservableObject
             .ToList();
 
         await peopleTagService.SetTagsForMediaAsync(item.Path, tags);
+        _ = RefreshTaggedPeopleCountAsync();
         var updatedMatches = await peopleRecognitionService
             .EnsurePeopleTagsForMediaAsync(item, CancellationToken.None);
         item.PeopleTagsSummary = string.Join(", ",
@@ -1021,6 +1028,26 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+
+    private async Task RefreshTaggedPeopleCountAsync()
+    {
+        try
+        {
+            if (!IsPeopleTaggingEnabled)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => TaggedPeopleCount = 0);
+                return;
+            }
+
+            var count = await peopleTagService.CountDistinctPeopleAsync().ConfigureAwait(false);
+            MainThread.BeginInvokeOnMainThread(() => TaggedPeopleCount = count);
+        }
+        catch
+        {
+            // Keep browsing resilient if the DB is unavailable or not initialized yet.
+        }
+    }
+
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
@@ -1136,15 +1163,25 @@ public partial class MainViewModel : ObservableObject
         {
             foreach (var item in MediaItems)
                 item.PeopleTagsSummary = string.Empty;
+            _ = RefreshTaggedPeopleCountAsync();
             return;
         }
 
         _ = RefreshPeopleTagsAsync(MediaItems, mediaItemsVersion);
+        _ = RefreshTaggedPeopleCountAsync();
+    }
+
+    partial void OnIsInternalPlayerEnabledChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowBottomDock));
+        OnPropertyChanged(nameof(ShowVideoPlayer));
+        OnPropertyChanged(nameof(ShowPreview));
     }
 
     partial void OnMarkedCountChanged(int value)
     {
         OnPropertyChanged(nameof(HasMarked));
+        OnPropertyChanged(nameof(ShowBottomDock));
     }
 
     partial void OnActiveSourceIdChanged(string value)
@@ -1164,6 +1201,7 @@ public partial class MainViewModel : ObservableObject
             return;
 
         _ = RefreshAsync();
+
     }
 
     partial void OnDateFilterFromChanged(DateTime value)
@@ -1176,6 +1214,7 @@ public partial class MainViewModel : ObservableObject
 
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
+
     }
 
     partial void OnDateFilterToChanged(DateTime value)
@@ -1188,6 +1227,7 @@ public partial class MainViewModel : ObservableObject
 
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
+
     }
 
     partial void OnSelectedSortOptionChanged(SortOption? value)
@@ -1206,6 +1246,7 @@ public partial class MainViewModel : ObservableObject
             return;
 
         _ = RefreshAsync();
+
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)

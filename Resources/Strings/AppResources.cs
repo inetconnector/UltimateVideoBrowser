@@ -49,6 +49,8 @@ public static class AppResources
     public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Media indexed");
     public static string HighlightsSourcesLabel => GetString(nameof(HighlightsSourcesLabel), "Sources enabled");
     public static string HighlightsTipLabel => GetString(nameof(HighlightsTipLabel), "Pro tip");
+    public static string HighlightsPeopleTaggedLabel =>
+        GetString(nameof(HighlightsPeopleTaggedLabel), "People tagged");
 
     public static string HighlightsTipText =>
         GetString(nameof(HighlightsTipText),
