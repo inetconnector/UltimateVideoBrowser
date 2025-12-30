@@ -44,6 +44,8 @@ public sealed class PeopleRecognitionService
 
         if (embeddings.Count == 0)
             embeddings = await DetectAndStoreFacesAsync(item.Path, ct).ConfigureAwait(false);
+        else
+            await TryUpdateFaceBoxesAsync(item.Path, embeddings, ct).ConfigureAwait(false);
 
         if (embeddings.Count == 0)
             return Array.Empty<FaceMatch>();
@@ -95,6 +97,43 @@ public sealed class PeopleRecognitionService
         return matches;
     }
 
+    public async Task RenamePersonAsync(string personId, string newName, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return;
+
+        var trimmed = (newName ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+
+        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var current = people.FirstOrDefault(p => p.Id == personId);
+        if (current == null)
+            return;
+
+        var existing = people.FirstOrDefault(p =>
+            p.Id != current.Id &&
+            string.Equals(p.Name, trimmed, StringComparison.OrdinalIgnoreCase));
+
+        if (existing != null)
+        {
+            await MergePersonAsync(current.Id, existing.Id).ConfigureAwait(false);
+            await UpdateMediaTagsForPersonAsync(existing).ConfigureAwait(false);
+            return;
+        }
+
+        if (string.Equals(current.Name, trimmed, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        current.Name = trimmed;
+        current.UpdatedUtc = DateTimeOffset.UtcNow;
+        await db.Db.UpdateAsync(current).ConfigureAwait(false);
+        await UpdateMediaTagsForPersonAsync(current).ConfigureAwait(false);
+    }
+
     public async Task RenamePeopleForMediaAsync(MediaItem item, IReadOnlyList<string> names, CancellationToken ct)
     {
         if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
@@ -111,12 +150,12 @@ public sealed class PeopleRecognitionService
         if (embeddings.Count == 0)
             return;
 
-        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
-        var peopleMap = people.ToDictionary(person => person.Id, person => person);
-
+        // Rename in a Picasa-like way: if the user types a name that already exists,
+        // we merge the current person into the existing profile instead of creating duplicates.
+        var desiredByPerson = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < embeddings.Count && i < names.Count; i++)
         {
-            var name = names[i].Trim();
+            var name = (names[i] ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(name))
                 continue;
 
@@ -124,15 +163,19 @@ public sealed class PeopleRecognitionService
             if (string.IsNullOrWhiteSpace(face.PersonId))
                 continue;
 
-            var person = peopleMap[face.PersonId];
-            if (string.Equals(person.Name, name, StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            person.Name = name;
-            person.UpdatedUtc = DateTimeOffset.UtcNow;
-            await db.Db.UpdateAsync(person).ConfigureAwait(false);
-            await UpdateMediaTagsForPersonAsync(person).ConfigureAwait(false);
+            desiredByPerson[face.PersonId] = name;
         }
+
+        foreach (var (personId, desired) in desiredByPerson)
+        {
+            ct.ThrowIfCancellationRequested();
+            await RenamePersonAsync(personId, desired, ct).ConfigureAwait(false);
+        }
+
+        // Refresh tags for the current media after potential merges.
+        var updatedPeople = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        await UpdateMediaTagsAsync(item.Path, await GetPersonIdsForMediaAsync(item.Path).ConfigureAwait(false), updatedPeople)
+            .ConfigureAwait(false);
     }
 
     public async Task ScanAndTagAsync(IEnumerable<MediaItem> items, IProgress<(int processed, int total, string path)>? progress,
@@ -179,6 +222,12 @@ public sealed class PeopleRecognitionService
                 MediaPath = path,
                 FaceIndex = i,
                 Score = face.Score,
+                X = face.X,
+                Y = face.Y,
+                W = face.W,
+                H = face.H,
+                ImageWidth = image.Width,
+                ImageHeight = image.Height,
                 Embedding = FloatsToBytes(embedding)
             });
         }
@@ -187,6 +236,73 @@ public sealed class PeopleRecognitionService
             await db.Db.InsertAsync(embedding).ConfigureAwait(false);
 
         return embeddings;
+    }
+
+    private async Task TryUpdateFaceBoxesAsync(string mediaPath, List<FaceEmbedding> embeddings, CancellationToken ct)
+    {
+        if (embeddings.Count == 0)
+            return;
+
+        // If boxes were not stored yet (older DB), re-run detection once and patch the rows.
+        var needsUpdate = embeddings.Any(e => e.W <= 0 || e.H <= 0 || e.ImageWidth <= 0 || e.ImageHeight <= 0);
+        if (!needsUpdate)
+            return;
+
+        if (!File.Exists(mediaPath))
+            return;
+
+        try
+        {
+            using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
+            image.Mutate(ctx => ctx.AutoOrient());
+            var faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+            if (faces.Count == 0)
+                return;
+
+            var count = Math.Min(embeddings.Count, faces.Count);
+            for (var i = 0; i < count; i++)
+            {
+                var face = faces[i];
+                var row = embeddings[i];
+                row.X = face.X;
+                row.Y = face.Y;
+                row.W = face.W;
+                row.H = face.H;
+                row.ImageWidth = image.Width;
+                row.ImageHeight = image.Height;
+                await db.Db.UpdateAsync(row).ConfigureAwait(false);
+            }
+        }
+        catch
+        {
+            // Best-effort patching; do not break browsing.
+        }
+    }
+
+    private async Task MergePersonAsync(string fromPersonId, string toPersonId)
+    {
+        if (string.IsNullOrWhiteSpace(fromPersonId) || string.IsNullOrWhiteSpace(toPersonId))
+            return;
+
+        if (string.Equals(fromPersonId, toPersonId, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        // Re-assign all embeddings to the target person.
+        await db.Db.ExecuteAsync(
+                "UPDATE FaceEmbedding SET PersonId = ? WHERE PersonId = ?;",
+                toPersonId,
+                fromPersonId)
+            .ConfigureAwait(false);
+
+        // Remove the source profile if it exists.
+        try
+        {
+            await db.Db.DeleteAsync<PersonProfile>(fromPersonId).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Ignore; profile might already be gone.
+        }
     }
 
     private async Task UpdateMediaTagsForPersonAsync(PersonProfile person)

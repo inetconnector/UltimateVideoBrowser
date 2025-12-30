@@ -18,5 +18,16 @@ public sealed class FaceEmbedding
 
     public float Score { get; set; }
 
+    // Face bounding box in pixels on the auto-oriented image.
+    // These are used to render Picasa-like face crops in the UI.
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float W { get; set; }
+    public float H { get; set; }
+
+    // The dimensions of the auto-oriented image at the time of detection.
+    public int ImageWidth { get; set; }
+    public int ImageHeight { get; set; }
+
     public byte[] Embedding { get; set; } = Array.Empty<byte>();
 }

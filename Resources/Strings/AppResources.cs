@@ -11,6 +11,7 @@ public static class AppResources
     public static string AppTitle => GetString(nameof(AppTitle), "Ultimate Media Browser");
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Media");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
+    public static string PeopleButton => GetString(nameof(PeopleButton), "People");
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
@@ -183,6 +184,33 @@ public static class AppResources
         GetString(nameof(TagPeopleMessage), "Enter names separated by commas.");
     public static string TagPeoplePlaceholder =>
         GetString(nameof(TagPeoplePlaceholder), "e.g. Alex, Sam, Priya");
+
+    public static string RefreshButton => GetString(nameof(RefreshButton), "Refresh");
+    public static string SaveButton => GetString(nameof(SaveButton), "Save");
+    public static string OpenButton => GetString(nameof(OpenButton), "Open");
+
+    public static string PeoplePageTitle => GetString(nameof(PeoplePageTitle), "People");
+    public static string PeoplePageHeader => GetString(nameof(PeoplePageHeader), "People");
+    public static string PeopleSearchPlaceholder => GetString(nameof(PeopleSearchPlaceholder), "Search people...");
+    public static string PeopleEmptyHint =>
+        GetString(nameof(PeopleEmptyHint), "No people yet. Enable people tagging and index photos to see them here.");
+
+    public static string TaggedPhotosButton => GetString(nameof(TaggedPhotosButton), "Tagged photos");
+    public static string TaggedPhotosPageTitle => GetString(nameof(TaggedPhotosPageTitle), "Tagged photos");
+    public static string TaggedPhotosPageHeader => GetString(nameof(TaggedPhotosPageHeader), "Tagged photos");
+    public static string TaggedPhotosSearchPlaceholder =>
+        GetString(nameof(TaggedPhotosSearchPlaceholder), "Search by person name...");
+    public static string TaggedPhotosEmptyHint =>
+        GetString(nameof(TaggedPhotosEmptyHint), "No tagged photos yet. Tag people in a photo to see it here.");
+
+    public static string PersonPageTitle => GetString(nameof(PersonPageTitle), "Person");
+    public static string PersonNamePlaceholder => GetString(nameof(PersonNamePlaceholder), "Name");
+    public static string PersonEmptyHint => GetString(nameof(PersonEmptyHint), "No photos yet.");
+
+    public static string TagPeopleEditorTitle => GetString(nameof(TagPeopleEditorTitle), "Tag people");
+    public static string TagPeopleEditorHeader => GetString(nameof(TagPeopleEditorHeader), "Name faces");
+    public static string TagPeopleEditorEmptyHint =>
+        GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
 
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
     public static string PreviewEmptyMessage => GetString(nameof(PreviewEmptyMessage), "Select a file to preview it here.");

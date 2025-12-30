@@ -47,6 +47,7 @@ public sealed class AppDb
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
+            await TryAddFaceEmbeddingBoxColumnsAsync().ConfigureAwait(false);
             isInitialized = true;
         }
         finally
@@ -65,5 +66,17 @@ public sealed class AppDb
         {
             // Column exists or migration not needed.
         }
+    }
+
+    private async Task TryAddFaceEmbeddingBoxColumnsAsync()
+    {
+        // These columns were added later to support the People UI (face crops / boxes).
+        // Each ALTER is idempotent via try/catch to keep startup resilient.
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN X REAL;").ConfigureAwait(false); } catch { }
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN Y REAL;").ConfigureAwait(false); } catch { }
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN W REAL;").ConfigureAwait(false); } catch { }
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN H REAL;").ConfigureAwait(false); } catch { }
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageWidth INTEGER;").ConfigureAwait(false); } catch { }
+        try { await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageHeight INTEGER;").ConfigureAwait(false); } catch { }
     }
 }

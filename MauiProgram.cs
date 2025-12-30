@@ -41,6 +41,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<ThumbnailService>();
         builder.Services.AddSingleton<IndexService>();
         builder.Services.AddSingleton<PeopleTagService>();
+        builder.Services.AddSingleton<FaceThumbnailService>();
+        builder.Services.AddSingleton<PeopleDataService>();
         builder.Services.AddSingleton<ModelFileService>();
         builder.Services.AddSingleton<YuNetFaceDetector>();
         builder.Services.AddSingleton<SFaceRecognizer>();
@@ -59,11 +61,19 @@ public static class MauiProgram
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<SourcesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddTransient<PeopleViewModel>();
+        builder.Services.AddTransient<PersonViewModel>();
+        builder.Services.AddTransient<PhotoPeopleEditorViewModel>();
+        builder.Services.AddTransient<TaggedPhotosViewModel>();
 
         // Pages
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<SourcesPage>();
         builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<PeoplePage>();
+        builder.Services.AddTransient<PersonPage>();
+        builder.Services.AddTransient<PhotoPeopleEditorPage>();
+        builder.Services.AddTransient<TaggedPhotosPage>();
 
         return builder.Build();
     }

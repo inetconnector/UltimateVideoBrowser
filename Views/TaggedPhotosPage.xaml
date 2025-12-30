@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             xmlns:vm="clr-namespace:UltimateVideoBrowser.ViewModels"
+             x:Class="UltimateVideoBrowser.Views.TaggedPhotosPage"
+             BackgroundColor="{DynamicResource AppBg}"
+             Title="{x:Static strings:AppResources.TaggedPhotosPageTitle}">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}"
+          RowSpacing="12">
+
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button Text="{x:Static strings:AppResources.BackButton}"
+                    Clicked="OnBackClicked" />
+
+            <Label Grid.Column="1"
+                   Text="{x:Static strings:AppResources.TaggedPhotosPageHeader}"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   VerticalTextAlignment="Center" />
+
+            <Grid Grid.Column="2" ColumnDefinitions="Auto,Auto" ColumnSpacing="10"
+                  VerticalOptions="Center">
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   WidthRequest="16"
+                                   HeightRequest="16" />
+                <Button Grid.Column="1"
+                        Text="{x:Static strings:AppResources.RefreshButton}"
+                        Command="{Binding RefreshCommand}" />
+            </Grid>
+        </Grid>
+
+        <SearchBar Grid.Row="1"
+                   Text="{Binding SearchText}"
+                   Placeholder="{x:Static strings:AppResources.TaggedPhotosSearchPlaceholder}"
+                   TextColor="{DynamicResource OnSurface}"
+                   PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Photos}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnPhotoSelected">
+            <CollectionView.EmptyView>
+                <Grid Padding="20" RowDefinitions="Auto,Auto" RowSpacing="10">
+                    <Image Source="empty_state.svg" HeightRequest="110" />
+                    <Label Grid.Row="1"
+                           Text="{x:Static strings:AppResources.TaggedPhotosEmptyHint}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="12"
+                           HorizontalTextAlignment="Center" />
+                </Grid>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:MediaItem"
+                              xmlns:models="clr-namespace:UltimateVideoBrowser.Models">
+                    <Frame BackgroundColor="{DynamicResource Surface}"
+                           CornerRadius="14"
+                           HasShadow="False"
+                           Padding="0"
+                           Margin="0,0,0,10">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                   Aspect="AspectFill"
+                                   HeightRequest="120" />
+
+                            <Label Grid.Row="1"
+                                   Text="{Binding PeopleTagsSummary}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   FontSize="11"
+                                   LineBreakMode="TailTruncation"
+                                   Padding="10,8" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

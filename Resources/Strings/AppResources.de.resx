@@ -315,6 +315,63 @@
   <data name="TagPeoplePlaceholder" xml:space="preserve">
     <value>z. B. Alex, Sam, Priya</value>
   </data>
+  <data name="PeopleButton" xml:space="preserve">
+    <value>Personen</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>Personen</value>
+  </data>
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>Personen</value>
+  </data>
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Personen suchen...</value>
+  </data>
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>Noch keine Personen. Aktiviere People-Tagging und indexiere Fotos, damit sie hier erscheinen.</value>
+  </data>
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Getaggte Fotos</value>
+  </data>
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Getaggte Fotos</value>
+  </data>
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Getaggte Fotos</value>
+  </data>
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Nach Person suchen...</value>
+  </data>
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>Noch keine getaggten Fotos. Tagge Personen in einem Foto, damit es hier erscheint.</value>
+  </data>
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>Noch keine Fotos.</value>
+  </data>
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Personen taggen</value>
+  </data>
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Gesichter benennen</value>
+  </data>
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>In diesem Foto wurden keine Gesichter erkannt.</value>
+  </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Vorschau</value>
   </data>

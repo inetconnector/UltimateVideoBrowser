@@ -93,6 +93,7 @@ public partial class MainPage : ContentPage
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
+            OpenPeopleCommand = new AsyncRelayCommand(OpenPeopleAsync);
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
             CancelIndexCommand = vm.CancelIndexCommand;
@@ -107,7 +108,7 @@ public partial class MainPage : ContentPage
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
-            TagPeopleCommand = vm.TagPeopleCommand;
+            TagPeopleCommand = new AsyncRelayCommand<MediaItem>(OpenTagEditorAsync);
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             ShareCommand = vm.ShareCommand;
@@ -251,6 +252,7 @@ public partial class MainPage : ContentPage
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
+        public IAsyncRelayCommand OpenPeopleCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
         public IRelayCommand CancelIndexCommand { get; }
@@ -424,6 +426,21 @@ public partial class MainPage : ContentPage
         private async Task OpenSettingsAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SettingsPage>()!);
+        }
+
+        private async Task OpenPeopleAsync()
+        {
+            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!);
+        }
+
+        private async Task OpenTagEditorAsync(MediaItem? item)
+        {
+            if (item == null)
+                return;
+
+            var editor = page.Handler!.MauiContext!.Services.GetService<PhotoPeopleEditorPage>()!;
+            editor.Initialize(item);
+            await page.Navigation.PushAsync(editor);
         }
 
         private void EnsureIndexingWindow()
