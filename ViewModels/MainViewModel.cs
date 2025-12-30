@@ -8,6 +8,7 @@ using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
+using UltimateVideoBrowser.Services.Faces;
 
 namespace UltimateVideoBrowser.ViewModels;
 
@@ -23,6 +24,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
+    private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
 
@@ -90,7 +92,8 @@ public partial class MainViewModel : ObservableObject
         PermissionService permissionService,
         IFileExportService fileExportService,
         IDialogService dialogService,
-        PeopleTagService peopleTagService)
+        PeopleTagService peopleTagService,
+        PeopleRecognitionService peopleRecognitionService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
@@ -101,7 +104,7 @@ public partial class MainViewModel : ObservableObject
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
         this.peopleTagService = peopleTagService;
-        this.settingsService.NeedsReindexChanged += OnNeedsReindexChanged;
+        this.peopleRecognitionService = peopleRecognitionService;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
         SortOptions = new[]
@@ -553,8 +556,13 @@ public partial class MainViewModel : ObservableObject
         if (item == null || string.IsNullOrWhiteSpace(item.Path))
             return;
 
-        var existingTags = await peopleTagService.GetTagsForMediaAsync(item.Path);
-        var initialValue = existingTags.Count > 0 ? string.Join(", ", existingTags) : null;
+        var matches = await peopleRecognitionService
+            .EnsurePeopleTagsForMediaAsync(item, CancellationToken.None);
+        var initialValue = matches.Count > 0
+            ? string.Join(", ", matches
+                .OrderBy(match => match.FaceIndex)
+                .Select(match => match.Name))
+            : null;
 
         var prompt = await dialogService.DisplayPromptAsync(
             AppResources.TagPeopleTitle,
@@ -569,13 +577,44 @@ public partial class MainViewModel : ObservableObject
         if (prompt == null)
             return;
 
-        var tags = prompt
+        var namesInOrder = prompt
             .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(name => name.Trim())
+            .ToList();
+
+        await peopleRecognitionService.RenamePeopleForMediaAsync(item, namesInOrder, CancellationToken.None);
+
+        var tags = namesInOrder
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name.Trim())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
         await peopleTagService.SetTagsForMediaAsync(item.Path, tags);
-        item.PeopleTagsSummary = string.Join(", ", tags);
+        var updatedMatches = await peopleRecognitionService
+            .EnsurePeopleTagsForMediaAsync(item, CancellationToken.None);
+        item.PeopleTagsSummary = string.Join(", ",
+            updatedMatches.Select(match => match.Name).Distinct(StringComparer.OrdinalIgnoreCase));
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+                var sourceId = string.IsNullOrWhiteSpace(item.SourceId) ? ActiveSourceId : item.SourceId;
+                if (string.IsNullOrWhiteSpace(sourceId))
+                    return;
+
+                var photos = await indexService
+                    .QueryAsync(string.Empty, sourceId, "name", null, null, MediaType.Photos)
+                    .ConfigureAwait(false);
+                await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
+            }
+            catch
+            {
+                // best-effort background scan
+            }
+        });
     }
 
     [RelayCommand]
