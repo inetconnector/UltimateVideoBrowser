@@ -225,11 +225,15 @@ public partial class MainViewModel : ObservableObject
                 var sortKey = SelectedSortOption?.Key ?? "name";
                 var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
                 var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-                var items = string.IsNullOrWhiteSpace(normalizedSourceId)
-                    ? new List<MediaItem>()
-                    : await indexService.QueryPageAsync(SearchText, normalizedSourceId, sortKey, dateFrom, dateTo,
-                            SelectedMediaTypes, 0, PageSize)
-                        .ConfigureAwait(false);
+
+                // IMPORTANT:
+                // An empty source id is treated as "all sources" (no SourceId filter).
+                // Previously we returned an empty list, which made the UI look broken
+                // when the active source wasn't set or when sources were temporarily unavailable.
+                var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
+                var items = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
+                        SelectedMediaTypes, 0, PageSize)
+                    .ConfigureAwait(false);
                 var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                 var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
@@ -261,7 +265,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task LoadMoreAsync()
     {
-        if (isLoadingMoreMediaItems || !hasMoreMediaItems || string.IsNullOrWhiteSpace(ActiveSourceId))
+        if (isLoadingMoreMediaItems || !hasMoreMediaItems)
             return;
 
         if (refreshLock.CurrentCount == 0)
@@ -275,7 +279,8 @@ public partial class MainViewModel : ObservableObject
             var sortKey = SelectedSortOption?.Key ?? "name";
             var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-            var nextItems = await indexService.QueryPageAsync(SearchText, ActiveSourceId, sortKey, dateFrom, dateTo,
+            var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+            var nextItems = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
                     SelectedMediaTypes, mediaItemsOffset, PageSize)
                 .ConfigureAwait(false);
 
