@@ -19,6 +19,8 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     [ObservableProperty] private string mediaPath = string.Empty;
     [ObservableProperty] private string peopleTagsText = string.Empty;
 
+    private bool hasLoaded;
+
     public PhotoPeopleEditorViewModel(
         PeopleDataService peopleData,
         PeopleRecognitionService recognitionService,
@@ -34,6 +36,7 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     public void Initialize(string path)
     {
         MediaPath = path ?? string.Empty;
+        hasLoaded = false;
     }
 
     [RelayCommand]
@@ -74,6 +77,8 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
             {
                 PeopleTagsText = string.Join(", ", tags.Where(t => !string.IsNullOrWhiteSpace(t)));
             });
+
+            hasLoaded = true;
         }
         catch
         {
@@ -85,11 +90,19 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    public async Task SaveAsync()
+    /// <summary>
+    /// Saves the current editor state and returns a normalized summary string
+    /// that can be displayed immediately on the originating media tile.
+    /// </summary>
+    public async Task<string?> SaveAndGetSummaryAsync()
     {
         if (string.IsNullOrWhiteSpace(MediaPath))
-            return;
+            return null;
+
+        // Ensure the view model is fully loaded before applying a save to avoid
+        // accidentally overwriting auto-derived tags with an empty Faces collection.
+        if (!hasLoaded)
+            await LoadAsync().ConfigureAwait(false);
 
         try
         {
@@ -111,8 +124,7 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
                 await recognitionService.RenamePersonAsync(u.PersonId, u.Name, ct).ConfigureAwait(false);
             }
 
-            // Optional manual tags: allow the user to add person names even when face detection fails.
-            // We add these on top of the automatically derived face-tags to avoid losing data.
+            // Manual people tags: editable list (comma/semicolon separated).
             var manualTags = (PeopleTagsText ?? string.Empty)
                 .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(t => t.Trim())
@@ -120,20 +132,46 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            if (manualTags.Count > 0)
-                await peopleTagService.AddTagsForMediaAsync(MediaPath, manualTags).ConfigureAwait(false);
+            // Preserve the auto-derived names from the face list, but allow the user
+            // to fully edit the manual tag list.
+            var autoNames = Faces
+                .Select(f => (f.Name ?? string.Empty).Trim())
+                .Where(n => !string.IsNullOrWhiteSpace(n))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-            // Refresh the editor view so the latest names show up.
-            await LoadAsync().ConfigureAwait(false);
+            var combined = autoNames
+                .Concat(manualTags)
+                .Where(n => !string.IsNullOrWhiteSpace(n))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            // Persist: we store a single unified tag list for the media.
+            // This keeps the tile summary consistent and makes "edit" deterministic.
+            await peopleTagService.SetTagsForMediaAsync(MediaPath, combined).ConfigureAwait(false);
+
+            // Keep UI text normalized so reopening shows the saved value.
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                PeopleTagsText = string.Join(", ", combined);
+            });
+
+            return string.Join(", ", combined);
         }
         catch
         {
-            // Ignore
+            return null;
         }
         finally
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
         }
+    }
+
+    [RelayCommand]
+    public async Task SaveAsync()
+    {
+        _ = await SaveAndGetSummaryAsync().ConfigureAwait(false);
     }
 }
 

@@ -35,6 +35,28 @@ public partial class PhotoPeopleEditorPage : ContentPage
         await Navigation.PopAsync();
     }
 
+    private async void OnSaveClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var summary = await vm.SaveAndGetSummaryAsync().ConfigureAwait(false);
+
+            // If saving failed, stay on the page (best-effort, errors are handled inside the VM).
+            if (summary == null)
+                return;
+
+            // Update the originating MediaItem immediately so the grid reflects the change without a refresh.
+            if (current != null && summary != null)
+                current.PeopleTagsSummary = summary;
+
+            await MainThread.InvokeOnMainThreadAsync(async () => await Navigation.PopAsync());
+        }
+        catch
+        {
+            // Ignore
+        }
+    }
+
     private void OnOpenClicked(object sender, EventArgs e)
     {
         if (current == null)

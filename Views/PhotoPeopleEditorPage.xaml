@@ -34,7 +34,7 @@
                         Clicked="OnOpenClicked" />
                 <Button Grid.Column="2"
                         Text="{x:Static strings:AppResources.SaveButton}"
-                        Command="{Binding SaveCommand}" />
+                        Clicked="OnSaveClicked" />
             </Grid>
         </Grid>
 
