@@ -175,9 +175,7 @@ public partial class MainViewModel : ObservableObject
         await UpdateSourceStatsAsync(sources);
         Sources = sources.Where(s => s.IsEnabled).ToList();
 
-        // Ensure permission is requested when needed (Android). Using CheckMediaReadAsync here
-        // can leave the app in a state where nothing loads on a fresh install.
-        HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        HasMediaPermission = await permissionService.CheckMediaReadAsync();
 
         if (!HasMediaPermission)
         {
@@ -189,9 +187,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        // Await the initial refresh so exceptions aren't silently swallowed
-        // and the UI gets populated deterministically.
-        await RefreshAsync();
+        _ = RefreshAsync();
 
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
@@ -834,6 +830,47 @@ public partial class MainViewModel : ObservableObject
         }
 
         UpdateMarkedCount();
+    }
+
+
+    [RelayCommand]
+    public async Task OpenItemMenuAsync(MediaItem item)
+    {
+        if (item == null)
+            return;
+
+        var shell = Shell.Current;
+        if (shell == null)
+            return;
+
+        var actions = new List<string>
+        {
+            AppResources.ShareAction,
+            AppResources.CopyMarkedAction
+        };
+
+        if (AllowFileChanges)
+            actions.Add(AppResources.DeleteMarkedAction);
+
+        var choice = await MainThread.InvokeOnMainThreadAsync(() =>
+            shell.DisplayActionSheet(item.Name, AppResources.CancelButton, null, actions.ToArray()));
+
+        if (string.Equals(choice, AppResources.ShareAction, StringComparison.Ordinal))
+        {
+            await ShareAsync(item);
+            return;
+        }
+
+        if (string.Equals(choice, AppResources.CopyMarkedAction, StringComparison.Ordinal))
+        {
+            await CopyItemAsync(item);
+            return;
+        }
+
+        if (string.Equals(choice, AppResources.DeleteMarkedAction, StringComparison.Ordinal))
+        {
+            await DeleteItemAsync(item);
+        }
     }
 
     [RelayCommand]

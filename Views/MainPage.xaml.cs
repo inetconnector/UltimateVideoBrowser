@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -22,7 +21,11 @@ public partial class MainPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _ = vm.OnMainPageAppearingAsync();
+        vm.ApplyPlaybackSettings();
+        vm.ApplyFileChangeSettings();
+        vm.ApplyPeopleTaggingSettings();
+        _ = vm.InitializeAsync();
+        _ = vm.RefreshAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
     }
@@ -80,14 +83,11 @@ public partial class MainPage : ContentPage
         private readonly MainViewModel vm;
 
         private int gridSpan = 3;
-        private Window? indexingWindow; 
+        private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
-        private bool isIndexingOverlayVisible; 
-        private bool isBusyCursor;
-#if WINDOWS
-    private object? previousCursor;
-#endif
-
+        private bool isIndexingOverlayVisible;
+        private bool isLoadingWindowSuppressed;
+        private Window? loadingWindow;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
@@ -111,12 +111,13 @@ public partial class MainPage : ContentPage
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = vm.TagPeopleCommand;
+            OpenFolderCommand = vm.OpenFolderCommand;
+            SelectSourceCommand = vm.SelectSourceCommand;
             ShareCommand = vm.ShareCommand;
             SaveAsCommand = vm.SaveAsCommand;
             CopyItemCommand = vm.CopyItemCommand;
             DeleteItemCommand = vm.DeleteItemCommand;
-            OpenFolderCommand = vm.OpenFolderCommand;
-            SelectSourceCommand = vm.SelectSourceCommand;
+            OpenItemMenuCommand = vm.OpenItemMenuCommand;
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
@@ -133,18 +134,19 @@ public partial class MainPage : ContentPage
                         {
                             isIndexingOverlaySuppressed = false;
                             IsIndexingOverlayVisible = false;
+                            isLoadingWindowSuppressed = false;
+                            UpdateLoadingWindow();
                         }
                         else
                         {
+                            CloseLoadingWindow();
+                            isLoadingWindowSuppressed = true;
                             IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
                         }
-
-                        UpdateBusyCursor();
 
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
-
                     case nameof(MainViewModel.IndexedCount):
                         OnPropertyChanged(nameof(IndexedCount));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
@@ -209,11 +211,11 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
-                        UpdateBusyCursor();
+                        UpdateLoadingWindow();
                         break;
                     case nameof(MainViewModel.IsRefreshing):
                         OnPropertyChanged(nameof(IsRefreshing));
-                        UpdateBusyCursor();
+                        UpdateLoadingWindow();
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
@@ -251,7 +253,6 @@ public partial class MainPage : ContentPage
                         break;
                 }
             };
-            UpdateBusyCursor();
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
@@ -275,11 +276,11 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
-
-public IAsyncRelayCommand ShareCommand { get; }
-public IAsyncRelayCommand SaveAsCommand { get; }
-public IAsyncRelayCommand CopyItemCommand { get; }
-public IAsyncRelayCommand DeleteItemCommand { get; }
+        public IAsyncRelayCommand ShareCommand { get; }
+        public IAsyncRelayCommand SaveAsCommand { get; }
+        public IAsyncRelayCommand CopyItemCommand { get; }
+        public IAsyncRelayCommand DeleteItemCommand { get; }
+        public IAsyncRelayCommand OpenItemMenuCommand { get; }
 
         public int GridSpan
         {
@@ -469,64 +470,65 @@ public IAsyncRelayCommand DeleteItemCommand { get; }
             Application.Current?.CloseWindow(window);
         }
 
-        private void UpdateBusyCursor()
+        private void UpdateLoadingWindow()
         {
-            // Busy cursor should be active whenever the app is doing visible background work.
-            var shouldBeBusy = vm.IsIndexing || vm.IsRefreshing || vm.IsSourceSwitching;
+            if (vm.IsIndexing)
+            {
+                CloseLoadingWindow();
+                isLoadingWindowSuppressed = true;
+                return;
+            }
 
-            if (shouldBeBusy == isBusyCursor)
+            if (vm.IsRefreshing || vm.IsSourceSwitching)
+            {
+                if (isLoadingWindowSuppressed)
+                    return;
+
+                EnsureLoadingWindow();
+                return;
+            }
+
+            isLoadingWindowSuppressed = false;
+            CloseLoadingWindow();
+        }
+
+        private void EnsureLoadingWindow()
+        {
+            if (loadingWindow != null)
                 return;
 
-            isBusyCursor = shouldBeBusy;
-
-#if WINDOWS
-    SetWindowsBusyCursor(shouldBeBusy);
-#endif
-        }
-
-#if WINDOWS
-private void SetWindowsBusyCursor(bool busy)
-{
-    try
-    {
-        var platformView = page?.Handler?.PlatformView;
-        if (platformView is not Microsoft.UI.Xaml.FrameworkElement fe)
-            return;
-
-        var prop = fe.GetType().GetProperty("ProtectedCursor");
-        if (prop == null || !prop.CanWrite)
-            return;
-
-        if (busy)
-        {
-            previousCursor ??= prop.GetValue(fe);
-            var waitCursor = Microsoft.UI.Input.InputSystemCursor.Create(
-                Microsoft.UI.Input.InputSystemCursorShape.Wait);
-            prop.SetValue(fe, waitCursor);
-        }
-        else
-        {
-            if (previousCursor != null)
+            var loadingPage = new LoadingProgressPage
             {
-                prop.SetValue(fe, previousCursor);
-                previousCursor = null;
-            }
-            else
+                BindingContext = this
+            };
+
+            var window = new Window(loadingPage)
             {
-                var arrowCursor = Microsoft.UI.Input.InputSystemCursor.Create(
-                    Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-                prop.SetValue(fe, arrowCursor);
-            }
+                Title = AppResources.LoadingMedia,
+                Width = 320,
+                Height = 220
+            };
+
+            window.Destroying += (_, _) =>
+            {
+                loadingWindow = null;
+                if (vm.IsRefreshing || vm.IsSourceSwitching)
+                    isLoadingWindowSuppressed = true;
+            };
+
+            loadingWindow = window;
+            Application.Current?.OpenWindow(window);
         }
-    }
-    catch
-    {
-        // Ignore cursor failures (e.g., if platform view is not ready yet).
-    }
-}
-#endif
 
+        private void CloseLoadingWindow()
+        {
+            if (loadingWindow == null)
+                return;
 
+            var window = loadingWindow;
+            loadingWindow = null;
+            Application.Current?.CloseWindow(window);
+        }
 
         public Task ApplyGridSpanAsync()
         {
