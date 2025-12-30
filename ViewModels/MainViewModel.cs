@@ -1,10 +1,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -14,32 +12,32 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private const int PageSize = 60;
     private readonly IDialogService dialogService;
     private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
-    private readonly PermissionService permissionService;
+
+    private readonly PropertyChangedEventHandler mediaMarkedHandler;
+    private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly PeopleTagService peopleTagService;
+    private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
-    private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
-
-    private readonly PropertyChangedEventHandler mediaMarkedHandler;
-    private const int PageSize = 60;
     [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private string currentMediaName = "";
+    [ObservableProperty] private string? currentMediaSource;
+    [ObservableProperty] private MediaType currentMediaType;
     [ObservableProperty] private DateTime dateFilterFrom = DateTime.Today.AddMonths(-1);
     [ObservableProperty] private DateTime dateFilterTo = DateTime.Today;
     [ObservableProperty] private int enabledSourceCount;
     [ObservableProperty] private bool hasMediaPermission = true;
-    [ObservableProperty] private string? currentMediaSource;
-    [ObservableProperty] private string currentMediaName = "";
-    [ObservableProperty] private MediaType currentMediaType;
-    [ObservableProperty] private bool isInternalPlayerEnabled;
-    [ObservableProperty] private bool isPlayerFullscreen;
+    private bool hasMoreMediaItems;
 
     private CancellationTokenSource? indexCts;
     [ObservableProperty] private string indexCurrentFile = "";
@@ -53,12 +51,26 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
     private bool isApplyingIndexProgress;
-    private bool isInitialized;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
+    private bool isInitialized;
+    [ObservableProperty] private bool isInternalPlayerEnabled;
+    private bool isLoadingMoreMediaItems;
+    [ObservableProperty] private bool isPeopleTaggingEnabled;
+    [ObservableProperty] private bool isPlayerFullscreen;
+    [ObservableProperty] private bool isRefreshing;
+    [ObservableProperty] private bool isSourceSwitching;
     [ObservableProperty] private int markedCount;
+    [ObservableProperty] private int mediaCount;
+
+    [ObservableProperty] private List<MediaItem> mediaItems = new();
+    private int mediaItemsOffset;
+    private int mediaItemsVersion;
+    private int mediaQueryVersion;
     private IndexProgress? pendingIndexProgress;
     [ObservableProperty] private string searchText = "";
+
+    [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
@@ -68,20 +80,6 @@ public partial class MainViewModel : ObservableObject
     private bool thumbnailPipelineRunning;
     [ObservableProperty] private List<TimelineEntry> timelineEntries = new();
     [ObservableProperty] private int totalSourceCount;
-    [ObservableProperty] private int mediaCount;
-    [ObservableProperty] private bool isSourceSwitching;
-    [ObservableProperty] private bool allowFileChanges;
-    [ObservableProperty] private bool isPeopleTaggingEnabled;
-
-    [ObservableProperty] private List<MediaItem> mediaItems = new();
-    private bool hasMoreMediaItems;
-    private bool isLoadingMoreMediaItems;
-    private int mediaItemsOffset;
-    private int mediaQueryVersion;
-    private int mediaItemsVersion;
-
-    [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
-    [ObservableProperty] private bool isRefreshing;
 
     public MainViewModel(
         ISourceService sourceService,
@@ -123,6 +121,22 @@ public partial class MainViewModel : ObservableObject
         };
     }
 
+    public IReadOnlyList<SortOption> SortOptions { get; }
+    public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
+
+    public bool HasMarked => MarkedCount > 0;
+
+    public bool ShowVideoPlayer => IsInternalPlayerEnabled && CurrentMediaType == MediaType.Videos
+                                                           && !string.IsNullOrWhiteSpace(CurrentMediaSource);
+
+    public bool ShowPhotoPreview => CurrentMediaType == MediaType.Photos
+                                    && !string.IsNullOrWhiteSpace(CurrentMediaSource);
+
+    public bool ShowDocumentPreview => CurrentMediaType == MediaType.Documents
+                                       && !string.IsNullOrWhiteSpace(CurrentMediaSource);
+
+    public bool ShowPreview => ShowVideoPlayer || ShowPhotoPreview || ShowDocumentPreview;
+
     private void OnNeedsReindexChanged(object? sender, bool needsReindex)
     {
         if (!needsReindex || IsIndexing)
@@ -136,22 +150,6 @@ public partial class MainViewModel : ObservableObject
 
         _ = RunIndexAsync();
     }
-
-    public IReadOnlyList<SortOption> SortOptions { get; }
-    public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
-
-    public bool HasMarked => MarkedCount > 0;
-
-    public bool ShowVideoPlayer => IsInternalPlayerEnabled && CurrentMediaType == MediaType.Videos
-                                   && !string.IsNullOrWhiteSpace(CurrentMediaSource);
-
-    public bool ShowPhotoPreview => CurrentMediaType == MediaType.Photos
-                                    && !string.IsNullOrWhiteSpace(CurrentMediaSource);
-
-    public bool ShowDocumentPreview => CurrentMediaType == MediaType.Documents
-                                       && !string.IsNullOrWhiteSpace(CurrentMediaSource);
-
-    public bool ShowPreview => ShowVideoPlayer || ShowPhotoPreview || ShowDocumentPreview;
 
     public async Task InitializeAsync()
     {
@@ -345,10 +343,8 @@ public partial class MainViewModel : ObservableObject
             indexCts = new CancellationTokenSource();
 
             var indexedTypes = settingsService.IndexedMediaTypes;
-            await Task.Run(async () =>
-            {
-                await indexService.IndexSourcesAsync(sources, indexedTypes, progress, indexCts.Token);
-            },
+            await Task.Run(
+                async () => { await indexService.IndexSourcesAsync(sources, indexedTypes, progress, indexCts.Token); },
                 indexCts.Token);
             completed = true;
         }
@@ -807,15 +803,13 @@ public partial class MainViewModel : ObservableObject
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, ct);
                     if (!string.IsNullOrWhiteSpace(p))
-                    {
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
-                    if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
-                        item.ThumbnailPath = string.Empty;
+                            if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
+                                item.ThumbnailPath = string.Empty;
 
                             item.ThumbnailPath = p;
                         });
-                    }
                 }
             }
             catch
@@ -855,12 +849,10 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 foreach (var item in items)
-                {
                     if (tagMap.TryGetValue(item.Path, out var tags))
                         item.PeopleTagsSummary = string.Join(", ", tags);
                     else
                         item.PeopleTagsSummary = string.Empty;
-                }
             });
         }
         catch

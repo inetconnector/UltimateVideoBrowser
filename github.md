@@ -1,70 +1,92 @@
-# Ultimate Video Browser (Android 9+)
+# UltimateVideoBrowser
 
-Ultimate Video Browser ist eine produktionsnahe .NET MAUI App für Android, die lokale Videos schnell indiziert, echte Vorschau-Frames generiert und eine performante Grid-Ansicht mit Suche und Sortierung bereitstellt.
+UltimateVideoBrowser is a **.NET MAUI** media browser that builds a local **SQLite index** for fast browsing, filtering, and search.
+
+**Implemented targets in this repository:**
+- ✅ Android (`net10.0-android`)
+- ✅ Windows (`net10.0-windows10.0.19041.0`)
+
+---
+
+## Why
+
+If you have large photo/video collections, walking folders becomes slow and repetitive. This app builds a local index and a thumbnail cache so the UI can stay responsive while still working fully offline.
+
+---
 
 ## Highlights
-- **MediaStore-Scan**: Liest alle lokalen Videos über den Android MediaStore.
-- **SQLite-Index**: Speichert Metadaten inkrementell für schnelle Abfragen.
-- **Echte Thumbnails**: Extrahiert Vorschaubilder über `MediaMetadataRetriever` und cached sie auf der Platte.
-- **Schnelle Grid-Ansicht**: Adaptives Layout für Phone/Tablet/TV-ähnliche Ansichten.
-- **Suche & Sortierung**: Suche nach Titeln sowie Sortierung nach Name, Datum oder Dauer.
-- **System-Playback**: Öffnet Videos im Standard-Player („Open with“ kompatibel).
 
-## Voraussetzungen
-- **.NET 8 SDK**
-- **MAUI-Workload**
-- **Android SDK** (für Build/Deploy auf Gerät oder Emulator)
+- Local **indexing** into SQLite (fast lists + search)
+- **Photos / Videos** + optional **Documents**
+- Multiple sources: platform libraries and custom folders
+- **Thumbnail cache** for fast grids
+- Filters: media type + date range, plus sorting/search
+- Optional **People tagging** (on-device face detection + embeddings)
 
-## Setup
-1. Repository klonen.
-2. MAUI-Workload installieren (falls noch nicht vorhanden):
-   ```bash
-   dotnet workload install maui
-   ```
-3. Android SDK konfigurieren (Android Studio oder CLI-Tools).
+---
 
-## Build
+## Quick start
+
+### Prerequisites
+
+- **.NET 10 SDK**
+- **.NET MAUI** workload
+
 ```bash
-dotnet build -c Release
+dotnet workload install maui
 ```
 
-## Run (Android)
-Start direkt aus der IDE (Visual Studio / Rider) oder via CLI:
+### Run (Windows)
+
 ```bash
-dotnet build -t:Run -f net8.0-android
+dotnet restore
+dotnet run -f net10.0-windows10.0.19041.0
 ```
 
-## App-Flow (kurz)
-1. **Initiale Indizierung**: MediaStore wird gescannt und Metadaten in SQLite gespeichert.
-2. **UI-Grid**: Videos werden aus dem Index geladen und angezeigt.
-3. **Thumbnail-Pipeline**: Für die ersten sichtbaren Einträge werden echte Thumbnails erzeugt und zwischengespeichert.
-4. **Playback**: Ein Tap öffnet den System-Player für das ausgewählte Video.
+### Run (Android)
 
-## Quellen (Sources)
-- Standardmäßig existiert eine virtuelle Quelle „Alle Gerätvideos“ (MediaStore).
-- Quellen lassen sich aktivieren/deaktivieren (UI: Sources Page).
+```bash
+dotnet restore
+dotnet run -f net10.0-android
+```
 
-## Suche & Sortierung
-- **Suche**: Filtert den Index nach dem eingegebenen Text.
-- **Sortierung**: Name, Datum oder Dauer.
+---
 
-## Datenspeicherung
-- **SQLite-Datenbank**: Hält Video-Metadaten, um wiederholte Scans zu beschleunigen.
-- **Thumbnail-Cache**: Lokale Dateipfade für Vorschau-Frames.
+## Face recognition (optional)
 
-## Hinweise zu Netzlaufwerken (SMB/Windows Shares)
-Android-Apps sollten **lokal synchronisierte Ordner** indizieren (z. B. über FolderSync/Solid Explorer). Direkter SMB-Scan ist nicht enthalten (Play-Store-friendly Ansatz).
+People tagging is designed to run **on device** using **ONNX Runtime**. When enabled, the app can download two ONNX models (YuNet + SFace). For offline deployments you can pre-seed the models into the app’s local data.
 
-## Projektstruktur (Überblick)
-- `Views/` – XAML UI (MainPage, SourcesPage)
-- `ViewModels/` – MVVM-Logik (Suche, Sortierung, Indexing)
-- `Services/` – MediaStore-Scan, Index-Service, Thumbnail-Generierung, Playback
-- `Models/` – Datenmodelle (VideoItem, MediaSource)
-- `Resources/` – Strings, Themes, Styles
+License notices for the models and dependencies are documented in `THIRD_PARTY_NOTICES.md`.
 
-## Entwicklungshinweise
-- Die Thumbnails werden asynchron erzeugt; die UI aktualisiert sich nach und nach.
-- Änderungen an den Spalten/Layouts in `Views/MainPage.xaml` wirken sich direkt auf die Grid-Darstellung aus.
+---
 
-## Lizenz
-Keine Lizenzdatei hinterlegt. Bitte bei Bedarf ergänzen.
+## Docs
+
+- Full documentation: see `README.md`
+- License notices: `THIRD_PARTY_NOTICES.md` and `LICENSES/`
+
+---
+
+## Licensing note
+
+- This repo includes **third‑party dependencies** and (optionally) downloaded ONNX models. Their licenses are documented in
+  `THIRD_PARTY_NOTICES.md` and the license texts in `LICENSES/`.
+- For commercialization / dual licensing guidance, see `LICENSING.md`.
+- If you contribute, you agree to `CONTRIBUTOR_LICENSE_AGREEMENT.md`.
+
+## License
+
+UltimateVideoBrowser is **dual-track**:
+
+- **Community license:** Apache-2.0 (see `LICENSE`)
+- **Commercial licensing:** available from Inetconnector.com for OEM/support/procurement needs
+  (see `LICENSES/INETCONNECTOR_COMMERCIAL_LICENSE.txt` and `LICENSING.md`)
+
+**Third-party components** (NuGet packages and downloaded ML models) remain under their respective licenses.
+See `THIRD_PARTY_NOTICES.md` and `LICENSES/`.
+
+**Contributions** require acceptance of the CLA (`CONTRIBUTOR_LICENSE_AGREEMENT.md`).
+
+## Trademarks
+
+The names and logos are trademarks of Inetconnector.com. See `TRADEMARKS.md` for permitted use.

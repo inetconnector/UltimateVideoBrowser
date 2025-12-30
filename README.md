@@ -1,125 +1,299 @@
-# Ultimate Video Browser
+# UltimateVideoBrowser (Develop)
 
-Ultimate Video Browser is a production-ready .NET MAUI application that indexes local videos, generates real preview frames, and delivers fast grid browsing with search and sorting. The app is optimized for large libraries and modern Android/Windows devices.
+UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a local **SQLite** database to enable fast browsing, filtering, and search.
 
-## Table of Contents
+**Targets implemented in this repository:**
+- ✅ **Android** (`net10.0-android`)
+- ✅ **Windows** (`net10.0-windows10.0.19041.0`)
+
+> Other MAUI targets (iOS/macOS) are not implemented in this branch.
+
+---
+
+## Table of contents
+
 - [Features](#features)
-- [Supported Platforms](#supported-platforms)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-- [Build & Run](#build--run)
-  - [Android](#android)
-  - [Windows](#windows)
-- [App Flow](#app-flow)
-- [Data & Storage](#data--storage)
-- [Permissions](#permissions)
-- [Networking & SMB Shares](#networking--smb-shares)
+- [Platform support](#platform-support)
+- [Quick start](#quick-start)
+- [Configuration and settings](#configuration-and-settings)
+- [How indexing works](#how-indexing-works)
+- [People tagging and face recognition](#people-tagging-and-face-recognition)
+- [Storage locations](#storage-locations)
+- [Privacy](#privacy)
+- [Repository layout](#repository-layout)
 - [Troubleshooting](#troubleshooting)
-- [Roadmap / Extending to Other Platforms](#roadmap--extending-to-other-platforms)
-- [License](#license)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Licensing and third-party notices](#licensing-and-third-party-notices)
+
+---
 
 ## Features
-- **MediaStore scan (Android)**: Fast discovery of local videos through the Android MediaStore.
-- **SQLite indexing**: Incremental metadata storage for fast queries and quick startup.
-- **Real thumbnails**: Frame extraction via `MediaMetadataRetriever` with a disk cache.
-- **High-performance grid UI**: Adaptive layout for phone, tablet, and TV-like form factors.
-- **Search & sorting**: Filter by title and sort by name, date, or duration.
-- **System playback**: Launches the platform’s default player via system intents.
 
-## Supported Platforms
-This repository currently targets the following .NET MAUI platforms:
+- **Local media indexing** into SQLite for fast listing and search
+- Supports **Photos**, **Videos**, and optional **Documents**
+- **Multiple sources**:
+  - Platform default libraries (Pictures/Videos/Documents)
+  - Custom folders
+- **Thumbnail cache** for responsive grids/lists
+- **Filtering** (type/date range) and **sorting**
+- Optional **People tagging**:
+  - On-device face detection + embeddings
+  - Local face database (no cloud)
 
-| Platform | Target Framework | Minimum OS | Notes |
-| --- | --- | --- | --- |
-| **Android** | `net9.0-android` | Android 9 (API 28) | Full feature set (MediaStore + thumbnails) |
-| **Windows** | `net9.0-windows10.0.19041.0` | Windows 10/11 | UI and local indexing support |
+---
 
-Other MAUI platforms (iOS, macOS, Mac Catalyst) are **not configured** in the project file yet. See [Roadmap / Extending to Other Platforms](#roadmap--extending-to-other-platforms) for guidance.
+## Platform support
 
-## Tech Stack
-- **.NET 9** + **.NET MAUI**
-- **SQLite** (`sqlite-net-pcl`)
-- **MVVM Toolkit** (`CommunityToolkit.Mvvm`)
-- **Android Media APIs** for video indexing and thumbnail extraction
+| Feature | Android | Windows |
+|---|---:|---:|
+| Scan default media libraries | ✅ (MediaStore) | ✅ (Known folders) |
+| Scan custom folder | ✅ (SAF/DocumentFile) | ✅ (folder picker + stored token) |
+| Thumbnail caching | ✅ | ✅ |
+| Internal playback (MediaElement) | ✅ | ✅ |
+| People tagging (ONNX) | ✅ | ✅ |
 
-## Project Structure
-- `Views/` – XAML UI (e.g., `MainPage`, `SourcesPage`)
-- `ViewModels/` – MVVM logic (search, sorting, indexing)
-- `Services/` – MediaStore scan, index service, thumbnails, playback
-- `Models/` – data models (`VideoItem`, `MediaSource`)
-- `Resources/` – strings, themes, styles
-- `Platforms/` – platform-specific implementations
+---
 
-## Getting Started
+## Quick start
+
 ### Prerequisites
-- **.NET 9 SDK**
-- **MAUI workload** (`dotnet workload install maui`)
-- **Android SDK** (Android Studio or CLI tools) for Android builds
-- **Windows 10/11 SDK** for Windows builds
 
-### Setup
-1. Clone the repository.
-2. Install workloads (if needed):
-   ```bash
-   dotnet workload install maui
-   ```
-3. Ensure Android and Windows SDKs are installed and configured.
+- **.NET 10 SDK** (this repo targets `net10.0-*`)
+- **.NET MAUI workload**
+- For Windows: Windows 10 SDK compatible with `10.0.19041.0`
 
-## Build & Run
-### Android
-Build a release APK:
+Install MAUI workload:
+
 ```bash
-dotnet build -c Release -f net9.0-android
+dotnet workload install maui
 ```
 
-Run on a connected device or emulator:
+### Build & run (Windows)
+
 ```bash
-dotnet build -t:Run -f net9.0-android
+dotnet restore
+dotnet build -f net10.0-windows10.0.19041.0
+dotnet run   -f net10.0-windows10.0.19041.0
 ```
+
+### Build & run (Android)
+
+Use Visual Studio / VS Code MAUI tooling, or:
+
+```bash
+dotnet restore
+dotnet build -f net10.0-android
+dotnet run   -f net10.0-android
+```
+
+#### Android permissions
+
+Indexing requires media read permission. The app requests it via `PermissionService` before scanning.
+
+---
+
+## Configuration and settings
+
+User-facing settings are persisted via `Preferences` in `Services/AppSettingsService.cs`.
+
+Common options you will see in the UI:
+
+- **Theme** (`dark` by default)
+- **Internal player** (MediaElement)
+- **People tagging** (face detection + embeddings)
+- **Indexed media types** vs **visible media types** (you can index more than you display)
+- **Date filter** (from/to + enable toggle)
+- **Search text** and **sort mode**
+- **Custom extension lists** for photos/videos/documents
+- **Allow file changes** (controls whether the app is allowed to perform file operations)
+
+Tip: If you change settings that affect indexing, the app may set a “needs reindex” flag.
+
+---
+
+## How indexing works
+
+Indexing produces a local SQLite index that is used for the UI lists, search, filters, and the thumbnail cache.
+
+### Sources
+
+A media source is represented by a `MediaSource`.
+
+- If a source specifies a **local folder path**, indexing scans that folder.
+- If no folder is specified, indexing falls back to **platform defaults**.
 
 ### Windows
-Build a Windows desktop app:
-```bash
-dotnet build -c Release -f net9.0-windows10.0.19041.0
-```
 
-Run the Windows target:
-```bash
-dotnet build -t:Run -f net9.0-windows10.0.19041.0
-```
+- Default roots: **My Pictures**, **My Videos**, **My Documents**
+- When you pick a folder, the app stores an access token for future runs.
 
-> Note: The project is configured with `WindowsPackageType=None` for unpackaged desktop deployment.
+### Android
 
-## App Flow
-1. **Initial indexing**: Media metadata is scanned and stored in SQLite.
-2. **Grid rendering**: The UI loads results quickly from the index.
-3. **Thumbnail pipeline**: Preview frames are generated asynchronously and cached on disk.
-4. **Playback**: Tapping a video opens the system player.
+- If no folder is configured, scanning uses **MediaStore** (fast, no deep recursion).
+- If a folder is configured, scanning uses the **Storage Access Framework (SAF)** via `DocumentFile`.
 
-## Data & Storage
-- **SQLite database**: Caches metadata to avoid full rescans.
-- **Thumbnail cache**: Local file cache for preview frames.
-- **Incremental refresh**: New videos are indexed without rebuilding the full catalog.
+---
 
-## Permissions
-Android requires media access permissions to read local videos. Ensure the runtime permission flow is enabled and accepted on device. Without permission, the app will not list local videos.
+## People tagging and face recognition
 
-## Networking & SMB Shares
-The app intentionally **does not scan SMB shares directly**. For best performance and platform compliance, sync network folders locally first (e.g., with FolderSync, Solid Explorer, or similar) and point the app to the local folder.
+People tagging is optional and designed for **on-device** processing.
+
+High-level pipeline:
+
+1. Decode and preprocess images (ImageSharp)
+2. Run face detection model (ONNX Runtime)
+3. For each face: compute embedding (ONNX Runtime)
+4. Store embeddings locally and match by distance threshold
+
+### Model downloads
+
+When the feature is enabled, the app can download two ONNX models (YuNet + SFace) used for face detection and recognition.
+
+The download logic is implemented in:
+
+- `Services/Faces/ModelFileService.cs`
+
+If you distribute this app as a binary, ensure you also distribute the required license notices for these models.
+See [Licensing and third-party notices](#licensing-and-third-party-notices).
+
+### Offline / pre-seeding models
+
+If you need a fully offline setup, you can pre-seed the model files into the expected local storage directory.
+The exact storage location is shown below.
+
+---
+
+## Storage locations
+
+Paths are per-user and platform-specific. The app uses MAUI `FileSystem.*` locations.
+
+- **Database:** `FileSystem.AppDataDirectory/ultimatevideobrowser.db`
+- **Thumbnail cache:** `FileSystem.CacheDirectory/thumbs/`
+- **Face models:** stored in app-local data (see `ModelFileService`)
+
+---
+
+## Privacy
+
+- Indexing and browsing are local.
+- Thumbnails and the database are stored locally.
+- People tagging runs locally (no cloud inference).
+
+Network access is only required if you enable face recognition and the app downloads the ONNX models.
+
+---
+
+## Repository layout
+
+- `Services/` – indexing, scanning, permissions, thumbnails, face recognition
+- `Models/` – SQLite models / DTOs
+- `ViewModels/` – MVVM view models
+- `Views/` – MAUI pages
+- `Platforms/Android`, `Platforms/Windows` – platform-specific services/helpers
+- `UltimateVideoBrowser.Tests/` – unit tests (logic-level)
+
+---
 
 ## Troubleshooting
-- **No videos appear**: Verify storage permissions and confirm there are local videos on the device.
-- **Thumbnails are blank**: Some codecs may not support frame extraction. Try another file.
-- **Slow first launch**: Initial indexing can take time on large libraries; subsequent runs are fast.
 
-## Roadmap / Extending to Other Platforms
-To add additional MAUI targets (iOS/macOS/Mac Catalyst):
-1. Add new target frameworks in `UltimateVideoBrowser.csproj` (e.g., `net9.0-ios`, `net9.0-maccatalyst`).
-2. Implement platform-specific media scanners and thumbnail extraction in `Platforms/<Platform>`.
-3. Validate permissions and sandbox behavior for each platform.
+### Android: folder scan finds nothing
+
+- If you selected a folder via SAF, make sure the app still has access to it (some devices revoke access after updates).
+- Try re-selecting the folder and re-run indexing.
+- Verify that the file extensions you want are included in **Settings → Extensions**.
+
+### Android: permission prompt keeps returning “denied”
+
+- Ensure you granted the media read permissions in system settings.
+- On some Android versions, photo/video permissions are separate.
+
+### Face recognition: models cannot be downloaded
+
+- Model downloads require network access at least once.
+- For offline deployments, pre-seed the model files into the app’s local data directory and restart the app.
+- If you ship binaries, ship the license notices for the models (see `THIRD_PARTY_NOTICES.md`).
+
+### Windows: access denied when scanning a folder
+
+- Re-pick the folder so the access token is refreshed.
+- Avoid scanning protected system locations.
+
+### Build issues
+
+- Confirm you have the **.NET 10 SDK** installed.
+- Confirm MAUI workloads are installed (`dotnet workload install maui`).
+- On Windows, ensure the target `10.0.19041.0` Windows SDK is available.
+
+---
+
+## Roadmap
+
+Ideas and likely next steps (not commitments):
+
+- Add iOS/macOS targets when platform services are implemented.
+- Improve incremental indexing (detect file changes faster).
+- Better duplicate detection and smarter thumbnail invalidation.
+- In-app **Licenses/About** page that renders `THIRD_PARTY_NOTICES.md` content.
+
+---
+
+## Contributing
+
+If you want to contribute:
+
+- Keep changes small and focused.
+- Prefer adding unit tests for logic-heavy changes (`UltimateVideoBrowser.Tests`).
+- Avoid introducing new dependencies unless necessary (and update `THIRD_PARTY_NOTICES.md` accordingly).
+
+---
+
+## Licensing and third-party notices
+
+### Repository license
+
+This repository contains **Inetconnector-owned code** plus **third‑party components** (NuGet packages and optionally downloaded models).
+
+- To pick an outbound licensing strategy that supports commercialization (permissive, dual-license, or source-available),
+  see: **`LICENSING.md`**.
+- If you accept external pull requests and want to keep the ability to commercialize/dual‑license later, have contributors
+  agree to: **`CONTRIBUTOR_LICENSE_AGREEMENT.md`**.
+
+> Note: Third‑party components remain licensed under their own terms. See `THIRD_PARTY_NOTICES.md` and `LICENSES/`.
+
+
+### Third-party dependencies
+
+This app uses third-party components with license notice requirements.
+This repository includes:
+
+- `THIRD_PARTY_NOTICES.md` – direct NuGet dependencies + runtime-downloaded ML models
+- `LICENSES/` – license texts referenced by the notices
+
+If you distribute binaries, ship these notices alongside your distribution (or provide an in-app “About / Licenses” screen).
+
+### Six Labors Split License (ImageSharp)
+
+`SixLabors.ImageSharp` is under the **Six Labors Split License**.
+
+- If you qualify (for example **< 1M USD annual gross revenue**, or using it as **transitive dependency**, or in **open source/source-available**, or as **non-profit**), you can use it under **Apache 2.0**.
+- Otherwise, a paid commercial license may be required.
+
+See `LICENSES/SIXLABORS_SPLIT_LICENSE_1.0.txt` and `THIRD_PARTY_NOTICES.md`.
 
 ## License
-No license file is included. Add one if you plan to distribute or open-source the project.
+
+UltimateVideoBrowser is **dual-track**:
+
+- **Community license:** Apache-2.0 (see `LICENSE`)
+- **Commercial licensing:** available from Inetconnector.com for OEM/support/procurement needs
+  (see `LICENSES/INETCONNECTOR_COMMERCIAL_LICENSE.txt` and `LICENSING.md`)
+
+**Third-party components** (NuGet packages and downloaded ML models) remain under their respective licenses.
+See `THIRD_PARTY_NOTICES.md` and `LICENSES/`.
+
+**Contributions** require acceptance of the CLA (`CONTRIBUTOR_LICENSE_AGREEMENT.md`).
+
+## Trademarks
+
+The names and logos are trademarks of Inetconnector.com. See `TRADEMARKS.md` for permitted use.

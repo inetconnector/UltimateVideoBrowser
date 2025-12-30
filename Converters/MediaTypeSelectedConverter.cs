@@ -17,5 +17,7 @@ public sealed class MediaTypeSelectedConverter : IMultiValueConverter
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+    {
+        throw new NotSupportedException();
+    }
 }

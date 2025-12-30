@@ -16,6 +16,6 @@
                android:theme="@style/Maui.MainTheme"
                android:usesCleartextTraffic="false">
     <!-- Entfernen der handgeschriebenen MainActivity beim Merge -->
-    <activity android:name=".MainActivity"  />
+    <activity android:name=".MainActivity" />
   </application>
 </manifest>

@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -84,10 +83,10 @@ public partial class MainPage : ContentPage
 
         private int gridSpan = 3;
         private Window? indexingWindow;
-        private Window? loadingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
         private bool isLoadingWindowSuppressed;
+        private Window? loadingWindow;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
