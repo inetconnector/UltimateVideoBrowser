@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using UltimateVideoBrowser.Services;
+using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
 #if ANDROID
@@ -40,6 +41,21 @@ public static class MauiProgram
         builder.Services.AddSingleton<ThumbnailService>();
         builder.Services.AddSingleton<IndexService>();
         builder.Services.AddSingleton<PeopleTagService>();
+        builder.Services.AddSingleton<ModelFileService>();
+        builder.Services.AddSingleton<YuNetFaceDetector>(sp =>
+        {
+            var modelService = sp.GetRequiredService<ModelFileService>();
+            var detectorPath = modelService.GetYuNetModelAsync(CancellationToken.None).GetAwaiter().GetResult();
+            var postPath = modelService.GetYuNetPostModelAsync(CancellationToken.None).GetAwaiter().GetResult();
+            return new YuNetFaceDetector(detectorPath, postPath);
+        });
+        builder.Services.AddSingleton<SFaceRecognizer>(sp =>
+        {
+            var modelService = sp.GetRequiredService<ModelFileService>();
+            var modelPath = modelService.GetSFaceModelAsync(CancellationToken.None).GetAwaiter().GetResult();
+            return new SFaceRecognizer(modelPath);
+        });
+        builder.Services.AddSingleton<PeopleRecognitionService>();
         builder.Services.AddSingleton<ISourceService, SourceService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();

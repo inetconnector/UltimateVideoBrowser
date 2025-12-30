@@ -81,6 +81,27 @@ public sealed class PeopleTagService
             await db.Db.InsertAsync(entry).ConfigureAwait(false);
     }
 
+    public async Task AddTagsForMediaAsync(string mediaPath, IEnumerable<string> tags)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath))
+            return;
+
+        var incoming = tags
+            .Where(tag => !string.IsNullOrWhiteSpace(tag))
+            .Select(tag => tag.Trim())
+            .Where(tag => !string.IsNullOrWhiteSpace(tag))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (incoming.Count == 0)
+            return;
+
+        var existing = await GetTagsForMediaAsync(mediaPath).ConfigureAwait(false);
+        foreach (var tag in existing)
+            incoming.Add(tag);
+
+        await SetTagsForMediaAsync(mediaPath, incoming).ConfigureAwait(false);
+    }
+
     public async Task<IReadOnlyList<string>> FindMediaByPersonAsync(string personName)
     {
         if (string.IsNullOrWhiteSpace(personName))
