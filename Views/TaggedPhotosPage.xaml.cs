@@ -24,7 +24,25 @@ public partial class TaggedPhotosPage : ContentPage
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        if (sender is Button b)
+            b.IsEnabled = false;
+
+        await Task.Yield();
+
+        if (Navigation?.NavigationStack?.Count <= 1)
+            return;
+
+        Dispatcher.Dispatch(async () =>
+        {
+            try
+            {
+                await Navigation.PopAsync(false);
+            }
+            catch
+            {
+                // Ignore
+            }
+        });
     }
 
     private async void OnPhotoSelected(object sender, SelectionChangedEventArgs e)

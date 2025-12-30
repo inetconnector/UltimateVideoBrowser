@@ -8,6 +8,7 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppSettingsService settingsService;
+    private bool isInitializing;
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
@@ -28,6 +29,7 @@ public partial class SettingsViewModel : ObservableObject
     public SettingsViewModel(AppSettingsService settingsService)
     {
         this.settingsService = settingsService;
+        isInitializing = true;
         ThemeOptions = new[]
         {
             new ThemeOption("light", AppResources.ThemeLight),
@@ -43,7 +45,6 @@ public partial class SettingsViewModel : ObservableObject
 
         SelectedTheme = ThemeOptions.FirstOrDefault(option => option.Key == settingsService.ThemePreference)
                         ?? ThemeOptions.First();
-        ApplyTheme(SelectedTheme.Key);
 
         SelectedSortOption = SortOptions.FirstOrDefault(option => option.Key == settingsService.SelectedSortOptionKey)
                              ?? SortOptions.First();
@@ -63,6 +64,9 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+
+        // Avoid triggering expensive side effects (theme swap / refresh signals) while the VM is being constructed.
+        isInitializing = false;
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -70,6 +74,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnSelectedThemeChanged(ThemeOption? value)
     {
+        if (isInitializing)
+            return;
+
         if (value == null)
             return;
 
@@ -79,6 +86,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnSelectedSortOptionChanged(SortOption? value)
     {
+        if (isInitializing)
+            return;
+
         if (value == null)
             return;
 
@@ -87,11 +97,17 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsDateFilterEnabledChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.DateFilterEnabled = value;
     }
 
     partial void OnDateFilterFromChanged(DateTime value)
     {
+        if (isInitializing)
+            return;
+
         if (value > DateFilterTo)
             DateFilterTo = value;
 
@@ -100,6 +116,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnDateFilterToChanged(DateTime value)
     {
+        if (isInitializing)
+            return;
+
         if (value < DateFilterFrom)
             DateFilterFrom = value;
 
@@ -108,16 +127,25 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnNeedsReindexChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.NeedsReindex = value;
     }
 
     partial void OnIsInternalPlayerEnabledChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.InternalPlayerEnabled = value;
     }
 
     partial void OnIsVideosIndexedChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         if (!EnsureAtLeastOneIndexed(value, IsPhotosIndexed, IsDocumentsIndexed, () => IsVideosIndexed = true))
             return;
 
@@ -126,6 +154,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsPhotosIndexedChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsDocumentsIndexed, () => IsPhotosIndexed = true))
             return;
 
@@ -134,6 +165,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsDocumentsIndexedChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsPhotosIndexed, () => IsDocumentsIndexed = true))
             return;
 
@@ -142,6 +176,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnVideoExtensionsTextChanged(string value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.VideoExtensions = value;
         if (!NeedsReindex)
             NeedsReindex = true;
@@ -149,6 +186,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnPhotoExtensionsTextChanged(string value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.PhotoExtensions = value;
         if (!NeedsReindex)
             NeedsReindex = true;
@@ -156,6 +196,9 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnDocumentExtensionsTextChanged(string value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.DocumentExtensions = value;
         if (!NeedsReindex)
             NeedsReindex = true;
@@ -163,11 +206,17 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnAllowFileChangesChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.AllowFileChanges = value;
     }
 
     partial void OnIsPeopleTaggingEnabledChanged(bool value)
     {
+        if (isInitializing)
+            return;
+
         settingsService.PeopleTaggingEnabled = value;
     }
 
