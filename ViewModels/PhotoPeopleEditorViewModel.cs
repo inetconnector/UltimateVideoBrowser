@@ -11,20 +11,24 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
 {
     private readonly FaceThumbnailService faceThumbnails;
     private readonly PeopleDataService peopleData;
+    private readonly PeopleTagService peopleTagService;
     private readonly PeopleRecognitionService recognitionService;
     [ObservableProperty] private ObservableCollection<FaceTagItemViewModel> faces = new();
 
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string mediaPath = string.Empty;
+    [ObservableProperty] private string peopleTagsText = string.Empty;
 
     public PhotoPeopleEditorViewModel(
         PeopleDataService peopleData,
         PeopleRecognitionService recognitionService,
-        FaceThumbnailService faceThumbnails)
+        FaceThumbnailService faceThumbnails,
+        PeopleTagService peopleTagService)
     {
         this.peopleData = peopleData;
         this.recognitionService = recognitionService;
         this.faceThumbnails = faceThumbnails;
+        this.peopleTagService = peopleTagService;
     }
 
     public void Initialize(string path)
@@ -63,6 +67,13 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
             {
                 Faces = new ObservableCollection<FaceTagItemViewModel>(items);
             });
+
+            // Keep the free-form tag editor in sync with the DB.
+            var tags = await peopleTagService.GetTagsForMediaAsync(MediaPath).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                PeopleTagsText = string.Join(", ", tags.Where(t => !string.IsNullOrWhiteSpace(t)));
+            });
         }
         catch
         {
@@ -99,6 +110,18 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
                 ct.ThrowIfCancellationRequested();
                 await recognitionService.RenamePersonAsync(u.PersonId, u.Name, ct).ConfigureAwait(false);
             }
+
+            // Optional manual tags: allow the user to add person names even when face detection fails.
+            // We add these on top of the automatically derived face-tags to avoid losing data.
+            var manualTags = (PeopleTagsText ?? string.Empty)
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (manualTags.Count > 0)
+                await peopleTagService.AddTagsForMediaAsync(MediaPath, manualTags).ConfigureAwait(false);
 
             // Refresh the editor view so the latest names show up.
             await LoadAsync().ConfigureAwait(false);

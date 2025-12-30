@@ -23,25 +23,7 @@ public partial class PeoplePage : ContentPage
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        if (sender is Button b)
-            b.IsEnabled = false;
-
-        await Task.Yield();
-
-        if (Navigation?.NavigationStack?.Count <= 1)
-            return;
-
-        Dispatcher.Dispatch(async () =>
-        {
-            try
-            {
-                await Navigation.PopAsync(false);
-            }
-            catch
-            {
-                // Ignore
-            }
-        });
+        await Navigation.PopAsync();
     }
 
     private async void OnTaggedPhotosClicked(object sender, EventArgs e)

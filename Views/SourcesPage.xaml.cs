@@ -13,45 +13,15 @@ public partial class SourcesPage : ContentPage
         BindingContext = vm;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-
-        // Don't block the UI thread while loading sources/permissions.
-        Dispatcher.Dispatch(async () =>
-        {
-            try
-            {
-                await Task.Yield();
-                await vm.InitializeAsync();
-            }
-            catch
-            {
-                // Ignore
-            }
-        });
+        await vm.InitializeAsync();
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        if (sender is Button b)
-            b.IsEnabled = false;
-
-        await Task.Yield();
-
-        if (Navigation?.NavigationStack?.Count <= 1)
-            return;
-
-        Dispatcher.Dispatch(async () =>
-        {
-            try
-            {
-                await Navigation.PopAsync(false);
-            }
-            catch
-            {
-                // Ignore
-            }
-        });
+        if (Navigation?.NavigationStack?.Count > 1)
+            await Navigation.PopAsync();
     }
 }

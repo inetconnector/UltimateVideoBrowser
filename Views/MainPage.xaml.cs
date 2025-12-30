@@ -38,13 +38,11 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                // Let the navigation finish and the first frame render before we start any refresh work.
                 await Task.Yield();
-                await Task.Delay(50, ct);
                 if (ct.IsCancellationRequested)
                     return;
 
-                _ = vm.OnMainPageAppearingAsync();
+                await vm.OnMainPageAppearingAsync();
             }
             catch
             {

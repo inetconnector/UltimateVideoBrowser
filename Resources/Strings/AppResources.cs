@@ -222,6 +222,14 @@ public static class AppResources
     public static string TagPeopleEditorTitle => GetString(nameof(TagPeopleEditorTitle), "Tag people");
     public static string TagPeopleEditorHeader => GetString(nameof(TagPeopleEditorHeader), "Name faces");
 
+    public static string TagPeopleEditorTagsLabel => GetString(nameof(TagPeopleEditorTagsLabel), "People tags");
+
+    public static string TagPeopleEditorTagsPlaceholder =>
+        GetString(nameof(TagPeopleEditorTagsPlaceholder), "Add names, separated by commas...");
+
+    public static string TagPeopleEditorTagsHint =>
+        GetString(nameof(TagPeopleEditorTagsHint), "Tip: You can tag a photo even if no faces were detected.");
+
     public static string TagPeopleEditorEmptyHint =>
         GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
 

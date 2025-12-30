@@ -369,6 +369,15 @@
   <data name="TagPeopleEditorHeader" xml:space="preserve">
     <value>Gesichter benennen</value>
   </data>
+  <data name="TagPeopleEditorTagsLabel" xml:space="preserve">
+    <value>Personen-Tags</value>
+  </data>
+  <data name="TagPeopleEditorTagsPlaceholder" xml:space="preserve">
+    <value>Namen hinzufügen, durch Kommas getrennt...</value>
+  </data>
+  <data name="TagPeopleEditorTagsHint" xml:space="preserve">
+    <value>Tipp: Du kannst ein Foto taggen, auch wenn keine Gesichter erkannt wurden.</value>
+  </data>
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
     <value>In diesem Foto wurden keine Gesichter erkannt.</value>
   </data>

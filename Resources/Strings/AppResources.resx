@@ -372,6 +372,15 @@
   <data name="TagPeopleEditorHeader" xml:space="preserve">
     <value>Name faces</value>
   </data>
+  <data name="TagPeopleEditorTagsLabel" xml:space="preserve">
+    <value>People tags</value>
+  </data>
+  <data name="TagPeopleEditorTagsPlaceholder" xml:space="preserve">
+    <value>Add names, separated by commas...</value>
+  </data>
+  <data name="TagPeopleEditorTagsHint" xml:space="preserve">
+    <value>Tip: You can tag a photo even if no faces were detected.</value>
+  </data>
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
     <value>No faces detected for this photo.</value>
   </data>

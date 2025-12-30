@@ -194,20 +194,16 @@ public partial class MainViewModel : ObservableObject
     ///     Call this from the MainPage when the page becomes visible again (e.g. after closing Settings/Sources).
     ///     It re-applies persisted settings and refreshes the visible data so the UI does not show stale sources/items.
     /// </summary>
-    public Task OnMainPageAppearingAsync()
+    public async Task OnMainPageAppearingAsync()
     {
-        // IMPORTANT: this method must never block the UI thread.
-        // Navigation back from Settings/Sources should feel instant.
-        // Any heavy work is started asynchronously and will "trickle in".
         if (!isInitialized)
         {
-            _ = InitializeAsync();
-            return Task.CompletedTask;
+            await InitializeAsync().ConfigureAwait(false);
+            return;
         }
 
         ReloadSettingsFromService();
-        _ = RefreshAsync();
-        return Task.CompletedTask;
+        await RefreshAsync().ConfigureAwait(false);
     }
 
     [RelayCommand]
@@ -1007,25 +1003,17 @@ public partial class MainViewModel : ObservableObject
                 .GetTagsForMediaAsync(items.Select(item => item.Path))
                 .ConfigureAwait(false);
 
-            // Update the UI in small batches to avoid blocking navigation/scrolling.
-            const int batchSize = 200;
-            for (var i = 0; i < items.Count; i += batchSize)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                var slice = items.Skip(i).Take(batchSize).ToList();
-                await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    if (mediaItemsVersion != currentVersion)
-                        return;
+                if (mediaItemsVersion != currentVersion)
+                    return;
 
-                    foreach (var item in slice)
-                        if (tagMap.TryGetValue(item.Path, out var tags))
-                            item.PeopleTagsSummary = string.Join(", ", tags);
-                        else
-                            item.PeopleTagsSummary = string.Empty;
-                });
-
-                await Task.Yield();
-            }
+                foreach (var item in items)
+                    if (tagMap.TryGetValue(item.Path, out var tags))
+                        item.PeopleTagsSummary = string.Join(", ", tags);
+                    else
+                        item.PeopleTagsSummary = string.Empty;
+            });
         }
         catch
         {
@@ -1144,43 +1132,14 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnIsPeopleTaggingEnabledChanged(bool value)
     {
-        // IMPORTANT: never block the UI thread here.
-        // Enabling/disabling can affect many visible items, so we update in small batches.
         if (!value)
         {
-            _ = ClearPeopleTagsSummaryAsync(mediaItemsVersion);
+            foreach (var item in MediaItems)
+                item.PeopleTagsSummary = string.Empty;
             return;
         }
 
         _ = RefreshPeopleTagsAsync(MediaItems, mediaItemsVersion);
-    }
-
-    private async Task ClearPeopleTagsSummaryAsync(int currentVersion)
-    {
-        try
-        {
-            var snapshot = MediaItems.ToList();
-            const int batchSize = 200;
-            for (var i = 0; i < snapshot.Count; i += batchSize)
-            {
-                var slice = snapshot.Skip(i).Take(batchSize).ToList();
-                await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    if (mediaItemsVersion != currentVersion)
-                        return;
-
-                    foreach (var item in slice)
-                        item.PeopleTagsSummary = string.Empty;
-                });
-
-                // Yield to keep scrolling/navigation responsive.
-                await Task.Yield();
-            }
-        }
-        catch
-        {
-            // ignore
-        }
     }
 
     partial void OnMarkedCountChanged(int value)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -60,7 +60,7 @@
   <data name="AllDeviceVideos" xml:space="preserve">
     <value>Όλα τα βίντεο της συσκευής</value>
   </data>
-  <data name="HeroEyebrow" xml:space="preserve">
+<data name="HeroEyebrow" xml:space="preserve">
     <value>Η προσωπική σας βιβλιοθήκη</value>
   </data>
   <data name="HeroTitle" xml:space="preserve">
@@ -148,7 +148,7 @@
     <value>Δεν μπορέσαμε να αποθηκεύσουμε αυτό το βίντεο. Δοκιμάστε άλλη τοποθεσία.</value>
   </data>
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
-    <value>Η &quot;Αποθήκευση ως&quot; δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
+    <value>Η "Αποθήκευση ως" δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
   </data>
   <data name="BackButton" xml:space="preserve">
     <value>Πίσω</value>
@@ -275,242 +275,5 @@
   </data>
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Βιβλιοθήκη πολυμέσων συσκευής</value>
-  </data>
-  <data name="CancelButton" xml:space="preserve">
-    <value>Ακύρωση</value>
-  </data>
-  <data name="ClearMarkedAction" xml:space="preserve">
-    <value>Εκκαθάριση επιλογής</value>
-  </data>
-  <data name="CopyMarkedAction" xml:space="preserve">
-    <value>Αντιγραφή</value>
-  </data>
-  <data name="CreateButton" xml:space="preserve">
-    <value>Δημιουργία</value>
-  </data>
-  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
-    <value>Διαγράφηκαν: {0}, απέτυχαν: {1}.</value>
-  </data>
-  <data name="DeleteCompletedTitle" xml:space="preserve">
-    <value>Η διαγραφή ολοκληρώθηκε</value>
-  </data>
-  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
-    <value>Διαγραφή {0} στοιχείου(ων) μόνιμα; Δεν είναι δυνατή η αναίρεση.</value>
-  </data>
-  <data name="DeleteConfirmTitle" xml:space="preserve">
-    <value>Διαγραφή από τον δίσκο;</value>
-  </data>
-  <data name="DeleteFailedTitle" xml:space="preserve">
-    <value>Η διαγραφή απέτυχε</value>
-  </data>
-  <data name="DeleteMarkedAction" xml:space="preserve">
-    <value>Μόνιμη διαγραφή</value>
-  </data>
-  <data name="DeleteNotSupportedMessage" xml:space="preserve">
-    <value>Η μόνιμη διαγραφή δεν υποστηρίζεται σε αυτήν τη συσκευή.</value>
-  </data>
-  <data name="LoadingMedia" xml:space="preserve">
-    <value>Φόρτωση πολυμέσων...</value>
-  </data>
-  <data name="MarkedCountFormat" xml:space="preserve">
-    <value>Επιλεγμένα: {0}</value>
-  </data>
-  <data name="MediaTypeDocuments" xml:space="preserve">
-    <value>Έγγραφα</value>
-  </data>
-  <data name="MediaTypeFilterTitle" xml:space="preserve">
-    <value>Τύποι πολυμέσων</value>
-  </data>
-  <data name="MediaTypePhotos" xml:space="preserve">
-    <value>Φωτογραφίες</value>
-  </data>
-  <data name="MediaTypeVideos" xml:space="preserve">
-    <value>Βίντεο</value>
-  </data>
-  <data name="MoveMarkedAction" xml:space="preserve">
-    <value>Μετακίνηση</value>
-  </data>
-  <data name="OpenButton" xml:space="preserve">
-    <value>Άνοιγμα</value>
-  </data>
-  <data name="OpenFolderAction" xml:space="preserve">
-    <value>Άνοιγμα φακέλου</value>
-  </data>
-  <data name="OpenFolderFailedMessage" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η ανοίξουμε αυτόν τον φάκελο. Δοκιμάστε ξανά.</value>
-  </data>
-  <data name="OpenFolderFailedTitle" xml:space="preserve">
-    <value>Αποτυχία ανοίγματος φακέλου</value>
-  </data>
-  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
-    <value>Το άνοιγμα φακέλων δεν υποστηρίζεται σε αυτήν τη συσκευή.</value>
-  </data>
-  <data name="PeopleButton" xml:space="preserve">
-    <value>Άτομα</value>
-  </data>
-  <data name="PeopleEmptyHint" xml:space="preserve">
-    <value>Δεν υπάρχουν άτομα ακόμα. Ενεργοποιήστε την επισήμανση ατόμων και δημιουργήστε ευρετήριο φωτογραφιών για να τα δείτε εδώ.</value>
-  </data>
-  <data name="PeoplePageHeader" xml:space="preserve">
-    <value>Άτομα</value>
-  </data>
-  <data name="PeoplePageTitle" xml:space="preserve">
-    <value>Άτομα</value>
-  </data>
-  <data name="PeopleSearchPlaceholder" xml:space="preserve">
-    <value>Αναζήτηση ατόμων...</value>
-  </data>
-  <data name="PersonEmptyHint" xml:space="preserve">
-    <value>Δεν υπάρχουν φωτογραφίες ακόμα.</value>
-  </data>
-  <data name="PersonNamePlaceholder" xml:space="preserve">
-    <value>Όνομα</value>
-  </data>
-  <data name="PersonPageTitle" xml:space="preserve">
-    <value>Άτομο</value>
-  </data>
-  <data name="PreviewEmptyMessage" xml:space="preserve">
-    <value>Επιλέξτε ένα αρχείο για προεπισκόπηση εδώ.</value>
-  </data>
-  <data name="PreviewTitle" xml:space="preserve">
-    <value>Προεπισκόπηση</value>
-  </data>
-  <data name="RefreshButton" xml:space="preserve">
-    <value>Ανανέωση</value>
-  </data>
-  <data name="RenameAction" xml:space="preserve">
-    <value>Μετονομασία</value>
-  </data>
-  <data name="RenameConfirmMessage" xml:space="preserve">
-    <value>Μετονομασία του &quot;{0}&quot; σε &quot;{1}&quot;?</value>
-  </data>
-  <data name="RenameConfirmTitle" xml:space="preserve">
-    <value>Επιβεβαίωση μετονομασίας</value>
-  </data>
-  <data name="RenameExistsMessage" xml:space="preserve">
-    <value>Υπάρχει ήδη αρχείο με αυτό το όνομα σε αυτόν τον φάκελο.</value>
-  </data>
-  <data name="RenameFailedMessage" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η μετονομασία αυτού του αρχείου. Δοκιμάστε ξανά.</value>
-  </data>
-  <data name="RenameFailedTitle" xml:space="preserve">
-    <value>Η μετονομασία απέτυχε</value>
-  </data>
-  <data name="RenameMessage" xml:space="preserve">
-    <value>Εισαγάγετε νέο όνομα για αυτό το αρχείο.</value>
-  </data>
-  <data name="RenameNotSupportedMessage" xml:space="preserve">
-    <value>Η μετονομασία δεν υποστηρίζεται σε αυτήν τη συσκευή.</value>
-  </data>
-  <data name="RenamePlaceholder" xml:space="preserve">
-    <value>Όνομα αρχείου</value>
-  </data>
-  <data name="RenameTitle" xml:space="preserve">
-    <value>Μετονομασία αρχείου</value>
-  </data>
-  <data name="SaveButton" xml:space="preserve">
-    <value>Αποθήκευση</value>
-  </data>
-  <data name="SettingsExtensionsHint" xml:space="preserve">
-    <value>Διαχωρίστε τις επεκτάσεις με κόμματα (π.χ. .mp4, .mkv).</value>
-  </data>
-  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
-    <value>.mp4, .mkv, .avi</value>
-  </data>
-  <data name="SettingsExtensionsTitle" xml:space="preserve">
-    <value>Επεκτάσεις αρχείων</value>
-  </data>
-  <data name="SettingsFileChangesHint" xml:space="preserve">
-    <value>Ενεργοποιήστε το για να εμφανίζονται ενέργειες που αλλάζουν αρχεία στον δίσκο.</value>
-  </data>
-  <data name="SettingsFileChangesLabel" xml:space="preserve">
-    <value>Να επιτρέπεται η μετονομασία, μετακίνηση, αντιγραφή και διαγραφή</value>
-  </data>
-  <data name="SettingsFileChangesTitle" xml:space="preserve">
-    <value>Αλλαγές αρχείων</value>
-  </data>
-  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
-    <value>Χρήση εσωτερικού προγράμματος αναπαραγωγής βίντεο για βίντεο</value>
-  </data>
-  <data name="SettingsMediaTypesMessage" xml:space="preserve">
-    <value>Επιλέξτε ποιοι τύποι θα μπουν στο ευρετήριο της βιβλιοθήκης σας.</value>
-  </data>
-  <data name="SettingsMediaTypesTitle" xml:space="preserve">
-    <value>Τύποι πολυμέσων</value>
-  </data>
-  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
-    <value>Ενεργοποιήστε το για να επισημαίνετε άτομα σε φωτογραφίες και βίντεο της βιβλιοθήκης.</value>
-  </data>
-  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
-    <value>Ενεργοποίηση επισήμανσης ατόμων</value>
-  </data>
-  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
-    <value>Επισήμανση ατόμων</value>
-  </data>
-  <data name="SettingsPlaybackTitle" xml:space="preserve">
-    <value>Αναπαραγωγή</value>
-  </data>
-  <data name="TagPeopleAction" xml:space="preserve">
-    <value>Επισήμανση ατόμων</value>
-  </data>
-  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
-    <value>Δεν εντοπίστηκαν πρόσωπα σε αυτή τη φωτογραφία.</value>
-  </data>
-  <data name="TagPeopleEditorHeader" xml:space="preserve">
-    <value>Ονομάστε πρόσωπα</value>
-  </data>
-  <data name="TagPeopleEditorTitle" xml:space="preserve">
-    <value>Επισήμανση ατόμων</value>
-  </data>
-  <data name="TagPeopleMessage" xml:space="preserve">
-    <value>Εισαγάγετε ονόματα χωρισμένα με κόμματα.</value>
-  </data>
-  <data name="TagPeoplePlaceholder" xml:space="preserve">
-    <value>π.χ. Alex, Sam, Priya</value>
-  </data>
-  <data name="TagPeopleTitle" xml:space="preserve">
-    <value>Επισήμανση ατόμων</value>
-  </data>
-  <data name="TaggedPhotosButton" xml:space="preserve">
-    <value>Επισημασμένες φωτογραφίες</value>
-  </data>
-  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
-    <value>Δεν υπάρχουν επισημασμένες φωτογραφίες ακόμα. Επισημάνετε άτομα σε μια φωτογραφία για να τη δείτε εδώ.</value>
-  </data>
-  <data name="TaggedPhotosPageHeader" xml:space="preserve">
-    <value>Επισημασμένες φωτογραφίες</value>
-  </data>
-  <data name="TaggedPhotosPageTitle" xml:space="preserve">
-    <value>Επισημασμένες φωτογραφίες</value>
-  </data>
-  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
-    <value>Αναζήτηση με όνομα ατόμου...</value>
-  </data>
-  <data name="TransferCompletedMessageFormat" xml:space="preserve">
-    <value>Επιτυχία: {0}, παραλείφθηκαν: {1}, απέτυχαν: {2}.</value>
-  </data>
-  <data name="TransferCopyCompletedTitle" xml:space="preserve">
-    <value>Η αντιγραφή ολοκληρώθηκε</value>
-  </data>
-  <data name="TransferFailedMessage" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η αντιγραφή ή μετακίνηση των επιλεγμένων αρχείων.</value>
-  </data>
-  <data name="TransferFailedTitle" xml:space="preserve">
-    <value>Αποτυχία μεταφοράς</value>
-  </data>
-  <data name="TransferFolderMessage" xml:space="preserve">
-    <value>Επιλέξτε όνομα για τον νέο φάκελο.</value>
-  </data>
-  <data name="TransferFolderPlaceholder" xml:space="preserve">
-    <value>Όνομα φακέλου</value>
-  </data>
-  <data name="TransferFolderTitle" xml:space="preserve">
-    <value>Δημιουργία φακέλου προορισμού</value>
-  </data>
-  <data name="TransferMoveCompletedTitle" xml:space="preserve">
-    <value>Η μετακίνηση ολοκληρώθηκε</value>
-  </data>
-  <data name="TransferNotSupportedMessage" xml:space="preserve">
-    <value>Η αντιγραφή ή μετακίνηση δεν υποστηρίζεται σε αυτήν τη συσκευή.</value>
   </data>
 </root>

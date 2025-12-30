@@ -8,7 +8,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.TagPeopleEditorTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,*"
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
           Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}"
           RowSpacing="12">
 
@@ -48,7 +48,26 @@
                    HeightRequest="240" />
         </Frame>
 
-        <CollectionView Grid.Row="2"
+        <Frame Grid.Row="2"
+               BackgroundColor="{DynamicResource Surface}"
+               CornerRadius="12"
+               HasShadow="False"
+               Padding="12">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{x:Static strings:AppResources.TagPeopleEditorTagsLabel}"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       FontSize="12" />
+                <Entry Text="{Binding PeopleTagsText}"
+                       Placeholder="{x:Static strings:AppResources.TagPeopleEditorTagsPlaceholder}"
+                       TextColor="{DynamicResource OnSurface}"
+                       PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+                <Label Text="{x:Static strings:AppResources.TagPeopleEditorTagsHint}"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       FontSize="10" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <CollectionView Grid.Row="3"
                         ItemsSource="{Binding Faces}"
                         SelectionMode="None">
             <CollectionView.EmptyView>

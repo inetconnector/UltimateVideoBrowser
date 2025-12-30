@@ -32,25 +32,7 @@ public partial class PhotoPeopleEditorPage : ContentPage
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        if (sender is Button b)
-            b.IsEnabled = false;
-
-        await Task.Yield();
-
-        if (Navigation?.NavigationStack?.Count <= 1)
-            return;
-
-        Dispatcher.Dispatch(async () =>
-        {
-            try
-            {
-                await Navigation.PopAsync(false);
-            }
-            catch
-            {
-                // Ignore
-            }
-        });
+        await Navigation.PopAsync();
     }
 
     private void OnOpenClicked(object sender, EventArgs e)
