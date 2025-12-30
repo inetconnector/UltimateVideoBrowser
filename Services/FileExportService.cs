@@ -1,5 +1,8 @@
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
+#if !WINDOWS
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+#endif
 #if WINDOWS
 using Microsoft.Maui.Platform;
 using Windows.Storage;
@@ -63,10 +66,23 @@ public sealed class FileExportService : IFileExportService
                 AppResources.OkButton);
         }
 #else
-        await dialogService.DisplayAlertAsync(
-            AppResources.SaveAsFailedTitle,
-            AppResources.SaveAsNotSupportedMessage,
-            AppResources.OkButton);
+        try
+        {
+            // On mobile, a dedicated "Save as" picker is not consistently available.
+            // Using the share sheet allows the user to pick a destination app (e.g., Files/Drive).
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = AppResources.SaveAsAction,
+                File = new ShareFile(item.Path)
+            });
+        }
+        catch
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.SaveAsFailedTitle,
+                AppResources.SaveAsNotSupportedMessage,
+                AppResources.OkButton);
+        }
 #endif
     }
 

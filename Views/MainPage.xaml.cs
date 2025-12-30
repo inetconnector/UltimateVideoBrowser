@@ -10,7 +10,6 @@ public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
     private bool isTimelineSelectionSyncing;
-
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
         InitializeComponent();
@@ -86,9 +85,6 @@ public partial class MainPage : ContentPage
         private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
-        private bool isLoadingWindowSuppressed;
-        private Window? loadingWindow;
-
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
         {
             this.vm = vm;
@@ -105,6 +101,7 @@ public partial class MainPage : ContentPage
             ToggleMediaTypeFilterCommand = vm.ToggleMediaTypeFilterCommand;
             LoadMoreCommand = vm.LoadMoreCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
+            SaveAsMarkedCommand = vm.SaveAsMarkedCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
@@ -134,17 +131,14 @@ public partial class MainPage : ContentPage
                         {
                             isIndexingOverlaySuppressed = false;
                             IsIndexingOverlayVisible = false;
-                            isLoadingWindowSuppressed = false;
-                            UpdateLoadingWindow();
                         }
                         else
                         {
-                            CloseLoadingWindow();
-                            isLoadingWindowSuppressed = true;
                             IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
                         }
 
                         OnPropertyChanged(nameof(IsIndexing));
+                        OnPropertyChanged(nameof(IsTopBusy));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         break;
                     case nameof(MainViewModel.IndexedCount):
@@ -211,11 +205,11 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
-                        UpdateLoadingWindow();
+                        OnPropertyChanged(nameof(IsTopBusy));
                         break;
                     case nameof(MainViewModel.IsRefreshing):
                         OnPropertyChanged(nameof(IsRefreshing));
-                        UpdateLoadingWindow();
+                        OnPropertyChanged(nameof(IsTopBusy));
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
@@ -268,6 +262,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
+        public IAsyncRelayCommand SaveAsMarkedCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IAsyncRelayCommand DeleteMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
@@ -344,6 +339,8 @@ public partial class MainPage : ContentPage
         public bool IsIndexing => vm.IsIndexing;
         public bool IsSourceSwitching => vm.IsSourceSwitching;
         public bool IsRefreshing => vm.IsRefreshing;
+
+        public bool IsTopBusy => vm.IsIndexing || vm.IsRefreshing || vm.IsSourceSwitching;
 
         public bool IsIndexingOverlayVisible
         {
@@ -467,66 +464,6 @@ public partial class MainPage : ContentPage
 
             var window = indexingWindow;
             indexingWindow = null;
-            Application.Current?.CloseWindow(window);
-        }
-
-        private void UpdateLoadingWindow()
-        {
-            if (vm.IsIndexing)
-            {
-                CloseLoadingWindow();
-                isLoadingWindowSuppressed = true;
-                return;
-            }
-
-            if (vm.IsRefreshing || vm.IsSourceSwitching)
-            {
-                if (isLoadingWindowSuppressed)
-                    return;
-
-                EnsureLoadingWindow();
-                return;
-            }
-
-            isLoadingWindowSuppressed = false;
-            CloseLoadingWindow();
-        }
-
-        private void EnsureLoadingWindow()
-        {
-            if (loadingWindow != null)
-                return;
-
-            var loadingPage = new LoadingProgressPage
-            {
-                BindingContext = this
-            };
-
-            var window = new Window(loadingPage)
-            {
-                Title = AppResources.LoadingMedia,
-                Width = 320,
-                Height = 220
-            };
-
-            window.Destroying += (_, _) =>
-            {
-                loadingWindow = null;
-                if (vm.IsRefreshing || vm.IsSourceSwitching)
-                    isLoadingWindowSuppressed = true;
-            };
-
-            loadingWindow = window;
-            Application.Current?.OpenWindow(window);
-        }
-
-        private void CloseLoadingWindow()
-        {
-            if (loadingWindow == null)
-                return;
-
-            var window = loadingWindow;
-            loadingWindow = null;
             Application.Current?.CloseWindow(window);
         }
 

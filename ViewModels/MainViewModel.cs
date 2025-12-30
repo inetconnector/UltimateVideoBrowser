@@ -478,13 +478,40 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public Task SaveAsAsync(MediaItem item)
     {
-        if (!AllowFileChanges)
-            return Task.CompletedTask;
-
         if (item == null || string.IsNullOrWhiteSpace(item.Path))
             return Task.CompletedTask;
 
         return fileExportService.SaveAsAsync(item);
+    }
+
+    [RelayCommand]
+    public async Task SaveAsMarkedAsync()
+    {
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+#if WINDOWS
+        if (markedItems.Count == 1)
+        {
+            await fileExportService.SaveAsAsync(markedItems[0]);
+            return;
+        }
+
+        await fileExportService.CopyToFolderAsync(markedItems);
+#else
+        // Best-effort "Save as" on mobile: show a share sheet so the user can save into Files/Drive.
+        if (markedItems.Count == 1)
+        {
+            await ShareAsync(markedItems[0]);
+            return;
+        }
+
+        await dialogService.DisplayAlertAsync(
+            AppResources.SaveAsFailedTitle,
+            AppResources.SaveAsNotSupportedMessage,
+            AppResources.OkButton);
+#endif
     }
 
     [RelayCommand]

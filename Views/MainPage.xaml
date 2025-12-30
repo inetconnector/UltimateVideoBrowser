@@ -6,6 +6,7 @@
              xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="UltimateVideoBrowser.Views.MainPage"
+             x:Name="ThisPage"
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
@@ -16,9 +17,11 @@
             <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
                 <!-- Top bar -->
                 <Grid Padding="16,14"
-                      ColumnDefinitions="*"
+                      ColumnDefinitions="*,Auto"
                       BackgroundColor="{DynamicResource Surface}">
-                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <HorizontalStackLayout Grid.Column="0"
+                                           Spacing="12"
+                                           VerticalOptions="Center">
                         <Frame Padding="6"
                                BackgroundColor="{DynamicResource Surface2}"
                                CornerRadius="12"
@@ -44,7 +47,16 @@
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
+                    <!-- Non-blocking busy indicator (top-right) -->
+                    <ActivityIndicator Grid.Column="1"
+                                       IsVisible="{Binding IsTopBusy}"
+                                       IsRunning="{Binding IsTopBusy}"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End" />
                 </Grid>
+
 
                 <!-- Hero -->
                 <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
@@ -874,7 +886,6 @@
                                             <SwipeView.RightItems>
                                                 <SwipeItems Mode="Reveal">
                                                     <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
-                                                               IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
                                                                CommandParameter="{Binding .}" />
                                                 </SwipeItems>
@@ -1051,29 +1062,32 @@
                    BorderColor="{DynamicResource BorderSubtle}"
                    Padding="12"
                    HasShadow="False">
-                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
                       ColumnSpacing="8">
                     <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
                     <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.SaveAsAction}"
+                            Command="{Binding SaveAsMarkedCommand}" />
+                    <Button Grid.Column="2"
                             Text="{x:Static strings:AppResources.CopyMarkedAction}"
                             IsVisible="{Binding AllowFileChanges}"
                             Command="{Binding CopyMarkedCommand}" />
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="3"
                             Text="{x:Static strings:AppResources.MoveMarkedAction}"
                             IsVisible="{Binding AllowFileChanges}"
                             Command="{Binding MoveMarkedCommand}" />
-                    <Button Grid.Column="3"
+                    <Button Grid.Column="4"
                             Text="{x:Static strings:AppResources.DeleteMarkedAction}"
                             IsVisible="{Binding AllowFileChanges}"
                             Command="{Binding DeleteMarkedCommand}" />
-                    <Button Grid.Column="4"
+                    <Button Grid.Column="5"
                             Text="{x:Static strings:AppResources.ClearMarkedAction}"
                             Command="{Binding ClearMarkedCommand}" />
                 </Grid>
             </Frame>
         </Grid>
 
-    </Grid>
+        </Grid>
 </ContentPage>
