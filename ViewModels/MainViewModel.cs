@@ -529,12 +529,10 @@ public partial class MainViewModel : ObservableObject
 
         var updated = await indexService.RenameAsync(item, newPath, finalName);
         if (!updated)
-        {
             await dialogService.DisplayAlertAsync(
                 AppResources.RenameFailedTitle,
                 AppResources.RenameFailedMessage,
                 AppResources.OkButton);
-        }
 #else
         await dialogService.DisplayAlertAsync(
             AppResources.RenameFailedTitle,

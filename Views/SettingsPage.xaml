@@ -197,7 +197,14 @@
                         <Label Text="{x:Static strings:AppResources.SettingsExtensionsHint}"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="8">
+                        <!--
+                            This grid uses Grid.Row 0..2. Without RowDefinitions, MAUI will place
+                            all children into a single row which causes controls to overlap.
+                        -->
+                        <Grid ColumnDefinitions="Auto,*"
+                              RowDefinitions="Auto,Auto,Auto"
+                              ColumnSpacing="12"
+                              RowSpacing="8">
                             <Label Text="{x:Static strings:AppResources.MediaTypeVideos}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    VerticalOptions="Center" />
@@ -205,6 +212,7 @@
                                    Text="{Binding VideoExtensionsText}"
                                    Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
                                    TextColor="{DynamicResource OnSurface}"
+                                   HorizontalOptions="FillAndExpand"
                                    BackgroundColor="{DynamicResource Surface2}" />
                             <Label Grid.Row="1"
                                    Text="{x:Static strings:AppResources.MediaTypePhotos}"
@@ -215,6 +223,7 @@
                                    Text="{Binding PhotoExtensionsText}"
                                    Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
                                    TextColor="{DynamicResource OnSurface}"
+                                   HorizontalOptions="FillAndExpand"
                                    BackgroundColor="{DynamicResource Surface2}" />
                             <Label Grid.Row="2"
                                    Text="{x:Static strings:AppResources.MediaTypeDocuments}"
@@ -225,6 +234,7 @@
                                    Text="{Binding DocumentExtensionsText}"
                                    Placeholder="{x:Static strings:AppResources.SettingsExtensionsPlaceholder}"
                                    TextColor="{DynamicResource OnSurface}"
+                                   HorizontalOptions="FillAndExpand"
                                    BackgroundColor="{DynamicResource Surface2}" />
                         </Grid>
                     </VerticalStackLayout>

@@ -1,3 +1,4 @@
+using Windows.Storage.AccessCache;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
@@ -5,7 +6,6 @@ using IOPath = System.IO.Path;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
-
 #elif WINDOWS
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -47,7 +47,7 @@ public sealed class ThumbnailService
             {
                 ct.ThrowIfCancellationRequested();
 
-                using var bmp = item.MediaType switch
+                using Bitmap? bmp = item.MediaType switch
                 {
                     MediaType.Photos => LoadImageBitmap(item.Path),
                     MediaType.Videos => LoadVideoBitmap(item),
@@ -122,7 +122,7 @@ public sealed class ThumbnailService
 
             try
             {
-                var folder = await Windows.Storage.AccessCache.StorageApplicationPermissions
+                var folder = await StorageApplicationPermissions
                     .FutureAccessList
                     .GetFolderAsync(token);
 
@@ -164,7 +164,8 @@ public sealed class ThumbnailService
     private static async Task<StorageFile> GetFileFromFolderAsync(StorageFolder root, string relativePath)
     {
         var segments = relativePath
-            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
 
         var current = root;
         for (var i = 0; i < segments.Length - 1; i++)

@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
+
 namespace UltimateVideoBrowser.WinUI;
 
 public partial class App
@@ -8,17 +11,17 @@ public partial class App
         UnhandledException += OnUnhandledException;
     }
 
-    private static void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs args)
+    private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
     {
         var exception = args.Exception;
         if (exception != null)
         {
-            System.Diagnostics.Debug.WriteLine($"Unhandled exception: {exception}");
-            System.Diagnostics.Debug.WriteLine($"StackTrace: {exception.StackTrace}");
+            Debug.WriteLine($"Unhandled exception: {exception}");
+            Debug.WriteLine($"StackTrace: {exception.StackTrace}");
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine($"Unhandled exception message: {args.Message}");
+            Debug.WriteLine($"Unhandled exception message: {args.Message}");
         }
     }
 }
