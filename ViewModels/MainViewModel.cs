@@ -51,6 +51,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string indexStatus = "";
     [ObservableProperty] private int indexTotal;
     private bool isApplyingIndexProgress;
+    private bool isApplyingSavedSettings;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
     private bool isInitialized;
@@ -159,7 +160,7 @@ public partial class MainViewModel : ObservableObject
         isInitialized = true;
         await sourceService.EnsureDefaultSourceAsync();
 
-        ApplySavedSettings();
+        ReloadSettingsFromService();
         var sources = await sourceService.GetSourcesAsync();
         ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
         await UpdateSourceStatsAsync(sources);
@@ -181,6 +182,22 @@ public partial class MainViewModel : ObservableObject
 
         if (settingsService.NeedsReindex)
             _ = RunIndexAsync();
+    }
+
+    /// <summary>
+    ///     Call this from the MainPage when the page becomes visible again (e.g. after closing Settings/Sources).
+    ///     It re-applies persisted settings and refreshes the visible data so the UI does not show stale sources/items.
+    /// </summary>
+    public async Task OnMainPageAppearingAsync()
+    {
+        if (!isInitialized)
+        {
+            await InitializeAsync().ConfigureAwait(false);
+            return;
+        }
+
+        ReloadSettingsFromService();
+        await RefreshAsync().ConfigureAwait(false);
     }
 
     [RelayCommand]
@@ -529,10 +546,12 @@ public partial class MainViewModel : ObservableObject
 
         var updated = await indexService.RenameAsync(item, newPath, finalName);
         if (!updated)
+        {
             await dialogService.DisplayAlertAsync(
                 AppResources.RenameFailedTitle,
                 AppResources.RenameFailedMessage,
                 AppResources.OkButton);
+        }
 #else
         await dialogService.DisplayAlertAsync(
             AppResources.RenameFailedTitle,
@@ -873,20 +892,29 @@ public partial class MainViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    private void ApplySavedSettings()
+    public void ReloadSettingsFromService()
     {
-        SearchText = settingsService.SearchText;
-        var sortKey = settingsService.SelectedSortOptionKey;
-        SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
-        ActiveSourceId = settingsService.ActiveSourceId;
-        IsDateFilterEnabled = settingsService.DateFilterEnabled;
-        DateFilterFrom = settingsService.DateFilterFrom;
-        DateFilterTo = settingsService.DateFilterTo;
-        var visibleTypes = settingsService.VisibleMediaTypes;
-        SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
-        ApplyPlaybackSettings();
-        ApplyFileChangeSettings();
-        ApplyPeopleTaggingSettings();
+        // Suppress automatic refresh triggers while we apply multiple properties.
+        isApplyingSavedSettings = true;
+        try
+        {
+            SearchText = settingsService.SearchText;
+            var sortKey = settingsService.SelectedSortOptionKey;
+            SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
+            ActiveSourceId = settingsService.ActiveSourceId;
+            IsDateFilterEnabled = settingsService.DateFilterEnabled;
+            DateFilterFrom = settingsService.DateFilterFrom;
+            DateFilterTo = settingsService.DateFilterTo;
+            var visibleTypes = settingsService.VisibleMediaTypes;
+            SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
+            ApplyPlaybackSettings();
+            ApplyFileChangeSettings();
+            ApplyPeopleTaggingSettings();
+        }
+        finally
+        {
+            isApplyingSavedSettings = false;
+        }
     }
 
     public void ApplyPlaybackSettings()
@@ -989,6 +1017,9 @@ public partial class MainViewModel : ObservableObject
     partial void OnIsDateFilterEnabledChanged(bool value)
     {
         settingsService.DateFilterEnabled = value;
+        if (isApplyingSavedSettings)
+            return;
+
         _ = RefreshAsync();
     }
 
@@ -997,6 +1028,9 @@ public partial class MainViewModel : ObservableObject
         if (value > DateFilterTo)
             DateFilterTo = value;
         settingsService.DateFilterFrom = value;
+        if (isApplyingSavedSettings)
+            return;
+
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
     }
@@ -1006,6 +1040,9 @@ public partial class MainViewModel : ObservableObject
         if (value < DateFilterFrom)
             DateFilterFrom = value;
         settingsService.DateFilterTo = value;
+        if (isApplyingSavedSettings)
+            return;
+
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
     }
@@ -1022,6 +1059,9 @@ public partial class MainViewModel : ObservableObject
             return;
 
         settingsService.VisibleMediaTypes = value;
+        if (isApplyingSavedSettings)
+            return;
+
         _ = RefreshAsync();
     }
 

@@ -21,10 +21,7 @@ public partial class MainPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        vm.ApplyPlaybackSettings();
-        vm.ApplyFileChangeSettings();
-        vm.ApplyPeopleTaggingSettings();
-        _ = vm.InitializeAsync();
+        _ = vm.OnMainPageAppearingAsync();
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
     }

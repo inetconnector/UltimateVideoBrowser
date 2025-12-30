@@ -10,10 +10,11 @@ using Windows.Storage;
 #if WINDOWS
 using System.Threading.Channels;
 #endif
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Windows.Storage.AccessCache;
 using UltimateVideoBrowser.Models;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
+using IOPath = System.IO.Path;
 
 namespace UltimateVideoBrowser.Services;
 
@@ -44,14 +45,18 @@ public sealed class MediaStoreScanner
             yield return item;
 #elif WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
+        {
             foreach (var defaultRoot in GetWindowsDefaultRoots(indexedTypes))
-            await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
-                               extensions, ct))
-                yield return item;
+                await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
+                                     extensions, ct))
+                    yield return item;
+        }
         else
+        {
             await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, indexedTypes,
-                               extensions, ct))
+                                 extensions, ct))
                 yield return item;
+        }
 #else
         _ = sourceId;
         _ = rootPath;
@@ -125,7 +130,7 @@ public sealed class MediaStoreScanner
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsAsync(string? rootPath, string? sourceId,
         string? accessToken, ModelMediaType indexedTypes, ExtensionLookup extensions,
-        [EnumeratorCancellation] CancellationToken ct)
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var root = rootPath;
 
@@ -207,9 +212,10 @@ public sealed class MediaStoreScanner
     private static async Task<StorageFolder?> TryGetStorageFolderAsync(string rootPath, string? accessToken)
     {
         if (!string.IsNullOrWhiteSpace(accessToken))
+        {
             try
             {
-                return await StorageApplicationPermissions
+                return await Windows.Storage.AccessCache.StorageApplicationPermissions
                     .FutureAccessList
                     .GetFolderAsync(accessToken);
             }
@@ -217,6 +223,7 @@ public sealed class MediaStoreScanner
             {
                 // Ignore missing/invalid access tokens.
             }
+        }
 
         try
         {
@@ -230,7 +237,7 @@ public sealed class MediaStoreScanner
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsFolderAsync(StorageFolder root, string? sourceId,
         ModelMediaType indexedTypes, ExtensionLookup extensions,
-        [EnumeratorCancellation] CancellationToken ct)
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var queue = new Queue<StorageFolder>();
         queue.Enqueue(root);
@@ -258,6 +265,7 @@ public sealed class MediaStoreScanner
 
                 var durationMs = 0L;
                 if (mediaType == ModelMediaType.Videos)
+                {
                     try
                     {
                         var props = await file.Properties.GetVideoPropertiesAsync();
@@ -267,6 +275,7 @@ public sealed class MediaStoreScanner
                     {
                         durationMs = 0;
                     }
+                }
 
                 var path = file.Path;
                 if (string.IsNullOrWhiteSpace(path))
@@ -300,7 +309,7 @@ public sealed class MediaStoreScanner
 
     private static async IAsyncEnumerable<MediaItem> ScanWindowsFileSystemAsync(string root, string? sourceId,
         ModelMediaType indexedTypes, ExtensionLookup extensions,
-        [EnumeratorCancellation] CancellationToken ct)
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
     {
         var fileChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(512)
         {
@@ -324,7 +333,6 @@ public sealed class MediaStoreScanner
                     ct.ThrowIfCancellationRequested();
                     await fileChannel.Writer.WriteAsync(path, ct).ConfigureAwait(false);
                 }
-
                 fileChannel.Writer.TryComplete();
             }
             catch (OperationCanceledException)
@@ -341,14 +349,15 @@ public sealed class MediaStoreScanner
         var workers = new Task[workerCount];
 
         for (var i = 0; i < workerCount; i++)
+        {
             workers[i] = Task.Run(async () =>
             {
                 try
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                     {
-                        var item = await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions,
-                                ct)
+                        var item =
+ await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
                             .ConfigureAwait(false);
                         if (item != null)
                             await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
@@ -359,9 +368,12 @@ public sealed class MediaStoreScanner
                     // Cancellation is expected; let completion happen below.
                 }
             }, ct);
+        }
 
-        var completion = Task.WhenAll(workers).ContinueWith(task => { itemChannel.Writer.TryComplete(task.Exception); },
-            TaskScheduler.Default);
+        var completion = Task.WhenAll(workers).ContinueWith(task =>
+        {
+            itemChannel.Writer.TryComplete(task.Exception);
+        }, TaskScheduler.Default);
 
         try
         {
@@ -411,6 +423,7 @@ public sealed class MediaStoreScanner
 
         var durationMs = 0L;
         if (mediaType == ModelMediaType.Videos)
+        {
             try
             {
                 var file = await StorageFile.GetFileFromPathAsync(path);
@@ -421,6 +434,7 @@ public sealed class MediaStoreScanner
             {
                 durationMs = 0;
             }
+        }
 
         return new MediaItem
         {
@@ -819,7 +833,8 @@ public sealed class MediaStoreScanner
         }
     }
 
-    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId, ModelMediaType indexedTypes,
+    private static IEnumerable<MediaItem> ScanAndroidFolder(string rootPath, string? sourceId,
+        ModelMediaType indexedTypes,
         ExtensionLookup extensions, CancellationToken ct)
     {
         if (rootPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))

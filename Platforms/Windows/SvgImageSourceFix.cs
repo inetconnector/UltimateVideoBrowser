@@ -1,3 +1,5 @@
+using System.IO;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Handlers;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -9,10 +11,16 @@ public static class SvgImageSourceFix
     {
         ImageHandler.Mapper.AppendToMapping("SvgImageSourceFix", (handler, view) =>
         {
-            if (view.Source is not FileImageSource fileImageSource) return;
+            if (view.Source is not FileImageSource fileImageSource)
+            {
+                return;
+            }
 
             var fileName = NormalizeSvgFileName(fileImageSource.File);
-            if (fileName is null) return;
+            if (fileName is null)
+            {
+                return;
+            }
 
             _ = ApplySvgSourceAsync(handler, fileName);
         });
@@ -20,7 +28,10 @@ public static class SvgImageSourceFix
 
     private static string? NormalizeSvgFileName(string? fileName)
     {
-        if (string.IsNullOrWhiteSpace(fileName)) return null;
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            return null;
+        }
 
         var resolvedName = fileName;
         var hasExtension = Path.HasExtension(resolvedName);
@@ -30,7 +41,10 @@ public static class SvgImageSourceFix
             hasExtension = true;
         }
 
-        if (!hasExtension || !resolvedName.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)) return null;
+        if (!hasExtension || !resolvedName.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
 
         return resolvedName;
     }
@@ -48,7 +62,10 @@ public static class SvgImageSourceFix
                                      ?? (HasDirectorySeparator(fileName)
                                          ? null
                                          : await TryOpenSvgAsync(Path.Combine("Resources", "Images", fileName)));
-            if (stream is null) return;
+            if (stream is null)
+            {
+                return;
+            }
 
             var svgSource = new SvgImageSource();
             await svgSource.SetSourceAsync(stream.AsRandomAccessStream());
