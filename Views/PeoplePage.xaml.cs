@@ -51,8 +51,26 @@ public partial class PeoplePage : ContentPage
         if (sender is CollectionView cv)
             cv.SelectedItem = null;
 
-        var page = ActivatorUtilities.CreateInstance<PersonPage>(serviceProvider);
-        page.Initialize(item.Id, item.Name);
-        await Navigation.PushAsync(page);
+        // Manual tag "people" are represented as synthetic ids ("tag:<name>").
+        // They should open the Tagged Photos view filtered by that name.
+        if (item.Id.StartsWith("tag:", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var page = ActivatorUtilities.CreateInstance<TaggedPhotosPage>(serviceProvider);
+                page.Initialize(item.Name);
+                await Navigation.PushAsync(page);
+            }
+            catch
+            {
+                // Ignore
+            }
+
+            return;
+        }
+
+        var personPage = ActivatorUtilities.CreateInstance<PersonPage>(serviceProvider);
+        personPage.Initialize(item.Id, item.Name);
+        await Navigation.PushAsync(personPage);
     }
 }

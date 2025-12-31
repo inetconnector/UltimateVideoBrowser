@@ -16,6 +16,12 @@ public partial class TaggedPhotosPage : ContentPage
         BindingContext = vm;
     }
 
+    public void Initialize(string initialSearch)
+    {
+        // Initialize is safe to call before the page appears.
+        vm.SearchText = (initialSearch ?? string.Empty).Trim();
+    }
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
