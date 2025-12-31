@@ -6,7 +6,7 @@ using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
 
-public sealed partial class PersonViewModel : ObservableObject
+public sealed class PersonViewModel : ObservableObject
 {
     private readonly PeopleDataService peopleData;
     private readonly ThumbnailService thumbnails;
@@ -15,6 +15,7 @@ public sealed partial class PersonViewModel : ObservableObject
     [ObservableProperty] private string name = string.Empty;
     [ObservableProperty] private string personId = string.Empty;
     [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
+    [ObservableProperty] private float qualityScore;
 
     public PersonViewModel(PeopleDataService peopleData, ThumbnailService thumbnails)
     {
@@ -37,11 +38,17 @@ public sealed partial class PersonViewModel : ObservableObject
         try
         {
             IsBusy = true;
+
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+
+            // Load person profile so we can show quality in the UI.
+            var profile = await peopleData.GetPersonProfileAsync(PersonId, cts.Token).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => { QualityScore = profile?.QualityScore ?? 0f; });
+
             var result = await peopleData.GetMediaForPersonAsync(PersonId, cts.Token).ConfigureAwait(false);
             await MainThread.InvokeOnMainThreadAsync(() => { Photos = new ObservableCollection<MediaItem>(result); });
 
-            // Generate thumbnails lazily in the background so the UI stays responsive.
+            // Generate thumbnails lazily so the UI stays responsive.
             foreach (var item in result)
                 _ = EnsureAndApplyThumbnailAsync(item);
         }
@@ -59,12 +66,14 @@ public sealed partial class PersonViewModel : ObservableObject
     {
         try
         {
-            var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var p = await thumbnails.EnsureThumbnailAsync(item, cts.Token).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(p))
                 return;
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                // Force UI refresh when the path stays identical.
                 if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
                     item.ThumbnailPath = string.Empty;
 

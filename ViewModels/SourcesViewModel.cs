@@ -6,7 +6,7 @@ using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
 
-public partial class SourcesViewModel : ObservableObject
+public class SourcesViewModel : ObservableObject
 {
     private readonly IDialogService dialogService;
     private readonly IFolderPickerService folderPickerService;

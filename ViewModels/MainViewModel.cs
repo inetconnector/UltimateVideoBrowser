@@ -1423,7 +1423,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         var s = modelFileService.GetStatusSnapshot();
-        var ready = s.YuNet == ModelFileService.ModelStatus.Ready 
+        var ready = s.YuNet == ModelFileService.ModelStatus.Ready
                     && s.SFace == ModelFileService.ModelStatus.Ready;
 
         var stateText = ready

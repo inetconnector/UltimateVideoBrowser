@@ -26,4 +26,11 @@ public sealed class FaceEmbedding
     public int ImageHeight { get; set; }
 
     public byte[] Embedding { get; set; } = Array.Empty<byte>();
+
+    // Model keys used to create this row. These are used to skip work when models haven't changed.
+    public string? DetectionModelKey { get; set; }
+    public string? EmbeddingModelKey { get; set; }
+
+    // Quality score (0..1). Used for sorting and selecting the best cover face.
+    public float FaceQuality { get; set; }
 }

@@ -9,25 +9,22 @@ using Point = SixLabors.ImageSharp.Point;
 namespace UltimateVideoBrowser.Services.Faces;
 
 /// <summary>
-/// YuNet face detector wrapper.
-///
-/// IMPORTANT:
-/// - The app ships the YuNet ONNX model as a MauiAsset and copies it to the cache on first use.
-/// - We treat the model as a "single-session" detector (no extra post-process model file).
-/// - At runtime we auto-detect which output tensor contains detections.
-///
-/// This keeps the distribution simple (only one detector model file).
+///     YuNet face detector wrapper.
+///     IMPORTANT:
+///     - The app ships the YuNet ONNX model as a MauiAsset and copies it to the cache on first use.
+///     - We treat the model as a "single-session" detector (no extra post-process model file).
+///     - At runtime we auto-detect which output tensor contains detections.
+///     This keeps the distribution simple (only one detector model file).
 /// </summary>
 public sealed class YuNetFaceDetector : IDisposable
 {
-    private int netWidth = 320;
-    private int netHeight = 320;
-
     private readonly SemaphoreSlim initLock = new(1, 1);
     private readonly ModelFileService modelFileService;
 
     private InferenceSession? detector;
     private string detectorInput = string.Empty;
+    private int netHeight = 320;
+    private int netWidth = 320;
 
     public YuNetFaceDetector(ModelFileService modelFileService)
     {
@@ -64,7 +61,7 @@ public sealed class YuNetFaceDetector : IDisposable
         // YuNet variants differ slightly in their output signature.
         // Prefer a 2D/3D float tensor with >= 15 columns in the last dimension.
         var detections = output
-            .Select(v => (Name: v.Name, Tensor: v.AsTensor<float>()))
+            .Select(v => (v.Name, Tensor: v.AsTensor<float>()))
             .OrderByDescending(x => GuessDetectionScore(x.Tensor))
             .FirstOrDefault();
 
@@ -103,8 +100,8 @@ public sealed class YuNetFaceDetector : IDisposable
                 var h = meta.Dimensions[^2];
                 var w = meta.Dimensions[^1];
                 // Some models use -1 for dynamic dimensions; keep defaults in that case.
-                if (h > 0) netHeight = (int)h;
-                if (w > 0) netWidth = (int)w;
+                if (h > 0) netHeight = h;
+                if (w > 0) netWidth = w;
             }
         }
         finally
@@ -221,7 +218,7 @@ public sealed class YuNetFaceDetector : IDisposable
         boxed.Mutate(ctx =>
         {
             ctx.DrawImage(resized,
-                    new Point(offsetX, offsetY),
+                new Point(offsetX, offsetY),
                 1f);
         });
         resized.Dispose();

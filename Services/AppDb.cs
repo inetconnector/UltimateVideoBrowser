@@ -31,6 +31,7 @@ public sealed class AppDb
             await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
+            await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
             await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);")
                 .ConfigureAwait(false);
@@ -48,6 +49,8 @@ public sealed class AppDb
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
             await TryAddFaceEmbeddingBoxColumnsAsync().ConfigureAwait(false);
+            await TryAddPeopleModelKeyColumnsAsync().ConfigureAwait(false);
+            await TryAddPersonProfileMergeColumnsAsync().ConfigureAwait(false);
             isInitialized = true;
         }
         finally
@@ -115,6 +118,101 @@ public sealed class AppDb
         try
         {
             await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageHeight INTEGER;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+    }
+
+    private async Task TryAddPeopleModelKeyColumnsAsync()
+    {
+        // Adds model-key bookkeeping columns used to skip face re-scan when models haven't changed.
+        // Each ALTER is idempotent via try/catch to keep app startup resilient.
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN FaceScanModelKey TEXT;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN FaceScanAtSeconds INTEGER;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync(
+                    "CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);")
+                .ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN DetectionModelKey TEXT;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN EmbeddingModelKey TEXT;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN FaceQuality REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+    }
+
+    private async Task TryAddPersonProfileMergeColumnsAsync()
+    {
+        // Adds merge + quality + cover columns for PersonProfile.
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN MergedIntoPersonId TEXT;")
+                .ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN PrimaryFaceEmbeddingId INTEGER;")
+                .ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN QualityScore REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync(
+                    "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);")
+                .ConfigureAwait(false);
         }
         catch
         {

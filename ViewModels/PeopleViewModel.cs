@@ -43,7 +43,7 @@ public sealed partial class PeopleViewModel : ObservableObject
                     ? await faceThumbnails.EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
                         .ConfigureAwait(false)
                     : null;
-                items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, coverPath));
+                items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath));
             }
 
             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -79,22 +79,28 @@ public sealed partial class PeopleViewModel : ObservableObject
     }
 }
 
-public sealed partial class PersonListItemViewModel : ObservableObject
+public sealed class PersonListItemViewModel : ObservableObject
 {
     [ObservableProperty] private string name;
 
-    public PersonListItemViewModel(string id, string name, int photoCount, string? coverThumbnailPath)
+    public PersonListItemViewModel(string id, string name, int photoCount, float qualityScore,
+        string? coverThumbnailPath)
     {
         Id = id;
         Name = name;
         PhotoCount = photoCount;
+        QualityScore = qualityScore;
         CoverThumbnailPath = coverThumbnailPath;
     }
 
     public string Id { get; }
     public int PhotoCount { get; }
 
+    public float QualityScore { get; }
+
     public string PhotoCountText => PhotoCount == 1 ? "1 photo" : $"{PhotoCount} photos";
+
+    public string QualityScoreText => $"{QualityScore:0.00}";
 
     public string? CoverThumbnailPath { get; }
 

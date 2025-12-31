@@ -1,4 +1,6 @@
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
+using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -50,5 +52,70 @@ public partial class PersonPage : ContentPage
         var page = ActivatorUtilities.CreateInstance<PhotoPeopleEditorPage>(serviceProvider);
         page.Initialize(item);
         await Navigation.PushAsync(page);
+    }
+
+    private async void OnMergeClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(vm.PersonId))
+                return;
+
+            var peopleData = serviceProvider.GetService<PeopleDataService>();
+            if (peopleData == null)
+                return;
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var candidates = await peopleData.ListMergeCandidatesAsync(vm.PersonId, cts.Token).ConfigureAwait(false);
+            if (candidates.Count == 0)
+            {
+                await DisplayAlert("Merge", "No merge targets available.", "OK");
+                return;
+            }
+
+            // Build a stable mapping from display text to person id.
+            var options = candidates
+                .Select(p => string.IsNullOrWhiteSpace(p.Name) ? p.Id : p.Name)
+                .Distinct()
+                .Take(30)
+                .ToArray();
+
+            var choice = await MainThread.InvokeOnMainThreadAsync(() =>
+                DisplayActionSheet(
+                    AppResources.MergeIntoTitle,
+                    AppResources.CancelButton,
+                    null,
+                    options));
+
+            if (string.IsNullOrWhiteSpace(choice) ||
+                choice == AppResources.CancelButton)
+                return;
+
+            var target =
+                candidates.FirstOrDefault(p => string.Equals(p.Name, choice, StringComparison.OrdinalIgnoreCase))
+                ?? candidates.FirstOrDefault(p => string.Equals(p.Id, choice, StringComparison.OrdinalIgnoreCase));
+
+            if (target == null)
+                return;
+
+            var confirm = await MainThread.InvokeOnMainThreadAsync(() =>
+                DisplayAlert(
+                    AppResources.MergeButton,
+                    $"{vm.Name} → {target.Name}",
+                    AppResources.OkButton,
+                    AppResources.CancelButton));
+
+            if (!confirm)
+                return;
+
+            await peopleData.MergePersonsAsync(vm.PersonId, target.Id, cts.Token).ConfigureAwait(false);
+
+            // Navigate back to People page (merged source becomes a redirect).
+            await MainThread.InvokeOnMainThreadAsync(async () => { await Navigation.PopAsync(); });
+        }
+        catch
+        {
+            // Ignore
+        }
     }
 }

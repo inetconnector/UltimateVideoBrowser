@@ -94,6 +94,12 @@ public class MediaItem : INotifyPropertyChanged
         }
     }
 
+    // Face scan bookkeeping to avoid re-scanning when the model has not changed.
+    public string? FaceScanModelKey { get; set; }
+
+    public long FaceScanAtSeconds { get; set; }
+
+
     [Ignore] public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
 
     [Ignore]

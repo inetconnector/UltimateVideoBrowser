@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
@@ -18,8 +19,11 @@ public sealed class ModelFileService
     private const string SFaceFile = "face_recognition_sface_2021dec.onnx";
 
     // Stable mirrors (digiKam KDE distribution of the same model files).
-    private const string YuNetUrl = "https://files.kde.org/digikam/models/facesengine/yunet/face_detection_yunet_2023mar.onnx";
-    private const string SFaceUrl = "https://files.kde.org/digikam/models/facesengine/sface/face_recognition_sface_2021dec.onnx";
+    private const string YuNetUrl =
+        "https://files.kde.org/digikam/models/facesengine/yunet/face_detection_yunet_2023mar.onnx";
+
+    private const string SFaceUrl =
+        "https://files.kde.org/digikam/models/facesengine/sface/face_recognition_sface_2021dec.onnx";
 
     private readonly ConcurrentDictionary<string, Task<string>> cache = new(StringComparer.OrdinalIgnoreCase);
 
@@ -76,9 +80,15 @@ public sealed class ModelFileService
         return GetStatusSnapshot();
     }
 
-    public Task<string> GetYuNetModelAsync(CancellationToken ct) => GetModelAsync(YuNetFile, YuNetUrl, ct);
+    public Task<string> GetYuNetModelAsync(CancellationToken ct)
+    {
+        return GetModelAsync(YuNetFile, YuNetUrl, ct);
+    }
 
-    public Task<string> GetSFaceModelAsync(CancellationToken ct) => GetModelAsync(SFaceFile, SFaceUrl, ct);
+    public Task<string> GetSFaceModelAsync(CancellationToken ct)
+    {
+        return GetModelAsync(SFaceFile, SFaceUrl, ct);
+    }
 
     private Task<string> GetModelAsync(string fileName, string url, CancellationToken ct)
     {
@@ -182,6 +192,32 @@ public sealed class ModelFileService
                     statusByFile[file] = ModelStatus.Unknown;
             }
         }
+    }
+
+    public async Task<string> GetYuNetModelKeyAsync(CancellationToken ct)
+    {
+        var path = await GetYuNetModelAsync(ct).ConfigureAwait(false);
+        return "yunet:sha256:" + await ComputeSha256Async(path, ct).ConfigureAwait(false);
+    }
+
+    public async Task<string> GetSFaceModelKeyAsync(CancellationToken ct)
+    {
+        var path = await GetSFaceModelAsync(ct).ConfigureAwait(false);
+        return "sface:sha256:" + await ComputeSha256Async(path, ct).ConfigureAwait(false);
+    }
+
+    private static async Task<string> ComputeSha256Async(string filePath, CancellationToken ct)
+    {
+        // This hash is used as a stable model version key to avoid unnecessary re-processing.
+        using var sha = SHA256.Create();
+        await using var fs = File.OpenRead(filePath);
+        var buffer = new byte[1024 * 1024];
+        int read;
+        while ((read = await fs.ReadAsync(buffer.AsMemory(0, buffer.Length), ct).ConfigureAwait(false)) > 0)
+            sha.TransformBlock(buffer, 0, read, null, 0);
+
+        sha.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        return Convert.ToHexString(sha.Hash!).ToLowerInvariant();
     }
 
     public sealed record ModelStatusSnapshot(

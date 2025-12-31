@@ -13,16 +13,19 @@ public sealed class PeopleRecognitionService
     private readonly AppDb db;
     private readonly YuNetFaceDetector faceDetector;
     private readonly SFaceRecognizer faceRecognizer;
+    private readonly ModelFileService modelFiles;
     private readonly PeopleTagService peopleTagService;
 
     public PeopleRecognitionService(
         AppDb db,
         PeopleTagService peopleTagService,
+        ModelFileService modelFiles,
         YuNetFaceDetector faceDetector,
         SFaceRecognizer faceRecognizer)
     {
         this.db = db;
         this.peopleTagService = peopleTagService;
+        this.modelFiles = modelFiles;
         this.faceDetector = faceDetector;
         this.faceRecognizer = faceRecognizer;
     }
@@ -56,21 +59,55 @@ public sealed class PeopleRecognitionService
         {
             await db.EnsureInitializedAsync().ConfigureAwait(false);
 
+            // Avoid re-scanning if the detector model hasn't changed since the last scan.
+            var currentDetectionKey = await modelFiles.GetYuNetModelKeyAsync(ct).ConfigureAwait(false);
+            if (!string.Equals(item.FaceScanModelKey, currentDetectionKey, StringComparison.OrdinalIgnoreCase))
+            {
+                // Model changed (or never scanned). Drop stale detections so we can rebuild deterministically.
+                await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", item.Path)
+                    .ConfigureAwait(false);
+                item.FaceScanModelKey = null;
+                item.FaceScanAtSeconds = 0;
+            }
+
+            var currentEmbeddingKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
+
             var embeddings = await db.Db.Table<FaceEmbedding>()
                 .Where(face => face.MediaPath == item.Path)
                 .OrderBy(face => face.FaceIndex)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
+            var needsEmbeddingRefresh = embeddings.Any(e =>
+                string.IsNullOrWhiteSpace(e.EmbeddingModelKey) ||
+                !string.Equals(e.EmbeddingModelKey, currentEmbeddingKey, StringComparison.OrdinalIgnoreCase));
+
+            if (needsEmbeddingRefresh)
+            {
+                await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", item.Path)
+                    .ConfigureAwait(false);
+                embeddings.Clear();
+                item.FaceScanModelKey = null;
+                item.FaceScanAtSeconds = 0;
+            }
+
             if (embeddings.Count == 0)
-                embeddings = await DetectAndStoreFacesAsync(item.Path, ct).ConfigureAwait(false);
+            {
+                embeddings = await DetectAndStoreFacesAsync(item.Path, currentDetectionKey, ct).ConfigureAwait(false);
+                item.FaceScanModelKey = currentDetectionKey;
+                item.FaceScanAtSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                await db.Db.UpdateAsync(item).ConfigureAwait(false);
+            }
             else
+            {
                 await TryUpdateFaceBoxesAsync(item.Path, embeddings, ct).ConfigureAwait(false);
+            }
 
             if (embeddings.Count == 0)
                 return Array.Empty<FaceMatch>();
 
             var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+            var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var knownEmbeddings = await db.Db.Table<FaceEmbedding>()
                 .Where(face => face.PersonId != null && face.PersonId != "")
                 .ToListAsync()
@@ -91,16 +128,22 @@ public sealed class PeopleRecognitionService
                     peopleMap[newPerson.Id] = newPerson;
                     personEmbeddings[newPerson.Id] = new List<float[]> { embedding };
                     face.PersonId = newPerson.Id;
+                    updatedPersonIds.Add(newPerson.Id);
                 }
                 else
                 {
                     face.PersonId = match.PersonId;
+                    updatedPersonIds.Add(match.PersonId!);
                     if (personEmbeddings.TryGetValue(match.PersonId, out var list))
                         list.Add(embedding);
                 }
 
                 await db.Db.UpdateAsync(face).ConfigureAwait(false);
             }
+
+            // Recompute person quality / cover after assignments.
+            foreach (var pid in updatedPersonIds)
+                await RecomputePersonQualityAsync(pid).ConfigureAwait(false);
 
             var matches = embeddings
                 .Where(face => !string.IsNullOrWhiteSpace(face.PersonId))
@@ -136,6 +179,7 @@ public sealed class PeopleRecognitionService
         ct.ThrowIfCancellationRequested();
 
         var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var current = people.FirstOrDefault(p => p.Id == personId);
         if (current == null)
             return;
@@ -167,11 +211,25 @@ public sealed class PeopleRecognitionService
 
         await db.EnsureInitializedAsync().ConfigureAwait(false);
 
+        var currentEmbeddingKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
+
         var embeddings = await db.Db.Table<FaceEmbedding>()
             .Where(face => face.MediaPath == item.Path)
             .OrderBy(face => face.FaceIndex)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        var needsEmbeddingRefresh = embeddings.Any(e =>
+            string.IsNullOrWhiteSpace(e.EmbeddingModelKey) ||
+            !string.Equals(e.EmbeddingModelKey, currentEmbeddingKey, StringComparison.OrdinalIgnoreCase));
+
+        if (needsEmbeddingRefresh)
+        {
+            await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", item.Path).ConfigureAwait(false);
+            embeddings.Clear();
+            item.FaceScanModelKey = null;
+            item.FaceScanAtSeconds = 0;
+        }
 
         if (embeddings.Count == 0)
             return;
@@ -223,13 +281,16 @@ public sealed class PeopleRecognitionService
         }
     }
 
-    private async Task<List<FaceEmbedding>> DetectAndStoreFacesAsync(string path, CancellationToken ct)
+    private async Task<List<FaceEmbedding>> DetectAndStoreFacesAsync(string path, string detectionModelKey,
+        CancellationToken ct)
     {
         if (!File.Exists(path))
             return new List<FaceEmbedding>();
 
         using var image = ImageSharpImage.Load<Rgba32>(path);
         image.Mutate(ctx => ctx.AutoOrient());
+
+        var embeddingModelKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
 
         IReadOnlyList<DetectedFace> faces;
         try
@@ -266,6 +327,7 @@ public sealed class PeopleRecognitionService
 
             if (embedding.Length == 0)
                 continue;
+            var faceQuality = ComputeFaceQuality(face.Score, face.W, face.H);
             embeddings.Add(new FaceEmbedding
             {
                 MediaPath = path,
@@ -277,6 +339,9 @@ public sealed class PeopleRecognitionService
                 H = face.H,
                 ImageWidth = image.Width,
                 ImageHeight = image.Height,
+                DetectionModelKey = detectionModelKey,
+                EmbeddingModelKey = embeddingModelKey,
+                FaceQuality = faceQuality,
                 Embedding = FloatsToBytes(embedding)
             });
         }
@@ -304,6 +369,8 @@ public sealed class PeopleRecognitionService
         {
             using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
             image.Mutate(ctx => ctx.AutoOrient());
+
+            var embeddingModelKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
 
             IReadOnlyList<DetectedFace> faces;
             try
@@ -374,6 +441,7 @@ public sealed class PeopleRecognitionService
             .ConfigureAwait(false);
 
         var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var path in mediaPaths.Select(face => face.MediaPath).Distinct(StringComparer.OrdinalIgnoreCase))
             await UpdateMediaTagsAsync(path, await GetPersonIdsForMediaAsync(path).ConfigureAwait(false), people)
                 .ConfigureAwait(false);
@@ -494,5 +562,61 @@ public sealed class PeopleRecognitionService
         var values = new float[bytes.Length / sizeof(float)];
         Buffer.BlockCopy(bytes, 0, values, 0, bytes.Length);
         return values;
+    }
+
+
+    private static float ComputeFaceQuality(float detectorScore, float w, float h)
+    {
+        // A fast, deterministic quality heuristic in the 0..1 range.
+        // We combine detector confidence with face size to prioritize sharp, usable crops.
+        var s1 = Clamp01((detectorScore - 0.5f) / 0.5f);
+        var minSide = MathF.Min(w, h);
+        var s2 = Clamp01(minSide / 140f);
+        // Weight detector score a bit more than size to keep false positives down.
+        return Clamp01(0.6f * s1 + 0.4f * s2);
+    }
+
+    private async Task RecomputePersonQualityAsync(string personId)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return;
+
+        var faces = await db.Db.Table<FaceEmbedding>()
+            .Where(f => f.PersonId == personId)
+            .OrderByDescending(f => f.FaceQuality)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        var profile = await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == personId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        if (profile == null)
+            return;
+
+        // Top-K average for robustness.
+        const int k = 5;
+        var take = Math.Min(k, faces.Count);
+        var avg = 0f;
+        for (var i = 0; i < take; i++)
+            avg += faces[i].FaceQuality;
+        avg = take > 0 ? avg / take : 0f;
+
+        // Small bonus for more samples (log-scaled).
+        var countBonus = faces.Count > 0 ? Clamp01(MathF.Log10(faces.Count + 1) / 2f) * 0.1f : 0f;
+
+        profile.QualityScore = Clamp01(avg + countBonus);
+
+        // Pick best cover face.
+        profile.PrimaryFaceEmbeddingId = faces.FirstOrDefault()?.Id;
+
+        profile.UpdatedUtc = DateTimeOffset.UtcNow;
+        await db.Db.UpdateAsync(profile).ConfigureAwait(false);
+    }
+
+    private static float Clamp01(float v)
+    {
+        return v < 0f ? 0f : v > 1f ? 1f : v;
     }
 }

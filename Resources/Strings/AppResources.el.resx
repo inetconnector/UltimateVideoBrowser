@@ -279,4 +279,4 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-</root>
+<data name="MergeButton" xml:space="preserve"><value>Συγχώνευση</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Συγχώνευση σε…</value></data><data name="QualityLabel" xml:space="preserve"><value>Ποιότητα</value></data></root>

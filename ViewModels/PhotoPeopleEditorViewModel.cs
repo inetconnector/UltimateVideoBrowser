@@ -7,7 +7,7 @@ using UltimateVideoBrowser.Services.Faces;
 
 namespace UltimateVideoBrowser.ViewModels;
 
-public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
+public sealed class PhotoPeopleEditorViewModel : ObservableObject
 {
     private readonly FaceThumbnailService faceThumbnails;
     private readonly PeopleDataService peopleData;
@@ -172,7 +172,7 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     }
 }
 
-public sealed partial class FaceTagItemViewModel : ObservableObject
+public sealed class FaceTagItemViewModel : ObservableObject
 {
     [ObservableProperty] private string name;
 

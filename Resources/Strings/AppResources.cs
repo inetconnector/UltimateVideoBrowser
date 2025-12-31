@@ -12,6 +12,8 @@ public static class AppResources
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Media");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
     public static string PeopleButton => GetString(nameof(PeopleButton), "People");
+    public static string MergeIntoTitle => GetString(nameof(MergeIntoTitle), "Merge into…");
+    public static string MergeButton => GetString(nameof(MergeButton), "Merge");
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");

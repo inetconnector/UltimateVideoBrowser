@@ -7,6 +7,7 @@ public sealed record PersonOverview(
     string Id,
     string Name,
     int PhotoCount,
+    float QualityScore,
     FaceEmbedding? CoverFace);
 
 public sealed record FaceTagInfo(
@@ -33,7 +34,10 @@ public sealed class PeopleDataService
 
         var normalizedSearch = (search ?? string.Empty).Trim();
 
-        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var people = await db.Db.Table<PersonProfile>()
+            .Where(p => p.MergedIntoPersonId == null || p.MergedIntoPersonId == "")
+            .ToListAsync()
+            .ConfigureAwait(false);
 
         var counts = await db.Db.QueryAsync<PersonCountRow>(
                 "SELECT PersonId, COUNT(DISTINCT MediaPath) AS Cnt FROM FaceEmbedding " +
@@ -139,6 +143,7 @@ public sealed class PeopleDataService
                 p.Id,
                 p.Name,
                 countMap.TryGetValue(p.Id, out var c) ? c : 0,
+                p.QualityScore,
                 coverMap.TryGetValue(p.Id, out var cover) ? cover : null))
             .ToList();
 
@@ -148,6 +153,7 @@ public sealed class PeopleDataService
                 $"tag:{kvp.Key}",
                 kvp.Key,
                 kvp.Value,
+                0f,
                 null))
             .Where(p =>
                 string.IsNullOrWhiteSpace(normalizedSearch) ||
@@ -223,7 +229,10 @@ public sealed class PeopleDataService
         if (embeddings.Count == 0)
             return Array.Empty<FaceTagInfo>();
 
-        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var people = await db.Db.Table<PersonProfile>()
+            .Where(p => p.MergedIntoPersonId == null || p.MergedIntoPersonId == "")
+            .ToListAsync()
+            .ConfigureAwait(false);
         var peopleMap = people.ToDictionary(p => p.Id, p => p.Name, StringComparer.OrdinalIgnoreCase);
 
         var list = embeddings
@@ -252,12 +261,133 @@ public sealed class PeopleDataService
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         ct.ThrowIfCancellationRequested();
 
-        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var people = await db.Db.Table<PersonProfile>()
+            .Where(p => p.MergedIntoPersonId == null || p.MergedIntoPersonId == "")
+            .ToListAsync()
+            .ConfigureAwait(false);
         var match = people.FirstOrDefault(p => string.Equals(p.Name, trimmed, StringComparison.OrdinalIgnoreCase));
         if (match == null)
             return null;
 
         return (match.Id, match.Name);
+    }
+
+    public async Task<IReadOnlyList<PersonOverview>> ListMergeCandidatesAsync(string excludingPersonId,
+        CancellationToken ct)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        var people = await GetPeopleOverviewAsync(null, ct).ConfigureAwait(false);
+        return people
+            .Where(p => !p.Id.Equals(excludingPersonId, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(p => p.CoverFace?.FaceQuality ?? 0)
+            .ThenByDescending(p => p.PhotoCount)
+            .ToList();
+    }
+
+
+    public async Task<PersonProfile?> GetPersonProfileAsync(string personId, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return null;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        return await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == personId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+    }
+
+    public async Task MergePersonsAsync(string sourcePersonId, string targetPersonId, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(sourcePersonId) || string.IsNullOrWhiteSpace(targetPersonId))
+            return;
+
+        if (sourcePersonId.Equals(targetPersonId, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        // Load profiles to preserve the source name as an alias (default behavior).
+        var sourceProfile = await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == sourcePersonId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        var targetProfile = await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == targetPersonId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        await db.Db.RunInTransactionAsync(conn =>
+        {
+            // Mark source as merged (soft redirect).
+            conn.Execute("UPDATE PersonProfile SET MergedIntoPersonId = ? WHERE Id = ?;", targetPersonId,
+                sourcePersonId);
+
+            // Move face embeddings to target.
+            conn.Execute("UPDATE FaceEmbedding SET PersonId = ? WHERE PersonId = ?;", targetPersonId, sourcePersonId);
+
+            // Preserve old name as alias on the target (best-effort).
+            if (sourceProfile != null && targetProfile != null)
+            {
+                var alias = sourceProfile.Name?.Trim();
+                if (!string.IsNullOrWhiteSpace(alias) &&
+                    !alias.Equals(targetProfile.Name, StringComparison.OrdinalIgnoreCase))
+                    conn.Execute("INSERT INTO PersonAlias(PersonId, AliasName) VALUES(?, ?);", targetPersonId, alias);
+
+                // Keep manual tags consistent by renaming source name occurrences to target name.
+                if (!string.IsNullOrWhiteSpace(alias) && !string.IsNullOrWhiteSpace(targetProfile.Name))
+                    conn.Execute("UPDATE PersonTag SET PersonName = ? WHERE PersonName = ?;", targetProfile.Name,
+                        alias);
+            }
+        }).ConfigureAwait(false);
+
+        // Recompute quality/cover after merge.
+        await UpdatePersonQualityAsync(targetPersonId, ct).ConfigureAwait(false);
+    }
+
+    public async Task UpdatePersonQualityAsync(string personId, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        // Use top-N face qualities to produce a stable person quality score.
+        var faces = await db.Db.Table<FaceEmbedding>()
+            .Where(f => f.PersonId == personId)
+            .OrderByDescending(f => f.FaceQuality)
+            .Take(10)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        if (faces.Count == 0)
+            return;
+
+        var top = faces.Take(5).ToList();
+        var avgTop = top.Average(f => f.FaceQuality);
+        var count = faces.Count;
+
+        // Small bonus for more evidence.
+        var bonus = MathF.Min(0.1f, MathF.Log10(1 + count) / 20f);
+        var score = Math.Clamp(avgTop + bonus, 0, 1);
+
+        var best = top.FirstOrDefault();
+
+        var profile = await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == personId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        if (profile == null)
+            return;
+
+        profile.QualityScore = score;
+        profile.PrimaryFaceEmbeddingId = best?.Id;
+        profile.UpdatedUtc = DateTimeOffset.UtcNow;
+
+        await db.Db.UpdateAsync(profile).ConfigureAwait(false);
     }
 
     private sealed class MediaTagRow

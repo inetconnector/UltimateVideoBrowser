@@ -558,4 +558,4 @@ Fehlend:
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Aus Personenindex entfernen</value>
   </data>
-</root>
+<data name="MergeButton" xml:space="preserve"><value>Zusammenführen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Zusammenführen in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data></root>
