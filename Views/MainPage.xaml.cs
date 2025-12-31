@@ -10,15 +10,19 @@ namespace UltimateVideoBrowser.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
+    private readonly IServiceProvider serviceProvider;
+    private readonly PeopleDataService peopleData;
     private CancellationTokenSource? appearingCts;
-    private bool isHeaderSizeHooked;
     private bool isTimelineSelectionSyncing;
+    private bool isHeaderSizeHooked;
 
-    public MainPage(MainViewModel vm, DeviceModeService deviceMode)
+    public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider, PeopleDataService peopleData)
     {
         InitializeComponent();
         this.vm = vm;
-        BindingContext = new MainPageBinding(vm, deviceMode, this);
+        this.serviceProvider = serviceProvider;
+        this.peopleData = peopleData;
+        BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData);
 
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
@@ -158,6 +162,8 @@ public partial class MainPage : ContentPage
         private readonly DeviceModeService deviceMode;
         private readonly Page page;
         private readonly MainViewModel vm;
+        private readonly IServiceProvider serviceProvider;
+        private readonly PeopleDataService peopleData;
 
         private int gridSpan = 3;
         private double headerHeight;
@@ -165,11 +171,13 @@ public partial class MainPage : ContentPage
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
 
-        public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page)
+        public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page, IServiceProvider serviceProvider, PeopleDataService peopleData)
         {
             this.vm = vm;
             this.deviceMode = deviceMode;
             this.page = page;
+            this.serviceProvider = serviceProvider;
+            this.peopleData = peopleData;
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
@@ -189,6 +197,7 @@ public partial class MainPage : ContentPage
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = new AsyncRelayCommand<MediaItem>(OpenTagEditorAsync);
+            OpenPersonFromTagCommand = new AsyncRelayCommand<string>(OpenPersonFromTagAsync);
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             ShareCommand = vm.ShareCommand;
@@ -368,6 +377,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand ClearMarkedCommand { get; }
         public IAsyncRelayCommand RenameCommand { get; }
         public IAsyncRelayCommand TagPeopleCommand { get; }
+        public IAsyncRelayCommand<string> OpenPersonFromTagCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
@@ -531,6 +541,43 @@ public partial class MainPage : ContentPage
         private async Task OpenPeopleAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!);
+        }
+
+        private async Task OpenPersonFromTagAsync(string? tagName)
+        {
+            var trimmed = (tagName ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(trimmed))
+                return;
+
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+                var found = await peopleData.FindPersonByNameAsync(trimmed, cts.Token).ConfigureAwait(false);
+
+                if (found != null)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        var personPage = ActivatorUtilities.CreateInstance<PersonPage>(serviceProvider);
+                        personPage.Initialize(found.Value.Id, found.Value.Name);
+                        await page.Navigation.PushAsync(personPage);
+                    });
+                    return;
+                }
+
+                // Fallback: open the people list filtered by the tapped name.
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    var peoplePage = page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!;
+                    if (peoplePage.BindingContext is PeopleViewModel pvm)
+                        pvm.SearchText = trimmed;
+                    await page.Navigation.PushAsync(peoplePage);
+                });
+            }
+            catch
+            {
+                // Ignore
+            }
         }
 
         private async Task OpenTagEditorAsync(MediaItem? item)

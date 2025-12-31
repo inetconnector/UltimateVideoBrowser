@@ -1,14 +1,11 @@
-using System.Collections.Concurrent;
-
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
 #if ANDROID && !WINDOWS
-using Android.OS;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
-using SysStream = System.IO.Stream;
+using SysStream = global::System.IO.Stream;
 
 #elif WINDOWS
 using Windows.Storage;
@@ -22,7 +19,7 @@ public sealed class ThumbnailService
     private readonly string cacheDir;
     private readonly ISourceService sourceService;
 
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> thumbLocks
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> thumbLocks
         = new(StringComparer.OrdinalIgnoreCase);
 
 #if WINDOWS
@@ -261,7 +258,7 @@ public sealed class ThumbnailService
             var halfHeight = height / 2;
             var halfWidth = width / 2;
 
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth)
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth)
                 inSampleSize *= 2;
         }
 
@@ -327,7 +324,8 @@ public sealed class ThumbnailService
 
             // Prefer scaled extraction when available (API 27+), otherwise scale after extraction.
             Bitmap? frame = null;
-            if ((int)Build.VERSION.SdkInt >= 27)
+            if ((int)Android.OS.Build.VERSION.SdkInt >= 27)
+            {
                 try
                 {
                     frame = retriever.GetScaledFrameAtTime(tUs, Option.ClosestSync, ThumbMaxSize, ThumbMaxSize);
@@ -336,6 +334,7 @@ public sealed class ThumbnailService
                 {
                     frame = null;
                 }
+            }
 
             frame ??= retriever.GetFrameAtTime(tUs, Option.ClosestSync);
             if (frame == null)

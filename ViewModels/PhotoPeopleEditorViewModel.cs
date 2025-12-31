@@ -15,11 +15,11 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     private readonly PeopleRecognitionService recognitionService;
     [ObservableProperty] private ObservableCollection<FaceTagItemViewModel> faces = new();
 
-    private bool hasLoaded;
-
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string mediaPath = string.Empty;
     [ObservableProperty] private string peopleTagsText = string.Empty;
+
+    private bool hasLoaded;
 
     public PhotoPeopleEditorViewModel(
         PeopleDataService peopleData,
@@ -91,8 +91,8 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    ///     Saves the current editor state and returns a normalized summary string
-    ///     that can be displayed immediately on the originating media tile.
+    /// Saves the current editor state and returns a normalized summary string
+    /// that can be displayed immediately on the originating media tile.
     /// </summary>
     public async Task<string?> SaveAndGetSummaryAsync()
     {
@@ -151,7 +151,10 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
             await peopleTagService.SetTagsForMediaAsync(MediaPath, combined).ConfigureAwait(false);
 
             // Keep UI text normalized so reopening shows the saved value.
-            await MainThread.InvokeOnMainThreadAsync(() => { PeopleTagsText = string.Join(", ", combined); });
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                PeopleTagsText = string.Join(", ", combined);
+            });
 
             return string.Join(", ", combined);
         }

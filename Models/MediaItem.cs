@@ -97,6 +97,36 @@ public class MediaItem : INotifyPropertyChanged
     [Ignore] public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
 
     [Ignore]
+    public IReadOnlyList<string> PeopleTags
+    {
+        get
+        {
+            var raw = PeopleTagsSummary ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(raw))
+                return Array.Empty<string>();
+
+            // Split and normalize. Keep original casing, but remove duplicates.
+            var parts = raw
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .ToList();
+
+            if (parts.Count == 0)
+                return Array.Empty<string>();
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var result = new List<string>(parts.Count);
+            foreach (var p in parts)
+            {
+                if (seen.Add(p))
+                    result.Add(p);
+            }
+
+            return result;
+        }
+    }
+
+    [Ignore]
     public string FirstLetter
         => string.IsNullOrWhiteSpace(Name) ? "#" : Name.Trim().Substring(0, 1).ToUpperInvariant();
 

@@ -13,6 +13,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
                 return ImageSource.FromUri(new Uri(text));
 
             if (File.Exists(text))
+            {
                 try
                 {
                     // Treat 0-byte or obviously broken files as invalid to avoid "blank" thumbnails.
@@ -24,6 +25,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
                 {
                     // Ignore and fall back.
                 }
+            }
         }
 
         var fallback = parameter as string ?? string.Empty;

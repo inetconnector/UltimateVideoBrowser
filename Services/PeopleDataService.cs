@@ -151,6 +151,23 @@ public sealed class PeopleDataService
         return recognitionService.RenamePersonAsync(personId, newName, ct);
     }
 
+    public async Task<(string Id, string Name)?> FindPersonByNameAsync(string name, CancellationToken ct)
+    {
+        var trimmed = (name ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return null;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+
+        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var match = people.FirstOrDefault(p => string.Equals(p.Name, trimmed, StringComparison.OrdinalIgnoreCase));
+        if (match == null)
+            return null;
+
+        return (match.Id, match.Name);
+    }
+
     private sealed class PersonCountRow
     {
         public string PersonId { get; } = string.Empty;
