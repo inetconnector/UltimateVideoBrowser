@@ -49,6 +49,7 @@ public static class AppResources
     public static string HighlightsVideosLabel => GetString(nameof(HighlightsVideosLabel), "Media indexed");
     public static string HighlightsSourcesLabel => GetString(nameof(HighlightsSourcesLabel), "Sources enabled");
     public static string HighlightsTipLabel => GetString(nameof(HighlightsTipLabel), "Pro tip");
+
     public static string HighlightsPeopleTaggedLabel =>
         GetString(nameof(HighlightsPeopleTaggedLabel), "People tagged");
 
@@ -184,7 +185,7 @@ public static class AppResources
         GetString(nameof(SettingsPeopleTaggingHint),
             "Turn this on to tag people in photos and videos from the library.");
 
-        public static string SettingsPeopleModelsFolderFormat =>
+    public static string SettingsPeopleModelsFolderFormat =>
         GetString(nameof(SettingsPeopleModelsFolderFormat), "Folder: {0}");
 
     public static string SettingsPeopleModelsFileFormat =>
@@ -193,7 +194,7 @@ public static class AppResources
     public static string SettingsPeopleModelsMissingDetailFormat =>
         GetString(nameof(SettingsPeopleModelsMissingDetailFormat), "Missing: {0}");
 
-public static string SettingsPeopleModelsStatusLabel =>
+    public static string SettingsPeopleModelsStatusLabel =>
         GetString(nameof(SettingsPeopleModelsStatusLabel), "Face models");
 
     public static string SettingsPeopleModelsStatusReady =>
@@ -204,7 +205,7 @@ public static string SettingsPeopleModelsStatusLabel =>
 
     public static string SettingsPeopleModelsStatusDownloading =>
         GetString(nameof(SettingsPeopleModelsStatusDownloading), "Downloading...");
-     
+
     public static string TagPeopleAction =>
         GetString(nameof(TagPeopleAction), "Tag people");
 

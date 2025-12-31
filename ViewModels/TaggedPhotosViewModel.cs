@@ -195,10 +195,10 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
     private async Task EnsureAndApplyThumbnailAsync(MediaItem item)
     {
-                // Ensure that the UI shows a placeholder while we (re)generate the thumbnail.
+        // Ensure that the UI shows a placeholder while we (re)generate the thumbnail.
         MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = string.Empty);
 
-try
+        try
         {
             var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(p))
@@ -220,6 +220,6 @@ try
 
     private sealed class PathRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
     }
 }

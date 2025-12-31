@@ -74,24 +74,24 @@
                         </SwipeView.RightItems>
 
                         <Frame BackgroundColor="{DynamicResource Surface}"
-                           CornerRadius="14"
-                           HasShadow="False"
-                           Padding="0"
-                           Margin="0,0,0,10">
-                        <Grid RowDefinitions="Auto,Auto">
-                            <Image
-                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                Aspect="AspectFill"
-                                HeightRequest="120" />
+                               CornerRadius="14"
+                               HasShadow="False"
+                               Padding="0"
+                               Margin="0,0,0,10">
+                            <Grid RowDefinitions="Auto,Auto">
+                                <Image
+                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="120" />
 
-                            <Label Grid.Row="1"
-                                   Text="{Binding PeopleTagsSummary}"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   FontSize="11"
-                                   LineBreakMode="TailTruncation"
-                                   Padding="10,8" />
-                        </Grid>
-                    </Frame>
+                                <Label Grid.Row="1"
+                                       Text="{Binding PeopleTagsSummary}"
+                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                       FontSize="11"
+                                       LineBreakMode="TailTruncation"
+                                       Padding="10,8" />
+                            </Grid>
+                        </Frame>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

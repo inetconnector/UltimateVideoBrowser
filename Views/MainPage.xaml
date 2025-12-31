@@ -13,1184 +13,1186 @@
 
     <Grid RowDefinitions="*,Auto">
         <!-- Browser grid -->
-                <Grid Grid.Row="0"
-                      x:Name="BrowserGrid"
-                      ColumnDefinitions="*,120"
-                      RowDefinitions="*"
-                      VerticalOptions="FillAndExpand"
-                      HorizontalOptions="FillAndExpand">
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup x:Name="LayoutStates">
-                            <VisualState x:Name="Phone">
-                                <VisualState.StateTriggers>
-                                    <OnIdiom x:TypeArguments="StateTriggerBase">
-                                        <OnIdiom.Phone>
-                                            <StateTrigger IsActive="True" />
-                                        </OnIdiom.Phone>
-                                        <OnIdiom.Default>
-                                            <StateTrigger IsActive="False" />
-                                        </OnIdiom.Default>
-                                    </OnIdiom>
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
-                                    <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
-                                    <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
-                                    <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
-                                    <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
-                                    <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
-                                    <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
-                                </VisualState.Setters>
-                            </VisualState>
+        <Grid Grid.Row="0"
+              x:Name="BrowserGrid"
+              ColumnDefinitions="*,120"
+              RowDefinitions="*"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="LayoutStates">
+                    <VisualState x:Name="Phone">
+                        <VisualState.StateTriggers>
+                            <OnIdiom x:TypeArguments="StateTriggerBase">
+                                <OnIdiom.Phone>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Phone>
+                                <OnIdiom.Default>
+                                    <StateTrigger IsActive="False" />
+                                </OnIdiom.Default>
+                            </OnIdiom>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
+                            <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
+                        </VisualState.Setters>
+                    </VisualState>
 
-                            <VisualState x:Name="Wide">
-                                <VisualState.StateTriggers>
-                                    <OnIdiom x:TypeArguments="StateTriggerBase">
-                                        <OnIdiom.Tablet>
-                                            <StateTrigger IsActive="True" />
-                                        </OnIdiom.Tablet>
-                                        <OnIdiom.Desktop>
-                                            <StateTrigger IsActive="True" />
-                                        </OnIdiom.Desktop>
-                                        <OnIdiom.TV>
-                                            <StateTrigger IsActive="True" />
-                                        </OnIdiom.TV>
-                                        <OnIdiom.Default>
-                                            <StateTrigger IsActive="False" />
-                                        </OnIdiom.Default>
-                                    </OnIdiom>
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
-                                    <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
-                                    <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
-                                    <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
-                                    <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
-                                    <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
-                                    <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
+                    <VisualState x:Name="Wide">
+                        <VisualState.StateTriggers>
+                            <OnIdiom x:TypeArguments="StateTriggerBase">
+                                <OnIdiom.Tablet>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Tablet>
+                                <OnIdiom.Desktop>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Desktop>
+                                <OnIdiom.TV>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.TV>
+                                <OnIdiom.Default>
+                                    <StateTrigger IsActive="False" />
+                                </OnIdiom.Default>
+                            </OnIdiom>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
+                            <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
+                            <Setter TargetName="TimelineView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="TimelineView" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineView" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
 
-                    <CollectionView ItemsSource="{Binding TimelineEntries}"
-                                    x:Name="TimelineView"
-                                    SelectionMode="Single"
-                                    SelectionChanged="OnTimelineSelectionChanged"
-                                    BackgroundColor="{DynamicResource AppBg}"
-                                    VerticalScrollBarVisibility="Always"
-                                    VerticalOptions="FillAndExpand"
-                                    HorizontalOptions="FillAndExpand"
-                                    Margin="8,0,8,0"
-                                    Grid.Column="1"
-                                    ItemSizingStrategy="MeasureFirstItem">
-                        <CollectionView.Header>
-                            <Grid HeightRequest="{Binding HeaderHeight}" />
-                        </CollectionView.Header>
+            <CollectionView ItemsSource="{Binding TimelineEntries}"
+                            x:Name="TimelineView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnTimelineSelectionChanged"
+                            BackgroundColor="{DynamicResource AppBg}"
+                            VerticalScrollBarVisibility="Always"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand"
+                            Margin="8,0,8,0"
+                            Grid.Column="1"
+                            ItemSizingStrategy="MeasureFirstItem">
+                <CollectionView.Header>
+                    <Grid HeightRequest="{Binding HeaderHeight}" />
+                </CollectionView.Header>
 
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
-                        </CollectionView.ItemsLayout>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:TimelineEntry">
-                                <Grid ColumnDefinitions="14,*" Padding="4,6">
-                                    <BoxView WidthRequest="2"
-                                             BackgroundColor="{DynamicResource BorderSubtle}"
-                                             HorizontalOptions="Center"
-                                             VerticalOptions="Fill" />
-                                    <Frame Grid.Column="1"
-                                           Padding="6"
-                                           CornerRadius="12"
-                                           BackgroundColor="{DynamicResource Surface2}"
-                                           BorderColor="{DynamicResource BorderSubtle}"
-                                           HasShadow="False">
-                                        <Grid RowDefinitions="70,Auto" RowSpacing="6">
-                                            <Grid BackgroundColor="{DynamicResource Surface3}"
-                                                  HeightRequest="70">
-	                                                    <Image
-	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-	                                                        Aspect="AspectFill"
-	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
-                                            </Grid>
-                                            <VerticalStackLayout Grid.Row="1" Spacing="2">
-                                                <Label Text="{Binding MonthLabel}"
-                                                       FontAttributes="Bold"
-                                                       FontSize="12"
-                                                       TextColor="{DynamicResource OnSurface}" />
-                                                <Label Text="{Binding YearLabel}"
-                                                       FontSize="10"
-                                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                                       IsVisible="{Binding ShowYear}" />
-                                            </VerticalStackLayout>
-                                        </Grid>
-                                    </Frame>
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TimelineEntry">
+                        <Grid ColumnDefinitions="14,*" Padding="4,6">
+                            <BoxView WidthRequest="2"
+                                     BackgroundColor="{DynamicResource BorderSubtle}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Fill" />
+                            <Frame Grid.Column="1"
+                                   Padding="6"
+                                   CornerRadius="12"
+                                   BackgroundColor="{DynamicResource Surface2}"
+                                   BorderColor="{DynamicResource BorderSubtle}"
+                                   HasShadow="False">
+                                <Grid RowDefinitions="70,Auto" RowSpacing="6">
+                                    <Grid BackgroundColor="{DynamicResource Surface3}"
+                                          HeightRequest="70">
+                                        <Image
+                                            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                            Aspect="AspectFill"
+                                            helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                                    </Grid>
+                                    <VerticalStackLayout Grid.Row="1" Spacing="2">
+                                        <Label Text="{Binding MonthLabel}"
+                                               FontAttributes="Bold"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{Binding YearLabel}"
+                                               FontSize="10"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               IsVisible="{Binding ShowYear}" />
+                                    </VerticalStackLayout>
                                 </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-
-                    <CollectionView Grid.Column="0"
-                                    ItemsSource="{Binding MediaItems}"
-                                    x:Name="MediaItemsView"
-                                    SelectionMode="None"
-                                    RemainingItemsThreshold="12"
-                                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
-                                    VerticalScrollBarVisibility="Always"
-                                    Scrolled="OnMediaItemsScrolled"
-                                    VerticalOptions="FillAndExpand"
-                                    HorizontalOptions="FillAndExpand"
-                                    ItemSizingStrategy="MeasureFirstItem"
-                                    ItemsUpdatingScrollMode="KeepScrollOffset">
-
-                        <CollectionView.Header>
-                            <Grid x:Name="HeaderContainer"
-                                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                  BackgroundColor="{DynamicResource AppBg}">
-<!-- Top bar -->
-                <Grid Padding="16,14"
-                      ColumnDefinitions="*,Auto"
-                      BackgroundColor="{DynamicResource Surface}">
-                    <HorizontalStackLayout Grid.Column="0"
-                                           Spacing="12"
-                                           VerticalOptions="Center">
-                        <Frame Padding="6"
-                               BackgroundColor="{DynamicResource Surface2}"
-                               CornerRadius="12"
-                               BorderColor="{DynamicResource BorderSubtle}"
-                               HeightRequest="40"
-                               WidthRequest="40"
-                               HorizontalOptions="Start">
-                            <Image Source="app_logo.svg"
-                                   HeightRequest="24"
-                                   WidthRequest="24"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Frame>
-
-                        <VerticalStackLayout Spacing="2">
-                            <Label Text="{x:Static strings:AppResources.AppTitle}"
-                                   FontAttributes="Bold"
-                                   FontSize="18"
-                                   TextColor="{DynamicResource OnSurface}" />
-                            <Label Text="{x:Static strings:AppResources.MainPageTitle}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnSurfaceMuted}" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-
-                    <!-- Non-blocking busy indicator (top-right) -->
-                    <ActivityIndicator Grid.Column="1"
-                                       IsVisible="{Binding IsTopBusy}"
-                                       IsRunning="{Binding IsTopBusy}"
-                                       WidthRequest="22"
-                                       HeightRequest="22"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="End" />
-                </Grid>
-
-
-                <!-- Hero -->
-                <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
-                    <Frame CornerRadius="20"
-                           Padding="16"
-                           BorderColor="{DynamicResource BorderSubtle}">
-                        <Frame.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="{DynamicResource Surface2}" Offset="0.0" />
-                                <GradientStop Color="{DynamicResource AccentGlow}" Offset="0.6" />
-                                <GradientStop Color="{DynamicResource Surface3}" Offset="1.0" />
-                            </LinearGradientBrush>
-                        </Frame.Background>
-
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                            <VerticalStackLayout Spacing="8">
-                                <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-                                <Label Text="{x:Static strings:AppResources.HeroTitle}"
-                                       FontSize="22"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource OnSurface}" />
-                                <Label Text="{x:Static strings:AppResources.HeroSubtitle}"
-                                       FontSize="13"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-
-                                <HorizontalStackLayout Spacing="8">
-                                    <Button Text="{x:Static strings:AppResources.SourcesButton}"
-                                            ImageSource="icon_sources.svg"
-                                            Command="{Binding OpenSourcesCommand}" />
-                                    <Button Text="{x:Static strings:AppResources.PeopleButton}"
-                                            ImageSource="icon_people.svg"
-                                            Command="{Binding OpenPeopleCommand}"
-                                            IsVisible="{Binding IsPeopleTaggingEnabled}" />
-                                    <Button Text="{x:Static strings:AppResources.SettingsButton}"
-                                            Command="{Binding OpenSettingsCommand}" />
-                                    <Button Text="{x:Static strings:AppResources.ReindexButton}"
-                                            ImageSource="icon_reindex.svg"
-                                            Command="{Binding RunIndexCommand}" />
-                                </HorizontalStackLayout>
-                            </VerticalStackLayout>
-
-                            <Image Grid.Column="1"
-                                   Source="hero_video.svg"
-                                   HeightRequest="120"
-                                   WidthRequest="140"
-                                   HorizontalOptions="End"
-                                   VerticalOptions="Center" />
+                            </Frame>
                         </Grid>
-                    </Frame>
-                </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                <!-- Highlights -->
-                <Grid Grid.Row="2"
-                      Padding="16,0,16,12"
-                      RowDefinitions="Auto,Auto,Auto"
-                      RowSpacing="10">
-                    <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
-                           FontAttributes="Bold"
-                           FontSize="14"
-                           TextColor="{DynamicResource OnSurface}" />
+            <CollectionView Grid.Column="0"
+                            ItemsSource="{Binding MediaItems}"
+                            x:Name="MediaItemsView"
+                            SelectionMode="None"
+                            RemainingItemsThreshold="12"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
+                            VerticalScrollBarVisibility="Always"
+                            Scrolled="OnMediaItemsScrolled"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            ItemsUpdatingScrollMode="KeepScrollOffset">
 
-                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                        <Frame BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="16"
-                               Padding="12"
-                               BorderColor="{DynamicResource BorderSubtle}">
-                            <VerticalStackLayout Spacing="6">
-                                <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
-                                <Label Text="{Binding IndexedMediaCount}"
-                                       FontSize="20"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource OnSurface}" />
-                                <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-                            </VerticalStackLayout>
-                        </Frame>
+                <CollectionView.Header>
+                    <Grid x:Name="HeaderContainer"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                          BackgroundColor="{DynamicResource AppBg}">
+                        <!-- Top bar -->
+                        <Grid Padding="16,14"
+                              ColumnDefinitions="*,Auto"
+                              BackgroundColor="{DynamicResource Surface}">
+                            <HorizontalStackLayout Grid.Column="0"
+                                                   Spacing="12"
+                                                   VerticalOptions="Center">
+                                <Frame Padding="6"
+                                       BackgroundColor="{DynamicResource Surface2}"
+                                       CornerRadius="12"
+                                       BorderColor="{DynamicResource BorderSubtle}"
+                                       HeightRequest="40"
+                                       WidthRequest="40"
+                                       HorizontalOptions="Start">
+                                    <Image Source="app_logo.svg"
+                                           HeightRequest="24"
+                                           WidthRequest="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Frame>
 
-                        <Frame Grid.Column="1"
-                               BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="16"
-                               Padding="12"
-                               BorderColor="{DynamicResource BorderSubtle}">
-                            <VerticalStackLayout Spacing="6">
-                                <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
-                                <Label Text="{Binding EnabledSourceCount}"
-                                       FontSize="20"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource OnSurface}" />
-                                <Label Text="{x:Static strings:AppResources.HighlightsSourcesLabel}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-                                <Label Text="{Binding SourcesSummary}"
-                                       FontSize="11"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-                            </VerticalStackLayout>
-                        </Frame>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{x:Static strings:AppResources.AppTitle}"
+                                           FontAttributes="Bold"
+                                           FontSize="18"
+                                           TextColor="{DynamicResource OnSurface}" />
+                                    <Label Text="{x:Static strings:AppResources.MainPageTitle}"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
 
-                        <Frame Grid.Column="2"
-                               BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="16"
-                               Padding="12"
-                               BorderColor="{DynamicResource BorderSubtle}">
-                            <VerticalStackLayout Spacing="6">
-                                <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
-                                <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
-                                       FontSize="13"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource OnSurface}" />
-                                <Label Text="{x:Static strings:AppResources.HighlightsTipText}"
-                                       FontSize="11"
-                                       TextColor="{DynamicResource OnSurfaceMuted}" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </Grid>
+                            <!-- Non-blocking busy indicator (top-right) -->
+                            <ActivityIndicator Grid.Column="1"
+                                               IsVisible="{Binding IsTopBusy}"
+                                               IsRunning="{Binding IsTopBusy}"
+                                               WidthRequest="22"
+                                               HeightRequest="22"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="End" />
+                        </Grid>
 
-                    <Frame Grid.Row="2"
-                           BackgroundColor="{DynamicResource Surface}"
-                           CornerRadius="16"
-                           Padding="12"
-                           BorderColor="{DynamicResource BorderSubtle}"
-                           IsVisible="{Binding IsPeopleTaggingEnabled}">
-                        <VerticalStackLayout Spacing="4">
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                                <Image Source="icon_people.svg"
-                                       HeightRequest="18"
-                                       WidthRequest="18"
-                                       VerticalOptions="Center" />
-                                <Label Grid.Column="1"
-                                       Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       VerticalOptions="Center" />
-                                <Label Grid.Column="2"
-                                       Text="{Binding TaggedPeopleCount}"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       VerticalOptions="Center" />
+
+                        <!-- Hero -->
+                        <Grid Grid.Row="1" Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
+                            <Frame CornerRadius="20"
+                                   Padding="16"
+                                   BorderColor="{DynamicResource BorderSubtle}">
+                                <Frame.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="{DynamicResource Surface2}" Offset="0.0" />
+                                        <GradientStop Color="{DynamicResource AccentGlow}" Offset="0.6" />
+                                        <GradientStop Color="{DynamicResource Surface3}" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                                        <Label Text="{x:Static strings:AppResources.HeroTitle}"
+                                               FontSize="22"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{x:Static strings:AppResources.HeroSubtitle}"
+                                               FontSize="13"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Button Text="{x:Static strings:AppResources.SourcesButton}"
+                                                    ImageSource="icon_sources.svg"
+                                                    Command="{Binding OpenSourcesCommand}" />
+                                            <Button Text="{x:Static strings:AppResources.PeopleButton}"
+                                                    ImageSource="icon_people.svg"
+                                                    Command="{Binding OpenPeopleCommand}"
+                                                    IsVisible="{Binding IsPeopleTaggingEnabled}" />
+                                            <Button Text="{x:Static strings:AppResources.SettingsButton}"
+                                                    Command="{Binding OpenSettingsCommand}" />
+                                            <Button Text="{x:Static strings:AppResources.ReindexButton}"
+                                                    ImageSource="icon_reindex.svg"
+                                                    Command="{Binding RunIndexCommand}" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <Image Grid.Column="1"
+                                           Source="hero_video.svg"
+                                           HeightRequest="120"
+                                           WidthRequest="140"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Frame>
+                        </Grid>
+
+                        <!-- Highlights -->
+                        <Grid Grid.Row="2"
+                              Padding="16,0,16,12"
+                              RowDefinitions="Auto,Auto,Auto"
+                              RowSpacing="10">
+                            <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="{DynamicResource OnSurface}" />
+
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                                <Frame BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="{DynamicResource BorderSubtle}">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
+                                        <Label Text="{Binding IndexedMediaCount}"
+                                               FontSize="20"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    </VerticalStackLayout>
+                                </Frame>
+
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="{DynamicResource BorderSubtle}">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
+                                        <Label Text="{Binding EnabledSourceCount}"
+                                               FontSize="20"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{x:Static strings:AppResources.HighlightsSourcesLabel}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                                        <Label Text="{Binding SourcesSummary}"
+                                               FontSize="11"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    </VerticalStackLayout>
+                                </Frame>
+
+                                <Frame Grid.Column="2"
+                                       BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="{DynamicResource BorderSubtle}">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
+                                        <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{x:Static strings:AppResources.HighlightsTipText}"
+                                               FontSize="11"
+                                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    </VerticalStackLayout>
+                                </Frame>
                             </Grid>
 
-                            <Label Text="{Binding PeopleModelsStatusText}"
-                                   FontSize="11"
-                                   TextColor="{DynamicResource OnSurfaceMuted}" />
-                        </VerticalStackLayout>
-                    </Frame>
-                </Grid>
+                            <Frame Grid.Row="2"
+                                   BackgroundColor="{DynamicResource Surface}"
+                                   CornerRadius="16"
+                                   Padding="12"
+                                   BorderColor="{DynamicResource BorderSubtle}"
+                                   IsVisible="{Binding IsPeopleTaggingEnabled}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                        <Image Source="icon_people.svg"
+                                               HeightRequest="18"
+                                               WidthRequest="18"
+                                               VerticalOptions="Center" />
+                                        <Label Grid.Column="1"
+                                               Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               VerticalOptions="Center" />
+                                        <Label Grid.Column="2"
+                                               Text="{Binding TaggedPeopleCount}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
 
-                <!-- Preview (moved to bottom dock) -->
-                <Grid Grid.Row="3"
-                      Padding="12"
-                      IsVisible="False">
-                    <Frame BackgroundColor="{DynamicResource Surface}"
-                           CornerRadius="16"
-                           Padding="12"
-                           BorderColor="{DynamicResource BorderSubtle}">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="{x:Static strings:AppResources.PreviewTitle}"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource OnSurface}" />
-                            <Grid HeightRequest="220"
-                                  BackgroundColor="{DynamicResource Surface2}">
-                                <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
-                                                      ShouldAutoPlay="True"
-                                                      ShowsPlaybackControls="True"
-                                                      Aspect="AspectFit"
-                                                      IsVisible="{Binding ShowVideoPlayer}" />
-                                <Image Source="{Binding CurrentMediaSource}"
-                                       Aspect="AspectFit"
-                                       IsVisible="{Binding ShowPhotoPreview}" />
-                                <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
-                                                     HorizontalOptions="Center"
-                                                     VerticalOptions="Center"
-                                                     Spacing="6">
-                                    <Image Source="chip_collection.svg"
-                                           HeightRequest="48"
-                                           WidthRequest="48" />
+                                    <Label Text="{Binding PeopleModelsStatusText}"
+                                           FontSize="11"
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </Grid>
+
+                        <!-- Preview (moved to bottom dock) -->
+                        <Grid Grid.Row="3"
+                              Padding="12"
+                              IsVisible="False">
+                            <Frame BackgroundColor="{DynamicResource Surface}"
+                                   CornerRadius="16"
+                                   Padding="12"
+                                   BorderColor="{DynamicResource BorderSubtle}">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{x:Static strings:AppResources.PreviewTitle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource OnSurface}" />
+                                    <Grid HeightRequest="220"
+                                          BackgroundColor="{DynamicResource Surface2}">
+                                        <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
+                                                              ShouldAutoPlay="True"
+                                                              ShowsPlaybackControls="True"
+                                                              Aspect="AspectFit"
+                                                              IsVisible="{Binding ShowVideoPlayer}" />
+                                        <Image Source="{Binding CurrentMediaSource}"
+                                               Aspect="AspectFit"
+                                               IsVisible="{Binding ShowPhotoPreview}" />
+                                        <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
+                                                             HorizontalOptions="Center"
+                                                             VerticalOptions="Center"
+                                                             Spacing="6">
+                                            <Image Source="chip_collection.svg"
+                                                   HeightRequest="48"
+                                                   WidthRequest="48" />
+                                            <Label Text="{Binding CurrentMediaName}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource OnSurface}" />
+                                        </VerticalStackLayout>
+                                        <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"
+                                               IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                                  Command="{Binding TogglePlayerFullscreenCommand}" />
+                                        </Grid.GestureRecognizers>
+                                    </Grid>
                                     <Label Text="{Binding CurrentMediaName}"
                                            FontSize="12"
-                                           TextColor="{DynamicResource OnSurface}" />
+                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                           LineBreakMode="TailTruncation"
+                                           IsVisible="{Binding ShowPreview}" />
                                 </VerticalStackLayout>
-                                <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalTextAlignment="Center"
-                                       IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                          Command="{Binding TogglePlayerFullscreenCommand}" />
-                                </Grid.GestureRecognizers>
-                            </Grid>
-                            <Label Text="{Binding CurrentMediaName}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   LineBreakMode="TailTruncation"
-                                   IsVisible="{Binding ShowPreview}" />
-                        </VerticalStackLayout>
-                    </Frame>
-                </Grid>
+                            </Frame>
+                        </Grid>
 
-                <!-- Permission notice -->
-                <Grid Grid.Row="4"
-                      Padding="12"
-                      IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
-                    <Frame BackgroundColor="{DynamicResource Surface}"
-                           CornerRadius="12"
-                           Padding="12"
-                           HasShadow="False">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="{x:Static strings:AppResources.PermissionTitle}"
+                        <!-- Permission notice -->
+                        <Grid Grid.Row="4"
+                              Padding="12"
+                              IsVisible="{Binding HasMediaPermission, Converter={StaticResource InverseBoolConverter}}">
+                            <Frame BackgroundColor="{DynamicResource Surface}"
+                                   CornerRadius="12"
+                                   Padding="12"
+                                   HasShadow="False">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{x:Static strings:AppResources.PermissionTitle}"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Label Text="{x:Static strings:AppResources.PermissionMessage}"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               FontSize="12" />
+                                    </VerticalStackLayout>
+
+                                    <Button Grid.Column="1"
+                                            Text="{x:Static strings:AppResources.PermissionOk}"
+                                            Command="{Binding RequestPermissionCommand}" />
+                                </Grid>
+                            </Frame>
+                        </Grid>
+
+                        <!-- Search + Sort -->
+                        <Grid Grid.Row="5"
+                              Padding="12"
+                              ColumnDefinitions="*,Auto"
+                              BackgroundColor="{DynamicResource AppBg}">
+                            <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
+                                       Text="{Binding SearchText}"
+                                       SearchCommand="{Binding RefreshCommand}"
+                                       BackgroundColor="{DynamicResource Surface2}"
+                                       TextColor="{DynamicResource OnSurface}"
+                                       PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+
+                            <Picker x:Name="SortPicker"
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding SortOptions}"
+                                    ItemDisplayBinding="{Binding Display}"
+                                    SelectedItem="{Binding SelectedSortOption}"
+                                    Title="{x:Static strings:AppResources.SortTitle}"
+                                    TextColor="{DynamicResource OnSurface}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    Margin="8,0,0,0" />
+                        </Grid>
+
+                        <!-- Media type filter -->
+                        <Grid Grid.Row="6"
+                              Padding="12"
+                              RowDefinitions="Auto,Auto"
+                              RowSpacing="8"
+                              BackgroundColor="{DynamicResource AppBg}">
+                            <Label Text="{x:Static strings:AppResources.MediaTypeFilterTitle}"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource OnSurface}" />
+                            <CollectionView Grid.Row="1"
+                                            ItemsSource="{Binding MediaTypeFilters}"
+                                            SelectionMode="None"
+                                            HorizontalScrollBarVisibility="Never">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <!-- Do not use compiled bindings here because the item type is a nested record (MainViewModel.MediaTypeFilterOption). -->
+                                    <DataTemplate>
+                                        <Button Text="{Binding Label}"
+                                                BackgroundColor="{DynamicResource Surface2}"
+                                                TextColor="{DynamicResource OnSurface}"
+                                                Command="{Binding BindingContext.ToggleMediaTypeFilterCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                CommandParameter="{Binding MediaType}">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding
+                                                            Converter="{StaticResource MediaTypeSelectedConverter}">
+                                                            <Binding Path="BindingContext.SelectedMediaTypes"
+                                                                     Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                            <Binding Path="MediaType" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                                    <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+
+                        <!-- Date filter -->
+                        <Grid Grid.Row="7"
+                              Padding="12"
+                              RowDefinitions="Auto,Auto"
+                              RowSpacing="8"
+                              BackgroundColor="{DynamicResource AppBg}">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{x:Static strings:AppResources.DateFilterTitle}"
                                        FontAttributes="Bold"
                                        TextColor="{DynamicResource OnSurface}" />
-                                <Label Text="{x:Static strings:AppResources.PermissionMessage}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       FontSize="12" />
-                            </VerticalStackLayout>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding IsDateFilterEnabled}"
+                                        OnColor="{DynamicResource Accent}" />
+                            </Grid>
 
-                            <Button Grid.Column="1"
-                                    Text="{x:Static strings:AppResources.PermissionOk}"
-                                    Command="{Binding RequestPermissionCommand}" />
-                        </Grid>
-                    </Frame>
-                </Grid>
-
-                <!-- Search + Sort -->
-                <Grid Grid.Row="5"
-                      Padding="12"
-                      ColumnDefinitions="*,Auto"
-                      BackgroundColor="{DynamicResource AppBg}">
-                    <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
-                               Text="{Binding SearchText}"
-                               SearchCommand="{Binding RefreshCommand}"
-                               BackgroundColor="{DynamicResource Surface2}"
-                               TextColor="{DynamicResource OnSurface}"
-                               PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
-
-                    <Picker x:Name="SortPicker"
-                            Grid.Column="1"
-                            ItemsSource="{Binding SortOptions}"
-                            ItemDisplayBinding="{Binding Display}"
-                            SelectedItem="{Binding SelectedSortOption}"
-                            Title="{x:Static strings:AppResources.SortTitle}"
-                            TextColor="{DynamicResource OnSurface}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            Margin="8,0,0,0" />
-                </Grid>
-
-                <!-- Media type filter -->
-                <Grid Grid.Row="6"
-                      Padding="12"
-                      RowDefinitions="Auto,Auto"
-                      RowSpacing="8"
-                      BackgroundColor="{DynamicResource AppBg}">
-                    <Label Text="{x:Static strings:AppResources.MediaTypeFilterTitle}"
-                           FontAttributes="Bold"
-                           TextColor="{DynamicResource OnSurface}" />
-                    <CollectionView Grid.Row="1"
-                                    ItemsSource="{Binding MediaTypeFilters}"
-                                    SelectionMode="None"
-                                    HorizontalScrollBarVisibility="Never">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
-                        </CollectionView.ItemsLayout>
-                        <CollectionView.ItemTemplate>
-                            <!-- Do not use compiled bindings here because the item type is a nested record (MainViewModel.MediaTypeFilterOption). -->
-                            <DataTemplate>
-                                <Button Text="{Binding Label}"
-                                        BackgroundColor="{DynamicResource Surface2}"
-                                        TextColor="{DynamicResource OnSurface}"
-                                        Command="{Binding BindingContext.ToggleMediaTypeFilterCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                        CommandParameter="{Binding MediaType}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Value="True">
-                                            <DataTrigger.Binding>
-                                                <MultiBinding Converter="{StaticResource MediaTypeSelectedConverter}">
-                                                    <Binding Path="BindingContext.SelectedMediaTypes"
-                                                             Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
-                                                    <Binding Path="MediaType" />
-                                                </MultiBinding>
-                                            </DataTrigger.Binding>
-                                            <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
-                                            <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </Grid>
-
-                <!-- Date filter -->
-                <Grid Grid.Row="7"
-                      Padding="12"
-                      RowDefinitions="Auto,Auto"
-                      RowSpacing="8"
-                      BackgroundColor="{DynamicResource AppBg}">
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                        <Label Text="{x:Static strings:AppResources.DateFilterTitle}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Switch Grid.Column="1"
-                                IsToggled="{Binding IsDateFilterEnabled}"
-                                OnColor="{DynamicResource Accent}" />
-                    </Grid>
-
-                    <Grid Grid.Row="1"
-                          ColumnDefinitions="*,*"
-                          ColumnSpacing="12"
-                          IsVisible="{Binding IsDateFilterEnabled}">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="{x:Static strings:AppResources.DateFilterFromLabel}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnSurfaceMuted}" />
-                            <DatePicker Date="{Binding DateFilterFrom}"
-                                        BackgroundColor="{DynamicResource Surface2}"
-                                        TextColor="{DynamicResource OnSurface}" />
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Grid.Column="1" Spacing="4">
-                            <Label Text="{x:Static strings:AppResources.DateFilterToLabel}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnSurfaceMuted}" />
-                            <DatePicker Date="{Binding DateFilterTo}"
-                                        BackgroundColor="{DynamicResource Surface2}"
-                                        TextColor="{DynamicResource OnSurface}" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </Grid>
-
-                <!-- Source tabs -->
-                <Grid Grid.Row="8"
-                      Padding="12,0,12,12"
-                      BackgroundColor="{DynamicResource AppBg}">
-                    <CollectionView ItemsSource="{Binding Sources}"
-                                    SelectionMode="None"
-                                    HorizontalScrollBarVisibility="Never">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
-                        </CollectionView.ItemsLayout>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:MediaSource">
-                                <Frame BackgroundColor="{DynamicResource Surface2}"
-                                       BorderColor="{DynamicResource BorderSubtle}"
-                                       CornerRadius="12"
-                                       Padding="12,6"
-                                       HasShadow="False">
-                                    <Frame.Triggers>
-                                        <DataTrigger TargetType="Frame" Value="True">
-                                            <DataTrigger.Binding>
-                                                <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
-                                                    <Binding Path="Id" />
-                                                    <Binding Path="BindingContext.ActiveSourceId"
-                                                             Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
-                                                </MultiBinding>
-                                            </DataTrigger.Binding>
-                                            <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
-                                            <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                        </DataTrigger>
-                                    </Frame.Triggers>
-                                    <Label Text="{Binding DisplayName}"
+                            <Grid Grid.Row="1"
+                                  ColumnDefinitions="*,*"
+                                  ColumnSpacing="12"
+                                  IsVisible="{Binding IsDateFilterEnabled}">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{x:Static strings:AppResources.DateFilterFromLabel}"
                                            FontSize="12"
-                                           TextColor="{DynamicResource OnSurface}">
-                                        <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Value="True">
-                                                <DataTrigger.Binding>
-                                                    <MultiBinding
-                                                        Converter="{StaticResource StringEqualsMultiConverter}">
-                                                        <Binding Path="Id" />
-                                                        <Binding Path="BindingContext.ActiveSourceId"
-                                                                 Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
-                                                    </MultiBinding>
-                                                </DataTrigger.Binding>
-                                                <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
-                                            </DataTrigger>
-                                        </Label.Triggers>
-                                    </Label>
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding BindingContext.SelectSourceCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                            CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </Grid>
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    <DatePicker Date="{Binding DateFilterFrom}"
+                                                BackgroundColor="{DynamicResource Surface2}"
+                                                TextColor="{DynamicResource OnSurface}" />
+                                </VerticalStackLayout>
 
-                <!-- Indexing banner -->
-                <Frame Grid.Row="9"
-                       IsVisible="{Binding ShowIndexingBanner}"
-                       BackgroundColor="{DynamicResource Surface}"
-                       CornerRadius="12"
-                       BorderColor="{DynamicResource BorderSubtle}"
-                       Padding="12"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Start"
-                       Margin="16,4,16,12"
-                       HasShadow="False">
-                    <Button Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
-                            Command="{Binding ShowIndexOverlayCommand}"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Padding="12,8"
-                            CornerRadius="12" />
-                </Frame>
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label Text="{x:Static strings:AppResources.DateFilterToLabel}"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                                    <DatePicker Date="{Binding DateFilterTo}"
+                                                BackgroundColor="{DynamicResource Surface2}"
+                                                TextColor="{DynamicResource OnSurface}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Grid>
 
-                                            </Grid>
-                        </CollectionView.Header>
-
-
-                        <CollectionView.ItemsLayout>
-                            <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
-                        </CollectionView.ItemsLayout>
-
-                        <CollectionView.EmptyView>
-                            <VerticalStackLayout Spacing="12"
-                                                 HorizontalOptions="Center"
-                                                 VerticalOptions="Center"
-                                                 Margin="24">
-                                <Image Source="empty_state.svg"
-                                       HeightRequest="180"
-                                       WidthRequest="240"
-                                       HorizontalOptions="Center" />
-                                <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
-                                       FontAttributes="Bold"
-                                       FontSize="16"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       HorizontalTextAlignment="Center" />
-                                <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
-                                       FontSize="13"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       HorizontalTextAlignment="Center" />
-                            </VerticalStackLayout>
-                        </CollectionView.EmptyView>
-
-                        <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
-                        <CollectionView.ItemTemplate>
-                            <OnPlatform x:TypeArguments="DataTemplate">
-
-                                <!-- Default fallback (no swipe) -->
-                                <On Platform="Default">
-                                    <DataTemplate x:DataType="models:MediaItem">
-                                        <Frame BackgroundColor="{DynamicResource Surface}"
-                                               CornerRadius="16"
-                                               Margin="8"
-                                               Padding="0"
+                        <!-- Source tabs -->
+                        <Grid Grid.Row="8"
+                              Padding="12,0,12,12"
+                              BackgroundColor="{DynamicResource AppBg}">
+                            <CollectionView ItemsSource="{Binding Sources}"
+                                            SelectionMode="None"
+                                            HorizontalScrollBarVisibility="Never">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:MediaSource">
+                                        <Frame BackgroundColor="{DynamicResource Surface2}"
                                                BorderColor="{DynamicResource BorderSubtle}"
-                                               MinimumWidthRequest="240"
-                                               MinimumHeightRequest="280">
+                                               CornerRadius="12"
+                                               Padding="12,6"
+                                               HasShadow="False">
                                             <Frame.Triggers>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
-                                                             Value="True">
+                                                <DataTrigger TargetType="Frame" Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding
+                                                            Converter="{StaticResource StringEqualsMultiConverter}">
+                                                            <Binding Path="Id" />
+                                                            <Binding Path="BindingContext.ActiveSourceId"
+                                                                     Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
                                                     <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                    <Setter Property="BackgroundColor"
-                                                            Value="{DynamicResource Surface2}" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
-                                            <Frame.ContextFlyout>
-                                                <MenuFlyout>
-                                                    <MenuFlyoutItem
-                                                        Text="{x:Static strings:AppResources.CopyMarkedAction}"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CopyItemCommand}"
-                                                        CommandParameter="{Binding .}" />
-                                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.ShareAction}"
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
-                                                                    CommandParameter="{Binding .}" />
-                                                    <MenuFlyoutSeparator />
-                                                    <MenuFlyoutItem
-                                                        Text="{x:Static strings:AppResources.DeleteMarkedAction}"
-                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteItemCommand}"
-                                                        CommandParameter="{Binding .}" />
-                                                </MenuFlyout>
-                                            </Frame.ContextFlyout>
-                                            <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                                <Grid RowDefinitions="*"
-                                                      BackgroundColor="{DynamicResource Surface2}"
-                                                      HeightRequest="170">
-	                                                    <Image
-	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-	                                                        Aspect="AspectFill"
-	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
-                                                    <Frame BackgroundColor="#CC0E0F14"
-                                                           CornerRadius="999"
-                                                           Padding="6"
-                                                           HorizontalOptions="End"
-                                                           VerticalOptions="End"
-                                                           Margin="8"
-                                                           IsVisible="False">
-                                                        <Frame.Triggers>
-                                                            <DataTrigger TargetType="Frame"
-                                                                         Binding="{Binding MediaType}"
-                                                                         Value="{x:Static models:MediaType.Videos}">
-                                                                <Setter Property="IsVisible" Value="True" />
-                                                            </DataTrigger>
-                                                        </Frame.Triggers>
-                                                        <Image Source="icon_play.svg" HeightRequest="16"
-                                                               WidthRequest="16" />
-                                                    </Frame>
-                                                </Grid>
-
-                                                <Grid Grid.Row="1"
-                                                      RowDefinitions="Auto,Auto"
-                                                      ColumnDefinitions="Auto,*"
-                                                      ColumnSpacing="8"
-                                                      Margin="0,10,0,0">
-                                                    <CheckBox IsChecked="{Binding IsMarked}"
-                                                              Color="{DynamicResource Accent}"
-                                                              VerticalOptions="Start"
-                                                              Margin="0"
-                                                              Grid.RowSpan="2" />
-                                                    <VerticalStackLayout Grid.Column="1"
-                                                                         Spacing="4"
-                                                                         HorizontalOptions="End">
-                                                        <Button Text="{x:Static strings:AppResources.RenameAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                                CommandParameter="{Binding .}"
-                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                        <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
-                                                                CommandParameter="{Binding .}"
-	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
-                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                        <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
-                                                                CommandParameter="{Binding .}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                    </VerticalStackLayout>
-                                                </Grid>
-
-                                                <HorizontalStackLayout Grid.Row="2"
-                                                                       Spacing="6"
-                                                                       Margin="0,6,0,2">
-                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                           BorderColor="{DynamicResource BorderSubtle}"
-                                                           CornerRadius="8"
-                                                           Padding="8,4"
-                                                           HorizontalOptions="Start"
-                                                           IsVisible="{Binding HasDuration}">
-                                                        <HorizontalStackLayout Spacing="6">
-                                                            <Image Source="chip_clock.svg" HeightRequest="12"
-                                                                   WidthRequest="12" />
-                                                            <Label Text="{Binding DurationText}"
-                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                   FontSize="11" />
-                                                        </HorizontalStackLayout>
-                                                    </Frame>
-                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                           BorderColor="{DynamicResource BorderSubtle}"
-                                                           CornerRadius="8"
-                                                           Padding="8,4"
-                                                           HorizontalOptions="Start">
-                                                        <HorizontalStackLayout Spacing="6">
-                                                            <Image Source="chip_collection.svg" HeightRequest="12"
-                                                                   WidthRequest="12" />
-                                                            <Label
-                                                                Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                FontSize="11" />
-                                                        </HorizontalStackLayout>
-                                                    </Frame>
-                                                </HorizontalStackLayout>
-
-                                                <VerticalStackLayout Grid.Row="3"
-                                                                     Spacing="4"
-                                                                     Margin="0,2,0,2">
-	                                                    <!-- Filename (always visible) -->
-	                                                    <Label Text="{Binding Name}"
-	                                                           TextColor="{DynamicResource OnSurface}"
-	                                                           FontSize="12"
-	                                                           LineBreakMode="NoWrap"
-	                                                           MaxLines="1" />
-
-                                                    <!-- People tags as badges (clickable) -->
-                                                    <HorizontalStackLayout
-                                                        Spacing="4"
-                                                        BindableLayout.ItemsSource="{Binding PeopleTags}"
-	                                                        IsVisible="{Binding HasPeopleTags}">
-                                                        <BindableLayout.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Frame
-	                                                                    BackgroundColor="{DynamicResource Surface3}"
-                                                                    BorderColor="{DynamicResource BorderSubtle}"
-                                                                    CornerRadius="10"
-                                                                    Padding="6,2"
-	                                                                    HasShadow="False">
-                                                                    <Label
-                                                                        Text="{Binding .}"
-	                                                                        TextColor="{DynamicResource OnSurface}"
-	                                                                        Opacity="0.75"
-                                                                        FontSize="10"
-                                                                        LineBreakMode="TailTruncation"
-                                                                        MaxLines="1"
-                                                                        VerticalOptions="Center" />
-                                                                    <Frame.GestureRecognizers>
-                                                                        <TapGestureRecognizer
-                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                            CommandParameter="{Binding .}" />
-                                                                    </Frame.GestureRecognizers>
-                                                                </Frame>
-                                                            </DataTemplate>
-                                                        </BindableLayout.ItemTemplate>
-                                                    </HorizontalStackLayout>
-                                                </VerticalStackLayout>
-
-                                                <Grid.GestureRecognizers>
-                                                    <TapGestureRecognizer
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                        CommandParameter="{Binding .}" />
-                                                </Grid.GestureRecognizers>
-                                            </Grid>
+                                            <Label Text="{Binding DisplayName}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource OnSurface}">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding
+                                                                Converter="{StaticResource StringEqualsMultiConverter}">
+                                                                <Binding Path="Id" />
+                                                                <Binding Path="BindingContext.ActiveSourceId"
+                                                                         Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding BindingContext.SelectSourceCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                    CommandParameter="{Binding .}" />
+                                            </Frame.GestureRecognizers>
                                         </Frame>
                                     </DataTemplate>
-                                </On>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
 
-                                <!-- Android: swipe -> Share -->
-                                <On Platform="Android">
-                                    <DataTemplate x:DataType="models:MediaItem">
-                                        <SwipeView>
-                                            <SwipeView.RightItems>
-                                                <SwipeItems Mode="Reveal">
-                                                    <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
-                                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
-                                                               CommandParameter="{Binding .}" />
-                                                </SwipeItems>
-                                            </SwipeView.RightItems>
+                        <!-- Indexing banner -->
+                        <Frame Grid.Row="9"
+                               IsVisible="{Binding ShowIndexingBanner}"
+                               BackgroundColor="{DynamicResource Surface}"
+                               CornerRadius="12"
+                               BorderColor="{DynamicResource BorderSubtle}"
+                               Padding="12"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Start"
+                               Margin="16,4,16,12"
+                               HasShadow="False">
+                            <Button Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
+                                    Command="{Binding ShowIndexOverlayCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    Padding="12,8"
+                                    CornerRadius="12" />
+                        </Frame>
 
-                                            <Frame BackgroundColor="{DynamicResource Surface}"
-                                                   CornerRadius="16"
+                    </Grid>
+                </CollectionView.Header>
+
+
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="12"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Margin="24">
+                        <Image Source="empty_state.svg"
+                               HeightRequest="180"
+                               WidthRequest="240"
+                               HorizontalOptions="Center" />
+                        <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="{DynamicResource OnSurface}"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
+                               FontSize="13"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
+                <CollectionView.ItemTemplate>
+                    <OnPlatform x:TypeArguments="DataTemplate">
+
+                        <!-- Default fallback (no swipe) -->
+                        <On Platform="Default">
+                            <DataTemplate x:DataType="models:MediaItem">
+                                <Frame BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Margin="8"
+                                       Padding="0"
+                                       BorderColor="{DynamicResource BorderSubtle}"
+                                       MinimumWidthRequest="240"
+                                       MinimumHeightRequest="280">
+                                    <Frame.Triggers>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                     Value="True">
+                                            <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{DynamicResource Surface2}" />
+                                        </DataTrigger>
+                                    </Frame.Triggers>
+                                    <Frame.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem
+                                                Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CopyItemCommand}"
+                                                CommandParameter="{Binding .}" />
+                                            <MenuFlyoutItem Text="{x:Static strings:AppResources.ShareAction}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                            <MenuFlyoutSeparator />
+                                            <MenuFlyoutItem
+                                                Text="{x:Static strings:AppResources.DeleteMarkedAction}"
+                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteItemCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </MenuFlyout>
+                                    </Frame.ContextFlyout>
+                                    <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                        <Grid RowDefinitions="*"
+                                              BackgroundColor="{DynamicResource Surface2}"
+                                              HeightRequest="170">
+                                            <Image
+                                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                Aspect="AspectFill"
+                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                                            <Frame BackgroundColor="#CC0E0F14"
+                                                   CornerRadius="999"
+                                                   Padding="6"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="End"
                                                    Margin="8"
-                                                   Padding="0"
-                                                   BorderColor="{DynamicResource BorderSubtle}"
-                                                   MinimumWidthRequest="240"
-                                                   MinimumHeightRequest="280">
+                                                   IsVisible="False">
                                                 <Frame.Triggers>
-                                                    <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
-                                                                 Value="True">
-                                                        <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                        <Setter Property="BackgroundColor"
-                                                                Value="{DynamicResource Surface2}" />
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding MediaType}"
+                                                                 Value="{x:Static models:MediaType.Videos}">
+                                                        <Setter Property="IsVisible" Value="True" />
                                                     </DataTrigger>
                                                 </Frame.Triggers>
-                                                <Frame.Behaviors>
-                                                    <toolkit:TouchBehavior
-                                                        LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
-                                                        LongPressCommandParameter="{Binding .}" />
-                                                </Frame.Behaviors>
-                                                <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                                    <Grid RowDefinitions="*"
-                                                          BackgroundColor="{DynamicResource Surface2}"
-                                                          HeightRequest="170">
-	                                                    <Image
-	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-	                                                        Aspect="AspectFill"
-	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
-                                                        <Frame BackgroundColor="#CC0E0F14"
-                                                               CornerRadius="999"
-                                                               Padding="6"
-                                                               HorizontalOptions="End"
-                                                               VerticalOptions="End"
-                                                               Margin="8"
-                                                               IsVisible="False">
-                                                            <Frame.Triggers>
-                                                                <DataTrigger TargetType="Frame"
-                                                                             Binding="{Binding MediaType}"
-                                                                             Value="{x:Static models:MediaType.Videos}">
-                                                                    <Setter Property="IsVisible" Value="True" />
-                                                                </DataTrigger>
-                                                            </Frame.Triggers>
-                                                            <Image Source="icon_play.svg" HeightRequest="16"
-                                                                   WidthRequest="16" />
-                                                        </Frame>
-                                                    </Grid>
-
-                                                    <Grid Grid.Row="1"
-                                                          RowDefinitions="Auto,Auto"
-                                                          ColumnDefinitions="Auto,*"
-                                                          ColumnSpacing="8"
-                                                          Margin="0,10,0,0">
-                                                        <CheckBox IsChecked="{Binding IsMarked}"
-                                                                  Color="{DynamicResource Accent}"
-                                                                  VerticalOptions="Start"
-                                                                  Margin="0"
-                                                                  Grid.RowSpan="2" />
-                                                        <VerticalStackLayout Grid.Column="1"
-                                                                             Spacing="4"
-                                                                             HorizontalOptions="End">
-                                                            <Button Text="{x:Static strings:AppResources.RenameAction}"
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                                    CommandParameter="{Binding .}"
-                                                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
-                                                                    FontSize="11"
-                                                                    Padding="10,2"
-                                                                    BackgroundColor="{DynamicResource Surface2}"
-                                                                    TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                            <Button
-                                                                Text="{x:Static strings:AppResources.TagPeopleAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
-                                                                CommandParameter="{Binding .}"
-	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
-                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                            <Button
-                                                                Text="{x:Static strings:AppResources.OpenFolderAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
-                                                                CommandParameter="{Binding .}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                        </VerticalStackLayout>
-                                                    </Grid>
-
-                                                    <HorizontalStackLayout Grid.Row="2"
-                                                                           Spacing="6"
-                                                                           Margin="0,6,0,2">
-                                                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                               BorderColor="{DynamicResource BorderSubtle}"
-                                                               CornerRadius="8"
-                                                               Padding="8,4"
-                                                               HorizontalOptions="Start"
-                                                               IsVisible="{Binding HasDuration}">
-                                                            <HorizontalStackLayout Spacing="6">
-                                                                <Image Source="chip_clock.svg" HeightRequest="12"
-                                                                       WidthRequest="12" />
-                                                                <Label Text="{Binding DurationText}"
-                                                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                       FontSize="11" />
-                                                            </HorizontalStackLayout>
-                                                        </Frame>
-                                                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                               BorderColor="{DynamicResource BorderSubtle}"
-                                                               CornerRadius="8"
-                                                               Padding="8,4"
-                                                               HorizontalOptions="Start">
-                                                            <HorizontalStackLayout Spacing="6">
-                                                                <Image Source="chip_collection.svg" HeightRequest="12"
-                                                                       WidthRequest="12" />
-                                                                <Label
-                                                                    Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
-                                                                    TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                    FontSize="11" />
-                                                            </HorizontalStackLayout>
-                                                        </Frame>
-                                                    </HorizontalStackLayout>
-
-	                                                    <VerticalStackLayout Grid.Row="3"
-	                                                                         Spacing="4"
-	                                                                         Margin="0,2,0,2">
-	                                                        <!-- Filename (always visible) -->
-	                                                        <Label Text="{Binding Name}"
-	                                                               TextColor="{DynamicResource OnSurface}"
-	                                                               FontSize="12"
-	                                                               LineBreakMode="NoWrap"
-	                                                               MaxLines="1" />
-
-	                                                        <!-- People tags as badges (clickable) -->
-	                                                        <HorizontalStackLayout
-	                                                            Spacing="4"
-	                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
-	                                                            IsVisible="{Binding HasPeopleTags}">
-                                                            <BindableLayout.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Frame
-	                                                                        BackgroundColor="{DynamicResource Surface3}"
-                                                                        BorderColor="{DynamicResource BorderSubtle}"
-                                                                        CornerRadius="10"
-                                                                        Padding="6,2"
-	                                                                        HasShadow="False">
-                                                                        <Label
-                                                                            Text="{Binding .}"
-	                                                                            TextColor="{DynamicResource OnSurface}"
-	                                                                            Opacity="0.75"
-                                                                            FontSize="10"
-                                                                            LineBreakMode="TailTruncation"
-                                                                            MaxLines="1"
-                                                                            VerticalOptions="Center" />
-                                                                        <Frame.GestureRecognizers>
-                                                                            <TapGestureRecognizer
-                                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                                CommandParameter="{Binding .}" />
-                                                                        </Frame.GestureRecognizers>
-                                                                    </Frame>
-                                                                </DataTemplate>
-                                                            </BindableLayout.ItemTemplate>
-                                                        </HorizontalStackLayout>
-
-                                                    </VerticalStackLayout>
-
-                                                    <Grid.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                            CommandParameter="{Binding .}" />
-                                                    </Grid.GestureRecognizers>
-                                                </Grid>
+                                                <Image Source="icon_play.svg" HeightRequest="16"
+                                                       WidthRequest="16" />
                                             </Frame>
-                                        </SwipeView>
-                                    </DataTemplate>
-                                </On>
+                                        </Grid>
 
-                                <!-- WinUI: swipe -> Save As -->
-                                <On Platform="WinUI">
-                                    <DataTemplate x:DataType="models:MediaItem">
-                                        <SwipeView>
-                                            <SwipeView.RightItems>
-                                                <SwipeItems Mode="Reveal">
-                                                    <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
-                                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
-                                                               CommandParameter="{Binding .}" />
-                                                </SwipeItems>
-                                            </SwipeView.RightItems>
+                                        <Grid Grid.Row="1"
+                                              RowDefinitions="Auto,Auto"
+                                              ColumnDefinitions="Auto,*"
+                                              ColumnSpacing="8"
+                                              Margin="0,10,0,0">
+                                            <CheckBox IsChecked="{Binding IsMarked}"
+                                                      Color="{DynamicResource Accent}"
+                                                      VerticalOptions="Start"
+                                                      Margin="0"
+                                                      Grid.RowSpan="2" />
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="4"
+                                                                 HorizontalOptions="End">
+                                                <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                            </VerticalStackLayout>
+                                        </Grid>
 
-                                            <Frame BackgroundColor="{DynamicResource Surface}"
-                                                   CornerRadius="16"
-                                                   Margin="8"
-                                                   Padding="0"
+                                        <HorizontalStackLayout Grid.Row="2"
+                                                               Spacing="6"
+                                                               Margin="0,6,0,2">
+                                            <Frame BackgroundColor="{DynamicResource Surface2}"
                                                    BorderColor="{DynamicResource BorderSubtle}"
-                                                   MinimumWidthRequest="240"
-                                                   MinimumHeightRequest="280">
-                                                <Frame.Triggers>
-                                                    <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
-                                                                 Value="True">
-                                                        <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                        <Setter Property="BackgroundColor"
-                                                                Value="{DynamicResource Surface2}" />
-                                                    </DataTrigger>
-                                                </Frame.Triggers>
-                                                <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                                    <Grid RowDefinitions="*"
-                                                          BackgroundColor="{DynamicResource Surface2}"
-                                                          HeightRequest="170">
-	                                                    <Image
-	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-	                                                        Aspect="AspectFill"
-	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
-                                                        <Frame BackgroundColor="#CC0E0F14"
-                                                               CornerRadius="999"
-                                                               Padding="6"
-                                                               HorizontalOptions="End"
-                                                               VerticalOptions="End"
-                                                               Margin="8"
-                                                               IsVisible="False">
-                                                            <Frame.Triggers>
-                                                                <DataTrigger TargetType="Frame"
-                                                                             Binding="{Binding MediaType}"
-                                                                             Value="{x:Static models:MediaType.Videos}">
-                                                                    <Setter Property="IsVisible" Value="True" />
-                                                                </DataTrigger>
-                                                            </Frame.Triggers>
-                                                            <Image Source="icon_play.svg" HeightRequest="16"
-                                                                   WidthRequest="16" />
-                                                        </Frame>
-                                                    </Grid>
-
-                                                    <Grid Grid.Row="1"
-                                                          RowDefinitions="Auto,Auto"
-                                                          ColumnDefinitions="Auto,*"
-                                                          ColumnSpacing="8"
-                                                          Margin="0,10,0,0">
-                                                        <CheckBox IsChecked="{Binding IsMarked}"
-                                                                  Color="{DynamicResource Accent}"
-                                                                  VerticalOptions="Start"
-                                                                  Margin="0"
-                                                                  Grid.RowSpan="2" />
-                                                        <VerticalStackLayout Grid.Column="1"
-                                                                             Spacing="4"
-                                                                             HorizontalOptions="End">
-                                                            <Button Text="{x:Static strings:AppResources.RenameAction}"
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
-                                                                    CommandParameter="{Binding .}"
-                                                                    IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
-                                                                    FontSize="11"
-                                                                    Padding="10,2"
-                                                                    BackgroundColor="{DynamicResource Surface2}"
-                                                                    TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                            <Button
-                                                                Text="{x:Static strings:AppResources.TagPeopleAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
-                                                                CommandParameter="{Binding .}"
-	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
-                                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                            <Button
-                                                                Text="{x:Static strings:AppResources.OpenFolderAction}"
-                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
-                                                                CommandParameter="{Binding .}"
-                                                                FontSize="11"
-                                                                Padding="10,2"
-                                                                BackgroundColor="{DynamicResource Surface2}"
-                                                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                        </VerticalStackLayout>
-                                                    </Grid>
-
-                                                    <HorizontalStackLayout Grid.Row="2"
-                                                                           Spacing="6"
-                                                                           Margin="0,6,0,2">
-                                                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                               BorderColor="{DynamicResource BorderSubtle}"
-                                                               CornerRadius="8"
-                                                               Padding="8,4"
-                                                               HorizontalOptions="Start"
-                                                               IsVisible="{Binding HasDuration}">
-                                                            <HorizontalStackLayout Spacing="6">
-                                                                <Image Source="chip_clock.svg" HeightRequest="12"
-                                                                       WidthRequest="12" />
-                                                                <Label Text="{Binding DurationText}"
-                                                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                       FontSize="11" />
-                                                            </HorizontalStackLayout>
-                                                        </Frame>
-                                                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                               BorderColor="{DynamicResource BorderSubtle}"
-                                                               CornerRadius="8"
-                                                               Padding="8,4"
-                                                               HorizontalOptions="Start">
-                                                            <HorizontalStackLayout Spacing="6">
-                                                                <Image Source="chip_collection.svg" HeightRequest="12"
-                                                                       WidthRequest="12" />
-                                                                <Label
-                                                                    Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
-                                                                    TextColor="{DynamicResource OnSurfaceMuted}"
-                                                                    FontSize="11" />
-                                                            </HorizontalStackLayout>
-                                                        </Frame>
-                                                    </HorizontalStackLayout>
-
-	                                                    <VerticalStackLayout Grid.Row="3"
-	                                                                         Spacing="4"
-	                                                                         Margin="0,2,0,2">
-	                                                        <!-- Filename (always visible) -->
-	                                                        <Label Text="{Binding Name}"
-	                                                               TextColor="{DynamicResource OnSurface}"
-	                                                               FontSize="12"
-	                                                               LineBreakMode="NoWrap"
-	                                                               MaxLines="1" />
-
-	                                                        <!-- People tags as badges (clickable) -->
-	                                                        <HorizontalStackLayout
-	                                                            Spacing="4"
-	                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
-	                                                            IsVisible="{Binding HasPeopleTags}">
-                                                            <BindableLayout.ItemTemplate>
-                                                                <DataTemplate>
-	                                                                    <Frame
-	                                                                        BackgroundColor="{DynamicResource Surface3}"
-                                                                        BorderColor="{DynamicResource BorderSubtle}"
-                                                                        CornerRadius="10"
-                                                                        Padding="6,2"
-	                                                                        HasShadow="False">
-                                                                        <Label
-                                                                            Text="{Binding .}"
-	                                                                            TextColor="{DynamicResource OnSurface}"
-	                                                                            Opacity="0.75"
-                                                                            FontSize="10"
-                                                                            LineBreakMode="TailTruncation"
-                                                                            MaxLines="1"
-                                                                            VerticalOptions="Center" />
-                                                                        <Frame.GestureRecognizers>
-                                                                            <TapGestureRecognizer
-                                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                                CommandParameter="{Binding .}" />
-                                                                        </Frame.GestureRecognizers>
-                                                                    </Frame>
-                                                                </DataTemplate>
-                                                            </BindableLayout.ItemTemplate>
-	                                                        </HorizontalStackLayout>
-                                                    </VerticalStackLayout>
-
-                                                    <Grid.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                            CommandParameter="{Binding .}" />
-                                                    </Grid.GestureRecognizers>
-                                                </Grid>
+                                                   CornerRadius="8"
+                                                   Padding="8,4"
+                                                   HorizontalOptions="Start"
+                                                   IsVisible="{Binding HasDuration}">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="chip_clock.svg" HeightRequest="12"
+                                                           WidthRequest="12" />
+                                                    <Label Text="{Binding DurationText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="11" />
+                                                </HorizontalStackLayout>
                                             </Frame>
-                                        </SwipeView>
-                                    </DataTemplate>
-                                </On>
+                                            <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                   BorderColor="{DynamicResource BorderSubtle}"
+                                                   CornerRadius="8"
+                                                   Padding="8,4"
+                                                   HorizontalOptions="Start">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="chip_collection.svg" HeightRequest="12"
+                                                           WidthRequest="12" />
+                                                    <Label
+                                                        Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}"
+                                                        FontSize="11" />
+                                                </HorizontalStackLayout>
+                                            </Frame>
+                                        </HorizontalStackLayout>
 
-                            </OnPlatform>
-                        </CollectionView.ItemTemplate>
+                                        <VerticalStackLayout Grid.Row="3"
+                                                             Spacing="4"
+                                                             Margin="0,2,0,2">
+                                            <!-- Filename (always visible) -->
+                                            <Label Text="{Binding Name}"
+                                                   TextColor="{DynamicResource OnSurface}"
+                                                   FontSize="12"
+                                                   LineBreakMode="NoWrap"
+                                                   MaxLines="1" />
 
-                    </CollectionView>
-                </Grid>
+                                            <!-- People tags as badges (clickable) -->
+                                            <HorizontalStackLayout
+                                                Spacing="4"
+                                                BindableLayout.ItemsSource="{Binding PeopleTags}"
+                                                IsVisible="{Binding HasPeopleTags}">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame
+                                                            BackgroundColor="{DynamicResource Surface3}"
+                                                            BorderColor="{DynamicResource BorderSubtle}"
+                                                            CornerRadius="10"
+                                                            Padding="6,2"
+                                                            HasShadow="False">
+                                                            <Label
+                                                                Text="{Binding .}"
+                                                                TextColor="{DynamicResource OnSurface}"
+                                                                Opacity="0.75"
+                                                                FontSize="10"
+                                                                LineBreakMode="TailTruncation"
+                                                                MaxLines="1"
+                                                                VerticalOptions="Center" />
+                                                            <Frame.GestureRecognizers>
+                                                                <TapGestureRecognizer
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
+                                                                    CommandParameter="{Binding .}" />
+                                                            </Frame.GestureRecognizers>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </On>
+
+                        <!-- Android: swipe -> Share -->
+                        <On Platform="Android">
+                            <DataTemplate x:DataType="models:MediaItem">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="240"
+                                           MinimumHeightRequest="280">
+                                        <Frame.Triggers>
+                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                         Value="True">
+                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                <Setter Property="BackgroundColor"
+                                                        Value="{DynamicResource Surface2}" />
+                                            </DataTrigger>
+                                        </Frame.Triggers>
+                                        <Frame.Behaviors>
+                                            <toolkit:TouchBehavior
+                                                LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
+                                                LongPressCommandParameter="{Binding .}" />
+                                        </Frame.Behaviors>
+                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="*"
+                                                  BackgroundColor="{DynamicResource Surface2}"
+                                                  HeightRequest="170">
+                                                <Image
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                    Aspect="AspectFill"
+                                                    helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                                                <Frame BackgroundColor="#CC0E0F14"
+                                                       CornerRadius="999"
+                                                       Padding="6"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"
+                                                       Margin="8"
+                                                       IsVisible="False">
+                                                    <Frame.Triggers>
+                                                        <DataTrigger TargetType="Frame"
+                                                                     Binding="{Binding MediaType}"
+                                                                     Value="{x:Static models:MediaType.Videos}">
+                                                            <Setter Property="IsVisible" Value="True" />
+                                                        </DataTrigger>
+                                                    </Frame.Triggers>
+                                                    <Image Source="icon_play.svg" HeightRequest="16"
+                                                           WidthRequest="16" />
+                                                </Frame>
+                                            </Grid>
+
+                                            <Grid Grid.Row="1"
+                                                  RowDefinitions="Auto,Auto"
+                                                  ColumnDefinitions="Auto,*"
+                                                  ColumnSpacing="8"
+                                                  Margin="0,10,0,0">
+                                                <CheckBox IsChecked="{Binding IsMarked}"
+                                                          Color="{DynamicResource Accent}"
+                                                          VerticalOptions="Start"
+                                                          Margin="0"
+                                                          Grid.RowSpan="2" />
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                     Spacing="4"
+                                                                     HorizontalOptions="End">
+                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                            FontSize="11"
+                                                            Padding="10,2"
+                                                            BackgroundColor="{DynamicResource Surface2}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <Button
+                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <Button
+                                                        Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+
+                                            <HorizontalStackLayout Grid.Row="2"
+                                                                   Spacing="6"
+                                                                   Margin="0,6,0,2">
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_collection.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label
+                                                            Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}"
+                                                            FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </HorizontalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="3"
+                                                                 Spacing="4"
+                                                                 Margin="0,2,0,2">
+                                                <!-- Filename (always visible) -->
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="1" />
+
+                                                <!-- People tags as badges (clickable) -->
+                                                <HorizontalStackLayout
+                                                    Spacing="4"
+                                                    BindableLayout.ItemsSource="{Binding PeopleTags}"
+                                                    IsVisible="{Binding HasPeopleTags}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Frame
+                                                                BackgroundColor="{DynamicResource Surface3}"
+                                                                BorderColor="{DynamicResource BorderSubtle}"
+                                                                CornerRadius="10"
+                                                                Padding="6,2"
+                                                                HasShadow="False">
+                                                                <Label
+                                                                    Text="{Binding .}"
+                                                                    TextColor="{DynamicResource OnSurface}"
+                                                                    Opacity="0.75"
+                                                                    FontSize="10"
+                                                                    LineBreakMode="TailTruncation"
+                                                                    MaxLines="1"
+                                                                    VerticalOptions="Center" />
+                                                                <Frame.GestureRecognizers>
+                                                                    <TapGestureRecognizer
+                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
+                                                                        CommandParameter="{Binding .}" />
+                                                                </Frame.GestureRecognizers>
+                                                            </Frame>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </HorizontalStackLayout>
+
+                                            </VerticalStackLayout>
+
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </On>
+
+                        <!-- WinUI: swipe -> Save As -->
+                        <On Platform="WinUI">
+                            <DataTemplate x:DataType="models:MediaItem">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="240"
+                                           MinimumHeightRequest="280">
+                                        <Frame.Triggers>
+                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                         Value="True">
+                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                <Setter Property="BackgroundColor"
+                                                        Value="{DynamicResource Surface2}" />
+                                            </DataTrigger>
+                                        </Frame.Triggers>
+                                        <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
+                                            <Grid RowDefinitions="*"
+                                                  BackgroundColor="{DynamicResource Surface2}"
+                                                  HeightRequest="170">
+                                                <Image
+                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                    Aspect="AspectFill"
+                                                    helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                                                <Frame BackgroundColor="#CC0E0F14"
+                                                       CornerRadius="999"
+                                                       Padding="6"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"
+                                                       Margin="8"
+                                                       IsVisible="False">
+                                                    <Frame.Triggers>
+                                                        <DataTrigger TargetType="Frame"
+                                                                     Binding="{Binding MediaType}"
+                                                                     Value="{x:Static models:MediaType.Videos}">
+                                                            <Setter Property="IsVisible" Value="True" />
+                                                        </DataTrigger>
+                                                    </Frame.Triggers>
+                                                    <Image Source="icon_play.svg" HeightRequest="16"
+                                                           WidthRequest="16" />
+                                                </Frame>
+                                            </Grid>
+
+                                            <Grid Grid.Row="1"
+                                                  RowDefinitions="Auto,Auto"
+                                                  ColumnDefinitions="Auto,*"
+                                                  ColumnSpacing="8"
+                                                  Margin="0,10,0,0">
+                                                <CheckBox IsChecked="{Binding IsMarked}"
+                                                          Color="{DynamicResource Accent}"
+                                                          VerticalOptions="Start"
+                                                          Margin="0"
+                                                          Grid.RowSpan="2" />
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                     Spacing="4"
+                                                                     HorizontalOptions="End">
+                                                    <Button Text="{x:Static strings:AppResources.RenameAction}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RenameCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}"
+                                                            FontSize="11"
+                                                            Padding="10,2"
+                                                            BackgroundColor="{DynamicResource Surface2}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <Button
+                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                    <Button
+                                                        Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenFolderCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        FontSize="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+
+                                            <HorizontalStackLayout Grid.Row="2"
+                                                                   Spacing="6"
+                                                                   Margin="0,6,0,2">
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_collection.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label
+                                                            Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
+                                                            TextColor="{DynamicResource OnSurfaceMuted}"
+                                                            FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </HorizontalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="3"
+                                                                 Spacing="4"
+                                                                 Margin="0,2,0,2">
+                                                <!-- Filename (always visible) -->
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="1" />
+
+                                                <!-- People tags as badges (clickable) -->
+                                                <HorizontalStackLayout
+                                                    Spacing="4"
+                                                    BindableLayout.ItemsSource="{Binding PeopleTags}"
+                                                    IsVisible="{Binding HasPeopleTags}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Frame
+                                                                BackgroundColor="{DynamicResource Surface3}"
+                                                                BorderColor="{DynamicResource BorderSubtle}"
+                                                                CornerRadius="10"
+                                                                Padding="6,2"
+                                                                HasShadow="False">
+                                                                <Label
+                                                                    Text="{Binding .}"
+                                                                    TextColor="{DynamicResource OnSurface}"
+                                                                    Opacity="0.75"
+                                                                    FontSize="10"
+                                                                    LineBreakMode="TailTruncation"
+                                                                    MaxLines="1"
+                                                                    VerticalOptions="Center" />
+                                                                <Frame.GestureRecognizers>
+                                                                    <TapGestureRecognizer
+                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
+                                                                        CommandParameter="{Binding .}" />
+                                                                </Frame.GestureRecognizers>
+                                                            </Frame>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </On>
+
+                    </OnPlatform>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </Grid>
 
         <Grid Grid.RowSpan="2"
               BackgroundColor="#CC000000"
@@ -1281,9 +1283,10 @@
                        IsVisible="{Binding HasMarked}">
                     <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
                           ColumnSpacing="8">
-                        <Label Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
+                        <Label
+                            Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
+                            FontAttributes="Bold"
+                            TextColor="{DynamicResource OnSurface}" />
                         <Button Grid.Column="1"
                                 Text="{x:Static strings:AppResources.SaveAsAction}"
                                 Command="{Binding SaveAsMarkedCommand}" />

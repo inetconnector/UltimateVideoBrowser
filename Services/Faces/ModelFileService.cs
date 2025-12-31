@@ -4,6 +4,14 @@ namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class ModelFileService
 {
+    public enum ModelStatus
+    {
+        Unknown,
+        Ready,
+        Downloading,
+        Failed
+    }
+
     private const string YuNetUrl =
         "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx";
 
@@ -14,15 +22,6 @@ public sealed class ModelFileService
         "https://github.com/opencv/opencv_zoo/raw/main/models/face_recognition_sface/face_recognition_sface_2021dec.onnx";
 
     private readonly ConcurrentDictionary<string, Task<string>> cache = new();
-    private readonly HttpClient httpClient = new();
-
-    private readonly object stateLock = new();
-    private readonly Dictionary<string, ModelStatus> statusByFile = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["face_detection_yunet_2023mar.onnx"] = ModelStatus.Unknown,
-        ["postproc_yunet_top50_th60_320x320.onnx"] = ModelStatus.Unknown,
-        ["face_recognition_sface_2021dec.onnx"] = ModelStatus.Unknown
-    };
 
     private readonly Dictionary<string, string?> errorByFile = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -31,22 +30,16 @@ public sealed class ModelFileService
         ["face_recognition_sface_2021dec.onnx"] = null
     };
 
-    public enum ModelStatus
-    {
-        Unknown,
-        Ready,
-        Downloading,
-        Failed
-    }
+    private readonly HttpClient httpClient = new();
 
-    public sealed record ModelStatusSnapshot(
-        ModelStatus YuNet,
-        ModelStatus YuNetPost,
-        ModelStatus SFace,
-        string ModelsDirectory,
-        string? YuNetError,
-        string? YuNetPostError,
-        string? SFaceError);
+    private readonly object stateLock = new();
+
+    private readonly Dictionary<string, ModelStatus> statusByFile = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["face_detection_yunet_2023mar.onnx"] = ModelStatus.Unknown,
+        ["postproc_yunet_top50_th60_320x320.onnx"] = ModelStatus.Unknown,
+        ["face_recognition_sface_2021dec.onnx"] = ModelStatus.Unknown
+    };
 
     public string ModelsDirectoryPath
         => Path.Combine(FileSystem.CacheDirectory, "models");
@@ -177,4 +170,13 @@ public sealed class ModelFileService
             }
         }
     }
+
+    public sealed record ModelStatusSnapshot(
+        ModelStatus YuNet,
+        ModelStatus YuNetPost,
+        ModelStatus SFace,
+        string ModelsDirectory,
+        string? YuNetError,
+        string? YuNetPostError,
+        string? SFaceError);
 }
