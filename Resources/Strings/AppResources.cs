@@ -238,6 +238,9 @@ public static string SettingsPeopleModelsStatusLabel =>
     public static string TaggedPhotosEmptyHint =>
         GetString(nameof(TaggedPhotosEmptyHint), "No tagged photos yet. Tag people in a photo to see it here.");
 
+    public static string RemoveFromPeopleIndexButton =>
+        GetString(nameof(RemoveFromPeopleIndexButton), "Remove from people index");
+
     public static string PersonPageTitle => GetString(nameof(PersonPageTitle), "Person");
     public static string PersonNamePlaceholder => GetString(nameof(PersonNamePlaceholder), "Name");
     public static string PersonEmptyHint => GetString(nameof(PersonEmptyHint), "No photos yet.");

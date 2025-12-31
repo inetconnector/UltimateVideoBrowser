@@ -276,4 +276,7 @@
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Pustaka media perangkat</value>
   </data>
+  <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
+    <value>Remove from people index</value>
+  </data>
 </root>
