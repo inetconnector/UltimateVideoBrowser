@@ -1,9 +1,10 @@
 using System.Collections.Concurrent;
-using Android.OS;
+
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
 #if ANDROID && !WINDOWS
+using Android.OS;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
