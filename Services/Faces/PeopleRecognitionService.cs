@@ -32,7 +32,9 @@ public sealed class PeopleRecognitionService
         if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
             return Array.Empty<FaceMatch>();
 
-        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        try
+        {
+            await db.EnsureInitializedAsync().ConfigureAwait(false);
 
         var embeddings = await db.Db.Table<FaceEmbedding>()
             .Where(face => face.MediaPath == item.Path)
@@ -94,6 +96,11 @@ public sealed class PeopleRecognitionService
         await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values)
             .ConfigureAwait(false);
         return matches;
+        }
+        catch
+        {
+            return Array.Empty<FaceMatch>();
+        }
     }
 
     public async Task RenamePersonAsync(string personId, string newName, CancellationToken ct)
@@ -204,7 +211,17 @@ public sealed class PeopleRecognitionService
         using var image = ImageSharpImage.Load<Rgba32>(path);
         image.Mutate(ctx => ctx.AutoOrient());
 
-        var faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+        IReadOnlyList<DetectedFace> faces;
+        try
+        {
+            faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+        }
+        catch
+        {
+            // If the model is missing or cannot be initialized (offline / download blocked),
+            // keep browsing resilient and simply skip automatic face detection.
+            return new List<FaceEmbedding>();
+        }
         if (faces.Count == 0)
             return new List<FaceEmbedding>();
 
@@ -215,7 +232,16 @@ public sealed class PeopleRecognitionService
         {
             ct.ThrowIfCancellationRequested();
             var face = faces[i];
-            var embedding = await faceRecognizer.ExtractEmbeddingAsync(image, face, ct).ConfigureAwait(false);
+            float[] embedding;
+            try
+            {
+                embedding = await faceRecognizer.ExtractEmbeddingAsync(image, face, ct).ConfigureAwait(false);
+            }
+            catch
+            {
+                // Best-effort: skip this face if recognition is unavailable.
+                continue;
+            }
             if (embedding.Length == 0)
                 continue;
             embeddings.Add(new FaceEmbedding
@@ -256,7 +282,18 @@ public sealed class PeopleRecognitionService
         {
             using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
             image.Mutate(ctx => ctx.AutoOrient());
-            var faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+
+            IReadOnlyList<DetectedFace> faces;
+            try
+            {
+                faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+            }
+            catch
+            {
+                // If the model is missing or cannot be initialized (offline / download blocked),
+                // keep browsing resilient and simply skip automatic face detection.
+                return;
+            }
             if (faces.Count == 0)
                 return;
 

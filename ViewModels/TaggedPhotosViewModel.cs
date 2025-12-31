@@ -60,6 +60,30 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
             var term = (SearchText ?? string.Empty).Trim();
 
+            // PersonTag is the authoritative store for manual tags, but for resilience we also
+            // fall back to MediaItem.PeopleTagsSummary (e.g. if tags were written there but the
+            // PersonTag table is temporarily out of sync).
+            var fallbackPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(term))
+                {
+                    var fall = await db.Db.QueryAsync<PathRow>(
+                            "SELECT DISTINCT Path AS MediaPath FROM MediaItem WHERE MediaType = ? AND PeopleTagsSummary LIKE ?;",
+                            (int)MediaType.Photos,
+                            $"%{term}%")
+                        .ConfigureAwait(false);
+
+                    foreach (var r in fall)
+                        if (!string.IsNullOrWhiteSpace(r.MediaPath))
+                            fallbackPaths.Add(r.MediaPath);
+                }
+            }
+            catch
+            {
+                // Keep UI resilient.
+            }
+
             List<PathRow> rows;
             if (string.IsNullOrWhiteSpace(term))
                 rows = await db.Db.QueryAsync<PathRow>(
@@ -73,6 +97,14 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
             var paths = rows
                 .Select(r => r.MediaPath)
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var fp in fallbackPaths)
+                paths.Add(fp);
+
+            paths = paths
                 .Where(p => !string.IsNullOrWhiteSpace(p))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -151,6 +183,6 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
     private sealed class PathRow
     {
-        public string MediaPath { get; } = string.Empty;
+        public string MediaPath { get; set; } = string.Empty;
     }
 }

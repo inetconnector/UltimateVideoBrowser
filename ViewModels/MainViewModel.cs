@@ -98,6 +98,10 @@ public partial class MainViewModel : ObservableObject
     // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
     private CancellationTokenSource? mediaDerivedCts;
 
+    // Best-effort background people scan after indexing so the People browser is populated automatically.
+    private CancellationTokenSource? peopleAutoScanCts;
+    private Task? peopleAutoScanTask;
+
     public MainViewModel(
         ISourceService sourceService,
         IndexService indexService,
@@ -422,6 +426,69 @@ public partial class MainViewModel : ObservableObject
             settingsService.NeedsReindex = false;
 
         await RefreshAsync();
+
+        // Kick off automatic people recognition after indexing so the People browser is populated.
+        // This is best-effort and runs in the background to keep the UI responsive.
+        if (completed && IsPeopleTaggingEnabled)
+            StartPeopleAutoScanInBackground();
+    }
+
+    private void StartPeopleAutoScanInBackground()
+    {
+        // Avoid starting multiple concurrent scans.
+        if (peopleAutoScanTask != null && !peopleAutoScanTask.IsCompleted)
+            return;
+
+        peopleAutoScanCts?.Cancel();
+        peopleAutoScanCts?.Dispose();
+        peopleAutoScanCts = new CancellationTokenSource();
+
+        var ct = peopleAutoScanCts.Token;
+        peopleAutoScanTask = Task.Run(async () =>
+        {
+            try
+            {
+                var offset = 0;
+                const int batchSize = 200;
+
+                // Page through all photos (current source filter if one is selected).
+                while (!ct.IsCancellationRequested)
+                {
+                    var sourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+                    var sortKey = SelectedSortOption?.Key ?? "date";
+                    DateTime? from = IsDateFilterEnabled ? DateFilterFrom : null;
+                    DateTime? to = IsDateFilterEnabled ? DateFilterTo : null;
+
+                    var page = await indexService
+                        .QueryPageAsync("", sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
+                        .ConfigureAwait(false);
+
+                    if (page.Count == 0)
+                        break;
+
+                    foreach (var item in page)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await peopleRecognitionService.EnsurePeopleTagsForMediaAsync(item, ct).ConfigureAwait(false);
+                    }
+
+                    offset += page.Count;
+                    if (page.Count < batchSize)
+                        break;
+                }
+
+                // Refresh UI once after the scan to populate People/Tag counts.
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    try { await RefreshAsync(); }
+                    catch { /* keep UI resilient */ }
+                });
+            }
+            catch
+            {
+                // Best-effort: never crash the app because of background scanning.
+            }
+        }, ct);
     }
 
     [RelayCommand]
