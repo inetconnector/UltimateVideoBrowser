@@ -16,6 +16,10 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private bool isHeaderSizeHooked;
 
+    // Remember the origin tile when navigating away (e.g. tagging) so we can restore
+    // the scroll position when the user returns.
+    private string? pendingScrollToMediaPath;
+
     public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider, PeopleDataService peopleData)
     {
         InitializeComponent();
@@ -27,6 +31,11 @@ public partial class MainPage : ContentPage
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
         TryHookHeaderSize();
+    }
+
+    internal void RememberScrollTarget(MediaItem item)
+    {
+        pendingScrollToMediaPath = item?.Path;
     }
 
     protected override void OnAppearing()
@@ -53,6 +62,20 @@ public partial class MainPage : ContentPage
                     return;
 
                 await vm.OnMainPageAppearingAsync();
+
+                // Restore scroll position after returning from a detail page (e.g. tagging).
+                var path = pendingScrollToMediaPath;
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    pendingScrollToMediaPath = null;
+                    var target = vm.MediaItems.FirstOrDefault(m =>
+                        string.Equals(m.Path, path, StringComparison.OrdinalIgnoreCase));
+                    if (target != null)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                            MediaItemsView.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false));
+                    }
+                }
             }
             catch
             {
@@ -160,7 +183,7 @@ public partial class MainPage : ContentPage
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
-        private readonly Page page;
+		private readonly MainPage page;
         private readonly MainViewModel vm;
         private readonly IServiceProvider serviceProvider;
         private readonly PeopleDataService peopleData;
@@ -171,7 +194,7 @@ public partial class MainPage : ContentPage
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
 
-        public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, Page page, IServiceProvider serviceProvider, PeopleDataService peopleData)
+		public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page, IServiceProvider serviceProvider, PeopleDataService peopleData)
         {
             this.vm = vm;
             this.deviceMode = deviceMode;
@@ -585,6 +608,7 @@ public partial class MainPage : ContentPage
             if (item == null)
                 return;
 
+            page.RememberScrollTarget(item);
             var editor = page.Handler!.MauiContext!.Services.GetService<PhotoPeopleEditorPage>()!;
             editor.Initialize(item);
             await page.Navigation.PushAsync(editor);

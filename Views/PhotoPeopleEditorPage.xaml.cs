@@ -22,6 +22,10 @@ public partial class PhotoPeopleEditorPage : ContentPage
     {
         current = item;
         vm.Initialize(item.Path);
+
+        // Pre-fill the editor so existing tags are visible immediately.
+        // LoadAsync will later sync the text with the DB after any face processing completes.
+        vm.PeopleTagsText = item.PeopleTagsSummary ?? string.Empty;
     }
 
     protected override void OnAppearing()
