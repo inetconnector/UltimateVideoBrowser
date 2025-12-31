@@ -107,9 +107,10 @@
                                         <Grid RowDefinitions="70,Auto" RowSpacing="6">
                                             <Grid BackgroundColor="{DynamicResource Surface3}"
                                                   HeightRequest="70">
-                                                <Image
-                                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                                    Aspect="AspectFill" />
+	                                                    <Image
+	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+	                                                        Aspect="AspectFill"
+	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
                                             </Grid>
                                             <VerticalStackLayout Grid.Row="1" Spacing="2">
                                                 <Label Text="{Binding MonthLabel}"
@@ -661,9 +662,10 @@
                                                 <Grid RowDefinitions="*"
                                                       BackgroundColor="{DynamicResource Surface2}"
                                                       HeightRequest="170">
-                                                    <Image
-                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                                        Aspect="AspectFill" />
+	                                                    <Image
+	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+	                                                        Aspect="AspectFill"
+	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
                                                     <Frame BackgroundColor="#CC0E0F14"
                                                            CornerRadius="999"
                                                            Padding="6"
@@ -707,6 +709,7 @@
                                                         <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                                 CommandParameter="{Binding .}"
+	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
                                                                 FontSize="11"
                                                                 Padding="10,2"
@@ -758,24 +761,30 @@
                                                 <VerticalStackLayout Grid.Row="3"
                                                                      Spacing="4"
                                                                      Margin="0,2,0,2">
+	                                                    <!-- Filename (always visible) -->
+	                                                    <Label Text="{Binding Name}"
+	                                                           TextColor="{DynamicResource OnSurface}"
+	                                                           FontSize="12"
+	                                                           LineBreakMode="NoWrap"
+	                                                           MaxLines="1" />
+
                                                     <!-- People tags as badges (clickable) -->
                                                     <HorizontalStackLayout
                                                         Spacing="4"
                                                         BindableLayout.ItemsSource="{Binding PeopleTags}"
-                                                        IsVisible="{Binding HasPeopleTags}"
-                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}">
+	                                                        IsVisible="{Binding HasPeopleTags}">
                                                         <BindableLayout.ItemTemplate>
                                                             <DataTemplate>
                                                                 <Frame
-                                                                    BackgroundColor="{DynamicResource Surface2}"
+	                                                                    BackgroundColor="{DynamicResource Surface3}"
                                                                     BorderColor="{DynamicResource BorderSubtle}"
                                                                     CornerRadius="10"
                                                                     Padding="6,2"
-                                                                    HasShadow="False"
-                                                                    helpers:Tooltip.Text="{Binding .}">
+	                                                                    HasShadow="False">
                                                                     <Label
                                                                         Text="{Binding .}"
-                                                                        TextColor="{DynamicResource OnSurfaceMuted}"
+	                                                                        TextColor="{DynamicResource OnSurface}"
+	                                                                        Opacity="0.75"
                                                                         FontSize="10"
                                                                         LineBreakMode="TailTruncation"
                                                                         MaxLines="1"
@@ -789,13 +798,6 @@
                                                             </DataTemplate>
                                                         </BindableLayout.ItemTemplate>
                                                     </HorizontalStackLayout>
-
-                                                    <Label Text="{Binding Name}"
-                                                           TextColor="{DynamicResource OnSurface}"
-                                                           FontSize="12"
-                                                           LineBreakMode="NoWrap"
-                                                           MaxLines="1"
-                                                           VerticalOptions="End" />
                                                 </VerticalStackLayout>
 
                                                 <Grid.GestureRecognizers>
@@ -844,9 +846,10 @@
                                                     <Grid RowDefinitions="*"
                                                           BackgroundColor="{DynamicResource Surface2}"
                                                           HeightRequest="170">
-                                                        <Image
-                                                            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                                            Aspect="AspectFill" />
+	                                                    <Image
+	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+	                                                        Aspect="AspectFill"
+	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
                                                         <Frame BackgroundColor="#CC0E0F14"
                                                                CornerRadius="999"
                                                                Padding="6"
@@ -891,6 +894,7 @@
                                                                 Text="{x:Static strings:AppResources.TagPeopleAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                                 CommandParameter="{Binding .}"
+	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
                                                                 FontSize="11"
                                                                 Padding="10,2"
@@ -940,26 +944,33 @@
                                                         </Frame>
                                                     </HorizontalStackLayout>
 
-                                                    <VerticalStackLayout Grid.Row="3"
-                                                                         Spacing="4"
-                                                                         Margin="0,2,0,2">
-                                                        <HorizontalStackLayout
-                                                            Spacing="4"
-                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
-                                                            IsVisible="{Binding HasPeopleTags}"
-                                                            helpers:Tooltip.Text="{Binding PeopleTagsSummary}">
+	                                                    <VerticalStackLayout Grid.Row="3"
+	                                                                         Spacing="4"
+	                                                                         Margin="0,2,0,2">
+	                                                        <!-- Filename (always visible) -->
+	                                                        <Label Text="{Binding Name}"
+	                                                               TextColor="{DynamicResource OnSurface}"
+	                                                               FontSize="12"
+	                                                               LineBreakMode="NoWrap"
+	                                                               MaxLines="1" />
+
+	                                                        <!-- People tags as badges (clickable) -->
+	                                                        <HorizontalStackLayout
+	                                                            Spacing="4"
+	                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
+	                                                            IsVisible="{Binding HasPeopleTags}">
                                                             <BindableLayout.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Frame
-                                                                        BackgroundColor="{DynamicResource Surface2}"
+	                                                                        BackgroundColor="{DynamicResource Surface3}"
                                                                         BorderColor="{DynamicResource BorderSubtle}"
                                                                         CornerRadius="10"
                                                                         Padding="6,2"
-                                                                        HasShadow="False"
-                                                                        helpers:Tooltip.Text="{Binding .}">
+	                                                                        HasShadow="False">
                                                                         <Label
                                                                             Text="{Binding .}"
-                                                                            TextColor="{DynamicResource OnSurfaceMuted}"
+	                                                                            TextColor="{DynamicResource OnSurface}"
+	                                                                            Opacity="0.75"
                                                                             FontSize="10"
                                                                             LineBreakMode="TailTruncation"
                                                                             MaxLines="1"
@@ -974,12 +985,6 @@
                                                             </BindableLayout.ItemTemplate>
                                                         </HorizontalStackLayout>
 
-                                                        <Label Text="{Binding Name}"
-                                                               TextColor="{DynamicResource OnSurface}"
-                                                               FontSize="12"
-                                                               LineBreakMode="NoWrap"
-                                                               MaxLines="1"
-                                                               VerticalOptions="End" />
                                                     </VerticalStackLayout>
 
                                                     <Grid.GestureRecognizers>
@@ -1024,9 +1029,10 @@
                                                     <Grid RowDefinitions="*"
                                                           BackgroundColor="{DynamicResource Surface2}"
                                                           HeightRequest="170">
-                                                        <Image
-                                                            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                                            Aspect="AspectFill" />
+	                                                    <Image
+	                                                        Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+	                                                        Aspect="AspectFill"
+	                                                        helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
                                                         <Frame BackgroundColor="#CC0E0F14"
                                                                CornerRadius="999"
                                                                Padding="6"
@@ -1071,6 +1077,7 @@
                                                                 Text="{x:Static strings:AppResources.TagPeopleAction}"
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                                 CommandParameter="{Binding .}"
+	                                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsPeopleTaggingEnabled}"
                                                                 FontSize="11"
                                                                 Padding="10,2"
@@ -1120,26 +1127,33 @@
                                                         </Frame>
                                                     </HorizontalStackLayout>
 
-                                                    <VerticalStackLayout Grid.Row="3"
-                                                                         Spacing="4"
-                                                                         Margin="0,2,0,2">
-                                                        <HorizontalStackLayout
-                                                            Spacing="4"
-                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
-                                                            IsVisible="{Binding HasPeopleTags}"
-                                                            helpers:Tooltip.Text="{Binding PeopleTagsSummary}">
+	                                                    <VerticalStackLayout Grid.Row="3"
+	                                                                         Spacing="4"
+	                                                                         Margin="0,2,0,2">
+	                                                        <!-- Filename (always visible) -->
+	                                                        <Label Text="{Binding Name}"
+	                                                               TextColor="{DynamicResource OnSurface}"
+	                                                               FontSize="12"
+	                                                               LineBreakMode="NoWrap"
+	                                                               MaxLines="1" />
+
+	                                                        <!-- People tags as badges (clickable) -->
+	                                                        <HorizontalStackLayout
+	                                                            Spacing="4"
+	                                                            BindableLayout.ItemsSource="{Binding PeopleTags}"
+	                                                            IsVisible="{Binding HasPeopleTags}">
                                                             <BindableLayout.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Frame
-                                                                        BackgroundColor="{DynamicResource Surface2}"
+	                                                                    <Frame
+	                                                                        BackgroundColor="{DynamicResource Surface3}"
                                                                         BorderColor="{DynamicResource BorderSubtle}"
                                                                         CornerRadius="10"
                                                                         Padding="6,2"
-                                                                        HasShadow="False"
-                                                                        helpers:Tooltip.Text="{Binding .}">
+	                                                                        HasShadow="False">
                                                                         <Label
                                                                             Text="{Binding .}"
-                                                                            TextColor="{DynamicResource OnSurfaceMuted}"
+	                                                                            TextColor="{DynamicResource OnSurface}"
+	                                                                            Opacity="0.75"
                                                                             FontSize="10"
                                                                             LineBreakMode="TailTruncation"
                                                                             MaxLines="1"
@@ -1152,14 +1166,7 @@
                                                                     </Frame>
                                                                 </DataTemplate>
                                                             </BindableLayout.ItemTemplate>
-                                                        </HorizontalStackLayout>
-
-                                                        <Label Text="{Binding Name}"
-                                                               TextColor="{DynamicResource OnSurface}"
-                                                               FontSize="12"
-                                                               LineBreakMode="NoWrap"
-                                                               MaxLines="1"
-                                                               VerticalOptions="End" />
+	                                                        </HorizontalStackLayout>
                                                     </VerticalStackLayout>
 
                                                     <Grid.GestureRecognizers>
