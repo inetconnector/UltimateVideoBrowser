@@ -11,8 +11,8 @@ public partial class MainPage : ContentPage
 {
     private readonly MainViewModel vm;
     private CancellationTokenSource? appearingCts;
-    private bool isTimelineSelectionSyncing;
     private bool isHeaderSizeHooked;
+    private bool isTimelineSelectionSyncing;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {

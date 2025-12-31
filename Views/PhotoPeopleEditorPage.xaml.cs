@@ -39,17 +39,24 @@ public partial class PhotoPeopleEditorPage : ContentPage
     {
         try
         {
+            // IMPORTANT:
+            // Saving performs background work (DB + face processing). UI-bound updates must run on the UI
+            // thread; raising INotifyPropertyChanged from a background thread can prevent the tile from
+            // updating (or even crash on some platforms).
             var summary = await vm.SaveAndGetSummaryAsync().ConfigureAwait(false);
 
             // If saving failed, stay on the page (best-effort, errors are handled inside the VM).
             if (summary == null)
                 return;
 
-            // Update the originating MediaItem immediately so the grid reflects the change without a refresh.
-            if (current != null && summary != null)
-                current.PeopleTagsSummary = summary;
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                // Update the originating MediaItem immediately so the grid reflects the change without a refresh.
+                if (current != null)
+                    current.PeopleTagsSummary = summary;
 
-            await MainThread.InvokeOnMainThreadAsync(async () => await Navigation.PopAsync());
+                await Navigation.PopAsync();
+            });
         }
         catch
         {
