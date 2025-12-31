@@ -5,6 +5,7 @@ using IOPath = System.IO.Path;
 using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
+using SysStream = global::System.IO.Stream;
 
 #elif WINDOWS
 using Windows.Storage;
@@ -17,6 +18,10 @@ public sealed class ThumbnailService
 {
     private readonly string cacheDir;
     private readonly ISourceService sourceService;
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> thumbLocks
+        = new(StringComparer.OrdinalIgnoreCase);
+
 #if WINDOWS
     private IReadOnlyDictionary<string, string> sourceTokens = new Dictionary<string, string>();
 #endif
@@ -37,74 +42,124 @@ public sealed class ThumbnailService
     public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
     {
         var thumbPath = GetThumbnailPath(item);
-        if (File.Exists(thumbPath))
+
+        if (IsUsableThumbFile(thumbPath))
             return thumbPath;
 
-#if ANDROID && !WINDOWS
-        return await Task.Run(() =>
+        // Prevent concurrent writers from producing corrupted/0-byte thumbnails.
+        var gate = thumbLocks.GetOrAdd(thumbPath, _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync(ct).ConfigureAwait(false);
+        try
         {
+            // Re-check after we acquired the lock.
+            if (IsUsableThumbFile(thumbPath))
+                return thumbPath;
+
+#if ANDROID && !WINDOWS
+            var tmpPath = GetTempPath(thumbPath);
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    ct.ThrowIfCancellationRequested();
+
+                    using var bmp = item.MediaType switch
+                    {
+                        MediaType.Photos => LoadImageBitmap(item.Path),
+                        MediaType.Videos => LoadVideoBitmap(item),
+                        _ => null
+                    };
+
+                    if (bmp == null)
+                        return null;
+
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        var format = Bitmap.CompressFormat.Jpeg;
+                        if (format == null)
+                            return null;
+
+                        // Write fully to temp file first to avoid partially written thumbnails being picked up by the UI.
+                        bmp.Compress(format, 82, fs);
+                        fs.Flush();
+                    }
+
+                    if (!IsUsableThumbFile(tmpPath))
+                        return null;
+
+                    File.Move(tmpPath, thumbPath, true);
+                    return thumbPath;
+                }
+                catch
+                {
+                    return null;
+                }
+                finally
+                {
+                    TryDeleteFile(tmpPath);
+                }
+            }, ct).ConfigureAwait(false);
+
+#elif WINDOWS
+            var tmpPath = GetTempPath(thumbPath);
             try
             {
-                ct.ThrowIfCancellationRequested();
+                var file = await GetStorageFileAsync(item).ConfigureAwait(false);
+                if (file == null)
+                    return null;
 
-                using var bmp = item.MediaType switch
+                using var thumb =
+                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), 320, ThumbnailOptions.UseCurrentScale);
+                if (thumb == null || thumb.Size == 0)
                 {
-                    MediaType.Photos => LoadImageBitmap(item.Path),
-                    MediaType.Videos => LoadVideoBitmap(item),
-                    _ => null
-                };
+                    using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320);
+                    if (fallbackThumb == null || fallbackThumb.Size == 0)
+                        return null;
 
-                if (bmp == null)
+                    using var fallbackInput = fallbackThumb.AsStreamForRead();
+                    using (var fallbackStream = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        await fallbackInput.CopyToAsync(fallbackStream, ct).ConfigureAwait(false);
+
+                    if (!IsUsableThumbFile(tmpPath))
+                        return null;
+
+                    File.Move(tmpPath, thumbPath, true);
+                    return thumbPath;
+                }
+
+                using var input = thumb.AsStreamForRead();
+                using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    await input.CopyToAsync(fs, ct).ConfigureAwait(false);
+
+                if (!IsUsableThumbFile(tmpPath))
                     return null;
 
-                using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                var format = Bitmap.CompressFormat.Jpeg;
-                if (format == null)
-                    return null;
-
-                bmp.Compress(format, 82, fs);
+                File.Move(tmpPath, thumbPath, true);
                 return thumbPath;
             }
             catch
             {
                 return null;
             }
-        }, ct);
-#elif WINDOWS
-        try
-        {
-            var file = await GetStorageFileAsync(item);
-            if (file == null)
-                return null;
-
-            using var thumb =
-                await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), 320, ThumbnailOptions.UseCurrentScale);
-            if (thumb == null || thumb.Size == 0)
+            finally
             {
-                using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320);
-                if (fallbackThumb == null || fallbackThumb.Size == 0)
-                    return null;
-
-                using var fallbackInput = fallbackThumb.AsStreamForRead();
-                using var fallbackStream = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                await fallbackInput.CopyToAsync(fallbackStream, ct);
-                return thumbPath;
+                TryDeleteFile(tmpPath);
             }
-
-            using var input = thumb.AsStreamForRead();
-            using var fs = File.Open(thumbPath, FileMode.Create, FileAccess.Write, FileShare.None);
-            await input.CopyToAsync(fs, ct);
-            return thumbPath;
-        }
-        catch
-        {
-            return null;
-        }
 #else
-        _ = item;
-        _ = ct;
-        return await Task.FromResult<string?>(null);
+            _ = item;
+            _ = ct;
+            return await Task.FromResult<string?>(null);
 #endif
+        }
+        finally
+        {
+            gate.Release();
+
+            // Best-effort cleanup to keep the dictionary from growing unbounded.
+            if (gate.CurrentCount == 1)
+                thumbLocks.TryRemove(thumbPath, out _);
+        }
     }
 
 #if WINDOWS
@@ -116,7 +171,7 @@ public sealed class ThumbnailService
         }
         catch
         {
-            var token = await GetSourceTokenAsync(item.SourceId);
+            var token = await GetSourceTokenAsync(item.SourceId).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(token))
                 return null;
 
@@ -134,7 +189,7 @@ public sealed class ThumbnailService
                 if (string.IsNullOrWhiteSpace(relativePath))
                     return null;
 
-                return await GetFileFromFolderAsync(folder, relativePath);
+                return await GetFileFromFolderAsync(folder, relativePath).ConfigureAwait(false);
             }
             catch
             {
@@ -150,7 +205,7 @@ public sealed class ThumbnailService
 
         if (!sourceTokens.TryGetValue(sourceId, out var token))
         {
-            var sources = await sourceService.GetSourcesAsync();
+            var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
             sourceTokens = sources
                 .Where(s => !string.IsNullOrWhiteSpace(s.AccessToken))
                 .ToDictionary(s => s.Id, s => s.AccessToken ?? string.Empty);
@@ -177,7 +232,7 @@ public sealed class ThumbnailService
 #if ANDROID && !WINDOWS
     private const int ThumbMaxSize = 320;
 
-    private static Stream? OpenPathStream(string path)
+    private static SysStream? OpenPathStream(string path)
     {
         try
         {
@@ -215,28 +270,32 @@ public sealed class ThumbnailService
         try
         {
             // Pass 1: bounds
-            using (var boundsStream = OpenPathStream(path))
+            var boundsStream = OpenPathStream(path);
+            if (boundsStream is null)
+                return null;
+
+            var bounds = new BitmapFactory.Options { InJustDecodeBounds = true };
+            using (boundsStream)
             {
-                if (boundsStream == null)
-                    return null;
-
-                var bounds = new BitmapFactory.Options { InJustDecodeBounds = true };
                 BitmapFactory.DecodeStream(boundsStream, null, bounds);
+            }
 
-                // Pass 2: sampled decode
-                var sample = CalculateInSampleSize(bounds, ThumbMaxSize, ThumbMaxSize);
-                var opts = new BitmapFactory.Options
-                {
-                    InJustDecodeBounds = false,
-                    InSampleSize = sample,
-                    InPreferredConfig = Bitmap.Config.Rgb565,
-                    InDither = true
-                };
+            // Pass 2: sampled decode
+            var sample = CalculateInSampleSize(bounds, ThumbMaxSize, ThumbMaxSize);
+            var opts = new BitmapFactory.Options
+            {
+                InJustDecodeBounds = false,
+                InSampleSize = sample,
+                InPreferredConfig = Bitmap.Config.Rgb565,
+                InDither = true
+            };
 
-                using var decodeStream = OpenPathStream(path);
-                if (decodeStream == null)
-                    return null;
+            var decodeStream = OpenPathStream(path);
+            if (decodeStream is null)
+                return null;
 
+            using (decodeStream)
+            {
                 return BitmapFactory.DecodeStream(decodeStream, null, opts);
             }
         }
@@ -310,6 +369,68 @@ public sealed class ThumbnailService
         };
     }
 #endif
+
+    private static bool IsUsableThumbFile(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+                return false;
+
+            var fi = new FileInfo(path);
+            if (fi.Length < 128)
+            {
+                TryDeleteFile(path);
+                return false;
+            }
+
+            // Very cheap sanity checks: JPEG header + end marker.
+            using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var b1 = fs.ReadByte();
+            var b2 = fs.ReadByte();
+            if (b1 != 0xFF || b2 != 0xD8)
+            {
+                TryDeleteFile(path);
+                return false;
+            }
+
+            if (fs.Length >= 2)
+            {
+                fs.Seek(-2, SeekOrigin.End);
+                var e1 = fs.ReadByte();
+                var e2 = fs.ReadByte();
+                if (e1 != 0xFF || e2 != 0xD9)
+                {
+                    TryDeleteFile(path);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string GetTempPath(string finalPath)
+    {
+        return finalPath + ".tmp_" + Guid.NewGuid().ToString("N");
+    }
+
+    private static void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                File.Delete(path);
+        }
+        catch
+        {
+            // Ignore.
+        }
+    }
 
     private static string MakeSafeFileName(string input)
     {

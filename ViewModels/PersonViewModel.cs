@@ -43,7 +43,7 @@ public sealed partial class PersonViewModel : ObservableObject
 
             // Generate thumbnails lazily in the background so the UI stays responsive.
             foreach (var item in result)
-                _ = thumbnails.EnsureThumbnailAsync(item, CancellationToken.None);
+                _ = EnsureAndApplyThumbnailAsync(item);
         }
         catch
         {
@@ -52,6 +52,28 @@ public sealed partial class PersonViewModel : ObservableObject
         finally
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
+        }
+    }
+
+    private async Task EnsureAndApplyThumbnailAsync(MediaItem item)
+    {
+        try
+        {
+            var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(p))
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
+                    item.ThumbnailPath = string.Empty;
+
+                item.ThumbnailPath = p;
+            });
+        }
+        catch
+        {
+            // Ignore
         }
     }
 

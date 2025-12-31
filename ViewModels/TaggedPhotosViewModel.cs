@@ -115,7 +115,7 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
             await MainThread.InvokeOnMainThreadAsync(() => { Photos = new ObservableCollection<MediaItem>(items); });
 
             foreach (var item in items)
-                _ = thumbnails.EnsureThumbnailAsync(item, CancellationToken.None);
+                _ = EnsureAndApplyThumbnailAsync(item);
         }
         catch
         {
@@ -124,6 +124,28 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
         finally
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
+        }
+    }
+
+    private async Task EnsureAndApplyThumbnailAsync(MediaItem item)
+    {
+        try
+        {
+            var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(p))
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
+                    item.ThumbnailPath = string.Empty;
+
+                item.ThumbnailPath = p;
+            });
+        }
+        catch
+        {
+            // Ignore
         }
     }
 

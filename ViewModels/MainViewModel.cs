@@ -1004,7 +1004,21 @@ public partial class MainViewModel : ObservableObject
                     token.ThrowIfCancellationRequested();
 
                     if (!string.IsNullOrWhiteSpace(item.ThumbnailPath) && File.Exists(item.ThumbnailPath))
-                        return;
+                    {
+                        try
+                        {
+                            var fi = new FileInfo(item.ThumbnailPath);
+                            if (fi.Length > 0)
+                                return;
+
+                            // A 0-byte file can happen if thumbnail generation was cancelled while writing.
+                            File.Delete(item.ThumbnailPath);
+                        }
+                        catch
+                        {
+                            // Ignore and regenerate.
+                        }
+                    }
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, token).ConfigureAwait(false);
                     if (string.IsNullOrWhiteSpace(p))
