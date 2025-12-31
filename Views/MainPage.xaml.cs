@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Collections;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -11,12 +12,17 @@ public partial class MainPage : ContentPage
     private readonly MainViewModel vm;
     private CancellationTokenSource? appearingCts;
     private bool isTimelineSelectionSyncing;
+    private bool isHeaderSizeHooked;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode)
     {
         InitializeComponent();
         this.vm = vm;
         BindingContext = new MainPageBinding(vm, deviceMode, this);
+
+        // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
+        // so both columns align and scrolling feels natural.
+        TryHookHeaderSize();
     }
 
     protected override void OnAppearing()
@@ -52,6 +58,8 @@ public partial class MainPage : ContentPage
 
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
         SizeChanged += OnPageSizeChanged;
+
+        TryHookHeaderSize();
     }
 
     protected override void OnDisappearing()
@@ -61,6 +69,20 @@ public partial class MainPage : ContentPage
         appearingCts?.Dispose();
         appearingCts = null;
         SizeChanged -= OnPageSizeChanged;
+
+        if (isHeaderSizeHooked)
+        {
+            try
+            {
+                HeaderContainer.SizeChanged -= OnHeaderContainerSizeChanged;
+            }
+            catch
+            {
+                // Ignore
+            }
+
+            isHeaderSizeHooked = false;
+        }
     }
 
     private void OnPageSizeChanged(object? sender, EventArgs e)
@@ -81,6 +103,9 @@ public partial class MainPage : ContentPage
 
     private void OnMediaItemsScrolled(object? sender, ItemsViewScrolledEventArgs e)
     {
+        // Drive the thumbnail priority queue based on what the user is currently seeing.
+        vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
+
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
 
@@ -98,6 +123,31 @@ public partial class MainPage : ContentPage
         isTimelineSelectionSyncing = false;
     }
 
+    private void TryHookHeaderSize()
+    {
+        if (isHeaderSizeHooked)
+            return;
+
+        if (HeaderContainer == null)
+            return;
+
+        HeaderContainer.SizeChanged += OnHeaderContainerSizeChanged;
+        isHeaderSizeHooked = true;
+
+        // Apply initial value if the layout is already measured.
+        OnHeaderContainerSizeChanged(this, EventArgs.Empty);
+    }
+
+    private void OnHeaderContainerSizeChanged(object? sender, EventArgs e)
+    {
+        if (BindingContext is not MainPageBinding binding)
+            return;
+
+        // Height is 0 until the first layout pass.
+        if (HeaderContainer.Height > 0)
+            binding.HeaderHeight = HeaderContainer.Height;
+    }
+
     private void OnSortChipTapped(object sender, TappedEventArgs e)
     {
         SortPicker?.Focus();
@@ -110,6 +160,7 @@ public partial class MainPage : ContentPage
         private readonly MainViewModel vm;
 
         private int gridSpan = 3;
+        private double headerHeight;
         private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
@@ -284,6 +335,19 @@ public partial class MainPage : ContentPage
             };
         }
 
+        public double HeaderHeight
+        {
+            get => headerHeight;
+            set
+            {
+                if (Math.Abs(headerHeight - value) < 0.5)
+                    return;
+
+                headerHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
         public IAsyncRelayCommand OpenSourcesCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand OpenPeopleCommand { get; }
@@ -439,7 +503,7 @@ public partial class MainPage : ContentPage
             }
         }
 
-        public List<MediaItem> MediaItems => vm.MediaItems;
+        public ObservableRangeCollection<MediaItem> MediaItems => vm.MediaItems;
         public List<TimelineEntry> TimelineEntries => vm.TimelineEntries;
         public string? CurrentMediaSource => vm.CurrentMediaSource;
         public string CurrentMediaName => vm.CurrentMediaName;

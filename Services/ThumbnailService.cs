@@ -175,17 +175,70 @@ public sealed class ThumbnailService
 #endif
 
 #if ANDROID && !WINDOWS
-    private static Bitmap? LoadImageBitmap(string path)
+    private const int ThumbMaxSize = 320;
+
+    private static Stream? OpenPathStream(string path)
     {
         try
         {
             if (path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-            {
-                using var stream = Platform.AppContext.ContentResolver?.OpenInputStream(Uri.Parse(path));
-                return stream == null ? null : BitmapFactory.DecodeStream(stream);
-            }
+                return Platform.AppContext.ContentResolver?.OpenInputStream(Uri.Parse(path));
 
-            return BitmapFactory.DecodeFile(path);
+            return File.Exists(path) ? File.OpenRead(path) : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static int CalculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+    {
+        var height = options.OutHeight;
+        var width = options.OutWidth;
+        var inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth)
+        {
+            var halfHeight = height / 2;
+            var halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth)
+                inSampleSize *= 2;
+        }
+
+        return Math.Max(1, inSampleSize);
+    }
+
+    private static Bitmap? LoadImageBitmap(string path)
+    {
+        try
+        {
+            // Pass 1: bounds
+            using (var boundsStream = OpenPathStream(path))
+            {
+                if (boundsStream == null)
+                    return null;
+
+                var bounds = new BitmapFactory.Options { InJustDecodeBounds = true };
+                BitmapFactory.DecodeStream(boundsStream, null, bounds);
+
+                // Pass 2: sampled decode
+                var sample = CalculateInSampleSize(bounds, ThumbMaxSize, ThumbMaxSize);
+                var opts = new BitmapFactory.Options
+                {
+                    InJustDecodeBounds = false,
+                    InSampleSize = sample,
+                    InPreferredConfig = Bitmap.Config.Rgb565,
+                    InDither = true
+                };
+
+                using var decodeStream = OpenPathStream(path);
+                if (decodeStream == null)
+                    return null;
+
+                return BitmapFactory.DecodeStream(decodeStream, null, opts);
+            }
         }
         catch
         {
@@ -209,7 +262,35 @@ public sealed class ThumbnailService
             }
 
             var tUs = Math.Max(1_000_000L, item.DurationMs * 1000L / 10L);
-            return retriever.GetFrameAtTime(tUs, Option.ClosestSync);
+
+            // Prefer scaled extraction when available (API 27+), otherwise scale after extraction.
+            Bitmap? frame = null;
+            if ((int)Android.OS.Build.VERSION.SdkInt >= 27)
+            {
+                try
+                {
+                    frame = retriever.GetScaledFrameAtTime(tUs, Option.ClosestSync, ThumbMaxSize, ThumbMaxSize);
+                }
+                catch
+                {
+                    frame = null;
+                }
+            }
+
+            frame ??= retriever.GetFrameAtTime(tUs, Option.ClosestSync);
+            if (frame == null)
+                return null;
+
+            // Scale down in-memory if needed.
+            if (frame.Width <= ThumbMaxSize && frame.Height <= ThumbMaxSize)
+                return frame;
+
+            var scale = Math.Min((double)ThumbMaxSize / frame.Width, (double)ThumbMaxSize / frame.Height);
+            var w = Math.Max(1, (int)Math.Round(frame.Width * scale));
+            var h = Math.Max(1, (int)Math.Round(frame.Height * scale));
+            var scaled = Bitmap.CreateScaledBitmap(frame, w, h, true);
+            frame.Dispose();
+            return scaled;
         }
         catch
         {

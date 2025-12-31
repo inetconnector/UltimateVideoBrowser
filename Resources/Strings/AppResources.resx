@@ -392,10 +392,7 @@
   </data>
   <data name="PreviewEmptyMessage" xml:space="preserve">
     <value>Select a file to preview it here.</value>
-  </data>
-  <data name="LoadingMedia" xml:space="preserve">
-    <value>Loading media...</value>
-  </data>
+  </data> 
   <data name="ThemeLight" xml:space="preserve">
     <value>Light</value>
   </data>

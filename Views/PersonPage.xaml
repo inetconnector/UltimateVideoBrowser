@@ -54,7 +54,9 @@
         <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Photos}"
                         SelectionMode="Single"
-                        SelectionChanged="OnPhotoSelected">
+                        SelectionChanged="OnPhotoSelected"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        ItemsUpdatingScrollMode="KeepScrollOffset">
             <CollectionView.EmptyView>
                 <Grid Padding="20" RowDefinitions="Auto,Auto" RowSpacing="10">
                     <Image Source="empty_state.svg" HeightRequest="110" />
