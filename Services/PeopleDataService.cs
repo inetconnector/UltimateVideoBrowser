@@ -70,8 +70,8 @@ public sealed class PeopleDataService
         try
         {
             var rows = await db.Db.QueryAsync<MediaTagRow>(
-                "SELECT Path, PeopleTagsSummary FROM MediaItem WHERE PeopleTagsSummary IS NOT NULL AND PeopleTagsSummary <> '';"
-            ).ConfigureAwait(false);
+                    "SELECT Path, PeopleTagsSummary FROM MediaItem WHERE PeopleTagsSummary IS NOT NULL AND PeopleTagsSummary <> '';"
+                ).ConfigureAwait(false);
 
             // Count distinct media paths per person name.
             var pathSets = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
@@ -140,6 +140,7 @@ public sealed class PeopleDataService
                 p.Name,
                 countMap.TryGetValue(p.Id, out var c) ? c : 0,
                 coverMap.TryGetValue(p.Id, out var cover) ? cover : null))
+
             .ToList();
 
         // Create synthetic person entries for manual tags.
@@ -162,6 +163,12 @@ public sealed class PeopleDataService
             .ToList();
 
         return merged;
+    }
+
+    private sealed class MediaTagRow
+    {
+        public string Path { get; set; } = string.Empty;
+        public string PeopleTagsSummary { get; set; } = string.Empty;
     }
 
     public async Task<IReadOnlyList<MediaItem>> GetMediaForPersonAsync(string personId, CancellationToken ct)
@@ -260,26 +267,20 @@ public sealed class PeopleDataService
         return (match.Id, match.Name);
     }
 
-    private sealed class MediaTagRow
-    {
-        public string Path { get; } = string.Empty;
-        public string PeopleTagsSummary { get; } = string.Empty;
-    }
-
     private sealed class PersonCountRow
     {
-        public string PersonId { get; } = string.Empty;
+        public string PersonId { get; set; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class TagCountRow
     {
-        public string PersonName { get; } = string.Empty;
+        public string PersonName { get; set; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class MediaPathRow
     {
-        public string MediaPath { get; } = string.Empty;
+        public string MediaPath { get; set; } = string.Empty;
     }
 }

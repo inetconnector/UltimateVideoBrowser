@@ -23,11 +23,6 @@
     <AppxPackage>false</AppxPackage>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-    <WindowsPackageType>None</WindowsPackageType>
-    <AppxPackage>false</AppxPackage>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="7.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -42,6 +37,12 @@
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Ship face models with the app by placing the ONNX files into Resources/Models. -->
+    <MauiAsset Include="Resources\Models\*.onnx" LogicalName="models/%(Filename)%(Extension)" />
+    <MauiAsset Include="Resources\Models\README.txt" LogicalName="models/README.txt" />
   </ItemGroup>
 
   <ItemGroup>

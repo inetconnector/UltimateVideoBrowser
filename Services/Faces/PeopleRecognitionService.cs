@@ -56,66 +56,66 @@ public sealed class PeopleRecognitionService
         {
             await db.EnsureInitializedAsync().ConfigureAwait(false);
 
-            var embeddings = await db.Db.Table<FaceEmbedding>()
-                .Where(face => face.MediaPath == item.Path)
-                .OrderBy(face => face.FaceIndex)
-                .ToListAsync()
-                .ConfigureAwait(false);
+        var embeddings = await db.Db.Table<FaceEmbedding>()
+            .Where(face => face.MediaPath == item.Path)
+            .OrderBy(face => face.FaceIndex)
+            .ToListAsync()
+            .ConfigureAwait(false);
 
-            if (embeddings.Count == 0)
-                embeddings = await DetectAndStoreFacesAsync(item.Path, ct).ConfigureAwait(false);
-            else
-                await TryUpdateFaceBoxesAsync(item.Path, embeddings, ct).ConfigureAwait(false);
+        if (embeddings.Count == 0)
+            embeddings = await DetectAndStoreFacesAsync(item.Path, ct).ConfigureAwait(false);
+        else
+            await TryUpdateFaceBoxesAsync(item.Path, embeddings, ct).ConfigureAwait(false);
 
-            if (embeddings.Count == 0)
-                return Array.Empty<FaceMatch>();
+        if (embeddings.Count == 0)
+            return Array.Empty<FaceMatch>();
 
-            var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
-            var knownEmbeddings = await db.Db.Table<FaceEmbedding>()
-                .Where(face => face.PersonId != null && face.PersonId != "")
-                .ToListAsync()
-                .ConfigureAwait(false);
+        var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
+        var knownEmbeddings = await db.Db.Table<FaceEmbedding>()
+            .Where(face => face.PersonId != null && face.PersonId != "")
+            .ToListAsync()
+            .ConfigureAwait(false);
 
-            var peopleMap = people.ToDictionary(person => person.Id, person => person);
-            var personEmbeddings = BuildEmbeddingMap(knownEmbeddings);
+        var peopleMap = people.ToDictionary(person => person.Id, person => person);
+        var personEmbeddings = BuildEmbeddingMap(knownEmbeddings);
 
-            foreach (var face in embeddings.Where(face => string.IsNullOrWhiteSpace(face.PersonId)))
+        foreach (var face in embeddings.Where(face => string.IsNullOrWhiteSpace(face.PersonId)))
+        {
+            ct.ThrowIfCancellationRequested();
+            var embedding = BytesToFloats(face.Embedding);
+            var match = FindBestMatch(embedding, personEmbeddings);
+            if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
             {
-                ct.ThrowIfCancellationRequested();
-                var embedding = BytesToFloats(face.Embedding);
-                var match = FindBestMatch(embedding, personEmbeddings);
-                if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
-                {
-                    var newPerson = CreateUnknownPerson(peopleMap.Values);
-                    await db.Db.InsertAsync(newPerson).ConfigureAwait(false);
-                    peopleMap[newPerson.Id] = newPerson;
-                    personEmbeddings[newPerson.Id] = new List<float[]> { embedding };
-                    face.PersonId = newPerson.Id;
-                }
-                else
-                {
-                    face.PersonId = match.PersonId;
-                    if (personEmbeddings.TryGetValue(match.PersonId, out var list))
-                        list.Add(embedding);
-                }
-
-                await db.Db.UpdateAsync(face).ConfigureAwait(false);
+                var newPerson = CreateUnknownPerson(peopleMap.Values);
+                await db.Db.InsertAsync(newPerson).ConfigureAwait(false);
+                peopleMap[newPerson.Id] = newPerson;
+                personEmbeddings[newPerson.Id] = new List<float[]> { embedding };
+                face.PersonId = newPerson.Id;
+            }
+            else
+            {
+                face.PersonId = match.PersonId;
+                if (personEmbeddings.TryGetValue(match.PersonId, out var list))
+                    list.Add(embedding);
             }
 
-            var matches = embeddings
-                .Where(face => !string.IsNullOrWhiteSpace(face.PersonId))
-                .Select((face, index) =>
-                {
-                    var person = peopleMap[face.PersonId!];
-                    var embedding = BytesToFloats(face.Embedding);
-                    var similarity = ComputeBestSimilarityToPerson(face.PersonId!, embedding, personEmbeddings);
-                    return new FaceMatch(person.Id, person.Name, similarity, index);
-                })
-                .ToList();
+            await db.Db.UpdateAsync(face).ConfigureAwait(false);
+        }
 
-            await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values)
-                .ConfigureAwait(false);
-            return matches;
+        var matches = embeddings
+            .Where(face => !string.IsNullOrWhiteSpace(face.PersonId))
+            .Select((face, index) =>
+            {
+                var person = peopleMap[face.PersonId!];
+                var embedding = BytesToFloats(face.Embedding);
+                var similarity = ComputeBestSimilarityToPerson(face.PersonId!, embedding, personEmbeddings);
+                return new FaceMatch(person.Id, person.Name, similarity, index);
+            })
+            .ToList();
+
+        await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values)
+            .ConfigureAwait(false);
+        return matches;
         }
         catch
         {
@@ -242,7 +242,6 @@ public sealed class PeopleRecognitionService
             // keep browsing resilient and simply skip automatic face detection.
             return new List<FaceEmbedding>();
         }
-
         if (faces.Count == 0)
             return new List<FaceEmbedding>();
 
@@ -263,7 +262,6 @@ public sealed class PeopleRecognitionService
                 // Best-effort: skip this face if recognition is unavailable.
                 continue;
             }
-
             if (embedding.Length == 0)
                 continue;
             embeddings.Add(new FaceEmbedding
@@ -316,7 +314,6 @@ public sealed class PeopleRecognitionService
                 // keep browsing resilient and simply skip automatic face detection.
                 return;
             }
-
             if (faces.Count == 0)
                 return;
 

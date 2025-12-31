@@ -62,37 +62,25 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:MediaItem"
                               xmlns:models="clr-namespace:UltimateVideoBrowser.Models">
-                    <SwipeView>
-                        <SwipeView.RightItems>
-                            <SwipeItems Mode="Execute">
-                                <SwipeItem
-                                    Text="{x:Static strings:AppResources.RemoveFromPeopleIndexButton}"
-                                    BackgroundColor="{DynamicResource Accent}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFromPeopleIndexCommand}"
-                                    CommandParameter="{Binding .}" />
-                            </SwipeItems>
-                        </SwipeView.RightItems>
+                    <Frame BackgroundColor="{DynamicResource Surface}"
+                           CornerRadius="14"
+                           HasShadow="False"
+                           Padding="0"
+                           Margin="0,0,0,10">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <Image
+                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                Aspect="AspectFill"
+                                HeightRequest="120" />
 
-                        <Frame BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="14"
-                               HasShadow="False"
-                               Padding="0"
-                               Margin="0,0,0,10">
-                            <Grid RowDefinitions="Auto,Auto">
-                                <Image
-                                    Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                    Aspect="AspectFill"
-                                    HeightRequest="120" />
-
-                                <Label Grid.Row="1"
-                                       Text="{Binding PeopleTagsSummary}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       FontSize="11"
-                                       LineBreakMode="TailTruncation"
-                                       Padding="10,8" />
-                            </Grid>
-                        </Frame>
-                    </SwipeView>
+                            <Label Grid.Row="1"
+                                   Text="{Binding PeopleTagsSummary}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   FontSize="11"
+                                   LineBreakMode="TailTruncation"
+                                   Padding="10,8" />
+                        </Grid>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

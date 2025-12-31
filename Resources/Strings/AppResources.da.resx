@@ -276,7 +276,4 @@
   <data name="DeviceLibraryPath" xml:space="preserve">
     <value>Enhedens mediebibliotek</value>
   </data>
-  <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
-  </data>
 </root>

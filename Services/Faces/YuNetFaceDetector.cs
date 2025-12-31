@@ -33,15 +33,15 @@ public sealed class YuNetFaceDetector : IDisposable
 
     public bool IsLoaded => detector != null && postProcessor != null;
 
+    public Task EnsureLoadedAsync(CancellationToken ct)
+    {
+        return EnsureInitializedAsync(ct);
+    }
+
     public void Dispose()
     {
         detector?.Dispose();
         postProcessor?.Dispose();
-    }
-
-    public Task EnsureLoadedAsync(CancellationToken ct)
-    {
-        return EnsureInitializedAsync(ct);
     }
 
     public async Task<IReadOnlyList<DetectedFace>> DetectFacesAsync(Image<Rgba32> image, float minScore,

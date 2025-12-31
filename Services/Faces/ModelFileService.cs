@@ -4,6 +4,35 @@ namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class ModelFileService
 {
+    private const string YuNetUrl =
+        "https://files.kde.org/digikam/models/facesengine/yunet/face_detection_yunet_2023mar.onnx";
+
+    // NOTE: Some YuNet pipelines require an additional post-processing ONNX model.
+    // The correct file name is "th6" (NOT "th60").
+    private const string YuNetPostUrl =
+        "https://files.kde.org/digikam/models/facesengine/yunet/postproc_yunet_top50_th6_320x320.onnx";
+
+    private const string SFaceUrl =
+        "https://files.kde.org/digikam/models/facesengine/sface/face_recognition_sface_2021dec.onnx";
+
+    private readonly ConcurrentDictionary<string, Task<string>> cache = new();
+    private readonly HttpClient httpClient = new();
+
+    private readonly object stateLock = new();
+    private readonly Dictionary<string, ModelStatus> statusByFile = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["face_detection_yunet_2023mar.onnx"] = ModelStatus.Unknown,
+        ["postproc_yunet_top50_th6_320x320.onnx"] = ModelStatus.Unknown,
+        ["face_recognition_sface_2021dec.onnx"] = ModelStatus.Unknown
+    };
+
+    private readonly Dictionary<string, string?> errorByFile = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["face_detection_yunet_2023mar.onnx"] = null,
+        ["postproc_yunet_top50_th6_320x320.onnx"] = null,
+        ["face_recognition_sface_2021dec.onnx"] = null
+    };
+
     public enum ModelStatus
     {
         Unknown,
@@ -12,34 +41,14 @@ public sealed class ModelFileService
         Failed
     }
 
-    private const string YuNetUrl =
-        "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx";
-
-    private const string YuNetPostUrl =
-        "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/postproc_yunet_top50_th60_320x320.onnx";
-
-    private const string SFaceUrl =
-        "https://github.com/opencv/opencv_zoo/raw/main/models/face_recognition_sface/face_recognition_sface_2021dec.onnx";
-
-    private readonly ConcurrentDictionary<string, Task<string>> cache = new();
-
-    private readonly Dictionary<string, string?> errorByFile = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["face_detection_yunet_2023mar.onnx"] = null,
-        ["postproc_yunet_top50_th60_320x320.onnx"] = null,
-        ["face_recognition_sface_2021dec.onnx"] = null
-    };
-
-    private readonly HttpClient httpClient = new();
-
-    private readonly object stateLock = new();
-
-    private readonly Dictionary<string, ModelStatus> statusByFile = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["face_detection_yunet_2023mar.onnx"] = ModelStatus.Unknown,
-        ["postproc_yunet_top50_th60_320x320.onnx"] = ModelStatus.Unknown,
-        ["face_recognition_sface_2021dec.onnx"] = ModelStatus.Unknown
-    };
+    public sealed record ModelStatusSnapshot(
+        ModelStatus YuNet,
+        ModelStatus YuNetPost,
+        ModelStatus SFace,
+        string ModelsDirectory,
+        string? YuNetError,
+        string? YuNetPostError,
+        string? SFaceError);
 
     public string ModelsDirectoryPath
         => Path.Combine(FileSystem.CacheDirectory, "models");
@@ -52,11 +61,11 @@ public sealed class ModelFileService
             RefreshLocalStatus_NoLock();
             return new ModelStatusSnapshot(
                 statusByFile["face_detection_yunet_2023mar.onnx"],
-                statusByFile["postproc_yunet_top50_th60_320x320.onnx"],
+                statusByFile["postproc_yunet_top50_th6_320x320.onnx"],
                 statusByFile["face_recognition_sface_2021dec.onnx"],
                 ModelsDirectoryPath,
                 errorByFile["face_detection_yunet_2023mar.onnx"],
-                errorByFile["postproc_yunet_top50_th60_320x320.onnx"],
+                errorByFile["postproc_yunet_top50_th6_320x320.onnx"],
                 errorByFile["face_recognition_sface_2021dec.onnx"]);
         }
     }
@@ -90,7 +99,7 @@ public sealed class ModelFileService
 
     public Task<string> GetYuNetPostModelAsync(CancellationToken ct)
     {
-        return GetModelAsync("postproc_yunet_top50_th60_320x320.onnx", YuNetPostUrl, ct);
+        return GetModelAsync("postproc_yunet_top50_th6_320x320.onnx", YuNetPostUrl, ct);
     }
 
     public Task<string> GetSFaceModelAsync(CancellationToken ct)
@@ -124,6 +133,18 @@ public sealed class ModelFileService
         {
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
 
+            // 1) Try embedded MauiAsset (offline-friendly).
+            // If present, copy to cache and mark as ready.
+            if (await TryCopyFromAppPackageAsync(fileName, targetPath, ct).ConfigureAwait(false))
+            {
+                lock (stateLock)
+                {
+                    statusByFile[fileName] = ModelStatus.Ready;
+                    errorByFile[fileName] = null;
+                }
+                return targetPath;
+            }
+
             using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct)
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
@@ -152,6 +173,21 @@ public sealed class ModelFileService
         }
     }
 
+    private static async Task<bool> TryCopyFromAppPackageAsync(string fileName, string targetPath, CancellationToken ct)
+    {
+        try
+        {
+            await using var src = await FileSystem.OpenAppPackageFileAsync($"models/{fileName}").ConfigureAwait(false);
+            await using var dst = File.Create(targetPath);
+            await src.CopyToAsync(dst, ct).ConfigureAwait(false);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private void RefreshLocalStatus_NoLock()
     {
         foreach (var file in statusByFile.Keys.ToList())
@@ -170,13 +206,4 @@ public sealed class ModelFileService
             }
         }
     }
-
-    public sealed record ModelStatusSnapshot(
-        ModelStatus YuNet,
-        ModelStatus YuNetPost,
-        ModelStatus SFace,
-        string ModelsDirectory,
-        string? YuNetError,
-        string? YuNetPostError,
-        string? SFaceError);
 }

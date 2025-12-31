@@ -1,3 +1,5 @@
+using Microsoft.Maui.Controls;
+
 namespace UltimateVideoBrowser.Helpers;
 
 public static class Tooltip
@@ -10,14 +12,10 @@ public static class Tooltip
         propertyChanged: OnTextChanged);
 
     public static string? GetText(BindableObject view)
-    {
-        return (string?)view.GetValue(TextProperty);
-    }
+        => (string?)view.GetValue(TextProperty);
 
     public static void SetText(BindableObject view, string? value)
-    {
-        view.SetValue(TextProperty, value);
-    }
+        => view.SetValue(TextProperty, value);
 
     private static void OnTextChanged(BindableObject bindable, object? oldValue, object? newValue)
     {

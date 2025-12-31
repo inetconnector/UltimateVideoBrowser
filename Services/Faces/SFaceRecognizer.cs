@@ -33,14 +33,14 @@ public sealed class SFaceRecognizer : IDisposable
 
     public bool IsLoaded => session != null;
 
-    public void Dispose()
-    {
-        session?.Dispose();
-    }
-
     public Task EnsureLoadedAsync(CancellationToken ct)
     {
         return EnsureInitializedAsync(ct);
+    }
+
+    public void Dispose()
+    {
+        session?.Dispose();
     }
 
     public async Task<float[]> ExtractEmbeddingAsync(Image<Rgba32> source, DetectedFace face, CancellationToken ct)

@@ -555,7 +555,4 @@ Fehlend:
   <data name="RenameConfirmMessage" xml:space="preserve">
     <value>"{0}" in "{1}" umbenennen?</value>
   </data>
-  <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Aus Personenindex entfernen</value>
-  </data>
 </root>
