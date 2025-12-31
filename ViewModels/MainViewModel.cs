@@ -1,10 +1,10 @@
-using System.ComponentModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
-using UltimateVideoBrowser.Collections;
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Collections;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -35,6 +35,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
+    private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeSourceId = "";
@@ -67,26 +68,30 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isInternalPlayerEnabled;
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
-    [ObservableProperty] private int taggedPeopleCount;
-    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
     [ObservableProperty] private int markedCount;
     [ObservableProperty] private int mediaCount;
 
-    private readonly ObservableRangeCollection<MediaItem> mediaItems = new();
+    // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
+    private CancellationTokenSource? mediaDerivedCts;
     private int mediaItemsOffset;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
     private IndexProgress? pendingIndexProgress;
+
+    // Best-effort background people scan after indexing so the People browser is populated automatically.
+    private CancellationTokenSource? peopleAutoScanCts;
+    private Task? peopleAutoScanTask;
+    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string searchText = "";
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
-    private HashSet<MediaItem> subscribedMediaItems = new();
+    [ObservableProperty] private int taggedPeopleCount;
     private CancellationTokenSource? thumbCts;
     private bool thumbnailPipelineQueued;
     private bool thumbnailPipelineRunning;
@@ -96,13 +101,6 @@ public partial class MainViewModel : ObservableObject
     // Visible range is reported by the view (Scrolled event) so thumbnail work can prioritize what's on screen.
     private int visibleFirstIndex;
     private int visibleLastIndex;
-
-    // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
-    private CancellationTokenSource? mediaDerivedCts;
-
-    // Best-effort background people scan after indexing so the People browser is populated automatically.
-    private CancellationTokenSource? peopleAutoScanCts;
-    private Task? peopleAutoScanTask;
 
     public MainViewModel(
         ISourceService sourceService,
@@ -145,7 +143,7 @@ public partial class MainViewModel : ObservableObject
             new MediaTypeFilterOption(MediaType.Documents, AppResources.MediaTypeDocuments)
         };
 
-        mediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
+        MediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
 
         RefreshPeopleModelsStatus();
     }
@@ -153,7 +151,7 @@ public partial class MainViewModel : ObservableObject
     public IReadOnlyList<SortOption> SortOptions { get; }
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
 
-    public ObservableRangeCollection<MediaItem> MediaItems => mediaItems;
+    public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
     public bool HasMarked => MarkedCount > 0;
 
@@ -202,7 +200,7 @@ public partial class MainViewModel : ObservableObject
 
         if (!HasMediaPermission)
         {
-            mediaItems.Clear();
+            MediaItems.Clear();
             mediaItemsOffset = 0;
             hasMoreMediaItems = false;
             var total = await indexService.CountAsync(SelectedMediaTypes);
@@ -274,7 +272,7 @@ public partial class MainViewModel : ObservableObject
                 ActiveSourceId = result.normalizedSourceId;
                 Sources = result.enabledSources;
                 _ = UpdateSourceStatsAsync(result.sources);
-                mediaItems.ReplaceRange(result.items);
+                MediaItems.ReplaceRange(result.items);
                 IndexedMediaCount = result.totalCount;
                 mediaItemsOffset = result.items.Count;
                 hasMoreMediaItems = result.items.Count == PageSize;
@@ -315,7 +313,7 @@ public partial class MainViewModel : ObservableObject
                 if (queryVersion != mediaQueryVersion)
                     return;
 
-                mediaItems.AddRange(nextItems);
+                MediaItems.AddRange(nextItems);
                 mediaItemsOffset += nextItems.Count;
                 hasMoreMediaItems = nextItems.Count == PageSize;
             });
@@ -498,8 +496,14 @@ public partial class MainViewModel : ObservableObject
                 // Refresh UI once after the scan to populate People/Tag counts.
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    try { await RefreshAsync(); }
-                    catch { /* keep UI resilient */ }
+                    try
+                    {
+                        await RefreshAsync();
+                    }
+                    catch
+                    {
+                        /* keep UI resilient */
+                    }
                 });
             }
             catch
@@ -751,10 +755,7 @@ public partial class MainViewModel : ObservableObject
         // Show the user-entered tags immediately on the tile, even when no faces were detected.
         // Face recognition can be disabled or fail on some photos (low resolution / side faces etc.),
         // but manual tags must always be visible once persisted.
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            item.PeopleTagsSummary = string.Join(", ", tags);
-        });
+        await MainThread.InvokeOnMainThreadAsync(() => { item.PeopleTagsSummary = string.Join(", ", tags); });
 
         // Best-effort: keep face DB in sync in case faces are detectable later.
         _ = peopleRecognitionService.EnsurePeopleTagsForMediaAsync(item, CancellationToken.None);
@@ -893,7 +894,7 @@ public partial class MainViewModel : ObservableObject
         if (moved.Count > 0)
         {
             await indexService.RemoveAsync(moved);
-            mediaItems.RemoveRange(moved);
+            MediaItems.RemoveRange(moved);
             await UpdateIndexedMediaCountAsync();
         }
         else
@@ -924,7 +925,7 @@ public partial class MainViewModel : ObservableObject
         if (deleted.Count > 0)
         {
             await indexService.RemoveAsync(deleted);
-            mediaItems.RemoveRange(deleted);
+            MediaItems.RemoveRange(deleted);
             await UpdateIndexedMediaCountAsync();
 
             if (deleted.Any(item => string.Equals(item.Path, CurrentMediaSource, StringComparison.OrdinalIgnoreCase)))
@@ -955,7 +956,7 @@ public partial class MainViewModel : ObservableObject
         if (deleted.Count > 0)
         {
             await indexService.RemoveAsync(deleted);
-            mediaItems.RemoveRange(deleted);
+            MediaItems.RemoveRange(deleted);
             await UpdateIndexedMediaCountAsync();
 
             if (deleted.Any(i => string.Equals(i.Path, CurrentMediaSource, StringComparison.OrdinalIgnoreCase)))
@@ -1064,7 +1065,7 @@ public partial class MainViewModel : ObservableObject
                 var ct = thumbCts.Token;
 
                 // Snapshot must be taken on the UI thread (ObservableCollection is not thread-safe).
-                var snapshot = await MainThread.InvokeOnMainThreadAsync(() => mediaItems.ToList());
+                var snapshot = await MainThread.InvokeOnMainThreadAsync(() => MediaItems.ToList());
                 if (snapshot.Count == 0)
                     return;
 
@@ -1073,7 +1074,7 @@ public partial class MainViewModel : ObservableObject
                 var lastVisible = visibleLastIndex > 0 ? visibleLastIndex : visibleFirstIndex;
                 var last = Math.Min(snapshot.Count - 1, lastVisible + 96);
 
-                var work = new List<MediaItem>(capacity: Math.Min(900, snapshot.Count));
+                var work = new List<MediaItem>(Math.Min(900, snapshot.Count));
                 work.AddRange(snapshot.Take(64));
                 if (first <= last)
                     work.AddRange(snapshot.Skip(first).Take(last - first + 1));
@@ -1096,7 +1097,6 @@ public partial class MainViewModel : ObservableObject
                     token.ThrowIfCancellationRequested();
 
                     if (!string.IsNullOrWhiteSpace(item.ThumbnailPath) && File.Exists(item.ThumbnailPath))
-                    {
                         try
                         {
                             var fi = new FileInfo(item.ThumbnailPath);
@@ -1110,7 +1110,6 @@ public partial class MainViewModel : ObservableObject
                         {
                             // Ignore and regenerate.
                         }
-                    }
 
                     var p = await thumbnailService.EnsureThumbnailAsync(item, token).ConfigureAwait(false);
                     if (string.IsNullOrWhiteSpace(p))
@@ -1155,7 +1154,8 @@ public partial class MainViewModel : ObservableObject
             return;
 
         // Throttle restarts for tiny scroll movements.
-        var significant = Math.Abs(firstVisibleIndex - visibleFirstIndex) >= 6 || Math.Abs(lastVisibleIndex - visibleLastIndex) >= 6;
+        var significant = Math.Abs(firstVisibleIndex - visibleFirstIndex) >= 6 ||
+                          Math.Abs(lastVisibleIndex - visibleLastIndex) >= 6;
         visibleFirstIndex = firstVisibleIndex;
         visibleLastIndex = lastVisibleIndex;
 
@@ -1303,16 +1303,16 @@ public partial class MainViewModel : ObservableObject
 
     private void OnMediaItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        MediaCount = mediaItems.Count;
+        MediaCount = MediaItems.Count;
         mediaItemsVersion++;
 
         // Keep MarkedCount accurate without re-counting the whole list on every incremental change.
         if (e.Action == NotifyCollectionChangedAction.Reset)
         {
-            var snapshot = mediaItems.ToList();
+            var snapshot = MediaItems.ToList();
             SubscribeToMarkedChanges(snapshot);
             MarkedCount = snapshot.Count(v => v.IsMarked);
-            ScheduleDerivedMediaRebuild(snapshot, mediaItemsVersion, fullRefresh: true);
+            ScheduleDerivedMediaRebuild(snapshot, mediaItemsVersion, true);
             return;
         }
 
@@ -1328,11 +1328,12 @@ public partial class MainViewModel : ObservableObject
                     MarkedCount++;
             }
 
-            ScheduleDerivedMediaRebuild(e.NewItems.OfType<MediaItem>().ToList(), mediaItemsVersion, fullRefresh: false);
+            ScheduleDerivedMediaRebuild(e.NewItems.OfType<MediaItem>().ToList(), mediaItemsVersion, false);
             return;
         }
 
-        if ((e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace) && e.OldItems != null)
+        if ((e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace) &&
+            e.OldItems != null)
         {
             foreach (var obj in e.OldItems)
             {
@@ -1344,15 +1345,16 @@ public partial class MainViewModel : ObservableObject
                     MarkedCount = Math.Max(0, MarkedCount - 1);
             }
 
-            ScheduleDerivedMediaRebuild(null, mediaItemsVersion, fullRefresh: false);
+            ScheduleDerivedMediaRebuild(null, mediaItemsVersion, false);
             return;
         }
 
         // Fallback for other actions.
-        ScheduleDerivedMediaRebuild(null, mediaItemsVersion, fullRefresh: false);
+        ScheduleDerivedMediaRebuild(null, mediaItemsVersion, false);
     }
 
-    private void ScheduleDerivedMediaRebuild(IReadOnlyList<MediaItem>? recentItems, int requestedVersion, bool fullRefresh)
+    private void ScheduleDerivedMediaRebuild(IReadOnlyList<MediaItem>? recentItems, int requestedVersion,
+        bool fullRefresh)
     {
         mediaDerivedCts?.Cancel();
         mediaDerivedCts?.Dispose();
@@ -1367,7 +1369,7 @@ public partial class MainViewModel : ObservableObject
                 await Task.Delay(120, ct).ConfigureAwait(false);
 
                 // Snapshot must be taken on the UI thread (ObservableCollection is not thread-safe).
-                var snapshot = await MainThread.InvokeOnMainThreadAsync(() => mediaItems.ToList());
+                var snapshot = await MainThread.InvokeOnMainThreadAsync(() => MediaItems.ToList());
                 ct.ThrowIfCancellationRequested();
 
                 var timeline = BuildTimelineEntries(snapshot);
@@ -1385,13 +1387,9 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 if (fullRefresh)
-                {
                     await RefreshPeopleTagsAsync(snapshot, requestedVersion).ConfigureAwait(false);
-                }
                 else if (recentItems != null && recentItems.Count > 0)
-                {
                     await RefreshPeopleTagsAsync(recentItems, requestedVersion).ConfigureAwait(false);
-                }
             }
             catch
             {
@@ -1411,7 +1409,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        _ = RefreshPeopleTagsAsync(mediaItems.ToList(), mediaItemsVersion);
+        _ = RefreshPeopleTagsAsync(MediaItems.ToList(), mediaItemsVersion);
         _ = RefreshTaggedPeopleCountAsync();
         RefreshPeopleModelsStatus();
     }
@@ -1425,11 +1423,12 @@ public partial class MainViewModel : ObservableObject
         }
 
         var s = modelFileService.GetStatusSnapshot();
-        var ready = s.YuNet == ModelFileService.ModelStatus.Ready
-                    && s.YuNetPost == ModelFileService.ModelStatus.Ready
+        var ready = s.YuNet == ModelFileService.ModelStatus.Ready 
                     && s.SFace == ModelFileService.ModelStatus.Ready;
 
-        var stateText = ready ? AppResources.SettingsPeopleModelsStatusReady : AppResources.SettingsPeopleModelsStatusMissing;
+        var stateText = ready
+            ? AppResources.SettingsPeopleModelsStatusReady
+            : AppResources.SettingsPeopleModelsStatusMissing;
         PeopleModelsStatusText = $"{AppResources.SettingsPeopleModelsStatusLabel}: {stateText}";
     }
 
@@ -1463,7 +1462,6 @@ public partial class MainViewModel : ObservableObject
             return;
 
         _ = RefreshAsync();
-
     }
 
     partial void OnDateFilterFromChanged(DateTime value)
@@ -1476,7 +1474,6 @@ public partial class MainViewModel : ObservableObject
 
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
-
     }
 
     partial void OnDateFilterToChanged(DateTime value)
@@ -1489,7 +1486,6 @@ public partial class MainViewModel : ObservableObject
 
         if (IsDateFilterEnabled)
             _ = RefreshAsync();
-
     }
 
     partial void OnSelectedSortOptionChanged(SortOption? value)
@@ -1508,7 +1504,6 @@ public partial class MainViewModel : ObservableObject
             return;
 
         _ = RefreshAsync();
-
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)
@@ -1542,20 +1537,16 @@ public partial class MainViewModel : ObservableObject
     private void SubscribeToMarkedChanges(IReadOnlyCollection<MediaItem>? items)
     {
         if (subscribedMediaItems.Count > 0)
-        {
             foreach (var mediaItem in subscribedMediaItems)
                 mediaItem.PropertyChanged -= mediaMarkedHandler;
-        }
 
         subscribedMediaItems.Clear();
         if (items == null)
             return;
 
         foreach (var mediaItem in items)
-        {
             if (subscribedMediaItems.Add(mediaItem))
                 mediaItem.PropertyChanged += mediaMarkedHandler;
-        }
     }
 
     private void HookMediaItem(MediaItem item)
@@ -1583,7 +1574,7 @@ public partial class MainViewModel : ObservableObject
 
     private void RecomputeMarkedCount()
     {
-        MarkedCount = mediaItems.Count(v => v.IsMarked);
+        MarkedCount = MediaItems.Count(v => v.IsMarked);
     }
 
     private void UpdateIndexLocation(string sourceName, string? path)

@@ -8,88 +8,86 @@ using Point = SixLabors.ImageSharp.Point;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
+/// <summary>
+/// YuNet face detector wrapper.
+///
+/// IMPORTANT:
+/// - The app ships the YuNet ONNX model as a MauiAsset and copies it to the cache on first use.
+/// - We treat the model as a "single-session" detector (no extra post-process model file).
+/// - At runtime we auto-detect which output tensor contains detections.
+///
+/// This keeps the distribution simple (only one detector model file).
+/// </summary>
 public sealed class YuNetFaceDetector : IDisposable
 {
-    private const int NetWidth = 320;
-    private const int NetHeight = 320;
-    private readonly SemaphoreSlim initLock = new(1, 1);
+    private int netWidth = 320;
+    private int netHeight = 320;
 
+    private readonly SemaphoreSlim initLock = new(1, 1);
     private readonly ModelFileService modelFileService;
-    private string confOutput = "";
+
     private InferenceSession? detector;
-    private string detectorInput = "";
-    private string iouOutput = "";
-    private string locOutput = "";
-    private string postConfInput = "";
-    private string postIouInput = "";
-    private string postLocInput = "";
-    private string postOutput = "";
-    private InferenceSession? postProcessor;
+    private string detectorInput = string.Empty;
 
     public YuNetFaceDetector(ModelFileService modelFileService)
     {
         this.modelFileService = modelFileService;
     }
 
-    public bool IsLoaded => detector != null && postProcessor != null;
+    public bool IsLoaded => detector != null;
+
+    public void Dispose()
+    {
+        detector?.Dispose();
+    }
 
     public Task EnsureLoadedAsync(CancellationToken ct)
     {
         return EnsureInitializedAsync(ct);
     }
 
-    public void Dispose()
-    {
-        detector?.Dispose();
-        postProcessor?.Dispose();
-    }
-
     public async Task<IReadOnlyList<DetectedFace>> DetectFacesAsync(Image<Rgba32> image, float minScore,
         CancellationToken ct)
     {
         await EnsureInitializedAsync(ct).ConfigureAwait(false);
-        if (detector == null || postProcessor == null)
+        if (detector == null)
             return Array.Empty<DetectedFace>();
 
-        Letterbox(image, NetWidth, NetHeight, out var boxed, out var scale, out var dx, out var dy);
+        Letterbox(image, netWidth, netHeight, out var boxed, out var scale, out var dx, out var dy);
 
-        var input = ToFloatTensorRgb(boxed, NetWidth, NetHeight);
-        using var detectorOutput = detector.Run(new[]
+        var input = ToFloatTensorRgb(boxed, netWidth, netHeight);
+        using var output = detector.Run(new[]
         {
             NamedOnnxValue.CreateFromTensor(detectorInput, input)
         });
 
-        var loc = detectorOutput.First(x => x.Name == locOutput).AsTensor<float>();
-        var conf = detectorOutput.First(x => x.Name == confOutput).AsTensor<float>();
-        var iou = detectorOutput.First(x => x.Name == iouOutput).AsTensor<float>();
+        // YuNet variants differ slightly in their output signature.
+        // Prefer a 2D/3D float tensor with >= 15 columns in the last dimension.
+        var detections = output
+            .Select(v => (Name: v.Name, Tensor: v.AsTensor<float>()))
+            .OrderByDescending(x => GuessDetectionScore(x.Tensor))
+            .FirstOrDefault();
 
-        using var postOutputValues = postProcessor.Run(new[]
-        {
-            NamedOnnxValue.CreateFromTensor(postLocInput, loc),
-            NamedOnnxValue.CreateFromTensor(postConfInput, conf),
-            NamedOnnxValue.CreateFromTensor(postIouInput, iou)
-        });
+        var faces = new List<DetectedFace>();
+        if (detections.Tensor != null && GuessDetectionScore(detections.Tensor) > 0)
+            faces = ParseDetections(detections.Tensor, minScore, scale, dx, dy, image.Width, image.Height);
 
-        var detections = postOutputValues.First(x => x.Name == postOutput).AsTensor<float>();
-
-        var faces = ParseDetections(detections, minScore, scale, dx, dy, image.Width, image.Height);
         boxed.Dispose();
         return faces;
     }
 
     private async Task EnsureInitializedAsync(CancellationToken ct)
     {
-        if (detector != null && postProcessor != null)
+        if (detector != null)
             return;
 
         await initLock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            if (detector != null && postProcessor != null)
+            if (detector != null)
                 return;
 
             var detectorPath = await modelFileService.GetYuNetModelAsync(ct).ConfigureAwait(false);
-            var postPath = await modelFileService.GetYuNetPostModelAsync(ct).ConfigureAwait(false);
 
             var options = new SessionOptions
             {
@@ -97,22 +95,34 @@ public sealed class YuNetFaceDetector : IDisposable
             };
 
             detector = new InferenceSession(detectorPath, options);
-            postProcessor = new InferenceSession(postPath, options);
-
             detectorInput = detector.InputMetadata.Keys.First();
-            locOutput = FindKey(detector.OutputMetadata.Keys, "loc");
-            confOutput = FindKey(detector.OutputMetadata.Keys, "conf");
-            iouOutput = FindKey(detector.OutputMetadata.Keys, "iou");
-
-            postLocInput = FindKey(postProcessor.InputMetadata.Keys, "loc");
-            postConfInput = FindKey(postProcessor.InputMetadata.Keys, "conf");
-            postIouInput = FindKey(postProcessor.InputMetadata.Keys, "iou");
-            postOutput = postProcessor.OutputMetadata.Keys.First();
+            // Detect the required network input size from the model metadata.
+            // YuNet models may expect 320x320 or 640x640 depending on the variant.
+            if (detector.InputMetadata.TryGetValue(detectorInput, out var meta) && meta.Dimensions.Length >= 4)
+            {
+                var h = meta.Dimensions[^2];
+                var w = meta.Dimensions[^1];
+                // Some models use -1 for dynamic dimensions; keep defaults in that case.
+                if (h > 0) netHeight = (int)h;
+                if (w > 0) netWidth = (int)w;
+            }
         }
         finally
         {
             initLock.Release();
         }
+    }
+
+    private static int GuessDetectionScore(Tensor<float> t)
+    {
+        var dims = t.Dimensions.ToArray();
+        if (dims.Length < 2)
+            return 0;
+
+        var cols = dims[^1];
+        // The standard YuNet detection row has 15 floats:
+        // [x, y, w, h, l0x, l0y, l1x, l1y, l2x, l2y, l3x, l3y, l4x, l4y, score]
+        return cols >= 15 ? cols : 0;
     }
 
     private static List<DetectedFace> ParseDetections(Tensor<float> detections, float minScore, float scale,
@@ -124,7 +134,7 @@ public sealed class YuNetFaceDetector : IDisposable
             return faces;
 
         var rows = dims.Length == 3 ? dims[1] : dims[0];
-        var cols = dims.Length == 3 ? dims[2] : dims[1];
+        var cols = dims[^1];
 
         if (cols < 15)
             return faces;
@@ -144,6 +154,7 @@ public sealed class YuNetFaceDetector : IDisposable
             for (var i = 0; i < 10; i++)
                 landmarks[i] = GetDetectionValue(detections, dims, r, 4 + i);
 
+            // Undo letterbox
             x = (x - dx) / scale;
             y = (y - dy) / scale;
             w = w / scale;
@@ -201,24 +212,18 @@ public sealed class YuNetFaceDetector : IDisposable
         dx = (dstW - newW) / 2f;
         dy = (dstH - newH) / 2f;
 
+        // Avoid capturing out parameters inside a lambda (CS1628).
+        var offsetX = (int)MathF.Round(dx);
+        var offsetY = (int)MathF.Round(dy);
+
         var resized = source.Clone(ctx => ctx.Resize(newW, newH, KnownResamplers.Bicubic));
         boxed = new Image<Rgba32>(dstW, dstH, Color.Black);
-        var offsetX = dx;
-        var offsetY = dy;
         boxed.Mutate(ctx =>
         {
             ctx.DrawImage(resized,
-                new Point((int)MathF.Round(offsetX), (int)MathF.Round(offsetY)),
+                    new Point(offsetX, offsetY),
                 1f);
         });
         resized.Dispose();
-    }
-
-    private static string FindKey(IEnumerable<string> keys, string needle)
-    {
-        var key = keys.FirstOrDefault(value => value.Contains(needle, StringComparison.OrdinalIgnoreCase));
-        if (key == null)
-            throw new InvalidOperationException($"Missing tensor '{needle}'. Available: {string.Join(", ", keys)}");
-        return key;
     }
 }

@@ -147,6 +147,7 @@
                         <Button Text="{x:Static strings:AppResources.SettingsPeopleModelsDownloadButton}"
                                 Command="{Binding DownloadPeopleModelsCommand}"
                                 IsEnabled="{Binding CanDownloadPeopleModels}"
+                                IsVisible="{Binding CanDownloadPeopleModels}"
                                 BackgroundColor="{DynamicResource Surface2}"
                                 TextColor="{DynamicResource OnSurface}" />
                     </VerticalStackLayout>

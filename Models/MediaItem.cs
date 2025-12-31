@@ -117,10 +117,8 @@ public class MediaItem : INotifyPropertyChanged
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var result = new List<string>(parts.Count);
             foreach (var p in parts)
-            {
                 if (seen.Add(p))
                     result.Add(p);
-            }
 
             return result;
         }

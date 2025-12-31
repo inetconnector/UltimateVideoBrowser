@@ -40,12 +40,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Ship face models with the app by placing the ONNX files into Resources/Models. -->
+    <!--
+      Ship face models with the app by placing the ONNX files into Resources/Models.
+      They will be accessible at runtime via FileSystem.OpenAppPackageFileAsync("models/<file>").
+    -->
     <MauiAsset Include="Resources\Models\*.onnx" LogicalName="models/%(Filename)%(Extension)" />
     <MauiAsset Include="Resources\Models\README.txt" LogicalName="models/README.txt" />
-  </ItemGroup>
 
-  <ItemGroup>
     <MauiIcon Include="Resources\AppIcon\appicon.svg" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
     <MauiImage Include="Resources\Images\*" />

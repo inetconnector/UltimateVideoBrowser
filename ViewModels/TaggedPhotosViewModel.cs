@@ -51,6 +51,40 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
         await RefreshAsync(CancellationToken.None).ConfigureAwait(false);
     }
 
+
+    [RelayCommand]
+    public async Task RemoveFromPeopleIndexAsync(MediaItem? item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        try
+        {
+            await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+            // Remove manual tags and automatic face embeddings for this media item.
+            await db.Db.ExecuteAsync("DELETE FROM PersonTag WHERE MediaPath = ?;", item.Path).ConfigureAwait(false);
+            await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", item.Path).ConfigureAwait(false);
+
+            // Update current list immediately.
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                try
+                {
+                    Photos.Remove(item);
+                }
+                catch
+                {
+                    // Ignore collection issues.
+                }
+            }).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Keep UI resilient.
+        }
+    }
+
     private async Task RefreshAsync(CancellationToken ct)
     {
         try
@@ -161,6 +195,9 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
     private async Task EnsureAndApplyThumbnailAsync(MediaItem item)
     {
+        // Ensure that the UI shows a placeholder while we (re)generate the thumbnail.
+        MainThread.BeginInvokeOnMainThread(() => item.ThumbnailPath = string.Empty);
+
         try
         {
             var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
@@ -183,6 +220,6 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
     private sealed class PathRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
     }
 }

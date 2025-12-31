@@ -555,4 +555,7 @@ Missing:
   <data name="RenameConfirmMessage" xml:space="preserve">
     <value>Rename "{0}" to "{1}"?</value>
   </data>
+  <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
+    <value>Remove from people index</value>
+  </data>
 </root>

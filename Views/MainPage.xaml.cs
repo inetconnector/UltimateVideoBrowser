@@ -9,18 +9,19 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class MainPage : ContentPage
 {
-    private readonly MainViewModel vm;
-    private readonly IServiceProvider serviceProvider;
     private readonly PeopleDataService peopleData;
+    private readonly IServiceProvider serviceProvider;
+    private readonly MainViewModel vm;
     private CancellationTokenSource? appearingCts;
-    private bool isTimelineSelectionSyncing;
     private bool isHeaderSizeHooked;
+    private bool isTimelineSelectionSyncing;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
     private string? pendingScrollToMediaPath;
 
-    public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider, PeopleDataService peopleData)
+    public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider,
+        PeopleDataService peopleData)
     {
         InitializeComponent();
         this.vm = vm;
@@ -71,10 +72,8 @@ public partial class MainPage : ContentPage
                     var target = vm.MediaItems.FirstOrDefault(m =>
                         string.Equals(m.Path, path, StringComparison.OrdinalIgnoreCase));
                     if (target != null)
-                    {
                         await MainThread.InvokeOnMainThreadAsync(() =>
                             MediaItemsView.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false));
-                    }
                 }
             }
             catch
@@ -183,10 +182,10 @@ public partial class MainPage : ContentPage
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
-		private readonly MainPage page;
-        private readonly MainViewModel vm;
-        private readonly IServiceProvider serviceProvider;
+        private readonly MainPage page;
         private readonly PeopleDataService peopleData;
+        private readonly IServiceProvider serviceProvider;
+        private readonly MainViewModel vm;
 
         private int gridSpan = 3;
         private double headerHeight;
@@ -194,7 +193,8 @@ public partial class MainPage : ContentPage
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
 
-		public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page, IServiceProvider serviceProvider, PeopleDataService peopleData)
+        public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
+            IServiceProvider serviceProvider, PeopleDataService peopleData)
         {
             this.vm = vm;
             this.deviceMode = deviceMode;

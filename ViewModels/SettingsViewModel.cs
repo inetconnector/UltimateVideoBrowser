@@ -9,32 +9,33 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private readonly AppSettingsService settingsService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
+    private readonly AppSettingsService settingsService;
     [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private bool canDownloadPeopleModels;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
     [ObservableProperty] private bool isInternalPlayerEnabled;
+    [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
+    [ObservableProperty] private string peopleModelsDetailText = string.Empty;
+
+    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string photoExtensionsText = string.Empty;
     [ObservableProperty] private SortOption? selectedSortOption;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
     [ObservableProperty] private string videoExtensionsText = string.Empty;
 
-    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
-    [ObservableProperty] private string peopleModelsDetailText = string.Empty;
-    [ObservableProperty] private bool isPeopleModelsDownloading;
-    [ObservableProperty] private bool canDownloadPeopleModels;
-
-    public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService, PeopleRecognitionService peopleRecognitionService)
+    public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
+        PeopleRecognitionService peopleRecognitionService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
@@ -228,7 +229,6 @@ public partial class SettingsViewModel : ObservableObject
     private void ApplyPeopleModelsSnapshot(ModelFileService.ModelStatusSnapshot s)
     {
         var ready = s.YuNet == ModelFileService.ModelStatus.Ready
-                    && s.YuNetPost == ModelFileService.ModelStatus.Ready
                     && s.SFace == ModelFileService.ModelStatus.Ready;
 
         if (ready)
@@ -242,18 +242,22 @@ public partial class SettingsViewModel : ObservableObject
         PeopleModelsStatusText = AppResources.SettingsPeopleModelsStatusMissing;
 
         var parts = new List<string>();
+
         static string FormatError(string? error)
-            => string.IsNullOrWhiteSpace(error) ? string.Empty : $" ({error})";
+        {
+            return string.IsNullOrWhiteSpace(error) ? string.Empty : $" ({error})";
+        }
 
         if (s.YuNet != ModelFileService.ModelStatus.Ready)
-            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_detection_yunet_2023mar.onnx", FormatError(s.YuNetError)));
-        if (s.YuNetPost != ModelFileService.ModelStatus.Ready)
-            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "postproc_yunet_top50_th60_320x320.onnx", FormatError(s.YuNetPostError)));
+            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_detection_yunet_2023mar.onnx",
+                FormatError(s.YuNetError)));
         if (s.SFace != ModelFileService.ModelStatus.Ready)
-            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_recognition_sface_2021dec.onnx", FormatError(s.SFaceError)));
+            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_recognition_sface_2021dec.onnx",
+                FormatError(s.SFaceError)));
 
         var files = string.Join("\n", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
-        PeopleModelsDetailText = string.Format(AppResources.SettingsPeopleModelsMissingDetailFormat, s.ModelsDirectory, files);
+        PeopleModelsDetailText =
+            string.Format(AppResources.SettingsPeopleModelsMissingDetailFormat, s.ModelsDirectory, files);
 
         CanDownloadPeopleModels = true;
     }
