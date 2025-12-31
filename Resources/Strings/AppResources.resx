@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -308,6 +308,36 @@
   </data>
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
     <value>Turn this on to tag people in photos and videos from the library.</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Face models</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusMissing" xml:space="preserve">
+    <value>Missing</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusDownloading" xml:space="preserve">
+    <value>Downloading…</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Download face models</value>
+  </data>
+  <data name="SettingsPeopleModelsFolderFormat" xml:space="preserve">
+    <value>Models folder: {0}</value>
+  </data>
+  <data name="SettingsPeopleModelsMissingDetailFormat" xml:space="preserve">
+    <value>Automatic face recognition is unavailable until the models are present.
+
+Place the files into:
+{0}
+
+Missing:
+{1}</value>
+  </data>
+  <data name="SettingsPeopleModelsFileFormat" xml:space="preserve">
+    <value>- {0}{1}</value>
   </data>
   <data name="TagPeopleAction" xml:space="preserve">
     <value>Tag people</value>

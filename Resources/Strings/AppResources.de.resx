@@ -306,6 +306,36 @@
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
     <value>Aktiviere dies, um Personen in Fotos und Videos zu taggen.</value>
   </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Gesichtsmodelle</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusReady" xml:space="preserve">
+    <value>Bereit</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusMissing" xml:space="preserve">
+    <value>Fehlt</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusDownloading" xml:space="preserve">
+    <value>Wird heruntergeladen…</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Gesichtsmodelle herunterladen</value>
+  </data>
+  <data name="SettingsPeopleModelsFolderFormat" xml:space="preserve">
+    <value>Modelle-Ordner: {0}</value>
+  </data>
+  <data name="SettingsPeopleModelsMissingDetailFormat" xml:space="preserve">
+    <value>Die automatische Gesichtserkennung ist erst verfügbar, wenn die Modelle vorhanden sind.
+
+Lege die Dateien in diesen Ordner:
+{0}
+
+Fehlend:
+{1}</value>
+  </data>
+  <data name="SettingsPeopleModelsFileFormat" xml:space="preserve">
+    <value>- {0}{1}</value>
+  </data>
   <data name="TagPeopleAction" xml:space="preserve">
     <value>Personen taggen</value>
   </data>

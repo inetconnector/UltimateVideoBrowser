@@ -27,6 +27,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IndexService indexService;
 
     private readonly PropertyChangedEventHandler mediaMarkedHandler;
+    private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly PeopleTagService peopleTagService;
     private readonly PermissionService permissionService;
@@ -67,6 +68,7 @@ public partial class MainViewModel : ObservableObject
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private int taggedPeopleCount;
+    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
@@ -112,6 +114,7 @@ public partial class MainViewModel : ObservableObject
         IFileExportService fileExportService,
         IDialogService dialogService,
         PeopleTagService peopleTagService,
+        ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService)
     {
         this.sourceService = sourceService;
@@ -123,6 +126,7 @@ public partial class MainViewModel : ObservableObject
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
         this.peopleTagService = peopleTagService;
+        this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
@@ -142,6 +146,8 @@ public partial class MainViewModel : ObservableObject
         };
 
         mediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
+
+        RefreshPeopleModelsStatus();
     }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
@@ -448,6 +454,18 @@ public partial class MainViewModel : ObservableObject
         {
             try
             {
+                // Ensure models are present and loaded; otherwise auto-scan would silently do nothing.
+                if (!modelFileService.AreAllModelsReady())
+                {
+                    await modelFileService.EnsureAllModelsAsync(ct).ConfigureAwait(false);
+                    await MainThread.InvokeOnMainThreadAsync(RefreshPeopleModelsStatus);
+                }
+
+                if (!modelFileService.AreAllModelsReady())
+                    return;
+
+                await peopleRecognitionService.WarmupModelsAsync(ct).ConfigureAwait(false);
+
                 var offset = 0;
                 const int batchSize = 200;
 
@@ -1389,11 +1407,30 @@ public partial class MainViewModel : ObservableObject
             foreach (var item in MediaItems)
                 item.PeopleTagsSummary = string.Empty;
             _ = RefreshTaggedPeopleCountAsync();
+            PeopleModelsStatusText = string.Empty;
             return;
         }
 
         _ = RefreshPeopleTagsAsync(mediaItems.ToList(), mediaItemsVersion);
         _ = RefreshTaggedPeopleCountAsync();
+        RefreshPeopleModelsStatus();
+    }
+
+    private void RefreshPeopleModelsStatus()
+    {
+        if (!IsPeopleTaggingEnabled)
+        {
+            PeopleModelsStatusText = string.Empty;
+            return;
+        }
+
+        var s = modelFileService.GetStatusSnapshot();
+        var ready = s.YuNet == ModelFileService.ModelStatus.Ready
+                    && s.YuNetPost == ModelFileService.ModelStatus.Ready
+                    && s.SFace == ModelFileService.ModelStatus.Ready;
+
+        var stateText = ready ? AppResources.SettingsPeopleModelsStatusReady : AppResources.SettingsPeopleModelsStatusMissing;
+        PeopleModelsStatusText = $"{AppResources.SettingsPeopleModelsStatusLabel}: {stateText}";
     }
 
     partial void OnIsInternalPlayerEnabledChanged(bool value)

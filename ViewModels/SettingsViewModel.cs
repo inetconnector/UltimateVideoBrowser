@@ -1,13 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
+using UltimateVideoBrowser.Services.Faces;
 
 namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppSettingsService settingsService;
+    private readonly ModelFileService modelFileService;
+    private readonly PeopleRecognitionService peopleRecognitionService;
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
@@ -25,9 +29,16 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private ThemeOption? selectedTheme;
     [ObservableProperty] private string videoExtensionsText = string.Empty;
 
-    public SettingsViewModel(AppSettingsService settingsService)
+    [ObservableProperty] private string peopleModelsStatusText = string.Empty;
+    [ObservableProperty] private string peopleModelsDetailText = string.Empty;
+    [ObservableProperty] private bool isPeopleModelsDownloading;
+    [ObservableProperty] private bool canDownloadPeopleModels;
+
+    public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService, PeopleRecognitionService peopleRecognitionService)
     {
         this.settingsService = settingsService;
+        this.modelFileService = modelFileService;
+        this.peopleRecognitionService = peopleRecognitionService;
         ThemeOptions = new[]
         {
             new ThemeOption("light", AppResources.ThemeLight),
@@ -63,6 +74,8 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+
+        RefreshPeopleModelsStatus();
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -169,6 +182,89 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnIsPeopleTaggingEnabledChanged(bool value)
     {
         settingsService.PeopleTaggingEnabled = value;
+
+        // Best-effort: if the user enables people tagging, try to ensure the models are available.
+        if (value)
+            _ = DownloadPeopleModelsAsync(CancellationToken.None);
+    }
+
+    [RelayCommand]
+    private async Task DownloadPeopleModelsAsync(CancellationToken ct)
+    {
+        if (IsPeopleModelsDownloading)
+            return;
+
+        try
+        {
+            IsPeopleModelsDownloading = true;
+            CanDownloadPeopleModels = false;
+            PeopleModelsStatusText = AppResources.SettingsPeopleModelsStatusDownloading;
+
+            var snapshot = await modelFileService.EnsureAllModelsAsync(ct).ConfigureAwait(false);
+            // After the files are present, attempt to load the ONNX sessions so detection works immediately.
+            await peopleRecognitionService.WarmupModelsAsync(ct).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => ApplyPeopleModelsSnapshot(snapshot));
+        }
+        catch
+        {
+            // Status is taken from the snapshot; do not throw into UI.
+            await MainThread.InvokeOnMainThreadAsync(RefreshPeopleModelsStatus);
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                IsPeopleModelsDownloading = false;
+                RefreshPeopleModelsStatus();
+            });
+        }
+    }
+
+    private void RefreshPeopleModelsStatus()
+    {
+        ApplyPeopleModelsSnapshot(modelFileService.GetStatusSnapshot());
+    }
+
+    private void ApplyPeopleModelsSnapshot(ModelFileService.ModelStatusSnapshot s)
+    {
+        var ready = s.YuNet == ModelFileService.ModelStatus.Ready
+                    && s.YuNetPost == ModelFileService.ModelStatus.Ready
+                    && s.SFace == ModelFileService.ModelStatus.Ready;
+
+        if (ready)
+        {
+            PeopleModelsStatusText = AppResources.SettingsPeopleModelsStatusReady;
+            PeopleModelsDetailText = string.Format(AppResources.SettingsPeopleModelsFolderFormat, s.ModelsDirectory);
+            CanDownloadPeopleModels = false;
+            return;
+        }
+
+        PeopleModelsStatusText = AppResources.SettingsPeopleModelsStatusMissing;
+
+        var parts = new List<string>();
+        static string FormatError(string? error)
+            => string.IsNullOrWhiteSpace(error) ? string.Empty : $" ({error})";
+
+        if (s.YuNet != ModelFileService.ModelStatus.Ready)
+            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_detection_yunet_2023mar.onnx", FormatError(s.YuNetError)));
+        if (s.YuNetPost != ModelFileService.ModelStatus.Ready)
+            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "postproc_yunet_top50_th60_320x320.onnx", FormatError(s.YuNetPostError)));
+        if (s.SFace != ModelFileService.ModelStatus.Ready)
+            parts.Add(string.Format(AppResources.SettingsPeopleModelsFileFormat, "face_recognition_sface_2021dec.onnx", FormatError(s.SFaceError)));
+
+        var files = string.Join("\n", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+        PeopleModelsDetailText = string.Format(AppResources.SettingsPeopleModelsMissingDetailFormat, s.ModelsDirectory, files);
+
+        CanDownloadPeopleModels = true;
+    }
+
+    private static string FormatError(string? error)
+    {
+        if (string.IsNullOrWhiteSpace(error))
+            return string.Empty;
+
+        // Keep this short; full exception details are not user-friendly in settings.
+        return $" ({error.Trim()})";
     }
 
     private static void ApplyTheme(string themeKey)

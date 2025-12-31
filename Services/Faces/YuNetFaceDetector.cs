@@ -31,6 +31,13 @@ public sealed class YuNetFaceDetector : IDisposable
         this.modelFileService = modelFileService;
     }
 
+    public bool IsLoaded => detector != null && postProcessor != null;
+
+    public Task EnsureLoadedAsync(CancellationToken ct)
+    {
+        return EnsureInitializedAsync(ct);
+    }
+
     public void Dispose()
     {
         detector?.Dispose();

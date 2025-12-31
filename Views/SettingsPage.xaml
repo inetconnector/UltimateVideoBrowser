@@ -122,6 +122,33 @@
                             <Switch Grid.Column="1"
                                     IsToggled="{Binding IsPeopleTaggingEnabled}" />
                         </Grid>
+
+                        <!-- Model status & download helper for automatic face recognition -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="{DynamicResource BorderSubtle}"
+                                 Margin="0,8,0,0" />
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.SettingsPeopleModelsStatusLabel}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding PeopleModelsStatusText}"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="End" />
+                        </Grid>
+
+                        <Label Text="{Binding PeopleModelsDetailText}"
+                               FontSize="12"
+                               LineBreakMode="WordWrap"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+
+                        <Button Text="{x:Static strings:AppResources.SettingsPeopleModelsDownloadButton}"
+                                Command="{Binding DownloadPeopleModelsCommand}"
+                                IsEnabled="{Binding CanDownloadPeopleModels}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}" />
                     </VerticalStackLayout>
                 </Frame>
 

@@ -31,6 +31,13 @@ public sealed class SFaceRecognizer : IDisposable
         this.modelFileService = modelFileService;
     }
 
+    public bool IsLoaded => session != null;
+
+    public Task EnsureLoadedAsync(CancellationToken ct)
+    {
+        return EnsureInitializedAsync(ct);
+    }
+
     public void Dispose()
     {
         session?.Dispose();

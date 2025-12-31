@@ -27,6 +27,26 @@ public sealed class PeopleRecognitionService
         this.faceRecognizer = faceRecognizer;
     }
 
+    public bool IsRuntimeLoaded => faceDetector.IsLoaded && faceRecognizer.IsLoaded;
+
+    public string? LastModelLoadError { get; private set; }
+
+    public async Task<bool> WarmupModelsAsync(CancellationToken ct)
+    {
+        try
+        {
+            LastModelLoadError = null;
+            await faceDetector.EnsureLoadedAsync(ct).ConfigureAwait(false);
+            await faceRecognizer.EnsureLoadedAsync(ct).ConfigureAwait(false);
+            return IsRuntimeLoaded;
+        }
+        catch (Exception ex)
+        {
+            LastModelLoadError = ex.Message;
+            return false;
+        }
+    }
+
     public async Task<IReadOnlyList<FaceMatch>> EnsurePeopleTagsForMediaAsync(MediaItem item, CancellationToken ct)
     {
         if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))

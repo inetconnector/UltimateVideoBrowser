@@ -312,23 +312,29 @@
                            Padding="12"
                            BorderColor="{DynamicResource BorderSubtle}"
                            IsVisible="{Binding IsPeopleTaggingEnabled}">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                            <Image Source="icon_people.svg"
-                                   HeightRequest="18"
-                                   WidthRequest="18"
-                                   VerticalOptions="Center" />
-                            <Label Grid.Column="1"
-                                   Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   VerticalOptions="Center" />
-                            <Label Grid.Column="2"
-                                   Text="{Binding TaggedPeopleCount}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource OnSurface}"
-                                   VerticalOptions="Center" />
-                        </Grid>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                <Image Source="icon_people.svg"
+                                       HeightRequest="18"
+                                       WidthRequest="18"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="2"
+                                       Text="{Binding TaggedPeopleCount}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource OnSurface}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+
+                            <Label Text="{Binding PeopleModelsStatusText}"
+                                   FontSize="11"
+                                   TextColor="{DynamicResource OnSurfaceMuted}" />
+                        </VerticalStackLayout>
                     </Frame>
                 </Grid>
 

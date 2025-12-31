@@ -184,6 +184,27 @@ public static class AppResources
         GetString(nameof(SettingsPeopleTaggingHint),
             "Turn this on to tag people in photos and videos from the library.");
 
+        public static string SettingsPeopleModelsFolderFormat =>
+        GetString(nameof(SettingsPeopleModelsFolderFormat), "Folder: {0}");
+
+    public static string SettingsPeopleModelsFileFormat =>
+        GetString(nameof(SettingsPeopleModelsFileFormat), "File: {0}");
+
+    public static string SettingsPeopleModelsMissingDetailFormat =>
+        GetString(nameof(SettingsPeopleModelsMissingDetailFormat), "Missing: {0}");
+
+public static string SettingsPeopleModelsStatusLabel =>
+        GetString(nameof(SettingsPeopleModelsStatusLabel), "Face models");
+
+    public static string SettingsPeopleModelsStatusReady =>
+        GetString(nameof(SettingsPeopleModelsStatusReady), "Ready");
+
+    public static string SettingsPeopleModelsStatusMissing =>
+        GetString(nameof(SettingsPeopleModelsStatusMissing), "Missing");
+
+    public static string SettingsPeopleModelsStatusDownloading =>
+        GetString(nameof(SettingsPeopleModelsStatusDownloading), "Downloading...");
+     
     public static string TagPeopleAction =>
         GetString(nameof(TagPeopleAction), "Tag people");
 
