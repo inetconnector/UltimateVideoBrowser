@@ -379,7 +379,7 @@ Fehlend:
     <value>Personen taggen</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>Keine Personen erkannt</value>
+    <value>Image-Tags</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
     <value>Personen taggen</value>
@@ -470,6 +470,24 @@ Fehlend:
   </data>
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
     <value>In diesem Foto wurden keine Gesichter erkannt.</value>
+  </data>
+  <data name="TagImageEditorTitle" xml:space="preserve">
+    <value>Image-Tags</value>
+  </data>
+  <data name="TagImageEditorHeader" xml:space="preserve">
+    <value>Image-Tags</value>
+  </data>
+  <data name="TagImageEditorTagsLabel" xml:space="preserve">
+    <value>Image-Tags</value>
+  </data>
+  <data name="TagImageEditorTagsPlaceholder" xml:space="preserve">
+    <value>Tags hinzufügen, durch Kommas getrennt...</value>
+  </data>
+  <data name="TagImageEditorTagsHint" xml:space="preserve">
+    <value>Tipp: Du kannst ein Bild taggen, auch wenn keine automatischen Tags erkannt wurden.</value>
+  </data>
+  <data name="TagImageEditorEmptyHint" xml:space="preserve">
+    <value>Keine Image-Tags für dieses Foto erkannt.</value>
   </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Vorschau</value>

@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:UltimateVideoBrowser.ViewModels"
              x:Class="UltimateVideoBrowser.Views.PhotoPeopleEditorPage"
              BackgroundColor="{DynamicResource AppBg}"
-             Title="{x:Static strings:AppResources.TagPeopleEditorTitle}">
+             Title="{Binding TagEditorTitle}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*"
           Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}"
@@ -17,7 +17,7 @@
                     Clicked="OnBackClicked" />
 
             <Label Grid.Column="1"
-                   Text="{x:Static strings:AppResources.TagPeopleEditorHeader}"
+                   Text="{Binding TagEditorHeader}"
                    TextColor="{DynamicResource OnSurface}"
                    FontAttributes="Bold"
                    FontSize="16"
@@ -54,14 +54,14 @@
                HasShadow="False"
                Padding="12">
             <VerticalStackLayout Spacing="6">
-                <Label Text="{x:Static strings:AppResources.TagPeopleEditorTagsLabel}"
+                <Label Text="{Binding TagEditorTagsLabel}"
                        TextColor="{DynamicResource OnSurfaceMuted}"
                        FontSize="12" />
                 <Entry Text="{Binding PeopleTagsText}"
-                       Placeholder="{x:Static strings:AppResources.TagPeopleEditorTagsPlaceholder}"
+                       Placeholder="{Binding TagEditorTagsPlaceholder}"
                        TextColor="{DynamicResource OnSurface}"
                        PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
-                <Label Text="{x:Static strings:AppResources.TagPeopleEditorTagsHint}"
+                <Label Text="{Binding TagEditorTagsHint}"
                        TextColor="{DynamicResource OnSurfaceMuted}"
                        FontSize="10" />
             </VerticalStackLayout>
@@ -74,7 +74,7 @@
                 <Grid Padding="20" RowDefinitions="Auto,Auto" RowSpacing="10">
                     <Image Source="empty_state.svg" HeightRequest="110" />
                     <Label Grid.Row="1"
-                           Text="{x:Static strings:AppResources.TagPeopleEditorEmptyHint}"
+                           Text="{Binding TagEditorEmptyHint}"
                            TextColor="{DynamicResource OnSurfaceMuted}"
                            FontSize="12"
                            HorizontalTextAlignment="Center" />

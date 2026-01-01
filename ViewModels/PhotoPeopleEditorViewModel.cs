@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
 
@@ -20,6 +21,26 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string mediaPath = string.Empty;
     [ObservableProperty] private string peopleTagsText = string.Empty;
+
+    private bool UseImageTags => hasLoaded && Faces.Count == 0;
+
+    public string TagEditorTitle =>
+        UseImageTags ? AppResources.TagImageEditorTitle : AppResources.TagPeopleEditorTitle;
+
+    public string TagEditorHeader =>
+        UseImageTags ? AppResources.TagImageEditorHeader : AppResources.TagPeopleEditorHeader;
+
+    public string TagEditorTagsLabel =>
+        UseImageTags ? AppResources.TagImageEditorTagsLabel : AppResources.TagPeopleEditorTagsLabel;
+
+    public string TagEditorTagsPlaceholder =>
+        UseImageTags ? AppResources.TagImageEditorTagsPlaceholder : AppResources.TagPeopleEditorTagsPlaceholder;
+
+    public string TagEditorTagsHint =>
+        UseImageTags ? AppResources.TagImageEditorTagsHint : AppResources.TagPeopleEditorTagsHint;
+
+    public string TagEditorEmptyHint =>
+        UseImageTags ? AppResources.TagImageEditorEmptyHint : AppResources.TagPeopleEditorEmptyHint;
 
     public PhotoPeopleEditorViewModel(
         PeopleDataService peopleData,
@@ -76,9 +97,10 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 PeopleTagsText = string.Join(", ", tags.Where(t => !string.IsNullOrWhiteSpace(t)));
+                hasLoaded = true;
+                NotifyTagEditorTextChanged();
             });
 
-            hasLoaded = true;
         }
         catch
         {
@@ -169,6 +191,24 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     public async Task SaveAsync()
     {
         _ = await SaveAndGetSummaryAsync().ConfigureAwait(false);
+    }
+
+    partial void OnFacesChanged(ObservableCollection<FaceTagItemViewModel> value)
+    {
+        if (!hasLoaded)
+            return;
+
+        NotifyTagEditorTextChanged();
+    }
+
+    private void NotifyTagEditorTextChanged()
+    {
+        OnPropertyChanged(nameof(TagEditorTitle));
+        OnPropertyChanged(nameof(TagEditorHeader));
+        OnPropertyChanged(nameof(TagEditorTagsLabel));
+        OnPropertyChanged(nameof(TagEditorTagsPlaceholder));
+        OnPropertyChanged(nameof(TagEditorTagsHint));
+        OnPropertyChanged(nameof(TagEditorEmptyHint));
     }
 }
 

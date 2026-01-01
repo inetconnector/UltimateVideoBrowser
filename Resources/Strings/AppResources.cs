@@ -325,6 +325,15 @@ public static class AppResources
 
     public static string TagPeopleEditorEmptyHint =>
         GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
+    public static string TagImageEditorTitle => GetString(nameof(TagImageEditorTitle), "Image tags");
+    public static string TagImageEditorHeader => GetString(nameof(TagImageEditorHeader), "Image tags");
+    public static string TagImageEditorTagsLabel => GetString(nameof(TagImageEditorTagsLabel), "Image tags");
+    public static string TagImageEditorTagsPlaceholder =>
+        GetString(nameof(TagImageEditorTagsPlaceholder), "Add tags, separated by commas...");
+    public static string TagImageEditorTagsHint =>
+        GetString(nameof(TagImageEditorTagsHint), "Tip: You can tag an image even if no automatic tags were detected.");
+    public static string TagImageEditorEmptyHint =>
+        GetString(nameof(TagImageEditorEmptyHint), "No image tags detected for this photo.");
 
     public static string PreviewTitle => GetString(nameof(PreviewTitle), "Preview");
 
