@@ -153,6 +153,44 @@ public partial class MainPage : ContentPage
         isTimelineSelectionSyncing = false;
     }
 
+    public void OnTimelineScrollUpClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToStart();
+    }
+
+    public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
+    {
+        ScrollTimelineToStart();
+    }
+
+    public void OnTimelineScrollDownClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToEnd();
+    }
+
+    public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
+    {
+        ScrollTimelineToEnd();
+    }
+
+    private void ScrollTimelineToStart()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var first = vm.TimelineEntries[0];
+        TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineToEnd()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var last = vm.TimelineEntries[^1];
+        TimelineView.ScrollTo(last, position: ScrollToPosition.End, animate: true);
+    }
+
     private void TryHookHeaderSize()
     {
         if (isHeaderSizeHooked)
@@ -180,7 +218,7 @@ public partial class MainPage : ContentPage
 
     private void OnSortChipTapped(object sender, TappedEventArgs e)
     {
-        SortPicker?.Focus();
+        SearchSortView?.SortPickerControl?.Focus();
     }
 
     private sealed class MainPageBinding : BindableObject
@@ -684,9 +722,21 @@ public partial class MainPage : ContentPage
                 return Task.CompletedTask;
             }
 
-            var width = page.Width;
+            var width = page.MediaItemsView?.Width ?? 0;
             if (width <= 0)
-                width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            {
+                width = page.Width;
+                if (width <= 0)
+                    width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+
+                if (page.TimelineView?.IsVisible == true)
+                {
+                    var timelineWidth = page.TimelineView.Width;
+                    if (timelineWidth <= 0)
+                        timelineWidth = 120;
+                    width = Math.Max(0, width - timelineWidth);
+                }
+            }
 
             var minTileWidth = 240;
             var tilePadding = 20;

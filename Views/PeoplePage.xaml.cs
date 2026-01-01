@@ -1,3 +1,4 @@
+using System.Linq;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -6,6 +7,7 @@ public partial class PeoplePage : ContentPage
 {
     private readonly IServiceProvider serviceProvider;
     private readonly PeopleViewModel vm;
+    private string? pendingScrollPersonId;
 
     public PeoplePage(IServiceProvider serviceProvider, PeopleViewModel vm)
     {
@@ -15,10 +17,27 @@ public partial class PeoplePage : ContentPage
         BindingContext = vm;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _ = vm.RefreshAsync();
+        await vm.RefreshAsync();
+
+        if (string.IsNullOrWhiteSpace(pendingScrollPersonId))
+            return;
+
+        var target = vm.People.FirstOrDefault(item =>
+            string.Equals(item.Id, pendingScrollPersonId, StringComparison.OrdinalIgnoreCase));
+        if (target == null)
+            return;
+
+        var scrollTargetId = pendingScrollPersonId;
+        pendingScrollPersonId = null;
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            if (!string.IsNullOrWhiteSpace(scrollTargetId))
+                PeopleList.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false);
+        });
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
@@ -47,6 +66,8 @@ public partial class PeoplePage : ContentPage
         var item = e.CurrentSelection[0] as PersonListItemViewModel;
         if (item == null)
             return;
+
+        pendingScrollPersonId = item.Id;
 
         if (sender is CollectionView cv)
             cv.SelectedItem = null;

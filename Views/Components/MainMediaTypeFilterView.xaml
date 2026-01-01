@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.Components.MainMediaTypeFilterView">
+    <Grid Padding="12"
+          RowDefinitions="Auto,Auto"
+          RowSpacing="8"
+          BackgroundColor="{DynamicResource AppBg}">
+        <Label Text="{x:Static strings:AppResources.MediaTypeFilterTitle}"
+               FontAttributes="Bold"
+               TextColor="{DynamicResource OnSurface}" />
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding MediaTypeFilters}"
+                        SelectionMode="None"
+                        HorizontalScrollBarVisibility="Never">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <!-- Do not use compiled bindings here because the item type is a nested record (MainViewModel.MediaTypeFilterOption). -->
+                <DataTemplate>
+                    <Button Text="{Binding Label}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}"
+                            Command="{Binding BindingContext.ToggleMediaTypeFilterCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                            CommandParameter="{Binding MediaType}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding
+                                        Converter="{StaticResource MediaTypeSelectedConverter}">
+                                        <Binding Path="BindingContext.SelectedMediaTypes"
+                                                 Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                        <Binding Path="MediaType" />
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>

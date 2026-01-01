@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
+             x:Class="UltimateVideoBrowser.Views.Components.MainHighlightsView">
+    <Grid Padding="16,0,16,12"
+          RowDefinitions="Auto,Auto,Auto"
+          RowSpacing="10">
+        <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
+               FontAttributes="Bold"
+               FontSize="14"
+               TextColor="{DynamicResource OnSurface}" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
+            <Frame BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="16"
+                   Padding="12"
+                   BorderColor="{DynamicResource BorderSubtle}">
+                <VerticalStackLayout Spacing="6">
+                    <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
+                    <Label Text="{Binding IndexedMediaCount}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsVideosLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Column="1"
+                   BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="16"
+                   Padding="12"
+                   BorderColor="{DynamicResource BorderSubtle}">
+                <VerticalStackLayout Spacing="6">
+                    <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
+                    <Label Text="{Binding EnabledSourceCount}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsSourcesLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                    <Label Text="{Binding SourcesSummary}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Column="2"
+                   BackgroundColor="{DynamicResource Surface}"
+                   CornerRadius="16"
+                   Padding="12"
+                   BorderColor="{DynamicResource BorderSubtle}">
+                <VerticalStackLayout Spacing="6">
+                    <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{x:Static strings:AppResources.HighlightsTipText}"
+                           FontSize="11"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
+        <components:PeopleTaggedHighlightView Grid.Row="2" />
+    </Grid>
+</ContentView>
