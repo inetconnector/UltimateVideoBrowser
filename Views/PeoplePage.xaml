@@ -85,6 +85,10 @@
                                 <Label Text="{Binding PhotoCountText}"
                                        TextColor="{DynamicResource OnSurfaceMuted}"
                                        FontSize="12" />
+                                <Label Text="{x:Static strings:AppResources.IgnoredPersonBadge}"
+                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                       FontSize="10"
+                                       IsVisible="{Binding IsIgnored}" />
                             </VerticalStackLayout>
 
                             <Label Grid.Column="2"

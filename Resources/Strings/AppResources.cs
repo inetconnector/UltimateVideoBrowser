@@ -303,6 +303,14 @@ public static class AppResources
     public static string PersonPageTitle => GetString(nameof(PersonPageTitle), "Person");
     public static string PersonNamePlaceholder => GetString(nameof(PersonNamePlaceholder), "Name");
     public static string PersonEmptyHint => GetString(nameof(PersonEmptyHint), "No photos yet.");
+    public static string IgnorePersonTitle => GetString(nameof(IgnorePersonTitle), "Ignore person");
+
+    public static string IgnorePersonDescription =>
+        GetString(nameof(IgnorePersonDescription), "Ignored people are hidden from automatic people tags.");
+
+    public static string IgnorePersonAction => GetString(nameof(IgnorePersonAction), "Ignore");
+    public static string UnignorePersonAction => GetString(nameof(UnignorePersonAction), "Stop ignoring");
+    public static string IgnoredPersonBadge => GetString(nameof(IgnoredPersonBadge), "Ignored");
 
     public static string TagPeopleEditorTitle => GetString(nameof(TagPeopleEditorTitle), "Tag people");
     public static string TagPeopleEditorHeader => GetString(nameof(TagPeopleEditorHeader), "Name faces");

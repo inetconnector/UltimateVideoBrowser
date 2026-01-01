@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
@@ -16,6 +17,7 @@ public sealed partial class PersonViewModel : ObservableObject
     [ObservableProperty] private string personId = string.Empty;
     [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
     [ObservableProperty] private float qualityScore;
+    [ObservableProperty] private bool isIgnored;
 
     public PersonViewModel(PeopleDataService peopleData, ThumbnailService thumbnails)
     {
@@ -43,7 +45,11 @@ public sealed partial class PersonViewModel : ObservableObject
 
             // Load person profile so we can show quality in the UI.
             var profile = await peopleData.GetPersonProfileAsync(PersonId, cts.Token).ConfigureAwait(false);
-            await MainThread.InvokeOnMainThreadAsync(() => { QualityScore = profile?.QualityScore ?? 0f; });
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                QualityScore = profile?.QualityScore ?? 0f;
+                IsIgnored = profile?.IsIgnored ?? false;
+            });
 
             var result = await peopleData.GetMediaForPersonAsync(PersonId, cts.Token).ConfigureAwait(false);
             await MainThread.InvokeOnMainThreadAsync(() => { Photos = new ObservableCollection<MediaItem>(result); });
@@ -102,6 +108,39 @@ public sealed partial class PersonViewModel : ObservableObject
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             await peopleData.RenamePersonAsync(PersonId, trimmed, cts.Token).ConfigureAwait(false);
             Name = trimmed;
+        }
+        catch
+        {
+            // Ignore
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
+        }
+    }
+
+    public string IgnoreActionText =>
+        IsIgnored ? AppResources.UnignorePersonAction : AppResources.IgnorePersonAction;
+
+    partial void OnIsIgnoredChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IgnoreActionText));
+    }
+
+    [RelayCommand]
+    public async Task ToggleIgnoreAsync()
+    {
+        if (string.IsNullOrWhiteSpace(PersonId))
+            return;
+
+        var desired = !IsIgnored;
+
+        try
+        {
+            IsBusy = true;
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            await peopleData.SetPersonIgnoredAsync(PersonId, desired, cts.Token).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => IsIgnored = desired);
         }
         catch
         {

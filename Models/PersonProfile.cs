@@ -14,6 +14,8 @@ public sealed class PersonProfile
 
     public float QualityScore { get; set; }
 
+    public bool IsIgnored { get; set; }
+
     public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedUtc { get; set; } = DateTimeOffset.UtcNow;
 }

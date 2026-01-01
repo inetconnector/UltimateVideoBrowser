@@ -8,7 +8,8 @@ public sealed record PersonOverview(
     string Name,
     int PhotoCount,
     float QualityScore,
-    FaceEmbedding? CoverFace);
+    FaceEmbedding? CoverFace,
+    bool IsIgnored);
 
 public sealed record FaceTagInfo(
     int FaceIndex,
@@ -144,7 +145,8 @@ public sealed class PeopleDataService
                 p.Name,
                 countMap.TryGetValue(p.Id, out var c) ? c : 0,
                 p.QualityScore,
-                coverMap.TryGetValue(p.Id, out var cover) ? cover : null))
+                coverMap.TryGetValue(p.Id, out var cover) ? cover : null,
+                p.IsIgnored))
             .ToList();
 
         // Create synthetic person entries for manual tags.
@@ -154,7 +156,8 @@ public sealed class PeopleDataService
                 kvp.Key,
                 kvp.Value,
                 0f,
-                null))
+                null,
+                false))
             .Where(p =>
                 string.IsNullOrWhiteSpace(normalizedSearch) ||
                 p.Name.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase))
@@ -163,7 +166,8 @@ public sealed class PeopleDataService
         // Merge and sort.
         var merged = facePeople
             .Concat(tagPeople)
-            .OrderByDescending(p => p.PhotoCount)
+            .OrderBy(p => p.IsIgnored ? 1 : 0)
+            .ThenByDescending(p => p.PhotoCount)
             .ThenBy(p => p.Name)
             .ToList();
 
@@ -233,10 +237,13 @@ public sealed class PeopleDataService
             .Where(p => p.MergedIntoPersonId == null || p.MergedIntoPersonId == "")
             .ToListAsync()
             .ConfigureAwait(false);
-        var peopleMap = people.ToDictionary(p => p.Id, p => p.Name, StringComparer.OrdinalIgnoreCase);
+        var peopleMap = people
+            .Where(p => !p.IsIgnored)
+            .ToDictionary(p => p.Id, p => p.Name, StringComparer.OrdinalIgnoreCase);
 
         var list = embeddings
             .Where(e => !string.IsNullOrWhiteSpace(e.PersonId))
+            .Where(e => peopleMap.ContainsKey(e.PersonId!))
             .Select(e => new FaceTagInfo(
                 e.FaceIndex,
                 e.PersonId!,
@@ -250,6 +257,11 @@ public sealed class PeopleDataService
     public Task RenamePersonAsync(string personId, string newName, CancellationToken ct)
     {
         return recognitionService.RenamePersonAsync(personId, newName, ct);
+    }
+
+    public Task SetPersonIgnoredAsync(string personId, bool isIgnored, CancellationToken ct)
+    {
+        return recognitionService.SetPersonIgnoredAsync(personId, isIgnored, ct);
     }
 
     public async Task<(string Id, string Name)?> FindPersonByNameAsync(string name, CancellationToken ct)
