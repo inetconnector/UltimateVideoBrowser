@@ -1,4 +1,4 @@
-using SixLabors.ImageSharp;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
 #if ANDROID && !WINDOWS
@@ -72,7 +72,7 @@ public sealed class LocationMetadataService
         try
         {
             await using var stream = File.OpenRead(path);
-            var info = await Image.IdentifyAsync(stream, ct).ConfigureAwait(false);
+            var info = await ImageSharpImage.IdentifyAsync(stream, ct).ConfigureAwait(false);
             return TryGetLocationFromExifProfile(info?.Metadata.ExifProfile);
         }
         catch
@@ -162,7 +162,7 @@ public sealed class LocationMetadataService
         }
     }
 
-    private static bool TryGetGpsValue(IReadOnlyDictionary<string, object> props, string key, out double value)
+    private static bool TryGetGpsValue(IDictionary<string, object> props, string key, out double value)
     {
         value = 0;
         if (!props.TryGetValue(key, out var raw) || raw == null)
@@ -196,15 +196,17 @@ public sealed class LocationMetadataService
         if (profile == null)
             return null;
 
-        var latValue = profile.GetValue(ExifTag.GPSLatitude)?.Value;
-        var lonValue = profile.GetValue(ExifTag.GPSLongitude)?.Value;
-        if (!TryConvertGpsCoordinate(latValue, out var lat))
+        if (!profile.TryGetValue(ExifTag.GPSLatitude, out var latValue) ||
+            !TryConvertGpsCoordinate(latValue.Value, out var lat))
             return null;
-        if (!TryConvertGpsCoordinate(lonValue, out var lon))
+        if (!profile.TryGetValue(ExifTag.GPSLongitude, out var lonValue) ||
+            !TryConvertGpsCoordinate(lonValue.Value, out var lon))
             return null;
 
-        var latRef = profile.GetValue(ExifTag.GPSLatitudeRef)?.Value?.ToString();
-        var lonRef = profile.GetValue(ExifTag.GPSLongitudeRef)?.Value?.ToString();
+        profile.TryGetValue(ExifTag.GPSLatitudeRef, out var latRefValue);
+        profile.TryGetValue(ExifTag.GPSLongitudeRef, out var lonRefValue);
+        var latRef = latRefValue?.Value?.ToString();
+        var lonRef = lonRefValue?.Value?.ToString();
         if (string.Equals(latRef, "S", StringComparison.OrdinalIgnoreCase))
             lat = -lat;
         if (string.Equals(lonRef, "W", StringComparison.OrdinalIgnoreCase))
