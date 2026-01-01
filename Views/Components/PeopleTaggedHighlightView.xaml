@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.Components.PeopleTaggedHighlightView">
+    <Frame BackgroundColor="{DynamicResource Surface}"
+           CornerRadius="16"
+           Padding="12"
+           BorderColor="{DynamicResource BorderSubtle}"
+           IsVisible="{Binding IsPeopleTaggingEnabled}">
+        <VerticalStackLayout Spacing="4">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                <Image Source="icon_people.svg"
+                       HeightRequest="18"
+                       WidthRequest="18"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
+                       FontSize="12"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="2"
+                       Text="{Binding TaggedPeopleCount}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}"
+                       VerticalOptions="Center" />
+                <Button Grid.Column="3"
+                        Text="{x:Static strings:AppResources.PeopleButton}"
+                        ImageSource="icon_people.svg"
+                        Command="{Binding OpenPeopleCommand}"
+                        Padding="10,4"
+                        VerticalOptions="Center" />
+            </Grid>
+
+            <Label Text="{Binding PeopleModelsStatusText}"
+                   FontSize="11"
+                   TextColor="{DynamicResource OnSurfaceMuted}" />
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>
