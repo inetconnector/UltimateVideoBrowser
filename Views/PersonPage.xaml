@@ -44,18 +44,20 @@
                CornerRadius="12"
                HasShadow="False"
                Padding="12">
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="12">
                 <Entry Text="{Binding Name}"
                        Placeholder="{x:Static strings:AppResources.PersonNamePlaceholder}"
                        TextColor="{DynamicResource OnSurface}"
                        PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
-                <Label Text="{x:Static strings:AppResources.QualityLabel}"
+                <Label Grid.Column="1"
+                       Text="{x:Static strings:AppResources.QualityLabel}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                <Label Text="{Binding QualityScore, StringFormat='{0:0.00}'}"
+                <Label Grid.Column="2"
+                       Text="{Binding QualityScore, StringFormat='{0:0.00}'}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                <Button Grid.Column="1"
+                <Button Grid.Column="3"
                         Text="{x:Static strings:AppResources.RenameAction}"
                         Command="{Binding SaveNameCommand}" />
             </Grid>
@@ -115,7 +117,8 @@
                            Padding="0"
                            Margin="0,0,0,10">
                         <Grid>
-                            <components:MediaItemPreviewView HeightRequest="110" />
+                            <components:MediaItemPreviewView HeightRequest="110"
+                                                             BindingContext="{Binding .}" />
 
                             <Frame BackgroundColor="#CC0E0F14"
                                    CornerRadius="10"
