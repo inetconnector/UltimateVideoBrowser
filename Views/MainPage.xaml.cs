@@ -153,13 +153,22 @@ public partial class MainPage : ContentPage
         isTimelineSelectionSyncing = false;
     }
 
-    private void OnTimelineScrollUpClicked(object sender, EventArgs e)
+    public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
         if (vm.TimelineEntries.Count == 0)
             return;
 
         var first = vm.TimelineEntries[0];
         TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
+    }
+
+    public void OnTimelineScrollDownClicked(object sender, EventArgs e)
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var last = vm.TimelineEntries[^1];
+        TimelineView.ScrollTo(last, position: ScrollToPosition.End, animate: true);
     }
 
     private void TryHookHeaderSize()
