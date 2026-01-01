@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SQLite;
+using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Models;
 
@@ -10,6 +11,7 @@ public class MediaItem : INotifyPropertyChanged
     private string name = "";
     private string path = "";
     private string peopleTagsSummary = "";
+    private string peopleTagActionLabel = AppResources.TagPeopleAction;
     private string? thumbnailPath;
 
     [PrimaryKey]
@@ -95,6 +97,20 @@ public class MediaItem : INotifyPropertyChanged
             peopleTagsSummary = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(HasPeopleTags));
+        }
+    }
+
+    [Ignore]
+    public string PeopleTagActionLabel
+    {
+        get => peopleTagActionLabel;
+        set
+        {
+            if (peopleTagActionLabel == value)
+                return;
+
+            peopleTagActionLabel = value;
+            OnPropertyChanged();
         }
     }
 
