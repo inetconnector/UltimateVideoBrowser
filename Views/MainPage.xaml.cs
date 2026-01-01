@@ -155,6 +155,26 @@ public partial class MainPage : ContentPage
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
+        ScrollTimelineToStart();
+    }
+
+    public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
+    {
+        ScrollTimelineToStart();
+    }
+
+    public void OnTimelineScrollDownClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToEnd();
+    }
+
+    public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
+    {
+        ScrollTimelineToEnd();
+    }
+
+    private void ScrollTimelineToStart()
+    {
         if (vm.TimelineEntries.Count == 0)
             return;
 
@@ -162,7 +182,7 @@ public partial class MainPage : ContentPage
         TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
     }
 
-    public void OnTimelineScrollDownClicked(object sender, EventArgs e)
+    private void ScrollTimelineToEnd()
     {
         if (vm.TimelineEntries.Count == 0)
             return;
