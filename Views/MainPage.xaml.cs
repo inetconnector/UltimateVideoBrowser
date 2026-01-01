@@ -145,11 +145,11 @@ public partial class MainPage : ContentPage
             .ToLocalTime()
             .DateTime;
         var entry = vm.TimelineEntries.FirstOrDefault(t => t.Year == date.Year && t.Month == date.Month);
-        if (entry == null || TimelineView.SelectedItem == entry)
+        if (entry == null || TimelineSidebar.TimelineView.SelectedItem == entry)
             return;
 
         isTimelineSelectionSyncing = true;
-        TimelineView.SelectedItem = entry;
+        TimelineSidebar.TimelineView.SelectedItem = entry;
         isTimelineSelectionSyncing = false;
     }
 
@@ -179,7 +179,7 @@ public partial class MainPage : ContentPage
             return;
 
         var first = vm.TimelineEntries[0];
-        TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
+        TimelineSidebar.TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
     }
 
     private void ScrollTimelineToEnd()
@@ -188,7 +188,7 @@ public partial class MainPage : ContentPage
             return;
 
         var last = vm.TimelineEntries[^1];
-        TimelineView.ScrollTo(last, position: ScrollToPosition.End, animate: true);
+        TimelineSidebar.TimelineView.ScrollTo(last, position: ScrollToPosition.End, animate: true);
     }
 
     private void TryHookHeaderSize()
@@ -729,9 +729,9 @@ public partial class MainPage : ContentPage
                 if (width <= 0)
                     width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 
-                if (page.TimelineView?.IsVisible == true)
+                if (page.TimelineSidebar?.IsVisible == true)
                 {
-                    var timelineWidth = page.TimelineView.Width;
+                    var timelineWidth = page.TimelineSidebar.Width;
                     if (timelineWidth <= 0)
                         timelineWidth = 120;
                     width = Math.Max(0, width - timelineWidth);
