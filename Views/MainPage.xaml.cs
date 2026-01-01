@@ -180,7 +180,7 @@ public partial class MainPage : ContentPage
 
     private void OnSortChipTapped(object sender, TappedEventArgs e)
     {
-        SortPicker?.Focus();
+        SearchSortView?.SortPickerControl?.Focus();
     }
 
     private sealed class MainPageBinding : BindableObject
