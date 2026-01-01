@@ -799,8 +799,15 @@
                                                                 VerticalOptions="Center" />
                                                             <Frame.GestureRecognizers>
                                                                 <TapGestureRecognizer
-                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                    CommandParameter="{Binding .}" />
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}">
+                                                                    <TapGestureRecognizer.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource TagNavigationContextConverter}">
+                                                                            <Binding Path="." />
+                                                                            <Binding Path="BindingContext"
+                                                                                     Source="{RelativeSource AncestorType={x:Type HorizontalStackLayout}}" />
+                                                                        </MultiBinding>
+                                                                    </TapGestureRecognizer.CommandParameter>
+                                                                </TapGestureRecognizer>
                                                             </Frame.GestureRecognizers>
                                                         </Frame>
                                                     </DataTemplate>
@@ -984,12 +991,19 @@
                                                                     MaxLines="1"
                                                                     VerticalOptions="Center" />
                                                                 <Frame.GestureRecognizers>
-                                                                    <TapGestureRecognizer
-                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                        CommandParameter="{Binding .}" />
-                                                                </Frame.GestureRecognizers>
-                                                            </Frame>
-                                                        </DataTemplate>
+                                                                        <TapGestureRecognizer
+                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}">
+                                                                            <TapGestureRecognizer.CommandParameter>
+                                                                                <MultiBinding Converter="{StaticResource TagNavigationContextConverter}">
+                                                                                    <Binding Path="." />
+                                                                                    <Binding Path="BindingContext"
+                                                                                             Source="{RelativeSource AncestorType={x:Type HorizontalStackLayout}}" />
+                                                                                </MultiBinding>
+                                                                            </TapGestureRecognizer.CommandParameter>
+                                                                        </TapGestureRecognizer>
+                                                                    </Frame.GestureRecognizers>
+                                                                </Frame>
+                                                            </DataTemplate>
                                                     </BindableLayout.ItemTemplate>
                                                 </HorizontalStackLayout>
 
@@ -1167,12 +1181,19 @@
                                                                     MaxLines="1"
                                                                     VerticalOptions="Center" />
                                                                 <Frame.GestureRecognizers>
-                                                                    <TapGestureRecognizer
-                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}"
-                                                                        CommandParameter="{Binding .}" />
-                                                                </Frame.GestureRecognizers>
-                                                            </Frame>
-                                                        </DataTemplate>
+                                                                        <TapGestureRecognizer
+                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPersonFromTagCommand}">
+                                                                            <TapGestureRecognizer.CommandParameter>
+                                                                                <MultiBinding Converter="{StaticResource TagNavigationContextConverter}">
+                                                                                    <Binding Path="." />
+                                                                                    <Binding Path="BindingContext"
+                                                                                             Source="{RelativeSource AncestorType={x:Type HorizontalStackLayout}}" />
+                                                                                </MultiBinding>
+                                                                            </TapGestureRecognizer.CommandParameter>
+                                                                        </TapGestureRecognizer>
+                                                                    </Frame.GestureRecognizers>
+                                                                </Frame>
+                                                            </DataTemplate>
                                                     </BindableLayout.ItemTemplate>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>

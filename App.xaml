@@ -14,6 +14,7 @@
             <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter" />
             <converters:MediaTypeSelectedConverter x:Key="MediaTypeSelectedConverter" />
             <converters:MediaTypeLabelConverter x:Key="MediaTypeLabelConverter" />
+            <converters:TagNavigationContextConverter x:Key="TagNavigationContextConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <styles:ColorsLight />
                 <ResourceDictionary Source="Resources/Styles/Theme.xaml" />
