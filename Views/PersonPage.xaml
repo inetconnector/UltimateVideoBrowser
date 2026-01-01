@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
+             xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
              x:Class="UltimateVideoBrowser.Views.PersonPage"
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.PersonPageTitle}">
@@ -89,10 +90,7 @@
                            Padding="0"
                            Margin="0,0,0,10">
                         <Grid>
-                            <Image
-                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                Aspect="AspectFill"
-                                HeightRequest="110" />
+                            <components:MediaItemPreviewView HeightRequest="110" />
 
                             <Frame BackgroundColor="#CC0E0F14"
                                    CornerRadius="10"
