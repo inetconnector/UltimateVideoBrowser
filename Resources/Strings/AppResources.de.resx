@@ -376,10 +376,10 @@ Fehlend:
     <value>- {0}{1}</value>
   </data>
   <data name="TagPeopleAction" xml:space="preserve">
-    <value>Personen taggen</value>
+    <value>Person taggen</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>Image-Tags</value>
+    <value>Image taggen</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
     <value>Personen taggen</value>

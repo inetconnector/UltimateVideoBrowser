@@ -11,7 +11,7 @@ public class MediaItem : INotifyPropertyChanged
     private string name = "";
     private string path = "";
     private string peopleTagsSummary = "";
-    private string peopleTagActionLabel = AppResources.TagPeopleAction;
+    private string peopleTagActionLabel = AppResources.TagPeopleNoFacesAction;
     private string? thumbnailPath;
 
     [PrimaryKey]
