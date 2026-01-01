@@ -47,6 +47,10 @@ public class MediaItem : INotifyPropertyChanged
 
     [Indexed] public string? SourceId { get; set; }
 
+    public double? Latitude { get; set; }
+
+    public double? Longitude { get; set; }
+
     public string? ThumbnailPath
     {
         get => thumbnailPath;
@@ -99,6 +103,20 @@ public class MediaItem : INotifyPropertyChanged
 
     public long FaceScanAtSeconds { get; set; }
 
+    [Ignore]
+    public bool HasLocation => Latitude.HasValue && Longitude.HasValue;
+
+    [Ignore]
+    public string LocationText
+    {
+        get
+        {
+            if (!HasLocation)
+                return string.Empty;
+
+            return string.Format("{0:0.0000}, {1:0.0000}", Latitude, Longitude);
+        }
+    }
 
     [Ignore] public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
 

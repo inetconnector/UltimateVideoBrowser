@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.MapPage"
+             BackgroundColor="{DynamicResource AppBg}"
+             Title="{x:Static strings:AppResources.MapPageTitle}">
+
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0">
+            <WebView x:Name="MapWebView"
+                     Navigating="OnMapNavigating"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand" />
+
+            <Grid IsVisible="{Binding HasLocations, Converter={StaticResource InverseBoolConverter}}"
+                  BackgroundColor="{DynamicResource AppBg}"
+                  Opacity="0.95">
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="8">
+                    <Label Text="{Binding StatusTitle}"
+                           FontAttributes="Bold"
+                           FontSize="16"
+                           TextColor="{DynamicResource OnSurface}" />
+                    <Label Text="{Binding StatusMessage}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           WidthRequest="260" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="{DynamicResource Accent}"
+                               WidthRequest="32"
+                               HeightRequest="32"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+        </Grid>
+
+        <Frame Grid.Row="1"
+               Padding="12"
+               Margin="12"
+               BackgroundColor="{DynamicResource Surface}"
+               BorderColor="{DynamicResource BorderSubtle}"
+               CornerRadius="16"
+               HasShadow="False"
+               IsVisible="{Binding HasSelection}">
+            <Grid ColumnDefinitions="64,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                <Frame WidthRequest="64"
+                       HeightRequest="64"
+                       CornerRadius="12"
+                       Padding="0"
+                       BackgroundColor="{DynamicResource Surface2}"
+                       BorderColor="{DynamicResource BorderSubtle}">
+                    <Image Source="{Binding SelectedItem.ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                           Aspect="AspectFill" />
+                </Frame>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="{Binding SelectedItem.Name}"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource OnSurface}"
+                           LineBreakMode="TailTruncation" />
+                    <Label Text="{Binding SelectedItem.LocationText}"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurfaceMuted}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="End">
+                    <Button Text="{x:Static strings:AppResources.OpenAction}"
+                            Command="{Binding OpenSelectedCommand}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}" />
+                    <Button Text="{x:Static strings:AppResources.ShareAction}"
+                            Command="{Binding ShareSelectedCommand}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}" />
+                    <Button Text="{x:Static strings:AppResources.SaveAsAction}"
+                            Command="{Binding SaveAsSelectedCommand}"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>
