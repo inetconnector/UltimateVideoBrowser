@@ -2,8 +2,8 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
-             xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers"
+             xmlns:models="clr-namespace:UltimateVideoBrowser.Models;assembly=UltimateVideoBrowser"
+             xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers;assembly=UltimateVideoBrowser"
              x:Class="UltimateVideoBrowser.Views.Components.MainTimelineSidebarView"
              WidthRequest="120"
              MinimumWidthRequest="120">

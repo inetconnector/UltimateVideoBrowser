@@ -3,6 +3,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             xmlns:models="clr-namespace:UltimateVideoBrowser.Models;assembly=UltimateVideoBrowser"
+             xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers;assembly=UltimateVideoBrowser"
              xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="UltimateVideoBrowser.Views.MainPage"

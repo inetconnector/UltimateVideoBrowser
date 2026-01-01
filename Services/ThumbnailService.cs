@@ -56,7 +56,7 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (OperationCanceledException)
+        catch (System.OperationCanceledException)
         {
             return null;
         }
