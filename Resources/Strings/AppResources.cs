@@ -180,6 +180,19 @@ public static class AppResources
     public static string SettingsDatabaseResetConfirmAccept =>
         GetString(nameof(SettingsDatabaseResetConfirmAccept), "Delete");
 
+    public static string SettingsDatabaseResetKeepSourcesTitle =>
+        GetString(nameof(SettingsDatabaseResetKeepSourcesTitle), "Keep sources?");
+
+    public static string SettingsDatabaseResetKeepSourcesMessage =>
+        GetString(nameof(SettingsDatabaseResetKeepSourcesMessage),
+            "Do you want to keep your current sources for the rescan?");
+
+    public static string SettingsDatabaseResetKeepSourcesAccept =>
+        GetString(nameof(SettingsDatabaseResetKeepSourcesAccept), "Keep sources");
+
+    public static string SettingsDatabaseResetKeepSourcesRemove =>
+        GetString(nameof(SettingsDatabaseResetKeepSourcesRemove), "Remove sources");
+
     public static string SettingsDatabaseResetCompletedTitle =>
         GetString(nameof(SettingsDatabaseResetCompletedTitle), "Database deleted");
 

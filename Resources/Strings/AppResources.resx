@@ -300,6 +300,18 @@
   <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="SettingsDatabaseResetKeepSourcesTitle" xml:space="preserve">
+    <value>Keep sources?</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesMessage" xml:space="preserve">
+    <value>Do you want to keep your current sources for the rescan?</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesAccept" xml:space="preserve">
+    <value>Keep sources</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesRemove" xml:space="preserve">
+    <value>Remove sources</value>
+  </data>
   <data name="SettingsDatabaseResetCompletedTitle" xml:space="preserve">
     <value>Database deleted</value>
   </data>
