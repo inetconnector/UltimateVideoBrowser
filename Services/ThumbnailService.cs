@@ -10,6 +10,9 @@ using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
 
 #elif WINDOWS
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 #endif
@@ -18,6 +21,9 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class ThumbnailService
 {
+    private const int ThumbMaxSize = 320;
+    private const int ThumbQuality = 82;
+
     private readonly string cacheDir;
     private readonly ISourceService sourceService;
 
@@ -92,7 +98,7 @@ public sealed class ThumbnailService
                             return null;
 
                         // Write fully to temp file first to avoid partially written thumbnails being picked up by the UI.
-                        bmp.Compress(format, 82, fs);
+                        bmp.Compress(format, ThumbQuality, fs);
                         fs.Flush();
                     }
 
@@ -118,13 +124,33 @@ public sealed class ThumbnailService
             {
                 var file = await GetStorageFileAsync(item).ConfigureAwait(false);
                 if (file == null)
-                    return null;
+                {
+                    if (item.MediaType != MediaType.Photos)
+                        return null;
+
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
+                        return null;
+
+                    File.Move(tmpPath, thumbPath, true);
+                    return thumbPath;
+                }
 
                 using var thumb =
-                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), 320, ThumbnailOptions.UseCurrentScale);
+                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize, ThumbnailOptions.UseCurrentScale);
                 if (thumb == null || thumb.Size == 0)
                 {
-                    using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 320);
+                    if (item.MediaType == MediaType.Photos)
+                    {
+                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                        if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
+                        {
+                            File.Move(tmpPath, thumbPath, true);
+                            return thumbPath;
+                        }
+                    }
+
+                    using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, ThumbMaxSize);
                     if (fallbackThumb == null || fallbackThumb.Size == 0)
                         return null;
 
@@ -238,6 +264,34 @@ public sealed class ThumbnailService
             current = await current.GetFolderAsync(segments[i]);
 
         return await current.GetFileAsync(segments[^1]);
+    }
+
+    private static async Task<bool> TryWritePhotoThumbnailAsync(string sourcePath, string tmpPath, CancellationToken ct)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+                return false;
+
+            using var image = await Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            image.Mutate(ctx =>
+            {
+                ctx.AutoOrient();
+                ctx.Resize(new ResizeOptions
+                {
+                    Mode = ResizeMode.Max,
+                    Size = new Size(ThumbMaxSize, ThumbMaxSize)
+                });
+            });
+
+            var encoder = new JpegEncoder { Quality = ThumbQuality };
+            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            return IsUsableThumbFile(tmpPath);
+        }
+        catch
+        {
+            return false;
+        }
     }
 #endif
 
