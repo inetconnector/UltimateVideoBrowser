@@ -16,7 +16,7 @@
               x:Name="BrowserGrid"
               ColumnDefinitions="*,120"
               RowDefinitions="*"
-              ColumnSpacing="8"
+              ColumnSpacing="0"
               VerticalOptions="FillAndExpand"
               HorizontalOptions="FillAndExpand">
             <VisualStateManager.VisualStateGroups>
@@ -75,6 +75,7 @@
 
             <components:MainTimelineSidebarView Grid.Column="1"
                                                 x:Name="TimelineSidebar"
+                                                BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
                                                 TimelineSelectionChanged="OnTimelineSelectionChanged"
                                                 ScrollUpClicked="OnTimelineScrollUpClicked"
                                                 ScrollDownClicked="OnTimelineScrollDownClicked"

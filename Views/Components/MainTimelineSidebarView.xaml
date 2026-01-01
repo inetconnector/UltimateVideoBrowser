@@ -4,7 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
              xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers"
-             x:Class="UltimateVideoBrowser.Views.Components.MainTimelineSidebarView">
+             x:Class="UltimateVideoBrowser.Views.Components.MainTimelineSidebarView"
+             WidthRequest="120"
+             MinimumWidthRequest="120">
     <Grid RowDefinitions="Auto,*"
           RowSpacing="8">
         <VerticalStackLayout Grid.Row="0"
