@@ -183,6 +183,33 @@ public partial class MainPage : ContentPage
         SortPicker?.Focus();
     }
 
+    private void OnTimelineScrollUpClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineBy(-1);
+    }
+
+    private void OnTimelineScrollDownClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineBy(1);
+    }
+
+    private void ScrollTimelineBy(int delta)
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var current = TimelineView.SelectedItem as TimelineEntry;
+        var index = current == null ? (delta > 0 ? -1 : vm.TimelineEntries.Count) : vm.TimelineEntries.IndexOf(current);
+        var targetIndex = Math.Clamp(index + delta, 0, vm.TimelineEntries.Count - 1);
+        var entry = vm.TimelineEntries[targetIndex];
+
+        isTimelineSelectionSyncing = true;
+        TimelineView.SelectedItem = entry;
+        isTimelineSelectionSyncing = false;
+
+        TimelineView.ScrollTo(entry, position: ScrollToPosition.MakeVisible, animate: true);
+    }
+
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
