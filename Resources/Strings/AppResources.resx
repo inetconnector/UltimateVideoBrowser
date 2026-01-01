@@ -285,6 +285,33 @@
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Re-index on next launch</value>
   </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Deletes the local database and rebuilds it by rescanning your sources.</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Delete database</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmTitle" xml:space="preserve">
+    <value>Delete database?</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmMessage" xml:space="preserve">
+    <value>This removes all indexed data and tags. The app will rescan your sources.</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SettingsDatabaseResetCompletedTitle" xml:space="preserve">
+    <value>Database deleted</value>
+  </data>
+  <data name="SettingsDatabaseResetCompletedMessage" xml:space="preserve">
+    <value>Rescanning has started and the database will be rebuilt.</value>
+  </data>
+  <data name="SettingsDatabaseResetFailedTitle" xml:space="preserve">
+    <value>Delete failed</value>
+  </data>
+  <data name="SettingsDatabaseResetFailedMessage" xml:space="preserve">
+    <value>The database could not be rebuilt. Please try again.</value>
+  </data>
   <data name="SettingsPlaybackTitle" xml:space="preserve">
     <value>Playback</value>
   </data>
