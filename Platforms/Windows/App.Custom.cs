@@ -1,3 +1,5 @@
+using UltimateVideoBrowser.Helpers;
+
 namespace UltimateVideoBrowser.WinUI;
 
 public partial class App
@@ -13,12 +15,11 @@ public partial class App
         var exception = args.Exception;
         if (exception != null)
         {
-            System.Diagnostics.Debug.WriteLine($"Unhandled exception: {exception}");
-            System.Diagnostics.Debug.WriteLine($"StackTrace: {exception.StackTrace}");
+            ErrorLog.LogException(exception, "WinUI.UnhandledException");
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine($"Unhandled exception message: {args.Message}");
+            ErrorLog.LogMessage(args.Message, "WinUI.UnhandledException");
         }
     }
 }

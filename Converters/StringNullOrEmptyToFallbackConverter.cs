@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 
 namespace UltimateVideoBrowser.Converters;
 
@@ -16,8 +17,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
                 try
                 {
                     // Treat 0-byte or obviously broken files as invalid to avoid "blank" thumbnails.
-                    var fi = new FileInfo(text);
-                    if (fi.Length > 0)
+                    if (IsUsableImageFile(text))
                         return ImageSource.FromFile(text);
                 }
                 catch
@@ -27,13 +27,39 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
         }
 
         var fallback = parameter as string ?? string.Empty;
-        return string.IsNullOrWhiteSpace(fallback)
-            ? ImageSource.FromFile(string.Empty)
-            : ImageSource.FromFile(fallback);
+        return ImageSource.FromFile(string.IsNullOrWhiteSpace(fallback) ? "video_placeholder.svg" : fallback);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value ?? string.Empty;
+    }
+
+    private static bool IsUsableImageFile(string path)
+    {
+        var fi = new FileInfo(path);
+        if (fi.Length < 128)
+            return false;
+
+        if (!path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)
+            && !path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        var b1 = fs.ReadByte();
+        var b2 = fs.ReadByte();
+        if (b1 != 0xFF || b2 != 0xD8)
+            return false;
+
+        if (fs.Length >= 2)
+        {
+            fs.Seek(-2, SeekOrigin.End);
+            var e1 = fs.ReadByte();
+            var e2 = fs.ReadByte();
+            if (e1 != 0xFF || e2 != 0xD9)
+                return false;
+        }
+
+        return true;
     }
 }

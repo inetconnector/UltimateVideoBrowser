@@ -310,6 +310,38 @@
                                 IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}" />
                     </VerticalStackLayout>
                 </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.ErrorLogTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.ErrorLogHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding ErrorLogPath}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="12">
+                            <Button Text="{x:Static strings:AppResources.ErrorLogShowButton}"
+                                    Command="{Binding ShowErrorLogCommand}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    TextColor="{DynamicResource OnSurface}" />
+                            <Button Grid.Column="1"
+                                    Text="{x:Static strings:AppResources.ErrorLogShareButton}"
+                                    Command="{Binding ShareErrorLogCommand}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    TextColor="{DynamicResource OnSurface}" />
+                        </Grid>
+                        <Button Text="{x:Static strings:AppResources.ErrorLogClearButton}"
+                                Command="{Binding ClearErrorLogCommand}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}" />
+                    </VerticalStackLayout>
+                </Frame>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

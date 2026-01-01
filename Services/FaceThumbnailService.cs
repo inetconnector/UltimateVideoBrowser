@@ -1,6 +1,7 @@
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpRectangle = SixLabors.ImageSharp.Rectangle;
@@ -41,6 +42,7 @@ public sealed class FaceThumbnailService
         if (!File.Exists(mediaPath))
             return null;
 
+        var tmpPath = GetTempPath(path);
         try
         {
             return await Task.Run(() =>
@@ -73,15 +75,24 @@ public sealed class FaceThumbnailService
 
                 var encoder = new JpegEncoder { Quality = 85 };
 
-                using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+                using var fs = new FileStream(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None);
                 clone.Save(fs, encoder);
 
+                if (!IsUsableThumbFile(tmpPath))
+                    return null;
+
+                File.Move(tmpPath, path, true);
                 return path;
             }, ct).ConfigureAwait(false);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "FaceThumbnailService.EnsureFaceThumbnailAsync", $"Path={mediaPath}");
             return null;
+        }
+        finally
+        {
+            TryDeleteFile(tmpPath);
         }
     }
 
@@ -142,6 +153,68 @@ public sealed class FaceThumbnailService
             }
 
             return hash.ToString("X");
+        }
+    }
+
+    private static string GetTempPath(string finalPath)
+    {
+        return finalPath + ".tmp_" + Guid.NewGuid().ToString("N");
+    }
+
+    private static bool IsUsableThumbFile(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+                return false;
+
+            var fi = new FileInfo(path);
+            if (fi.Length < 128)
+            {
+                TryDeleteFile(path);
+                return false;
+            }
+
+            using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var b1 = fs.ReadByte();
+            var b2 = fs.ReadByte();
+            if (b1 != 0xFF || b2 != 0xD8)
+            {
+                TryDeleteFile(path);
+                return false;
+            }
+
+            if (fs.Length >= 2)
+            {
+                fs.Seek(-2, SeekOrigin.End);
+                var e1 = fs.ReadByte();
+                var e2 = fs.ReadByte();
+                if (e1 != 0xFF || e2 != 0xD9)
+                {
+                    TryDeleteFile(path);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "FaceThumbnailService.IsUsableThumbFile", $"Path={path}");
+            return false;
+        }
+    }
+
+    private static void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                File.Delete(path);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "FaceThumbnailService.TryDeleteFile", $"Path={path}");
         }
     }
 }

@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -91,6 +92,7 @@ public partial class SettingsViewModel : ObservableObject
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
     public IReadOnlyList<SortOption> SortOptions { get; }
+    public string ErrorLogPath => ErrorLog.LogPath;
 
     partial void OnSelectedThemeChanged(ThemeOption? value)
     {
@@ -297,6 +299,60 @@ public partial class SettingsViewModel : ObservableObject
     private void RefreshPeopleModelsStatus()
     {
         ApplyPeopleModelsSnapshot(modelFileService.GetStatusSnapshot());
+    }
+
+    [RelayCommand]
+    private async Task ShowErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ErrorLogTitle,
+                log,
+                AppResources.OkButton));
+    }
+
+    [RelayCommand]
+    private async Task ShareErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            Share.RequestAsync(new ShareTextRequest
+            {
+                Title = AppResources.ErrorLogShareTitle,
+                Text = log
+            }));
+    }
+
+    [RelayCommand]
+    private async Task ClearErrorLogAsync()
+    {
+        await ErrorLog.ClearLogAsync().ConfigureAwait(false);
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ErrorLogTitle,
+                AppResources.ErrorLogClearedMessage,
+                AppResources.OkButton));
     }
 
     private void ApplyPeopleModelsSnapshot(ModelFileService.ModelStatusSnapshot s)
