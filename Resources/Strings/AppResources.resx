@@ -483,6 +483,24 @@ Missing:
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
     <value>No faces detected for this photo.</value>
   </data>
+  <data name="TagImageEditorTitle" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+  <data name="TagImageEditorHeader" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+  <data name="TagImageEditorTagsLabel" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+  <data name="TagImageEditorTagsPlaceholder" xml:space="preserve">
+    <value>Add tags, separated by commas...</value>
+  </data>
+  <data name="TagImageEditorTagsHint" xml:space="preserve">
+    <value>Tip: You can tag an image even if no automatic tags were detected.</value>
+  </data>
+  <data name="TagImageEditorEmptyHint" xml:space="preserve">
+    <value>No image tags detected for this photo.</value>
+  </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Preview</value>
   </data>
