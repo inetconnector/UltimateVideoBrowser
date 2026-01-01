@@ -74,61 +74,91 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
-            <CollectionView ItemsSource="{Binding TimelineEntries}"
-                            x:Name="TimelineView"
-                            SelectionMode="Single"
-                            SelectionChanged="OnTimelineSelectionChanged"
-                            BackgroundColor="{DynamicResource AppBg}"
-                            VerticalScrollBarVisibility="Always"
-                            VerticalOptions="FillAndExpand"
-                            HorizontalOptions="FillAndExpand"
-                            Margin="8,0,8,0"
-                            Grid.Column="1"
-                            ItemSizingStrategy="MeasureFirstItem">
-                <CollectionView.Header>
-                    <Grid HeightRequest="{Binding HeaderHeight}" />
-                </CollectionView.Header>
+            <Grid Grid.Column="1"
+                  RowDefinitions="Auto,*"
+                  RowSpacing="8">
+                <VerticalStackLayout Grid.Row="0"
+                                     Spacing="6"
+                                     HorizontalOptions="Start"
+                                     Margin="4,8,4,0">
+                    <Button Text="▲"
+                            FontSize="14"
+                            WidthRequest="32"
+                            HeightRequest="32"
+                            Padding="0"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}"
+                            BorderColor="{DynamicResource BorderSubtle}"
+                            Clicked="OnTimelineScrollUpClicked"
+                            AutomationProperties.Name="Scroll timeline up" />
+                    <Button Text="▼"
+                            FontSize="14"
+                            WidthRequest="32"
+                            HeightRequest="32"
+                            Padding="0"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}"
+                            BorderColor="{DynamicResource BorderSubtle}"
+                            Clicked="OnTimelineScrollDownClicked"
+                            AutomationProperties.Name="Scroll timeline down" />
+                </VerticalStackLayout>
 
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:TimelineEntry">
-                        <Grid ColumnDefinitions="14,*" Padding="4,6">
-                            <BoxView WidthRequest="2"
-                                     BackgroundColor="{DynamicResource BorderSubtle}"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Fill" />
-                            <Frame Grid.Column="1"
-                                   Padding="6"
-                                   CornerRadius="12"
-                                   BackgroundColor="{DynamicResource Surface2}"
-                                   BorderColor="{DynamicResource BorderSubtle}"
-                                   HasShadow="False">
-                                <Grid RowDefinitions="70,Auto" RowSpacing="6">
-                                    <Grid BackgroundColor="{DynamicResource Surface3}"
-                                          HeightRequest="70">
-                                        <Image
-                                            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                                            Aspect="AspectFill"
-                                            helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                <CollectionView ItemsSource="{Binding TimelineEntries}"
+                                x:Name="TimelineView"
+                                SelectionMode="Single"
+                                SelectionChanged="OnTimelineSelectionChanged"
+                                BackgroundColor="{DynamicResource AppBg}"
+                                VerticalScrollBarVisibility="Always"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Margin="8,0,8,0"
+                                Grid.Row="1"
+                                ItemSizingStrategy="MeasureFirstItem">
+                    <CollectionView.Header>
+                        <Grid HeightRequest="{Binding HeaderHeight}" />
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TimelineEntry">
+                            <Grid ColumnDefinitions="14,*" Padding="4,6">
+                                <BoxView WidthRequest="2"
+                                         BackgroundColor="{DynamicResource BorderSubtle}"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Fill" />
+                                <Frame Grid.Column="1"
+                                       Padding="6"
+                                       CornerRadius="12"
+                                       BackgroundColor="{DynamicResource Surface2}"
+                                       BorderColor="{DynamicResource BorderSubtle}"
+                                       HasShadow="False">
+                                    <Grid RowDefinitions="70,Auto" RowSpacing="6">
+                                        <Grid BackgroundColor="{DynamicResource Surface3}"
+                                              HeightRequest="70">
+                                            <Image
+                                                Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                                                Aspect="AspectFill"
+                                                helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+                                        </Grid>
+                                        <VerticalStackLayout Grid.Row="1" Spacing="2">
+                                            <Label Text="{Binding MonthLabel}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource OnSurface}" />
+                                            <Label Text="{Binding YearLabel}"
+                                                   FontSize="10"
+                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                   IsVisible="{Binding ShowYear}" />
+                                        </VerticalStackLayout>
                                     </Grid>
-                                    <VerticalStackLayout Grid.Row="1" Spacing="2">
-                                        <Label Text="{Binding MonthLabel}"
-                                               FontAttributes="Bold"
-                                               FontSize="12"
-                                               TextColor="{DynamicResource OnSurface}" />
-                                        <Label Text="{Binding YearLabel}"
-                                               FontSize="10"
-                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                               IsVisible="{Binding ShowYear}" />
-                                    </VerticalStackLayout>
-                                </Grid>
-                            </Frame>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
 
             <CollectionView Grid.Column="0"
                             ItemsSource="{Binding MediaItems}"
@@ -319,7 +349,7 @@
                                                         Padding="10,2"
                                                         BackgroundColor="{DynamicResource Surface2}"
                                                         TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                <Button Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
@@ -487,7 +517,7 @@
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     <Button
-                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
@@ -653,7 +683,7 @@
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     <Button
-                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
