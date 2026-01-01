@@ -29,6 +29,8 @@ public sealed class AppDb
 
             await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
             await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
+            await Db.CreateTableAsync<Album>().ConfigureAwait(false);
+            await Db.CreateTableAsync<AlbumItem>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
@@ -38,6 +40,10 @@ public sealed class AppDb
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);")
+                .ConfigureAwait(false);
+            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_album ON AlbumItem(AlbumId);")
+                .ConfigureAwait(false);
+            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_media ON AlbumItem(MediaPath);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);")
                 .ConfigureAwait(false);
@@ -72,6 +78,8 @@ public sealed class AppDb
             await Db.DropTableAsync<PersonAlias>().ConfigureAwait(false);
             await Db.DropTableAsync<PersonProfile>().ConfigureAwait(false);
             await Db.DropTableAsync<PersonTag>().ConfigureAwait(false);
+            await Db.DropTableAsync<AlbumItem>().ConfigureAwait(false);
+            await Db.DropTableAsync<Album>().ConfigureAwait(false);
             await Db.DropTableAsync<MediaItem>().ConfigureAwait(false);
             await Db.DropTableAsync<MediaSource>().ConfigureAwait(false);
             isInitialized = false;

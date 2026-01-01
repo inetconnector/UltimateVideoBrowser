@@ -376,10 +376,10 @@ Fehlend:
     <value>- {0}{1}</value>
   </data>
   <data name="TagPeopleAction" xml:space="preserve">
-    <value>Personen taggen</value>
+    <value>Person taggen</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>Image-Tags</value>
+    <value>Image taggen</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
     <value>Personen taggen</value>
@@ -634,3 +634,76 @@ Fehlend:
     <value>Aus Personenindex entfernen</value>
   </data>
 <data name="MergeButton" xml:space="preserve"><value>Zusammenführen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Zusammenführen in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data><data name="ErrorLogTitle" xml:space="preserve"><value>Fehlerprotokoll</value></data><data name="ErrorLogHint" xml:space="preserve"><value>Teile dieses Protokoll, wenn etwas fehlschlägt oder ein Thumbnail leer ist.</value></data><data name="ErrorLogShowButton" xml:space="preserve"><value>Log anzeigen</value></data><data name="ErrorLogShareButton" xml:space="preserve"><value>Log teilen</value></data><data name="ErrorLogClearButton" xml:space="preserve"><value>Log leeren</value></data><data name="ErrorLogEmptyMessage" xml:space="preserve"><value>Noch keine Fehler protokolliert.</value></data><data name="ErrorLogClearedMessage" xml:space="preserve"><value>Fehlerprotokoll gelöscht.</value></data><data name="ErrorLogShareTitle" xml:space="preserve"><value>Fehlerprotokoll teilen</value></data></root>
+  <data name="AlbumsButton" xml:space="preserve">
+    <value>Alben</value>
+  </data>
+  <data name="AlbumsHeader" xml:space="preserve">
+    <value>Alben</value>
+  </data>
+  <data name="ManageAlbumsButton" xml:space="preserve">
+    <value>Verwalten</value>
+  </data>
+  <data name="AlbumsPageTitle" xml:space="preserve">
+    <value>Alben</value>
+  </data>
+  <data name="AlbumsPageHeader" xml:space="preserve">
+    <value>Alben verwalten</value>
+  </data>
+  <data name="AddAlbumButton" xml:space="preserve">
+    <value>Album hinzufügen</value>
+  </data>
+  <data name="AlbumItemCountFormat" xml:space="preserve">
+    <value>{0} Elemente</value>
+  </data>
+  <data name="AllAlbumsTab" xml:space="preserve">
+    <value>Alle Medien</value>
+  </data>
+  <data name="AddToAlbumAction" xml:space="preserve">
+    <value>Zu Album hinzufügen</value>
+  </data>
+  <data name="NewAlbumAction" xml:space="preserve">
+    <value>Neues Album…</value>
+  </data>
+  <data name="NewAlbumTitle" xml:space="preserve">
+    <value>Neues Album</value>
+  </data>
+  <data name="NewAlbumPrompt" xml:space="preserve">
+    <value>Gib einen Namen für das Album ein.</value>
+  </data>
+  <data name="NewAlbumConfirm" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="NewAlbumPlaceholder" xml:space="preserve">
+    <value>Albumname</value>
+  </data>
+  <data name="AlbumExistsTitle" xml:space="preserve">
+    <value>Album existiert bereits</value>
+  </data>
+  <data name="AlbumExistsMessage" xml:space="preserve">
+    <value>Ein Album namens „{0}“ existiert bereits.</value>
+  </data>
+  <data name="RenameAlbumTitle" xml:space="preserve">
+    <value>Album umbenennen</value>
+  </data>
+  <data name="RenameAlbumPrompt" xml:space="preserve">
+    <value>Gib einen neuen Namen für dieses Album ein.</value>
+  </data>
+  <data name="RenameAlbumConfirm" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="RenameAlbumAction" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="DeleteAlbumTitle" xml:space="preserve">
+    <value>Album löschen</value>
+  </data>
+  <data name="DeleteAlbumMessage" xml:space="preserve">
+    <value>Album „{0}“ löschen? Die Medien bleiben in deiner Bibliothek.</value>
+  </data>
+  <data name="DeleteAlbumConfirm" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="DeleteAlbumAction" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+<data name="MergeButton" xml:space="preserve"><value>Zusammenführen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Zusammenführen in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data></root>

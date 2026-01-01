@@ -26,6 +26,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
+    private readonly AlbumService albumService;
 
     private readonly PropertyChangedEventHandler mediaMarkedHandler;
     private readonly ModelFileService modelFileService;
@@ -39,6 +40,7 @@ public partial class MainViewModel : ObservableObject
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
+    [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private string currentMediaName = "";
@@ -91,6 +93,7 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private List<AlbumListItem> albumTabs = new();
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
     [ObservableProperty] private int taggedPeopleCount;
@@ -113,6 +116,7 @@ public partial class MainViewModel : ObservableObject
         PermissionService permissionService,
         IFileExportService fileExportService,
         IDialogService dialogService,
+        AlbumService albumService,
         PeopleTagService peopleTagService,
         ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService)
@@ -125,6 +129,7 @@ public partial class MainViewModel : ObservableObject
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
+        this.albumService = albumService;
         this.peopleTagService = peopleTagService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
@@ -275,6 +280,9 @@ public partial class MainViewModel : ObservableObject
             {
                 var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
                 var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+                var albumSummaries = await albumService.GetAlbumSummariesAsync().ConfigureAwait(false);
+                var normalizedAlbumId = NormalizeActiveAlbumId(albumSummaries, ActiveAlbumId);
+                var albumTabs = BuildAlbumTabs(albumSummaries);
 
                 var sortKey = SelectedSortOption?.Key ?? "name";
                 var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
@@ -285,13 +293,18 @@ public partial class MainViewModel : ObservableObject
                 // Previously we returned an empty list, which made the UI look broken
                 // when the active source wasn't set or when sources were temporarily unavailable.
                 var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
-                var items = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                        SelectedMediaTypes, 0, PageSize)
-                    .ConfigureAwait(false);
+                var items = string.IsNullOrWhiteSpace(normalizedAlbumId)
+                    ? await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
+                            SelectedMediaTypes, 0, PageSize)
+                        .ConfigureAwait(false)
+                    : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, querySourceId, sortKey,
+                            dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                        .ConfigureAwait(false);
                 var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                 var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
-                return (sources, enabledSources, items, totalCount, normalizedSourceId, refreshVersion);
+                return (sources, enabledSources, items, totalCount, normalizedSourceId, normalizedAlbumId, albumTabs,
+                    refreshVersion);
             });
 
             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -300,7 +313,9 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 ActiveSourceId = result.normalizedSourceId;
+                ActiveAlbumId = result.normalizedAlbumId;
                 Sources = result.enabledSources;
+                AlbumTabs = result.albumTabs;
                 _ = UpdateSourceStatsAsync(result.sources);
                 MediaItems.ReplaceRange(result.items);
                 IndexedMediaCount = result.totalCount;
@@ -334,9 +349,13 @@ public partial class MainViewModel : ObservableObject
             var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
             var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-            var nextItems = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                    SelectedMediaTypes, mediaItemsOffset, PageSize)
-                .ConfigureAwait(false);
+            var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
+                ? await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
+                        SelectedMediaTypes, mediaItemsOffset, PageSize)
+                    .ConfigureAwait(false)
+                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, querySourceId, sortKey, dateFrom,
+                        dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                    .ConfigureAwait(false);
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -861,6 +880,62 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task AddMarkedToAlbumAsync()
+    {
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+        var shell = Shell.Current;
+        if (shell == null)
+            return;
+
+        var albums = await albumService.GetAlbumsAsync().ConfigureAwait(false);
+        var choices = albums.Select(a => a.Name).ToList();
+        choices.Add(AppResources.NewAlbumAction);
+
+        var choice = await MainThread.InvokeOnMainThreadAsync(() =>
+            shell.DisplayActionSheet(AppResources.AddToAlbumAction, AppResources.CancelButton, null,
+                choices.ToArray()));
+
+        if (string.IsNullOrWhiteSpace(choice) || string.Equals(choice, AppResources.CancelButton, StringComparison.Ordinal))
+            return;
+
+        Album? targetAlbum = null;
+
+        if (string.Equals(choice, AppResources.NewAlbumAction, StringComparison.Ordinal))
+        {
+            var name = await dialogService.DisplayPromptAsync(
+                AppResources.NewAlbumTitle,
+                AppResources.NewAlbumPrompt,
+                AppResources.NewAlbumConfirm,
+                AppResources.CancelButton,
+                AppResources.NewAlbumPlaceholder,
+                80,
+                Keyboard.Text);
+
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            var existing = await albumService.FindByNameAsync(name).ConfigureAwait(false);
+            targetAlbum = existing ?? await albumService.CreateAlbumAsync(name).ConfigureAwait(false);
+        }
+        else
+        {
+            targetAlbum = albums.FirstOrDefault(a => string.Equals(a.Name, choice, StringComparison.Ordinal));
+        }
+
+        if (targetAlbum == null)
+            return;
+
+        await albumService.AddItemsAsync(targetAlbum.Id, markedItems).ConfigureAwait(false);
+        await RefreshAlbumTabsAsync().ConfigureAwait(false);
+
+        if (string.Equals(ActiveAlbumId, targetAlbum.Id, StringComparison.Ordinal))
+            await RefreshAsync().ConfigureAwait(false);
+    }
+
+    [RelayCommand]
     public async Task CopyMarkedAsync()
     {
         if (!AllowFileChanges)
@@ -1061,6 +1136,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task SelectAlbumAsync(AlbumListItem? album)
+    {
+        if (album == null || string.Equals(album.Id, ActiveAlbumId, StringComparison.Ordinal))
+            return;
+
+        ActiveAlbumId = album.Id;
+        await RefreshAsync();
+    }
+
+    [RelayCommand]
     public async Task RequestPermissionAsync()
     {
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
@@ -1235,10 +1320,10 @@ public partial class MainViewModel : ObservableObject
                     else
                         item.PeopleTagsSummary = string.Empty;
                     var faceCount = faceCounts.TryGetValue(item.Path, out var count) ? count : 0;
-                    var noFacesDetected = item.FaceScanAtSeconds > 0 && faceCount == 0;
-                    item.PeopleTagActionLabel = noFacesDetected
-                        ? AppResources.TagPeopleNoFacesAction
-                        : AppResources.TagPeopleAction;
+                    var hasFacesDetected = faceCount > 0;
+                    item.PeopleTagActionLabel = hasFacesDetected
+                        ? AppResources.TagPeopleAction
+                        : AppResources.TagPeopleNoFacesAction;
                 }
             });
         }
@@ -1292,6 +1377,7 @@ public partial class MainViewModel : ObservableObject
             var sortKey = settingsService.SelectedSortOptionKey;
             SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
             ActiveSourceId = settingsService.ActiveSourceId;
+            ActiveAlbumId = settingsService.ActiveAlbumId;
             IsDateFilterEnabled = settingsService.DateFilterEnabled;
             DateFilterFrom = settingsService.DateFilterFrom;
             DateFilterTo = settingsService.DateFilterTo;
@@ -1344,6 +1430,45 @@ public partial class MainViewModel : ObservableObject
 
         var exists = enabledSources.Any(s => s.Id == activeSourceId);
         return exists ? activeSourceId : enabledSources[0].Id;
+    }
+
+    private static string NormalizeActiveAlbumId(List<AlbumListItem> albums, string activeAlbumId)
+    {
+        if (string.IsNullOrWhiteSpace(activeAlbumId))
+            return string.Empty;
+
+        return albums.Any(a => string.Equals(a.Id, activeAlbumId, StringComparison.Ordinal))
+            ? activeAlbumId
+            : string.Empty;
+    }
+
+    private static List<AlbumListItem> BuildAlbumTabs(List<AlbumListItem> albums)
+    {
+        var tabs = new List<AlbumListItem>
+        {
+            new()
+            {
+                Id = string.Empty,
+                Name = AppResources.AllAlbumsTab,
+                IsAll = true
+            }
+        };
+
+        tabs.AddRange(albums);
+        return tabs;
+    }
+
+    private async Task RefreshAlbumTabsAsync()
+    {
+        var albumSummaries = await albumService.GetAlbumSummariesAsync().ConfigureAwait(false);
+        var normalizedAlbumId = NormalizeActiveAlbumId(albumSummaries, ActiveAlbumId);
+        var tabs = BuildAlbumTabs(albumSummaries);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            ActiveAlbumId = normalizedAlbumId;
+            AlbumTabs = tabs;
+        });
     }
 
     private void OnMediaItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -1493,6 +1618,11 @@ public partial class MainViewModel : ObservableObject
     partial void OnActiveSourceIdChanged(string value)
     {
         settingsService.ActiveSourceId = value;
+    }
+
+    partial void OnActiveAlbumIdChanged(string value)
+    {
+        settingsService.ActiveAlbumId = value;
     }
 
     partial void OnSearchTextChanged(string value)
