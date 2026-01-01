@@ -8,6 +8,7 @@ public partial class PeoplePage : ContentPage
     private readonly IServiceProvider serviceProvider;
     private readonly PeopleViewModel vm;
     private string? pendingScrollPersonId;
+    private string? pendingScrollPersonName;
 
     public PeoplePage(IServiceProvider serviceProvider, PeopleViewModel vm)
     {
@@ -22,20 +23,26 @@ public partial class PeoplePage : ContentPage
         base.OnAppearing();
         await vm.RefreshAsync();
 
-        if (string.IsNullOrWhiteSpace(pendingScrollPersonId))
+        if (string.IsNullOrWhiteSpace(pendingScrollPersonId) && string.IsNullOrWhiteSpace(pendingScrollPersonName))
             return;
 
         var target = vm.People.FirstOrDefault(item =>
-            string.Equals(item.Id, pendingScrollPersonId, StringComparison.OrdinalIgnoreCase));
+            !string.IsNullOrWhiteSpace(pendingScrollPersonId) &&
+            string.Equals(item.Id, pendingScrollPersonId, StringComparison.OrdinalIgnoreCase))
+            ?? vm.People.FirstOrDefault(item =>
+                !string.IsNullOrWhiteSpace(pendingScrollPersonName) &&
+                string.Equals(item.Name, pendingScrollPersonName, StringComparison.OrdinalIgnoreCase));
         if (target == null)
             return;
 
         var scrollTargetId = pendingScrollPersonId;
+        var scrollTargetName = pendingScrollPersonName;
         pendingScrollPersonId = null;
+        pendingScrollPersonName = null;
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
-            if (!string.IsNullOrWhiteSpace(scrollTargetId))
+            if (!string.IsNullOrWhiteSpace(scrollTargetId) || !string.IsNullOrWhiteSpace(scrollTargetName))
                 PeopleList.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false);
         });
     }
@@ -68,6 +75,7 @@ public partial class PeoplePage : ContentPage
             return;
 
         pendingScrollPersonId = item.Id;
+        pendingScrollPersonName = item.Name;
 
         if (sender is CollectionView cv)
             cv.SelectedItem = null;
