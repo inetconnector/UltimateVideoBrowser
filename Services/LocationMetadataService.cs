@@ -21,6 +21,8 @@ public sealed class LocationMetadataService
         this.settingsService = settingsService;
     }
 
+    public bool IsEnabled => settingsService.LocationsEnabled;
+
     public async Task<bool> TryPopulateLocationAsync(MediaItem item, CancellationToken ct)
     {
         if (!settingsService.LocationsEnabled)

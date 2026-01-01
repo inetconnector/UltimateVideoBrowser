@@ -345,6 +345,15 @@
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
     <value>Aktiviere dies, um Personen in Fotos und Videos zu taggen.</value>
   </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Standorte</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>GPS-Metadaten aus Fotos und Videos extrahieren, damit sie auf der Weltkarte angezeigt werden können.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Standorte anzeigen</value>
+  </data>
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
     <value>Gesichtsmodelle</value>
   </data>
