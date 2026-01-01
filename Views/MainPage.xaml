@@ -18,6 +18,7 @@
               x:Name="BrowserGrid"
               ColumnDefinitions="*,120"
               RowDefinitions="*"
+              ColumnSpacing="8"
               VerticalOptions="FillAndExpand"
               HorizontalOptions="FillAndExpand">
             <VisualStateManager.VisualStateGroups>
@@ -76,7 +77,8 @@
 
             <Grid Grid.Column="1"
                   RowDefinitions="Auto,*"
-                  RowSpacing="8">
+                  RowSpacing="8"
+                  ZIndex="1">
                 <VerticalStackLayout Grid.Row="0"
                                      Spacing="6"
                                      HorizontalOptions="Start"
@@ -171,7 +173,8 @@
                             VerticalOptions="FillAndExpand"
                             HorizontalOptions="FillAndExpand"
                             ItemSizingStrategy="MeasureFirstItem"
-                            ItemsUpdatingScrollMode="KeepScrollOffset">
+                            ItemsUpdatingScrollMode="KeepScrollOffset"
+                            ZIndex="0">
 
                 <CollectionView.Header>
                     <Grid x:Name="HeaderContainer"
