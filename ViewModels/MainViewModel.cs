@@ -1230,10 +1230,10 @@ public partial class MainViewModel : ObservableObject
                     else
                         item.PeopleTagsSummary = string.Empty;
                     var faceCount = faceCounts.TryGetValue(item.Path, out var count) ? count : 0;
-                    var noFacesDetected = item.FaceScanAtSeconds > 0 && faceCount == 0;
-                    item.PeopleTagActionLabel = noFacesDetected
-                        ? AppResources.TagPeopleNoFacesAction
-                        : AppResources.TagPeopleAction;
+                    var hasFacesDetected = faceCount > 0;
+                    item.PeopleTagActionLabel = hasFacesDetected
+                        ? AppResources.TagPeopleAction
+                        : AppResources.TagPeopleNoFacesAction;
                 }
             });
         }

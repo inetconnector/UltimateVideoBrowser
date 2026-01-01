@@ -391,7 +391,7 @@ Missing:
     <value>Tag people</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>No people detected</value>
+    <value>Tag image</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
     <value>Tag people</value>
