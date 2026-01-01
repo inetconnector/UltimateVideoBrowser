@@ -56,6 +56,30 @@ public sealed class PeopleTagService
         return grouped;
     }
 
+    public async Task<Dictionary<string, int>> GetFaceCountsForMediaAsync(IEnumerable<string> mediaPaths)
+    {
+        var paths = mediaPaths
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (paths.Count == 0)
+            return new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        var placeholders = string.Join(", ", paths.Select(_ => "?"));
+        var query = $"SELECT MediaPath, COUNT(*) AS Count FROM FaceEmbedding WHERE MediaPath IN ({placeholders}) GROUP BY MediaPath;";
+        var results = await db.Db.QueryAsync<FaceCountRow>(query, paths.Cast<object>().ToArray())
+            .ConfigureAwait(false);
+
+        var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var row in results)
+            counts[row.MediaPath] = row.Count;
+
+        return counts;
+    }
+
     public async Task SetTagsForMediaAsync(string mediaPath, IEnumerable<string> tags)
     {
         if (string.IsNullOrWhiteSpace(mediaPath))
@@ -140,6 +164,12 @@ public sealed class PeopleTagService
 
     private sealed class CountRow
     {
+        public int Count { get; set; }
+    }
+
+    private sealed class FaceCountRow
+    {
+        public string MediaPath { get; set; } = string.Empty;
         public int Count { get; set; }
     }
 }

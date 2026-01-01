@@ -1214,6 +1214,9 @@ public partial class MainViewModel : ObservableObject
             var tagMap = await peopleTagService
                 .GetTagsForMediaAsync(items.Select(item => item.Path))
                 .ConfigureAwait(false);
+            var faceCounts = await peopleTagService
+                .GetFaceCountsForMediaAsync(items.Select(item => item.Path))
+                .ConfigureAwait(false);
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -1221,10 +1224,17 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 foreach (var item in items)
+                {
                     if (tagMap.TryGetValue(item.Path, out var tags))
                         item.PeopleTagsSummary = string.Join(", ", tags);
                     else
                         item.PeopleTagsSummary = string.Empty;
+                    var faceCount = faceCounts.TryGetValue(item.Path, out var count) ? count : 0;
+                    var noFacesDetected = item.FaceScanAtSeconds > 0 && faceCount == 0;
+                    item.PeopleTagActionLabel = noFacesDetected
+                        ? AppResources.TagPeopleNoFacesAction
+                        : AppResources.TagPeopleAction;
+                }
             });
         }
         catch

@@ -378,6 +378,9 @@ Fehlend:
   <data name="TagPeopleAction" xml:space="preserve">
     <value>Personen taggen</value>
   </data>
+  <data name="TagPeopleNoFacesAction" xml:space="preserve">
+    <value>Keine Personen erkannt</value>
+  </data>
   <data name="TagPeopleTitle" xml:space="preserve">
     <value>Personen taggen</value>
   </data>
