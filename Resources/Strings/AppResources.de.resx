@@ -282,6 +282,45 @@
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Beim nächsten Start neu indizieren</value>
   </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Löscht die lokale Datenbank und erstellt sie durch erneutes Scannen der Quellen neu.</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Datenbank löschen</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmTitle" xml:space="preserve">
+    <value>Datenbank löschen?</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmMessage" xml:space="preserve">
+    <value>Alle indizierten Daten und Tags werden entfernt. Die Quellen werden neu gescannt.</value>
+  </data>
+  <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesTitle" xml:space="preserve">
+    <value>Quellen behalten?</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesMessage" xml:space="preserve">
+    <value>Sollen die aktuellen Quellen für das erneute Scannen behalten werden?</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesAccept" xml:space="preserve">
+    <value>Quellen behalten</value>
+  </data>
+  <data name="SettingsDatabaseResetKeepSourcesRemove" xml:space="preserve">
+    <value>Quellen entfernen</value>
+  </data>
+  <data name="SettingsDatabaseResetCompletedTitle" xml:space="preserve">
+    <value>Datenbank gelöscht</value>
+  </data>
+  <data name="SettingsDatabaseResetCompletedMessage" xml:space="preserve">
+    <value>Das erneute Scannen hat begonnen und die Datenbank wird neu aufgebaut.</value>
+  </data>
+  <data name="SettingsDatabaseResetFailedTitle" xml:space="preserve">
+    <value>Löschen fehlgeschlagen</value>
+  </data>
+  <data name="SettingsDatabaseResetFailedMessage" xml:space="preserve">
+    <value>Die Datenbank konnte nicht neu aufgebaut werden. Bitte versuche es erneut.</value>
+  </data>
   <data name="SettingsPlaybackTitle" xml:space="preserve">
     <value>Wiedergabe</value>
   </data>
