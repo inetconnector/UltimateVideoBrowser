@@ -10,7 +10,6 @@ using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
 
 #elif WINDOWS
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using Windows.Storage;
@@ -273,19 +272,21 @@ public sealed class ThumbnailService
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
                 return false;
 
-            using var image = await Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            using var image = await global::SixLabors.ImageSharp.Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
             {
                 ctx.AutoOrient();
                 ctx.Resize(new ResizeOptions
                 {
-                    Mode = ResizeMode.Max,
-                    Size = new Size(ThumbMaxSize, ThumbMaxSize)
+                    Mode = global::SixLabors.ImageSharp.Processing.ResizeMode.Max,
+                    Size = new global::SixLabors.ImageSharp.Size(ThumbMaxSize, ThumbMaxSize)
                 });
             });
 
             var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            await global::SixLabors.ImageSharp.ImageExtensions
+                .SaveAsJpegAsync(image, tmpPath, encoder, ct)
+                .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
         catch
@@ -296,8 +297,6 @@ public sealed class ThumbnailService
 #endif
 
 #if ANDROID && !WINDOWS
-    private const int ThumbMaxSize = 320;
-
     private static SysStream? OpenPathStream(string path)
     {
         try
