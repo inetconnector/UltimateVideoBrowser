@@ -153,6 +153,15 @@ public partial class MainPage : ContentPage
         isTimelineSelectionSyncing = false;
     }
 
+    private void OnTimelineScrollUpClicked(object sender, EventArgs e)
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var first = vm.TimelineEntries[0];
+        TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
+    }
+
     private void TryHookHeaderSize()
     {
         if (isHeaderSizeHooked)
