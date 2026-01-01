@@ -233,6 +233,34 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshTaggedPeopleCountAsync();
     }
 
+    public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
+
+        MediaItem? target = FindMediaItem(path);
+        var lastCount = -1;
+
+        while (target == null && hasMoreMediaItems && !cancellationToken.IsCancellationRequested)
+        {
+            var count = MediaItems.Count;
+            if (count == lastCount)
+                break;
+
+            lastCount = count;
+            await LoadMoreAsync().ConfigureAwait(false);
+            target = FindMediaItem(path);
+        }
+
+        return target;
+    }
+
+    private MediaItem? FindMediaItem(string path)
+    {
+        return MediaItems.FirstOrDefault(item =>
+            string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase));
+    }
+
     [RelayCommand]
     public async Task RefreshAsync()
     {
