@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Services;
@@ -51,9 +52,14 @@ public sealed partial class PeopleViewModel : ObservableObject
                     p.IsIgnored));
             }
 
+            var sorted = items
+                .OrderByDescending(item => item.PhotoCount)
+                .ThenBy(item => item.Name, StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                People = new ObservableCollection<PersonListItemViewModel>(items);
+                People = new ObservableCollection<PersonListItemViewModel>(sorted);
             });
         }
         catch (OperationCanceledException)
