@@ -69,11 +69,15 @@ public partial class MainPage : ContentPage
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     pendingScrollToMediaPath = null;
-                    var target = vm.MediaItems.FirstOrDefault(m =>
-                        string.Equals(m.Path, path, StringComparison.OrdinalIgnoreCase));
+                    var target = await vm.EnsureMediaItemLoadedAsync(path, ct);
                     if (target != null)
+                    {
                         await MainThread.InvokeOnMainThreadAsync(() =>
-                            MediaItemsView.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false));
+                        {
+                            MediaItemsView.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false);
+                            MediaItemsView.Focus();
+                        });
+                    }
                 }
             }
             catch
