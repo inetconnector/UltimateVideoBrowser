@@ -284,7 +284,9 @@ public sealed class ThumbnailService
             });
 
             var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            await global::SixLabors.ImageSharp.ImageExtensions
+                .SaveAsJpegAsync(image, tmpPath, encoder, ct)
+                .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
         catch
@@ -295,8 +297,6 @@ public sealed class ThumbnailService
 #endif
 
 #if ANDROID && !WINDOWS
-    private const int ThumbMaxSize = 320;
-
     private static SysStream? OpenPathStream(string path)
     {
         try
