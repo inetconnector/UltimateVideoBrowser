@@ -450,6 +450,21 @@ Missing:
   <data name="PersonEmptyHint" xml:space="preserve">
     <value>No photos yet.</value>
   </data>
+  <data name="IgnorePersonTitle" xml:space="preserve">
+    <value>Ignore person</value>
+  </data>
+  <data name="IgnorePersonDescription" xml:space="preserve">
+    <value>Ignored people are hidden from automatic people tags.</value>
+  </data>
+  <data name="IgnorePersonAction" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="UnignorePersonAction" xml:space="preserve">
+    <value>Stop ignoring</value>
+  </data>
+  <data name="IgnoredPersonBadge" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
   <data name="TagPeopleEditorTitle" xml:space="preserve">
     <value>Tag people</value>
   </data>

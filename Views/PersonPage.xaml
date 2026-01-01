@@ -9,7 +9,7 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.PersonPageTitle}">
 
-    <Grid RowDefinitions="Auto,Auto,*"
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
           Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}"
           RowSpacing="12">
 
@@ -61,7 +61,32 @@
             </Grid>
         </Frame>
 
-        <CollectionView Grid.Row="2"
+        <Frame Grid.Row="2"
+               BackgroundColor="{DynamicResource Surface}"
+               CornerRadius="12"
+               HasShadow="False"
+               Padding="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static strings:AppResources.IgnorePersonTitle}"
+                           TextColor="{DynamicResource OnSurface}"
+                           FontAttributes="Bold"
+                           FontSize="13" />
+                    <Label Text="{x:Static strings:AppResources.IgnorePersonDescription}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="11" />
+                    <Label Text="{x:Static strings:AppResources.IgnoredPersonBadge}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="11"
+                           IsVisible="{Binding IsIgnored}" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1"
+                        Text="{Binding IgnoreActionText}"
+                        Command="{Binding ToggleIgnoreCommand}" />
+            </Grid>
+        </Frame>
+
+        <CollectionView Grid.Row="3"
                         ItemsSource="{Binding Photos}"
                         SelectionMode="Single"
                         SelectionChanged="OnPhotoSelected"

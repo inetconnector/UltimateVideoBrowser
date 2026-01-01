@@ -236,6 +236,29 @@ public sealed class PeopleRecognitionService
         await UpdateMediaTagsForPersonAsync(current).ConfigureAwait(false);
     }
 
+    public async Task SetPersonIgnoredAsync(string personId, bool isIgnored, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+
+        var profile = await db.Db.Table<PersonProfile>()
+            .Where(p => p.Id == personId)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        if (profile == null || profile.IsIgnored == isIgnored)
+            return;
+
+        profile.IsIgnored = isIgnored;
+        profile.UpdatedUtc = DateTimeOffset.UtcNow;
+        await db.Db.UpdateAsync(profile).ConfigureAwait(false);
+
+        await UpdateMediaTagsForPersonAsync(profile).ConfigureAwait(false);
+    }
+
     public async Task RenamePeopleForMediaAsync(MediaItem item, IReadOnlyList<string> names, CancellationToken ct)
     {
         if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
@@ -497,10 +520,17 @@ public sealed class PeopleRecognitionService
     private async Task UpdateMediaTagsAsync(string mediaPath, IEnumerable<string> personIds,
         IEnumerable<PersonProfile> people)
     {
+        var peopleMap = people.ToDictionary(person => person.Id, person => person, StringComparer.OrdinalIgnoreCase);
         var names = personIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .Select(id => people.FirstOrDefault(person => person.Id == id)?.Name)
+            .Select(id =>
+            {
+                if (!peopleMap.TryGetValue(id, out var person) || person.IsIgnored)
+                    return null;
+
+                return person.Name;
+            })
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Select(name => name!)
             .ToList();

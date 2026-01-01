@@ -264,6 +264,14 @@ public sealed class AppDb
 
         try
         {
+            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN IsIgnored INTEGER;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
             await Db.ExecuteAsync(
                     "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);")
                 .ConfigureAwait(false);

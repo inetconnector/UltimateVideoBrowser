@@ -47,7 +47,8 @@ public sealed partial class PeopleViewModel : ObservableObject
                     : null;
                 if (string.IsNullOrWhiteSpace(coverPath))
                     continue;
-                items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath));
+                items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
+                    p.IsIgnored));
             }
 
             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -86,15 +87,17 @@ public sealed partial class PeopleViewModel : ObservableObject
 public sealed partial class PersonListItemViewModel : ObservableObject
 {
     [ObservableProperty] private string name;
+    [ObservableProperty] private bool isIgnored;
 
     public PersonListItemViewModel(string id, string name, int photoCount, float qualityScore,
-        string? coverThumbnailPath)
+        string? coverThumbnailPath, bool isIgnored)
     {
         Id = id;
         Name = name;
         PhotoCount = photoCount;
         QualityScore = qualityScore;
         CoverThumbnailPath = coverThumbnailPath;
+        IsIgnored = isIgnored;
     }
 
     public string Id { get; }

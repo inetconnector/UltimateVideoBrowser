@@ -438,6 +438,21 @@ Fehlend:
   <data name="PersonEmptyHint" xml:space="preserve">
     <value>Noch keine Fotos.</value>
   </data>
+  <data name="IgnorePersonTitle" xml:space="preserve">
+    <value>Person ignorieren</value>
+  </data>
+  <data name="IgnorePersonDescription" xml:space="preserve">
+    <value>Ignorierte Personen werden bei automatischen Personen-Tags ausgeblendet.</value>
+  </data>
+  <data name="IgnorePersonAction" xml:space="preserve">
+    <value>Ignorieren</value>
+  </data>
+  <data name="UnignorePersonAction" xml:space="preserve">
+    <value>Nicht mehr ignorieren</value>
+  </data>
+  <data name="IgnoredPersonBadge" xml:space="preserve">
+    <value>Ignoriert</value>
+  </data>
   <data name="TagPeopleEditorTitle" xml:space="preserve">
     <value>Personen taggen</value>
   </data>
