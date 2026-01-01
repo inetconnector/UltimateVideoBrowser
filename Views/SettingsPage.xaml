@@ -303,6 +303,11 @@
                             <Switch Grid.Column="1"
                                     IsToggled="{Binding NeedsReindex}" />
                         </Grid>
+                        <Label Text="{x:Static strings:AppResources.SettingsDatabaseResetHint}"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Button Text="{x:Static strings:AppResources.SettingsDatabaseResetButton}"
+                                Command="{Binding ResetDatabaseCommand}"
+                                IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}" />
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>

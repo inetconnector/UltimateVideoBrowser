@@ -60,6 +60,30 @@ public sealed class AppDb
         }
     }
 
+    public async Task ResetAsync()
+    {
+        if (!isInitialized)
+            await EnsureInitializedAsync().ConfigureAwait(false);
+
+        await initLock.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            await Db.DropTableAsync<FaceEmbedding>().ConfigureAwait(false);
+            await Db.DropTableAsync<PersonAlias>().ConfigureAwait(false);
+            await Db.DropTableAsync<PersonProfile>().ConfigureAwait(false);
+            await Db.DropTableAsync<PersonTag>().ConfigureAwait(false);
+            await Db.DropTableAsync<MediaItem>().ConfigureAwait(false);
+            await Db.DropTableAsync<MediaSource>().ConfigureAwait(false);
+            isInitialized = false;
+        }
+        finally
+        {
+            initLock.Release();
+        }
+
+        await EnsureInitializedAsync().ConfigureAwait(false);
+    }
+
     private async Task TryAddMediaSourceAccessTokenAsync()
     {
         try
