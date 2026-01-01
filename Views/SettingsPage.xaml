@@ -307,7 +307,9 @@
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Button Text="{x:Static strings:AppResources.SettingsDatabaseResetButton}"
                                 Command="{Binding ResetDatabaseCommand}"
-                                IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}" />
+                                IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}"
+                                HorizontalOptions="Start"
+                                Padding="16,6" />
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>
