@@ -219,10 +219,6 @@
                                             <Button Text="{x:Static strings:AppResources.SourcesButton}"
                                                     ImageSource="icon_sources.svg"
                                                     Command="{Binding OpenSourcesCommand}" />
-                                            <Button Text="{x:Static strings:AppResources.PeopleButton}"
-                                                    ImageSource="icon_people.svg"
-                                                    Command="{Binding OpenPeopleCommand}"
-                                                    IsVisible="{Binding IsPeopleTaggingEnabled}" />
                                             <Button Text="{x:Static strings:AppResources.SettingsButton}"
                                                     Command="{Binding OpenSettingsCommand}" />
                                             <Button Text="{x:Static strings:AppResources.MapButton}"
@@ -316,7 +312,7 @@
                                    BorderColor="{DynamicResource BorderSubtle}"
                                    IsVisible="{Binding IsPeopleTaggingEnabled}">
                                 <VerticalStackLayout Spacing="4">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
                                         <Image Source="icon_people.svg"
                                                HeightRequest="18"
                                                WidthRequest="18"
@@ -332,6 +328,12 @@
                                                FontAttributes="Bold"
                                                TextColor="{DynamicResource OnSurface}"
                                                VerticalOptions="Center" />
+                                        <Button Grid.Column="3"
+                                                Text="{x:Static strings:AppResources.PeopleButton}"
+                                                ImageSource="icon_people.svg"
+                                                Command="{Binding OpenPeopleCommand}"
+                                                Padding="10,4"
+                                                VerticalOptions="Center" />
                                     </Grid>
 
                                     <Label Text="{Binding PeopleModelsStatusText}"
