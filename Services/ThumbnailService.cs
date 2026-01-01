@@ -50,7 +50,16 @@ public sealed class ThumbnailService
 
         // Prevent concurrent writers from producing corrupted/0-byte thumbnails.
         var gate = thumbLocks.GetOrAdd(thumbPath, _ => new SemaphoreSlim(1, 1));
-        await gate.WaitAsync(ct).ConfigureAwait(false);
+        var lockTaken = false;
+        try
+        {
+            await gate.WaitAsync(ct).ConfigureAwait(false);
+            lockTaken = true;
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
         try
         {
             // Re-check after we acquired the lock.
@@ -156,10 +165,11 @@ public sealed class ThumbnailService
         }
         finally
         {
-            gate.Release();
+            if (lockTaken)
+                gate.Release();
 
             // Best-effort cleanup to keep the dictionary from growing unbounded.
-            if (gate.CurrentCount == 1)
+            if (lockTaken && gate.CurrentCount == 1)
                 thumbLocks.TryRemove(thumbPath, out _);
         }
     }
