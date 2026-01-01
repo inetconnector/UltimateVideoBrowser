@@ -100,7 +100,7 @@
 
                 <CollectionView.Header>
                     <Grid x:Name="HeaderContainer"
-                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                           BackgroundColor="{DynamicResource AppBg}">
                         <!-- Top bar -->
                         <components:MainHeaderView />
@@ -179,8 +179,11 @@
                         <!-- Source tabs -->
                         <components:MainSourcesTabsView Grid.Row="8" />
 
+                        <!-- Album tabs -->
+                        <components:MainAlbumsTabsView Grid.Row="9" />
+
                         <!-- Indexing banner -->
-                        <components:MainIndexingBannerView Grid.Row="9" />
+                        <components:MainIndexingBannerView Grid.Row="10" />
 
                     </Grid>
                 </CollectionView.Header>
@@ -814,7 +817,7 @@
                        Padding="12"
                        HasShadow="False"
                        IsVisible="{Binding HasMarked}">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
                           ColumnSpacing="8">
                         <Label
                             Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
@@ -824,18 +827,21 @@
                                 Text="{x:Static strings:AppResources.SaveAsAction}"
                                 Command="{Binding SaveAsMarkedCommand}" />
                         <Button Grid.Column="2"
+                                Text="{x:Static strings:AppResources.AddToAlbumAction}"
+                                Command="{Binding AddMarkedToAlbumCommand}" />
+                        <Button Grid.Column="3"
                                 Text="{x:Static strings:AppResources.CopyMarkedAction}"
                                 IsVisible="{Binding AllowFileChanges}"
                                 Command="{Binding CopyMarkedCommand}" />
-                        <Button Grid.Column="3"
+                        <Button Grid.Column="4"
                                 Text="{x:Static strings:AppResources.MoveMarkedAction}"
                                 IsVisible="{Binding AllowFileChanges}"
                                 Command="{Binding MoveMarkedCommand}" />
-                        <Button Grid.Column="4"
+                        <Button Grid.Column="5"
                                 Text="{x:Static strings:AppResources.DeleteMarkedAction}"
                                 IsVisible="{Binding AllowFileChanges}"
                                 Command="{Binding DeleteMarkedCommand}" />
-                        <Button Grid.Column="5"
+                        <Button Grid.Column="6"
                                 Text="{x:Static strings:AppResources.ClearMarkedAction}"
                                 Command="{Binding ClearMarkedCommand}" />
                     </Grid>

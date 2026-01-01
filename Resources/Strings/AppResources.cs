@@ -11,6 +11,7 @@ public static class AppResources
     public static string AppTitle => GetString(nameof(AppTitle), "Ultimate Media Browser");
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Media");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
+    public static string AlbumsButton => GetString(nameof(AlbumsButton), "Albums");
     public static string PeopleButton => GetString(nameof(PeopleButton), "People");
     public static string MergeIntoTitle => GetString(nameof(MergeIntoTitle), "Merge into…");
     public static string MergeButton => GetString(nameof(MergeButton), "Merge");
@@ -25,6 +26,34 @@ public static class AppResources
 
     public static string HeroPrimaryAction => GetString(nameof(HeroPrimaryAction), "Manage sources");
     public static string BackButton => GetString(nameof(BackButton), "Back");
+    public static string AlbumsHeader => GetString(nameof(AlbumsHeader), "Albums");
+    public static string ManageAlbumsButton => GetString(nameof(ManageAlbumsButton), "Manage");
+    public static string AlbumsPageTitle => GetString(nameof(AlbumsPageTitle), "Albums");
+    public static string AlbumsPageHeader => GetString(nameof(AlbumsPageHeader), "Manage albums");
+    public static string AddAlbumButton => GetString(nameof(AddAlbumButton), "Add album");
+    public static string AlbumItemCountFormat => GetString(nameof(AlbumItemCountFormat), "{0} items");
+    public static string AllAlbumsTab => GetString(nameof(AllAlbumsTab), "All media");
+    public static string AddToAlbumAction => GetString(nameof(AddToAlbumAction), "Add to album");
+    public static string NewAlbumAction => GetString(nameof(NewAlbumAction), "New album…");
+    public static string NewAlbumTitle => GetString(nameof(NewAlbumTitle), "New album");
+    public static string NewAlbumPrompt => GetString(nameof(NewAlbumPrompt), "Enter a name for the album.");
+    public static string NewAlbumConfirm => GetString(nameof(NewAlbumConfirm), "Create");
+    public static string NewAlbumPlaceholder => GetString(nameof(NewAlbumPlaceholder), "Album name");
+    public static string AlbumExistsTitle => GetString(nameof(AlbumExistsTitle), "Album already exists");
+    public static string AlbumExistsMessage =>
+        GetString(nameof(AlbumExistsMessage), "An album named \"{0}\" already exists.");
+
+    public static string RenameAlbumTitle => GetString(nameof(RenameAlbumTitle), "Rename album");
+    public static string RenameAlbumPrompt => GetString(nameof(RenameAlbumPrompt), "Choose a new name for this album.");
+    public static string RenameAlbumConfirm => GetString(nameof(RenameAlbumConfirm), "Rename");
+    public static string RenameAlbumAction => GetString(nameof(RenameAlbumAction), "Rename");
+    public static string DeleteAlbumTitle => GetString(nameof(DeleteAlbumTitle), "Delete album");
+
+    public static string DeleteAlbumMessage =>
+        GetString(nameof(DeleteAlbumMessage), "Delete the album \"{0}\"? The media items remain in your library.");
+
+    public static string DeleteAlbumConfirm => GetString(nameof(DeleteAlbumConfirm), "Delete");
+    public static string DeleteAlbumAction => GetString(nameof(DeleteAlbumAction), "Delete");
     public static string SortTitle => GetString(nameof(SortTitle), "Sort");
     public static string SortName => GetString(nameof(SortName), "Name");
     public static string SortDate => GetString(nameof(SortDate), "Date");

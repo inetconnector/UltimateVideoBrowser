@@ -249,6 +249,7 @@ public partial class MainPage : ContentPage
             this.peopleData = peopleData;
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
+            OpenAlbumsCommand = new AsyncRelayCommand(OpenAlbumsAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             OpenPeopleCommand = new AsyncRelayCommand(OpenPeopleAsync);
             OpenMapCommand = new AsyncRelayCommand(OpenMapAsync);
@@ -261,6 +262,7 @@ public partial class MainPage : ContentPage
             LoadMoreCommand = vm.LoadMoreCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             SaveAsMarkedCommand = vm.SaveAsMarkedCommand;
+            AddMarkedToAlbumCommand = vm.AddMarkedToAlbumCommand;
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
@@ -270,6 +272,7 @@ public partial class MainPage : ContentPage
             OpenPersonFromTagCommand = new AsyncRelayCommand<TagNavigationContext>(OpenPersonFromTagAsync);
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
+            SelectAlbumCommand = vm.SelectAlbumCommand;
             ShareCommand = vm.ShareCommand;
             SaveAsCommand = vm.SaveAsCommand;
             CopyItemCommand = vm.CopyItemCommand;
@@ -355,8 +358,14 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.Sources):
                         OnPropertyChanged(nameof(Sources));
                         break;
+                    case nameof(MainViewModel.AlbumTabs):
+                        OnPropertyChanged(nameof(AlbumTabs));
+                        break;
                     case nameof(MainViewModel.ActiveSourceId):
                         OnPropertyChanged(nameof(ActiveSourceId));
+                        break;
+                    case nameof(MainViewModel.ActiveAlbumId):
+                        OnPropertyChanged(nameof(ActiveAlbumId));
                         break;
                     case nameof(MainViewModel.IsDateFilterEnabled):
                         OnPropertyChanged(nameof(IsDateFilterEnabled));
@@ -431,6 +440,7 @@ public partial class MainPage : ContentPage
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
+        public IAsyncRelayCommand OpenAlbumsCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand OpenPeopleCommand { get; }
         public IAsyncRelayCommand OpenMapCommand { get; }
@@ -446,6 +456,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand SaveAsMarkedCommand { get; }
+        public IAsyncRelayCommand AddMarkedToAlbumCommand { get; }
         public IAsyncRelayCommand MoveMarkedCommand { get; }
         public IAsyncRelayCommand DeleteMarkedCommand { get; }
         public IRelayCommand ClearMarkedCommand { get; }
@@ -454,6 +465,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand<TagNavigationContext> OpenPersonFromTagCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
+        public IAsyncRelayCommand SelectAlbumCommand { get; }
 
         public IAsyncRelayCommand ShareCommand { get; }
         public IAsyncRelayCommand SaveAsCommand { get; }
@@ -570,8 +582,10 @@ public partial class MainPage : ContentPage
         public bool ShowBottomDock => vm.ShowBottomDock;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
         public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
+        public List<AlbumListItem> AlbumTabs => vm.AlbumTabs;
         public List<MediaSource> Sources => vm.Sources;
         public string ActiveSourceId => vm.ActiveSourceId;
+        public string ActiveAlbumId => vm.ActiveAlbumId;
 
         public SortOption? SelectedSortOption
         {
@@ -606,6 +620,11 @@ public partial class MainPage : ContentPage
         private async Task OpenSourcesAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SourcesPage>()!);
+        }
+
+        private async Task OpenAlbumsAsync()
+        {
+            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<AlbumsPage>()!);
         }
 
         private async Task OpenSettingsAsync()

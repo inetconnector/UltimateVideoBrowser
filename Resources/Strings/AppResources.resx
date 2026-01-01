@@ -639,4 +639,76 @@ Missing:
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
+  <data name="AlbumsButton" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+  <data name="AlbumsHeader" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+  <data name="ManageAlbumsButton" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="AlbumsPageTitle" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+  <data name="AlbumsPageHeader" xml:space="preserve">
+    <value>Manage albums</value>
+  </data>
+  <data name="AddAlbumButton" xml:space="preserve">
+    <value>Add album</value>
+  </data>
+  <data name="AlbumItemCountFormat" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+  <data name="AllAlbumsTab" xml:space="preserve">
+    <value>All media</value>
+  </data>
+  <data name="AddToAlbumAction" xml:space="preserve">
+    <value>Add to album</value>
+  </data>
+  <data name="NewAlbumAction" xml:space="preserve">
+    <value>New album…</value>
+  </data>
+  <data name="NewAlbumTitle" xml:space="preserve">
+    <value>New album</value>
+  </data>
+  <data name="NewAlbumPrompt" xml:space="preserve">
+    <value>Enter a name for the album.</value>
+  </data>
+  <data name="NewAlbumConfirm" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="NewAlbumPlaceholder" xml:space="preserve">
+    <value>Album name</value>
+  </data>
+  <data name="AlbumExistsTitle" xml:space="preserve">
+    <value>Album already exists</value>
+  </data>
+  <data name="AlbumExistsMessage" xml:space="preserve">
+    <value>An album named "{0}" already exists.</value>
+  </data>
+  <data name="RenameAlbumTitle" xml:space="preserve">
+    <value>Rename album</value>
+  </data>
+  <data name="RenameAlbumPrompt" xml:space="preserve">
+    <value>Choose a new name for this album.</value>
+  </data>
+  <data name="RenameAlbumConfirm" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="RenameAlbumAction" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="DeleteAlbumTitle" xml:space="preserve">
+    <value>Delete album</value>
+  </data>
+  <data name="DeleteAlbumMessage" xml:space="preserve">
+    <value>Delete the album "{0}"? The media items remain in your library.</value>
+  </data>
+  <data name="DeleteAlbumConfirm" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DeleteAlbumAction" xml:space="preserve">
+    <value>Delete</value>
+  </data>
 <data name="MergeButton" xml:space="preserve"><value>Merge</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Merge into…</value></data><data name="QualityLabel" xml:space="preserve"><value>Quality</value></data></root>
