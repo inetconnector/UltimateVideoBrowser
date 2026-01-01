@@ -336,6 +336,15 @@
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
     <value>Turn this on to tag people in photos and videos from the library.</value>
   </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Locations</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Extract GPS metadata from photos and videos so they can be displayed on the world map.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Show locations</value>
+  </data>
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
     <value>Face models</value>
   </data>
@@ -575,6 +584,21 @@ Missing:
   </data>
   <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
     <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="MapButton" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="MapPageTitle" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="MapEmptyTitle" xml:space="preserve">
+    <value>No locations found</value>
+  </data>
+  <data name="MapEmptyMessage" xml:space="preserve">
+    <value>Enable locations and reindex to see photos and videos on the map.</value>
+  </data>
+  <data name="OpenAction" xml:space="preserve">
+    <value>Open</value>
   </data>
   <data name="RenameConfirmTitle" xml:space="preserve">
     <value>Confirm rename</value>

@@ -48,6 +48,7 @@ public sealed class AppDb
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
+            await TryAddMediaItemLocationColumnsAsync().ConfigureAwait(false);
             await TryAddFaceEmbeddingBoxColumnsAsync().ConfigureAwait(false);
             await TryAddPeopleModelKeyColumnsAsync().ConfigureAwait(false);
             await TryAddPersonProfileMergeColumnsAsync().ConfigureAwait(false);
@@ -92,6 +93,35 @@ public sealed class AppDb
         catch
         {
             // Column exists or migration not needed.
+        }
+    }
+
+    private async Task TryAddMediaItemLocationColumnsAsync()
+    {
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN Latitude REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN Longitude REAL;").ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            await Db.ExecuteAsync(
+                    "CREATE INDEX IF NOT EXISTS idx_media_location ON MediaItem(Latitude, Longitude);")
+                .ConfigureAwait(false);
+        }
+        catch
+        {
         }
     }
 

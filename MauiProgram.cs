@@ -39,6 +39,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<PermissionService>();
         builder.Services.AddSingleton<MediaStoreScanner>();
         builder.Services.AddSingleton<ThumbnailService>();
+        builder.Services.AddSingleton<LocationMetadataService>();
         builder.Services.AddSingleton<IndexService>();
         builder.Services.AddSingleton<PeopleTagService>();
         builder.Services.AddSingleton<FaceThumbnailService>();
@@ -65,6 +66,7 @@ public static class MauiProgram
         builder.Services.AddTransient<PersonViewModel>();
         builder.Services.AddTransient<PhotoPeopleEditorViewModel>();
         builder.Services.AddTransient<TaggedPhotosViewModel>();
+        builder.Services.AddTransient<MapViewModel>();
 
         // Pages
         builder.Services.AddSingleton<MainPage>();
@@ -74,6 +76,7 @@ public static class MauiProgram
         builder.Services.AddTransient<PersonPage>();
         builder.Services.AddTransient<PhotoPeopleEditorPage>();
         builder.Services.AddTransient<TaggedPhotosPage>();
+        builder.Services.AddTransient<MapPage>();
 
         return builder.Build();
     }
