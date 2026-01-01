@@ -1,4 +1,5 @@
 using UltimateVideoBrowser.Resources.Styles;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Views;
 
@@ -15,6 +16,20 @@ public partial class App : Application
 
         _serviceProvider = serviceProvider;
         _settingsService = serviceProvider.GetRequiredService<AppSettingsService>();
+
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+                ErrorLog.LogException(ex, "AppDomain.UnhandledException");
+            else if (args.ExceptionObject != null)
+                ErrorLog.LogMessage(args.ExceptionObject.ToString() ?? "Unknown error", "AppDomain.UnhandledException");
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            ErrorLog.LogException(args.Exception, "TaskScheduler.UnobservedTaskException");
+            args.SetObserved();
+        };
 
         ApplyThemePreference(_settingsService.ThemePreference);
 

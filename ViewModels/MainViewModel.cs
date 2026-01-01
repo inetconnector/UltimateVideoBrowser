@@ -5,6 +5,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Collections;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -1239,9 +1240,13 @@ public partial class MainViewModel : ObservableObject
                     });
                 });
             }
-            catch
+            catch (OperationCanceledException)
             {
-                // Ignore cancellation or retrieval failures.
+                // Ignore cancellation.
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "MainViewModel.StartThumbnailPipeline");
             }
             finally
             {

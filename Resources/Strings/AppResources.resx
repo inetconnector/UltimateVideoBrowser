@@ -657,6 +657,7 @@ Missing:
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
+<data name="MergeButton" xml:space="preserve"><value>Merge</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Merge into…</value></data><data name="QualityLabel" xml:space="preserve"><value>Quality</value></data><data name="ErrorLogTitle" xml:space="preserve"><value>Error log</value></data><data name="ErrorLogHint" xml:space="preserve"><value>Share this log if something fails or a thumbnail is blank.</value></data><data name="ErrorLogShowButton" xml:space="preserve"><value>Show log</value></data><data name="ErrorLogShareButton" xml:space="preserve"><value>Share log</value></data><data name="ErrorLogClearButton" xml:space="preserve"><value>Clear log</value></data><data name="ErrorLogEmptyMessage" xml:space="preserve"><value>No errors logged yet.</value></data><data name="ErrorLogClearedMessage" xml:space="preserve"><value>Error log cleared.</value></data><data name="ErrorLogShareTitle" xml:space="preserve"><value>Share error log</value></data></root>
   <data name="AlbumsButton" xml:space="preserve">
     <value>Albums</value>
   </data>

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 
@@ -107,8 +108,9 @@ public sealed class ThumbnailService
                     File.Move(tmpPath, thumbPath, true);
                     return thumbPath;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ErrorLog.LogException(ex, "ThumbnailService.EnsureThumbnailAsync(Android)", $"Path={item.Path}");
                     return null;
                 }
                 finally
@@ -174,8 +176,9 @@ public sealed class ThumbnailService
                 File.Move(tmpPath, thumbPath, true);
                 return thumbPath;
             }
-            catch
+            catch (Exception ex)
             {
+                ErrorLog.LogException(ex, "ThumbnailService.EnsureThumbnailAsync(Windows)", $"Path={item.Path}");
                 return null;
             }
             finally
@@ -206,8 +209,9 @@ public sealed class ThumbnailService
         {
             return await StorageFile.GetFileFromPathAsync(item.Path);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.GetStorageFileAsync", $"Path={item.Path}");
             var token = await GetSourceTokenAsync(item.SourceId).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(token))
                 return null;
@@ -228,8 +232,9 @@ public sealed class ThumbnailService
 
                 return await GetFileFromFolderAsync(folder, relativePath).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex)
             {
+                ErrorLog.LogException(ex, "ThumbnailService.GetStorageFileAsync(Fallback)", $"Path={item.Path}");
                 return null;
             }
         }
@@ -289,8 +294,9 @@ public sealed class ThumbnailService
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
             return false;
         }
     }
@@ -306,8 +312,9 @@ public sealed class ThumbnailService
 
             return File.Exists(path) ? File.OpenRead(path) : null;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.OpenPathStream", $"Path={path}");
             return null;
         }
     }
@@ -364,8 +371,9 @@ public sealed class ThumbnailService
                 return BitmapFactory.DecodeStream(decodeStream, null, opts);
             }
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.LoadImageBitmap", $"Path={path}");
             return null;
         }
     }
@@ -394,8 +402,10 @@ public sealed class ThumbnailService
                 {
                     frame = retriever.GetScaledFrameAtTime(tUs, Option.ClosestSync, ThumbMaxSize, ThumbMaxSize);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ErrorLog.LogException(ex, "ThumbnailService.LoadVideoBitmap(ScaledFrame)",
+                        $"Path={item.Path}");
                     frame = null;
                 }
 
@@ -414,8 +424,9 @@ public sealed class ThumbnailService
             frame.Dispose();
             return scaled;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.LoadVideoBitmap", $"Path={item.Path}");
             return null;
         }
     }
@@ -471,8 +482,9 @@ public sealed class ThumbnailService
 
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.IsUsableThumbFile", $"Path={path}");
             return false;
         }
     }
@@ -489,8 +501,9 @@ public sealed class ThumbnailService
             if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
                 File.Delete(path);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.TryDeleteFile", $"Path={path}");
             // Ignore.
         }
     }
