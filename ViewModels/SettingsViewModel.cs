@@ -20,6 +20,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
     [ObservableProperty] private bool isInternalPlayerEnabled;
+    [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
@@ -75,6 +76,7 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+        IsLocationEnabled = settingsService.LocationsEnabled;
 
         RefreshPeopleModelsStatus();
     }
@@ -187,6 +189,13 @@ public partial class SettingsViewModel : ObservableObject
         // Best-effort: if the user enables people tagging, try to ensure the models are available.
         if (value)
             _ = DownloadPeopleModelsAsync(CancellationToken.None);
+    }
+
+    partial void OnIsLocationEnabledChanged(bool value)
+    {
+        settingsService.LocationsEnabled = value;
+        if (value && !NeedsReindex)
+            NeedsReindex = true;
     }
 
     [RelayCommand]
