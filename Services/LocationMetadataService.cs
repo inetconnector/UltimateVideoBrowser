@@ -1,3 +1,4 @@
+using SixLabors.ImageSharp;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
