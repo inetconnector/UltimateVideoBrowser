@@ -33,6 +33,8 @@
                         <Button Text="{x:Static strings:AppResources.SourcesButton}"
                                 ImageSource="icon_sources.svg"
                                 Command="{Binding OpenSourcesCommand}" />
+                        <Button Text="{x:Static strings:AppResources.AlbumsButton}"
+                                Command="{Binding OpenAlbumsCommand}" />
                         <Button Text="{x:Static strings:AppResources.SettingsButton}"
                                 Command="{Binding OpenSettingsCommand}" />
                         <Button Text="{x:Static strings:AppResources.MapButton}"

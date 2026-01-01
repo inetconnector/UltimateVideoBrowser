@@ -5,6 +5,7 @@ namespace UltimateVideoBrowser.Services;
 public sealed class AppSettingsService
 {
     private const string ActiveSourceKey = "active_source_id";
+    private const string ActiveAlbumKey = "active_album_id";
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
     private const string DateFilterEnabledKey = "date_filter_enabled";
@@ -34,6 +35,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(ActiveSourceKey, "");
         set => Preferences.Default.Set(ActiveSourceKey, value ?? "");
+    }
+
+    public string ActiveAlbumId
+    {
+        get => Preferences.Default.Get(ActiveAlbumKey, "");
+        set => Preferences.Default.Set(ActiveAlbumKey, value ?? "");
     }
 
     public string SelectedSortOptionKey

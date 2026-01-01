@@ -209,6 +209,8 @@ public sealed class IndexService
             await db.Db.DeleteAsync<MediaItem>(item.Path).ConfigureAwait(false);
             await db.Db.ExecuteAsync("DELETE FROM PersonTag WHERE MediaPath = ?;", item.Path)
                 .ConfigureAwait(false);
+            await db.Db.ExecuteAsync("DELETE FROM AlbumItem WHERE MediaPath = ?;", item.Path)
+                .ConfigureAwait(false);
         }
     }
 
@@ -235,6 +237,11 @@ public sealed class IndexService
                 await db.Db.DeleteAsync<MediaItem>(oldPath).ConfigureAwait(false);
                 await db.Db.ExecuteAsync(
                         "UPDATE PersonTag SET MediaPath = ? WHERE MediaPath = ?;",
+                        newPath,
+                        oldPath)
+                    .ConfigureAwait(false);
+                await db.Db.ExecuteAsync(
+                        "UPDATE AlbumItem SET MediaPath = ? WHERE MediaPath = ?;",
                         newPath,
                         oldPath)
                     .ConfigureAwait(false);
