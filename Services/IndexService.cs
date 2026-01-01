@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Threading.Channels;
 using SQLite;
 using UltimateVideoBrowser.Models;
 
@@ -28,11 +29,29 @@ public sealed class IndexService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         await indexGate.WaitAsync(ct).ConfigureAwait(false);
+        Channel<MediaItem>? locationQueue = null;
+        List<Task>? locationWorkers = null;
         try
         {
             var inserted = 0;
             var processedOverall = 0;
             var totalOverall = 0;
+            var locationsEnabled = locationMetadataService.IsEnabled;
+
+            if (locationsEnabled)
+            {
+                locationQueue = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(128)
+                {
+                    SingleReader = false,
+                    SingleWriter = true,
+                    FullMode = BoundedChannelFullMode.Wait
+                });
+
+                var workerCount = Math.Clamp(Environment.ProcessorCount / 2, 1, 4);
+                locationWorkers = Enumerable.Range(0, workerCount)
+                    .Select(_ => Task.Run(() => ProcessLocationQueueAsync(locationQueue.Reader, ct), ct))
+                    .ToList();
+            }
 
             var sw = Stopwatch.StartNew();
             const int minReportMs = 150;
@@ -91,17 +110,21 @@ public sealed class IndexService
                             var exists = await db.Db.FindAsync<MediaItem>(v.Path).ConfigureAwait(false);
                             if (exists == null)
                             {
-                                await locationMetadataService.TryPopulateLocationAsync(v, ct).ConfigureAwait(false);
                                 await db.Db.InsertAsync(v).ConfigureAwait(false);
                                 inserted++;
+
+                                if (locationsEnabled && v.MediaType is MediaType.Photos or MediaType.Videos)
+                                    await QueueLocationLookupAsync(locationQueue, v.Path, v.MediaType, ct)
+                                        .ConfigureAwait(false);
                             }
                             else
                             {
                                 if ((!exists.Latitude.HasValue || !exists.Longitude.HasValue) &&
                                     (v.MediaType == MediaType.Photos || v.MediaType == MediaType.Videos))
                                 {
-                                    await locationMetadataService.TryPopulateLocationAsync(v, ct)
-                                        .ConfigureAwait(false);
+                                    if (locationsEnabled)
+                                        await QueueLocationLookupAsync(locationQueue, v.Path, v.MediaType, ct)
+                                            .ConfigureAwait(false);
                                 }
 
                                 if (exists.Name != v.Name ||
@@ -158,8 +181,63 @@ public sealed class IndexService
         }
         finally
         {
+            if (locationQueue != null)
+            {
+                locationQueue.Writer.TryComplete();
+                if (locationWorkers != null)
+                {
+                    try
+                    {
+                        await Task.WhenAll(locationWorkers).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Ignore cancellation while draining location workers.
+                    }
+                }
+            }
+
             indexGate.Release();
         }
+    }
+
+    private async Task ProcessLocationQueueAsync(ChannelReader<MediaItem> reader, CancellationToken ct)
+    {
+        await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
+        {
+            try
+            {
+                if (!await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false))
+                    continue;
+
+                if (!item.Latitude.HasValue || !item.Longitude.HasValue || string.IsNullOrWhiteSpace(item.Path))
+                    continue;
+
+                await db.Db.ExecuteAsync(
+                        "UPDATE MediaItem SET Latitude = ?, Longitude = ? WHERE Path = ?",
+                        item.Latitude,
+                        item.Longitude,
+                        item.Path)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Location metadata update failed for '{item.Path}': {ex}");
+            }
+        }
+    }
+
+    private static ValueTask QueueLocationLookupAsync(Channel<MediaItem>? locationQueue, string path,
+        MediaType mediaType, CancellationToken ct)
+    {
+        if (locationQueue == null)
+            return ValueTask.CompletedTask;
+
+        return locationQueue.Writer.WriteAsync(new MediaItem
+        {
+            Path = path,
+            MediaType = mediaType
+        }, ct);
     }
 
     public Task<List<MediaItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
