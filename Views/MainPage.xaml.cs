@@ -180,7 +180,7 @@ public partial class MainPage : ContentPage
 
     private void OnSortChipTapped(object sender, TappedEventArgs e)
     {
-        SortPicker?.Focus();
+        SearchSortView?.SortPickerControl?.Focus();
     }
 
     private sealed class MainPageBinding : BindableObject
@@ -684,9 +684,21 @@ public partial class MainPage : ContentPage
                 return Task.CompletedTask;
             }
 
-            var width = page.Width;
+            var width = page.MediaItemsView?.Width ?? 0;
             if (width <= 0)
-                width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            {
+                width = page.Width;
+                if (width <= 0)
+                    width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+
+                if (page.TimelineView?.IsVisible == true)
+                {
+                    var timelineWidth = page.TimelineView.Width;
+                    if (timelineWidth <= 0)
+                        timelineWidth = 120;
+                    width = Math.Max(0, width - timelineWidth);
+                }
+            }
 
             var minTileWidth = 240;
             var tilePadding = 20;
