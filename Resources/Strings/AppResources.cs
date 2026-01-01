@@ -264,6 +264,9 @@ public static class AppResources
     public static string TagPeopleAction =>
         GetString(nameof(TagPeopleAction), "Tag people");
 
+    public static string TagPeopleNoFacesAction =>
+        GetString(nameof(TagPeopleNoFacesAction), "No people detected");
+
     public static string TagPeopleTitle =>
         GetString(nameof(TagPeopleTitle), "Tag people");
 

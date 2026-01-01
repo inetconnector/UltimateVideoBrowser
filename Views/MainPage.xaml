@@ -349,7 +349,7 @@
                                                         Padding="10,2"
                                                         BackgroundColor="{DynamicResource Surface2}"
                                                         TextColor="{DynamicResource OnSurfaceMuted}" />
-                                                <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                <Button Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
@@ -517,7 +517,7 @@
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     <Button
-                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
@@ -683,7 +683,7 @@
                                                             BackgroundColor="{DynamicResource Surface2}"
                                                             TextColor="{DynamicResource OnSurfaceMuted}" />
                                                     <Button
-                                                        Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                                        Text="{Binding PeopleTagActionLabel}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TagPeopleCommand}"
                                                         CommandParameter="{Binding .}"
                                                         helpers:Tooltip.Text="{Binding PeopleTagsSummary}"
