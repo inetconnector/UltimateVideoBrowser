@@ -9,14 +9,18 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    private readonly AppDb db;
+    private readonly IDialogService dialogService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly AppSettingsService settingsService;
+    private readonly ISourceService sourceService;
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private bool canDownloadPeopleModels;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
+    [ObservableProperty] private bool isDatabaseResetting;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
     [ObservableProperty] private bool isInternalPlayerEnabled;
@@ -35,11 +39,15 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string videoExtensionsText = string.Empty;
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
-        PeopleRecognitionService peopleRecognitionService)
+        PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
+        IDialogService dialogService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
+        this.db = db;
+        this.sourceService = sourceService;
+        this.dialogService = dialogService;
         ThemeOptions = new[]
         {
             new ThemeOption("light", AppResources.ThemeLight),
@@ -218,6 +226,48 @@ public partial class SettingsViewModel : ObservableObject
                 IsPeopleModelsDownloading = false;
                 RefreshPeopleModelsStatus();
             });
+        }
+    }
+
+    [RelayCommand]
+    private async Task ResetDatabaseAsync()
+    {
+        if (IsDatabaseResetting)
+            return;
+
+        var confirmed = await dialogService.DisplayAlertAsync(
+            AppResources.SettingsDatabaseResetConfirmTitle,
+            AppResources.SettingsDatabaseResetConfirmMessage,
+            AppResources.SettingsDatabaseResetConfirmAccept,
+            AppResources.CancelButton);
+
+        if (!confirmed)
+            return;
+
+        IsDatabaseResetting = true;
+
+        try
+        {
+            await db.ResetAsync().ConfigureAwait(false);
+            await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => NeedsReindex = true);
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.SettingsDatabaseResetCompletedTitle,
+                    AppResources.SettingsDatabaseResetCompletedMessage,
+                    AppResources.OkButton));
+        }
+        catch
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.SettingsDatabaseResetFailedTitle,
+                    AppResources.SettingsDatabaseResetFailedMessage,
+                    AppResources.OkButton));
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() => IsDatabaseResetting = false);
         }
     }
 

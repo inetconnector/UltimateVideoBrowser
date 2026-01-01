@@ -163,6 +163,36 @@ public static class AppResources
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
+    public static string SettingsDatabaseResetHint =>
+        GetString(nameof(SettingsDatabaseResetHint),
+            "Deletes the local database and rebuilds it by rescanning your sources.");
+
+    public static string SettingsDatabaseResetButton =>
+        GetString(nameof(SettingsDatabaseResetButton), "Delete database");
+
+    public static string SettingsDatabaseResetConfirmTitle =>
+        GetString(nameof(SettingsDatabaseResetConfirmTitle), "Delete database?");
+
+    public static string SettingsDatabaseResetConfirmMessage =>
+        GetString(nameof(SettingsDatabaseResetConfirmMessage),
+            "This removes all indexed data and tags. The app will rescan your sources.");
+
+    public static string SettingsDatabaseResetConfirmAccept =>
+        GetString(nameof(SettingsDatabaseResetConfirmAccept), "Delete");
+
+    public static string SettingsDatabaseResetCompletedTitle =>
+        GetString(nameof(SettingsDatabaseResetCompletedTitle), "Database deleted");
+
+    public static string SettingsDatabaseResetCompletedMessage =>
+        GetString(nameof(SettingsDatabaseResetCompletedMessage),
+            "Rescanning has started and the database will be rebuilt.");
+
+    public static string SettingsDatabaseResetFailedTitle =>
+        GetString(nameof(SettingsDatabaseResetFailedTitle), "Delete failed");
+
+    public static string SettingsDatabaseResetFailedMessage =>
+        GetString(nameof(SettingsDatabaseResetFailedMessage),
+            "The database could not be rebuilt. Please try again.");
     public static string SettingsPlaybackTitle => GetString(nameof(SettingsPlaybackTitle), "Playback");
 
     public static string SettingsInternalPlayerLabel =>
