@@ -11,7 +11,7 @@ namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class PeopleRecognitionService
 {
-    private const float DefaultMatchThreshold = 0.36f; 
+    private const float DefaultMatchThreshold = 0.5f;
     private static float DefaultMinScore = 0.65f;
 
     private readonly AppDb db;
