@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:UltimateVideoBrowser.Models"
+             xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers"
+             x:Class="UltimateVideoBrowser.Views.Components.MediaItemPreviewView"
+             x:Name="PreviewRoot">
+    <Grid RowDefinitions="*"
+          BackgroundColor="{DynamicResource Surface2}"
+          HeightRequest="{Binding Source={x:Reference PreviewRoot}, Path=HeightRequest}"
+          MinimumHeightRequest="{Binding Source={x:Reference PreviewRoot}, Path=HeightRequest}">
+        <Image
+            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+            Aspect="AspectFill"
+            helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
+        <Frame BackgroundColor="#CC0E0F14"
+               CornerRadius="999"
+               Padding="6"
+               HorizontalOptions="End"
+               VerticalOptions="End"
+               Margin="8"
+               IsVisible="False">
+            <Frame.Triggers>
+                <DataTrigger TargetType="Frame"
+                             Binding="{Binding MediaType}"
+                             Value="{x:Static models:MediaType.Videos}">
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </Frame.Triggers>
+            <Image Source="icon_play.svg" HeightRequest="16"
+                   WidthRequest="16" />
+        </Frame>
+    </Grid>
+</ContentView>

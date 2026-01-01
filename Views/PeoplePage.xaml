@@ -46,7 +46,8 @@
                         SelectionMode="Single"
                         SelectionChanged="OnPersonSelected"
                         ItemSizingStrategy="MeasureFirstItem"
-                        ItemsUpdatingScrollMode="KeepScrollOffset">
+                        ItemsUpdatingScrollMode="KeepScrollOffset"
+                        x:Name="PeopleList">
             <CollectionView.EmptyView>
                 <Grid Padding="20" RowDefinitions="Auto,Auto" RowSpacing="10">
                     <Image Source="empty_state.svg" HeightRequest="110" />
