@@ -79,7 +79,7 @@ public sealed partial class PeopleViewModel : ObservableObject
     }
 }
 
-public sealed class PersonListItemViewModel : ObservableObject
+public sealed partial class PersonListItemViewModel : ObservableObject
 {
     [ObservableProperty] private string name;
 

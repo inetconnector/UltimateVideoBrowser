@@ -1,14 +1,18 @@
+using System.Diagnostics;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
+using System.Runtime.InteropServices;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class PeopleRecognitionService
 {
-    private const float DefaultMatchThreshold = 0.36f;
-    private const float DefaultMinScore = 0.6f;
+    private const float DefaultMatchThreshold = 0.36f; 
+    private static float DefaultMinScore = 0.65f;
 
     private readonly AppDb db;
     private readonly YuNetFaceDetector faceDetector;
@@ -41,11 +45,13 @@ public sealed class PeopleRecognitionService
             LastModelLoadError = null;
             await faceDetector.EnsureLoadedAsync(ct).ConfigureAwait(false);
             await faceRecognizer.EnsureLoadedAsync(ct).ConfigureAwait(false);
+            Debug.WriteLine($"[PeopleRecognition] WarmupModelsAsync OK. Loaded={IsRuntimeLoaded}");
             return IsRuntimeLoaded;
         }
         catch (Exception ex)
         {
             LastModelLoadError = ex.Message;
+            Debug.WriteLine($"[PeopleRecognition] WarmupModelsAsync FAILED: {ex}");
             return false;
         }
     }
@@ -55,9 +61,23 @@ public sealed class PeopleRecognitionService
         if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
             return Array.Empty<FaceMatch>();
 
+        Debug.WriteLine($"[PeopleRecognition] EnsurePeopleTagsForMediaAsync: {item.Path}");
+
         try
         {
+            ct.ThrowIfCancellationRequested();
+
             await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+            // Best-effort model warmup to avoid silent "0 faces" when runtime isn't loaded yet.
+            // This keeps the call resilient: if models can't load, we continue and just return no matches.
+            if (!IsRuntimeLoaded)
+            {
+                Debug.WriteLine("[PeopleRecognition] Runtime not loaded. Warming up...");
+                await WarmupModelsAsync(ct).ConfigureAwait(false);
+                Debug.WriteLine(
+                    $"[PeopleRecognition] Runtime loaded={IsRuntimeLoaded}, LastError={LastModelLoadError ?? "<none>"}");
+            }
 
             // Avoid re-scanning if the detector model hasn't changed since the last scan.
             var currentDetectionKey = await modelFiles.GetYuNetModelKeyAsync(ct).ConfigureAwait(false);
@@ -94,13 +114,17 @@ public sealed class PeopleRecognitionService
             if (embeddings.Count == 0)
             {
                 embeddings = await DetectAndStoreFacesAsync(item.Path, currentDetectionKey, ct).ConfigureAwait(false);
+
                 item.FaceScanModelKey = currentDetectionKey;
                 item.FaceScanAtSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 await db.Db.UpdateAsync(item).ConfigureAwait(false);
+
+                Debug.WriteLine($"[PeopleRecognition] Detected faces: {embeddings.Count} for {item.Path}");
             }
             else
             {
                 await TryUpdateFaceBoxesAsync(item.Path, embeddings, ct).ConfigureAwait(false);
+                Debug.WriteLine($"[PeopleRecognition] Reused stored faces: {embeddings.Count} for {item.Path}");
             }
 
             if (embeddings.Count == 0)
@@ -108,6 +132,7 @@ public sealed class PeopleRecognitionService
 
             var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
             var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             var knownEmbeddings = await db.Db.Table<FaceEmbedding>()
                 .Where(face => face.PersonId != null && face.PersonId != "")
                 .ToListAsync()
@@ -119,14 +144,18 @@ public sealed class PeopleRecognitionService
             foreach (var face in embeddings.Where(face => string.IsNullOrWhiteSpace(face.PersonId)))
             {
                 ct.ThrowIfCancellationRequested();
+
                 var embedding = BytesToFloats(face.Embedding);
                 var match = FindBestMatch(embedding, personEmbeddings);
+
                 if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
                 {
                     var newPerson = CreateUnknownPerson(peopleMap.Values);
                     await db.Db.InsertAsync(newPerson).ConfigureAwait(false);
+
                     peopleMap[newPerson.Id] = newPerson;
                     personEmbeddings[newPerson.Id] = new List<float[]> { embedding };
+
                     face.PersonId = newPerson.Id;
                     updatedPersonIds.Add(newPerson.Id);
                 }
@@ -134,6 +163,7 @@ public sealed class PeopleRecognitionService
                 {
                     face.PersonId = match.PersonId;
                     updatedPersonIds.Add(match.PersonId!);
+
                     if (personEmbeddings.TryGetValue(match.PersonId, out var list))
                         list.Add(embedding);
                 }
@@ -141,7 +171,6 @@ public sealed class PeopleRecognitionService
                 await db.Db.UpdateAsync(face).ConfigureAwait(false);
             }
 
-            // Recompute person quality / cover after assignments.
             foreach (var pid in updatedPersonIds)
                 await RecomputePersonQualityAsync(pid).ConfigureAwait(false);
 
@@ -158,10 +187,14 @@ public sealed class PeopleRecognitionService
 
             await UpdateMediaTagsAsync(item.Path, matches.Select(match => match.PersonId), peopleMap.Values)
                 .ConfigureAwait(false);
+
+            Debug.WriteLine($"[PeopleRecognition] Matches: {matches.Count} for {item.Path}");
             return matches;
         }
-        catch
+        catch (Exception ex)
         {
+            LastModelLoadError = ex.Message;
+            Debug.WriteLine($"[PeopleRecognition] EnsurePeopleTagsForMediaAsync FAILED: {ex}");
             return Array.Empty<FaceMatch>();
         }
     }
@@ -179,7 +212,6 @@ public sealed class PeopleRecognitionService
         ct.ThrowIfCancellationRequested();
 
         var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
-        var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var current = people.FirstOrDefault(p => p.Id == personId);
         if (current == null)
             return;
@@ -234,8 +266,6 @@ public sealed class PeopleRecognitionService
         if (embeddings.Count == 0)
             return;
 
-        // Rename in a Picasa-like way: if the user types a name that already exists,
-        // we merge the current person into the existing profile instead of creating duplicates.
         var desiredByPerson = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < embeddings.Count && i < names.Count; i++)
         {
@@ -256,19 +286,20 @@ public sealed class PeopleRecognitionService
             await RenamePersonAsync(personId, desired, ct).ConfigureAwait(false);
         }
 
-        // Refresh tags for the current media after potential merges.
         var updatedPeople = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
         await UpdateMediaTagsAsync(item.Path, await GetPersonIdsForMediaAsync(item.Path).ConfigureAwait(false),
                 updatedPeople)
             .ConfigureAwait(false);
     }
 
-    public async Task ScanAndTagAsync(IEnumerable<MediaItem> items,
+    public async Task ScanAndTagAsync(
+        IEnumerable<MediaItem> items,
         IProgress<(int processed, int total, string path)>? progress,
         CancellationToken ct)
     {
         var list = items.Where(item => item.MediaType == MediaType.Photos && !string.IsNullOrWhiteSpace(item.Path))
             .ToList();
+
         var total = list.Count;
         var processed = 0;
 
@@ -295,12 +326,29 @@ public sealed class PeopleRecognitionService
         IReadOnlyList<DetectedFace> faces;
         try
         {
-            faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+            using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
+            YuNetFaceDetector.YuNetTuning? tuning = YuNetFaceDetector.YuNetTuning.Default;
+
+            //if (referenceImage != null)
+            //{
+            //    tuning = await faceDetector.CalibrateFromReferenceImageAsync(referenceImage, expectedFaces: 4, ct)
+            //        .ConfigureAwait(false);
+            //}
+
+            // 2) Use tuned detection if available, otherwise fallback to your default.
+            if (tuning != null)
+            {
+                faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
+            }
+            else
+            {
+                faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+            }
         }
-        catch
+        catch (Exception ex)
         {
-            // If the model is missing or cannot be initialized (offline / download blocked),
-            // keep browsing resilient and simply skip automatic face detection.
+            LastModelLoadError = ex.Message;
+            Debug.WriteLine($"[PeopleRecognition] DetectFacesAsync FAILED: {ex}");
             return new List<FaceEmbedding>();
         }
 
@@ -314,20 +362,24 @@ public sealed class PeopleRecognitionService
         {
             ct.ThrowIfCancellationRequested();
             var face = faces[i];
+
             float[] embedding;
             try
             {
                 embedding = await faceRecognizer.ExtractEmbeddingAsync(image, face, ct).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex)
             {
-                // Best-effort: skip this face if recognition is unavailable.
+                LastModelLoadError = ex.Message;
+                Debug.WriteLine($"[PeopleRecognition] ExtractEmbeddingAsync FAILED (face {i}): {ex}");
                 continue;
             }
 
             if (embedding.Length == 0)
                 continue;
+
             var faceQuality = ComputeFaceQuality(face.Score, face.W, face.H);
+
             embeddings.Add(new FaceEmbedding
             {
                 MediaPath = path,
@@ -357,7 +409,6 @@ public sealed class PeopleRecognitionService
         if (embeddings.Count == 0)
             return;
 
-        // If boxes were not stored yet (older DB), re-run detection once and patch the rows.
         var needsUpdate = embeddings.Any(e => e.W <= 0 || e.H <= 0 || e.ImageWidth <= 0 || e.ImageHeight <= 0);
         if (!needsUpdate)
             return;
@@ -370,17 +421,15 @@ public sealed class PeopleRecognitionService
             using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
             image.Mutate(ctx => ctx.AutoOrient());
 
-            var embeddingModelKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
-
             IReadOnlyList<DetectedFace> faces;
             try
             {
                 faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex)
             {
-                // If the model is missing or cannot be initialized (offline / download blocked),
-                // keep browsing resilient and simply skip automatic face detection.
+                LastModelLoadError = ex.Message;
+                Debug.WriteLine($"[PeopleRecognition] TryUpdateFaceBoxes DetectFacesAsync FAILED: {ex}");
                 return;
             }
 
@@ -401,9 +450,9 @@ public sealed class PeopleRecognitionService
                 await db.Db.UpdateAsync(row).ConfigureAwait(false);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Best-effort patching; do not break browsing.
+            Debug.WriteLine($"[PeopleRecognition] TryUpdateFaceBoxes FAILED: {ex}");
         }
     }
 
@@ -415,21 +464,19 @@ public sealed class PeopleRecognitionService
         if (string.Equals(fromPersonId, toPersonId, StringComparison.OrdinalIgnoreCase))
             return;
 
-        // Re-assign all embeddings to the target person.
         await db.Db.ExecuteAsync(
                 "UPDATE FaceEmbedding SET PersonId = ? WHERE PersonId = ?;",
                 toPersonId,
                 fromPersonId)
             .ConfigureAwait(false);
 
-        // Remove the source profile if it exists.
         try
         {
             await db.Db.DeleteAsync<PersonProfile>(fromPersonId).ConfigureAwait(false);
         }
         catch
         {
-            // Ignore; profile might already be gone.
+            // Best-effort delete.
         }
     }
 
@@ -441,7 +488,7 @@ public sealed class PeopleRecognitionService
             .ConfigureAwait(false);
 
         var people = await db.Db.Table<PersonProfile>().ToListAsync().ConfigureAwait(false);
-        var updatedPersonIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         foreach (var path in mediaPaths.Select(face => face.MediaPath).Distinct(StringComparer.OrdinalIgnoreCase))
             await UpdateMediaTagsAsync(path, await GetPersonIdsForMediaAsync(path).ConfigureAwait(false), people)
                 .ConfigureAwait(false);
@@ -474,6 +521,7 @@ public sealed class PeopleRecognitionService
     private static Dictionary<string, List<float[]>> BuildEmbeddingMap(IEnumerable<FaceEmbedding> embeddings)
     {
         var map = new Dictionary<string, List<float[]>>(StringComparer.OrdinalIgnoreCase);
+
         foreach (var embedding in embeddings)
         {
             if (string.IsNullOrWhiteSpace(embedding.PersonId))
@@ -532,6 +580,7 @@ public sealed class PeopleRecognitionService
     private static PersonProfile CreateUnknownPerson(IEnumerable<PersonProfile> people)
     {
         var max = 0;
+
         foreach (var person in people)
         {
             if (!person.Name.StartsWith("Unknown ", StringComparison.OrdinalIgnoreCase))
@@ -564,7 +613,6 @@ public sealed class PeopleRecognitionService
         return values;
     }
 
-
     private static float ComputeFaceQuality(float detectorScore, float w, float h)
     {
         // A fast, deterministic quality heuristic in the 0..1 range.
@@ -595,28 +643,57 @@ public sealed class PeopleRecognitionService
         if (profile == null)
             return;
 
-        // Top-K average for robustness.
         const int k = 5;
         var take = Math.Min(k, faces.Count);
         var avg = 0f;
+
         for (var i = 0; i < take; i++)
             avg += faces[i].FaceQuality;
+
         avg = take > 0 ? avg / take : 0f;
 
-        // Small bonus for more samples (log-scaled).
         var countBonus = faces.Count > 0 ? Clamp01(MathF.Log10(faces.Count + 1) / 2f) * 0.1f : 0f;
 
         profile.QualityScore = Clamp01(avg + countBonus);
-
-        // Pick best cover face.
         profile.PrimaryFaceEmbeddingId = faces.FirstOrDefault()?.Id;
-
         profile.UpdatedUtc = DateTimeOffset.UtcNow;
+
         await db.Db.UpdateAsync(profile).ConfigureAwait(false);
     }
 
     private static float Clamp01(float v)
     {
         return v < 0f ? 0f : v > 1f ? 1f : v;
+    }
+    private static async Task<Image<Rgba32>?> TryLoadReferenceImageFromDesktopAsync(CancellationToken ct)
+    {
+        // Comments intentionally in English.
+#if WINDOWS
+    // 1) Try: Desktop\ref.jpg
+    var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+    var p1 = Path.Combine(desktop, "ref.jpg");
+    if (File.Exists(p1))
+        return await ImageSharpImage.LoadAsync<Rgba32>(p1, ct).ConfigureAwait(false);
+
+    // 2) Try: Desktop\ref.JPG (case variants)
+    var p2 = Path.Combine(desktop, "ref.JPG");
+    if (File.Exists(p2))
+        return await ImageSharpImage.LoadAsync<Rgba32>(p2, ct).ConfigureAwait(false);
+
+    // 3) Try: App base directory (next to exe)
+    var appDir = AppContext.BaseDirectory;
+    var p3 = Path.Combine(appDir, "ref.jpg");
+    if (File.Exists(p3))
+        return await ImageSharpImage.LoadAsync<Rgba32>(p3, ct).ConfigureAwait(false);
+
+    var p4 = Path.Combine(appDir, "ref.JPG");
+    if (File.Exists(p4))
+        return await ImageSharpImage.LoadAsync<Rgba32>(p4, ct).ConfigureAwait(false);
+
+    return null;
+#else
+        // Not supported for Android/iOS in this direct "desktop path" form.
+        return null;
+#endif
     }
 }

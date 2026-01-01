@@ -6,7 +6,7 @@ using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
 
-public sealed class PersonViewModel : ObservableObject
+public sealed partial class PersonViewModel : ObservableObject
 {
     private readonly PeopleDataService peopleData;
     private readonly ThumbnailService thumbnails;
