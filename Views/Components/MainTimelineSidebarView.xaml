@@ -11,13 +11,13 @@
           RowSpacing="8">
         <VerticalStackLayout Grid.Row="0"
                              Spacing="6"
-                             HorizontalOptions="Start"
-                             Margin="4,8,4,0">
+                             HorizontalOptions="FillAndExpand"
+                             Margin="8,8,8,0">
             <Button Text="▲"
                     FontSize="14"
-                    WidthRequest="32"
                     HeightRequest="32"
                     Padding="0"
+                    HorizontalOptions="FillAndExpand"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
                     BorderColor="{DynamicResource BorderSubtle}"
@@ -25,9 +25,9 @@
                     AutomationProperties.Name="Scroll timeline up" />
             <Button Text="▼"
                     FontSize="14"
-                    WidthRequest="32"
                     HeightRequest="32"
                     Padding="0"
+                    HorizontalOptions="FillAndExpand"
                     BackgroundColor="{DynamicResource Surface2}"
                     TextColor="{DynamicResource OnSurface}"
                     BorderColor="{DynamicResource BorderSubtle}"
