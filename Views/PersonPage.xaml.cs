@@ -46,12 +46,7 @@ public partial class PersonPage : ContentPage
         if (sender is CollectionView cv)
             cv.SelectedItem = null;
 
-        if (string.IsNullOrWhiteSpace(item.Path))
-            return;
-
-        var page = ActivatorUtilities.CreateInstance<PhotoPeopleEditorPage>(serviceProvider);
-        page.Initialize(item);
-        await Navigation.PushAsync(page);
+        await OpenTagEditorAsync(item);
     }
 
     private async void OnMergeClicked(object sender, EventArgs e)
@@ -117,5 +112,44 @@ public partial class PersonPage : ContentPage
         {
             // Ignore
         }
+    }
+
+    private async void OnTagPeopleClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button)
+            return;
+
+        if (button.CommandParameter is not MediaItem item)
+            return;
+
+        await OpenTagEditorAsync(item);
+    }
+
+    private async void OnOpenFolderClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button)
+            return;
+
+        if (button.CommandParameter is not MediaItem item)
+            return;
+
+        var mainViewModel = serviceProvider.GetService<MainViewModel>();
+        if (mainViewModel == null)
+            return;
+
+        await mainViewModel.OpenFolderAsync(item);
+    }
+
+    private async Task OpenTagEditorAsync(MediaItem item)
+    {
+        if (item == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        var page = ActivatorUtilities.CreateInstance<PhotoPeopleEditorPage>(serviceProvider);
+        page.Initialize(item);
+        await Navigation.PushAsync(page);
     }
 }

@@ -114,22 +114,30 @@
                     <Frame BackgroundColor="{DynamicResource Surface}"
                            CornerRadius="12"
                            HasShadow="False"
-                           Padding="0"
+                           Padding="10"
                            Margin="0,0,0,10">
-                        <Grid>
+                        <Grid RowDefinitions="110,Auto"
+                              RowSpacing="8">
                             <components:MediaItemPreviewView HeightRequest="110"
                                                              BindingContext="{Binding .}" />
-
-                            <Frame BackgroundColor="#CC0E0F14"
-                                   CornerRadius="10"
-                                   Padding="6,2"
-                                   HorizontalOptions="End"
-                                   VerticalOptions="Start"
-                                   Margin="6">
-                                <Label Text="{x:Static strings:AppResources.TagPeopleAction}"
-                                       FontSize="10"
-                                       TextColor="White" />
-                            </Frame>
+                            <VerticalStackLayout Grid.Row="1"
+                                                 Spacing="6"
+                                                 HorizontalOptions="End">
+                                <Button Text="{x:Static strings:AppResources.TagPeopleAction}"
+                                        FontSize="11"
+                                        Padding="10,2"
+                                        BackgroundColor="{DynamicResource Surface2}"
+                                        TextColor="{DynamicResource OnSurfaceMuted}"
+                                        Clicked="OnTagPeopleClicked"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="{x:Static strings:AppResources.OpenFolderAction}"
+                                        FontSize="11"
+                                        Padding="10,2"
+                                        BackgroundColor="{DynamicResource Surface2}"
+                                        TextColor="{DynamicResource OnSurfaceMuted}"
+                                        Clicked="OnOpenFolderClicked"
+                                        CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
                         </Grid>
                     </Frame>
                 </DataTemplate>

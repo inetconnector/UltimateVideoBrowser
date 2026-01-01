@@ -15,6 +15,8 @@ public partial class MainPage : ContentPage
     private CancellationTokenSource? appearingCts;
     private bool isHeaderSizeHooked;
     private bool isTimelineSelectionSyncing;
+    private int lastFirstVisibleIndex = -1;
+    private int lastLastVisibleIndex = -1;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
@@ -135,6 +137,8 @@ public partial class MainPage : ContentPage
     {
         // Drive the thumbnail priority queue based on what the user is currently seeing.
         vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
+        lastFirstVisibleIndex = e.FirstVisibleItemIndex;
+        lastLastVisibleIndex = e.LastVisibleItemIndex;
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
@@ -155,40 +159,40 @@ public partial class MainPage : ContentPage
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
-        ScrollTimelineToStart();
+        ScrollMediaByPage(isDown: false);
     }
 
     public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
     {
-        ScrollTimelineToStart();
+        ScrollMediaByPage(isDown: false);
     }
 
     public void OnTimelineScrollDownClicked(object sender, EventArgs e)
     {
-        ScrollTimelineToEnd();
+        ScrollMediaByPage(isDown: true);
     }
 
     public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
     {
-        ScrollTimelineToEnd();
+        ScrollMediaByPage(isDown: true);
     }
 
-    private void ScrollTimelineToStart()
+    private void ScrollMediaByPage(bool isDown)
     {
-        if (vm.TimelineEntries.Count == 0)
+        if (vm.MediaItems.Count == 0)
             return;
 
-        var first = vm.TimelineEntries[0];
-        TimelineSidebar.TimelineView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
-    }
+        var pageSize = lastFirstVisibleIndex >= 0 && lastLastVisibleIndex >= lastFirstVisibleIndex
+            ? Math.Max(1, lastLastVisibleIndex - lastFirstVisibleIndex + 1)
+            : Math.Min(12, vm.MediaItems.Count);
 
-    private void ScrollTimelineToEnd()
-    {
-        if (vm.TimelineEntries.Count == 0)
-            return;
+        var targetIndex = isDown
+            ? Math.Min(vm.MediaItems.Count - 1,
+                (lastLastVisibleIndex >= 0 ? lastLastVisibleIndex + 1 : pageSize))
+            : Math.Max(0, (lastFirstVisibleIndex >= 0 ? lastFirstVisibleIndex - pageSize : 0));
 
-        var last = vm.TimelineEntries[^1];
-        TimelineSidebar.TimelineView.ScrollTo(last, position: ScrollToPosition.End, animate: true);
+        var target = vm.MediaItems[targetIndex];
+        MediaItemsView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
     }
 
     private void TryHookHeaderSize()
