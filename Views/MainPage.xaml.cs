@@ -183,33 +183,6 @@ public partial class MainPage : ContentPage
         SearchSortView?.SortPickerControl?.Focus();
     }
 
-    private void OnTimelineScrollUpClicked(object sender, EventArgs e)
-    {
-        ScrollTimelineBy(-1);
-    }
-
-    private void OnTimelineScrollDownClicked(object sender, EventArgs e)
-    {
-        ScrollTimelineBy(1);
-    }
-
-    private void ScrollTimelineBy(int delta)
-    {
-        if (vm.TimelineEntries.Count == 0)
-            return;
-
-        var current = TimelineView.SelectedItem as TimelineEntry;
-        var index = current == null ? (delta > 0 ? -1 : vm.TimelineEntries.Count) : vm.TimelineEntries.IndexOf(current);
-        var targetIndex = Math.Clamp(index + delta, 0, vm.TimelineEntries.Count - 1);
-        var entry = vm.TimelineEntries[targetIndex];
-
-        isTimelineSelectionSyncing = true;
-        TimelineView.SelectedItem = entry;
-        isTimelineSelectionSyncing = false;
-
-        TimelineView.ScrollTo(entry, position: ScrollToPosition.MakeVisible, animate: true);
-    }
-
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
@@ -711,9 +684,21 @@ public partial class MainPage : ContentPage
                 return Task.CompletedTask;
             }
 
-            var width = page.Width;
+            var width = page.MediaItemsView?.Width ?? 0;
             if (width <= 0)
-                width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            {
+                width = page.Width;
+                if (width <= 0)
+                    width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+
+                if (page.TimelineView?.IsVisible == true)
+                {
+                    var timelineWidth = page.TimelineView.Width;
+                    if (timelineWidth <= 0)
+                        timelineWidth = 120;
+                    width = Math.Max(0, width - timelineWidth);
+                }
+            }
 
             var minTileWidth = 240;
             var tilePadding = 20;
