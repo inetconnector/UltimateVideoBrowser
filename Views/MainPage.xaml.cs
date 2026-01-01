@@ -220,7 +220,7 @@ public partial class MainPage : ContentPage
             ClearMarkedCommand = vm.ClearMarkedCommand;
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = new AsyncRelayCommand<MediaItem>(OpenTagEditorAsync);
-            OpenPersonFromTagCommand = new AsyncRelayCommand<string>(OpenPersonFromTagAsync);
+            OpenPersonFromTagCommand = new AsyncRelayCommand<TagNavigationContext>(OpenPersonFromTagAsync);
             OpenFolderCommand = vm.OpenFolderCommand;
             SelectSourceCommand = vm.SelectSourceCommand;
             ShareCommand = vm.ShareCommand;
@@ -400,7 +400,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand ClearMarkedCommand { get; }
         public IAsyncRelayCommand RenameCommand { get; }
         public IAsyncRelayCommand TagPeopleCommand { get; }
-        public IAsyncRelayCommand<string> OpenPersonFromTagCommand { get; }
+        public IAsyncRelayCommand<TagNavigationContext> OpenPersonFromTagCommand { get; }
         public IAsyncRelayCommand OpenFolderCommand { get; }
         public IAsyncRelayCommand SelectSourceCommand { get; }
 
@@ -566,9 +566,12 @@ public partial class MainPage : ContentPage
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!);
         }
 
-        private async Task OpenPersonFromTagAsync(string? tagName)
+        private async Task OpenPersonFromTagAsync(TagNavigationContext? context)
         {
-            var trimmed = (tagName ?? string.Empty).Trim();
+            if (context?.MediaItem != null)
+                page.RememberScrollTarget(context.MediaItem);
+
+            var trimmed = (context?.TagName ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(trimmed))
                 return;
 
