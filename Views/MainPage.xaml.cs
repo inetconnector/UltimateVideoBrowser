@@ -209,6 +209,7 @@ public partial class MainPage : ContentPage
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             OpenPeopleCommand = new AsyncRelayCommand(OpenPeopleAsync);
+            OpenMapCommand = new AsyncRelayCommand(OpenMapAsync);
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
             CancelIndexCommand = vm.CancelIndexCommand;
@@ -367,6 +368,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IsPeopleTaggingEnabled):
                         OnPropertyChanged(nameof(IsPeopleTaggingEnabled));
                         break;
+                    case nameof(MainViewModel.IsLocationEnabled):
+                        OnPropertyChanged(nameof(IsLocationEnabled));
+                        break;
                 }
             };
         }
@@ -387,6 +391,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand OpenSourcesCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand OpenPeopleCommand { get; }
+        public IAsyncRelayCommand OpenMapCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
         public IRelayCommand CancelIndexCommand { get; }
@@ -554,6 +559,7 @@ public partial class MainPage : ContentPage
         public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
         public bool AllowFileChanges => vm.AllowFileChanges;
         public bool IsPeopleTaggingEnabled => vm.IsPeopleTaggingEnabled;
+        public bool IsLocationEnabled => vm.IsLocationEnabled;
 
         private async Task OpenSourcesAsync()
         {
@@ -568,6 +574,11 @@ public partial class MainPage : ContentPage
         private async Task OpenPeopleAsync()
         {
             await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!);
+        }
+
+        private async Task OpenMapAsync()
+        {
+            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<MapPage>()!);
         }
 
         private async Task OpenPersonFromTagAsync(TagNavigationContext? context)

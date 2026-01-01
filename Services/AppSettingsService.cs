@@ -20,6 +20,7 @@ public sealed class AppSettingsService
     private const string DocumentExtensionsKey = "document_extensions";
     private const string AllowFileChangesKey = "allow_file_changes";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
+    private const string LocationsEnabledKey = "locations_enabled";
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
 
@@ -143,6 +144,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(PeopleTaggingEnabledKey, false);
         set => Preferences.Default.Set(PeopleTaggingEnabledKey, value);
+    }
+
+    public bool LocationsEnabled
+    {
+        get => Preferences.Default.Get(LocationsEnabledKey, false);
+        set => Preferences.Default.Set(LocationsEnabledKey, value);
     }
 
     public event EventHandler<bool>? NeedsReindexChanged;

@@ -230,6 +230,16 @@ public static class AppResources
         GetString(nameof(SettingsPeopleTaggingHint),
             "Turn this on to tag people in photos and videos from the library.");
 
+    public static string SettingsLocationsTitle =>
+        GetString(nameof(SettingsLocationsTitle), "Locations");
+
+    public static string SettingsLocationsHint =>
+        GetString(nameof(SettingsLocationsHint),
+            "Extract GPS metadata from photos and videos so they can be displayed on the world map.");
+
+    public static string SettingsLocationsLabel =>
+        GetString(nameof(SettingsLocationsLabel), "Show locations");
+
     public static string SettingsPeopleModelsFolderFormat =>
         GetString(nameof(SettingsPeopleModelsFolderFormat), "Folder: {0}");
 
@@ -375,6 +385,15 @@ public static class AppResources
 
     public static string SettingsExtensionsPlaceholder =>
         GetString(nameof(SettingsExtensionsPlaceholder), ".mp4, .mkv, .avi");
+
+    public static string MapButton => GetString(nameof(MapButton), "Map");
+    public static string MapPageTitle => GetString(nameof(MapPageTitle), "Map");
+    public static string MapEmptyTitle => GetString(nameof(MapEmptyTitle), "No locations found");
+
+    public static string MapEmptyMessage =>
+        GetString(nameof(MapEmptyMessage), "Enable locations and reindex to see photos and videos on the map.");
+
+    public static string OpenAction => GetString(nameof(OpenAction), "Open");
 
     public static string RenameConfirmTitle => GetString(nameof(RenameConfirmTitle), "Confirm rename");
 

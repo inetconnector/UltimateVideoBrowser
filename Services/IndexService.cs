@@ -7,15 +7,17 @@ namespace UltimateVideoBrowser.Services;
 public sealed class IndexService
 {
     private readonly AppDb db;
+    private readonly LocationMetadataService locationMetadataService;
 
     // Prevent concurrent indexing runs across the whole app instance
     private readonly SemaphoreSlim indexGate = new(1, 1);
     private readonly MediaStoreScanner scanner;
 
-    public IndexService(AppDb db, MediaStoreScanner scanner)
+    public IndexService(AppDb db, MediaStoreScanner scanner, LocationMetadataService locationMetadataService)
     {
         this.db = db;
         this.scanner = scanner;
+        this.locationMetadataService = locationMetadataService;
     }
 
     public async Task<int> IndexSourcesAsync(
@@ -89,22 +91,36 @@ public sealed class IndexService
                             var exists = await db.Db.FindAsync<MediaItem>(v.Path).ConfigureAwait(false);
                             if (exists == null)
                             {
+                                await locationMetadataService.TryPopulateLocationAsync(v, ct).ConfigureAwait(false);
                                 await db.Db.InsertAsync(v).ConfigureAwait(false);
                                 inserted++;
                             }
                             else
                             {
+                                if ((!exists.Latitude.HasValue || !exists.Longitude.HasValue) &&
+                                    (v.MediaType == MediaType.Photos || v.MediaType == MediaType.Videos))
+                                {
+                                    await locationMetadataService.TryPopulateLocationAsync(v, ct)
+                                        .ConfigureAwait(false);
+                                }
+
                                 if (exists.Name != v.Name ||
                                     exists.DurationMs != v.DurationMs ||
                                     exists.MediaType != v.MediaType ||
                                     exists.SourceId != v.SourceId ||
-                                    exists.DateAddedSeconds != v.DateAddedSeconds)
+                                    exists.DateAddedSeconds != v.DateAddedSeconds ||
+                                    exists.Latitude != v.Latitude ||
+                                    exists.Longitude != v.Longitude)
                                 {
                                     exists.Name = v.Name;
                                     exists.DurationMs = v.DurationMs;
                                     exists.MediaType = v.MediaType;
                                     exists.SourceId = v.SourceId;
                                     exists.DateAddedSeconds = v.DateAddedSeconds;
+                                    if (v.Latitude.HasValue)
+                                        exists.Latitude = v.Latitude;
+                                    if (v.Longitude.HasValue)
+                                        exists.Longitude = v.Longitude;
                                     await db.Db.UpdateAsync(exists).ConfigureAwait(false);
                                 }
                             }
@@ -167,6 +183,19 @@ public sealed class IndexService
     public Task<int> CountAsync(MediaType mediaTypes)
     {
         return CountAsyncInternal(mediaTypes);
+    }
+
+    public async Task<List<MediaItem>> QueryLocationsAsync(MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var allowed = BuildAllowedTypes(mediaTypes == MediaType.None ? MediaType.All : mediaTypes);
+        if (allowed.Count == 0)
+            return new List<MediaItem>();
+
+        var placeholders = string.Join(",", allowed.Select(_ => "?"));
+        var sql =
+            $"SELECT * FROM MediaItem WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND MediaType IN ({placeholders}) ORDER BY DateAddedSeconds DESC";
+        return await db.Db.QueryAsync<MediaItem>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
     }
 
     public async Task RemoveAsync(IEnumerable<MediaItem> items)

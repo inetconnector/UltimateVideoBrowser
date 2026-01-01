@@ -66,6 +66,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isIndexing;
     private bool isInitialized;
     [ObservableProperty] private bool isInternalPlayerEnabled;
+    [ObservableProperty] private bool isLocationEnabled;
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
@@ -1281,6 +1282,7 @@ public partial class MainViewModel : ObservableObject
             DateFilterTo = settingsService.DateFilterTo;
             var visibleTypes = settingsService.VisibleMediaTypes;
             SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
+            IsLocationEnabled = settingsService.LocationsEnabled;
             ApplyPlaybackSettings();
             ApplyFileChangeSettings();
             ApplyPeopleTaggingSettings();
