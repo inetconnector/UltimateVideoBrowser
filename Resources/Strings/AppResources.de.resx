@@ -138,6 +138,18 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>„Speichern unter“ wird auf diesem Gerät nicht unterstützt.</value>
   </data>
+  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Fehlerprotokoll</value>
+  </data>
+  <data name="ErrorLogEmptyMessage" xml:space="preserve">
+    <value>Noch keine Fehler protokolliert.</value>
+  </data>
+  <data name="ErrorLogShareTitle" xml:space="preserve">
+    <value>Fehlerprotokoll teilen</value>
+  </data>
+  <data name="ErrorLogClearedMessage" xml:space="preserve">
+    <value>Das Fehlerprotokoll wurde gelöscht.</value>
+  </data>
   <data name="RenameAction" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
