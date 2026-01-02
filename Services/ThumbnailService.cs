@@ -12,8 +12,12 @@ using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
 
 #elif WINDOWS
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
+using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
+using ImageSharpSize = SixLabors.ImageSharp.Size;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
@@ -384,20 +388,20 @@ public sealed class ThumbnailService
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
                 return false;
 
-            using var image = await Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            using var image = await ImageSharpImage.LoadAsync(sourcePath, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
             {
                 ctx.AutoOrient();
                 ctx.Resize(new ResizeOptions
                 {
-                    Mode = ResizeMode.Max,
-                    Size = new Size(ThumbMaxSize, ThumbMaxSize)
+                    Mode = ImageSharpResizeMode.Max,
+                    Size = new ImageSharpSize(ThumbMaxSize, ThumbMaxSize)
                 });
             });
 
             var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await ImageExtensions
-                .SaveAsJpegAsync(image, tmpPath, encoder, ct)
+            await image
+                .SaveAsJpegAsync(tmpPath, encoder, ct)
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
