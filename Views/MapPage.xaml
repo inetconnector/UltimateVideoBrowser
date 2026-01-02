@@ -57,8 +57,9 @@
                        Padding="0"
                        BackgroundColor="{DynamicResource Surface2}"
                        BorderColor="{DynamicResource BorderSubtle}">
-                    <Image Source="{Binding SelectedItem.ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
-                           Aspect="AspectFill" />
+                    <Image
+                        Source="{Binding SelectedItem.ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+                        Aspect="AspectFill" />
                 </Frame>
 
                 <VerticalStackLayout Grid.Column="1" Spacing="4">

@@ -1,7 +1,11 @@
 using System.Collections.Concurrent;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
+using Image = SixLabors.ImageSharp.Image;
+using ImageExtensions = SixLabors.ImageSharp.ImageExtensions;
 using IOPath = System.IO.Path;
+using ResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
+using Size = SixLabors.ImageSharp.Size;
 
 #if ANDROID && !WINDOWS
 using Android.OS;
@@ -9,13 +13,14 @@ using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
-
 #elif WINDOWS
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
 #endif
+
 
 namespace UltimateVideoBrowser.Services;
 
@@ -62,10 +67,11 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (System.OperationCanceledException)
+        catch (OperationCanceledException)
         {
             return null;
         }
+
         try
         {
             // Re-check after we acquired the lock.
@@ -138,7 +144,8 @@ public sealed class ThumbnailService
                 }
 
                 using var thumb =
-                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize, ThumbnailOptions.UseCurrentScale);
+                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize,
+                        ThumbnailOptions.UseCurrentScale);
                 if (thumb == null || thumb.Size == 0)
                 {
                     if (item.MediaType == MediaType.Photos)
@@ -157,7 +164,9 @@ public sealed class ThumbnailService
 
                     using var fallbackInput = fallbackThumb.AsStreamForRead();
                     using (var fallbackStream = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
                         await fallbackInput.CopyToAsync(fallbackStream, ct).ConfigureAwait(false);
+                    }
 
                     if (!IsUsableThumbFile(tmpPath))
                         return null;
@@ -168,7 +177,9 @@ public sealed class ThumbnailService
 
                 using var input = thumb.AsStreamForRead();
                 using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
                     await input.CopyToAsync(fs, ct).ConfigureAwait(false);
+                }
 
                 if (!IsUsableThumbFile(tmpPath))
                     return null;
@@ -218,7 +229,7 @@ public sealed class ThumbnailService
 
             try
             {
-                var folder = await Windows.Storage.AccessCache.StorageApplicationPermissions
+                var folder = await StorageApplicationPermissions
                     .FutureAccessList
                     .GetFolderAsync(token);
 
@@ -232,9 +243,9 @@ public sealed class ThumbnailService
 
                 return await GetFileFromFolderAsync(folder, relativePath).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex1)
             {
-                ErrorLog.LogException(ex, "ThumbnailService.GetStorageFileAsync(Fallback)", $"Path={item.Path}");
+                ErrorLog.LogException(ex1, "ThumbnailService.GetStorageFileAsync(Fallback)", $"Path={item.Path}");
                 return null;
             }
         }
@@ -261,7 +272,8 @@ public sealed class ThumbnailService
     private static async Task<StorageFile> GetFileFromFolderAsync(StorageFolder root, string relativePath)
     {
         var segments = relativePath
-            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
 
         var current = root;
         for (var i = 0; i < segments.Length - 1; i++)
@@ -277,19 +289,19 @@ public sealed class ThumbnailService
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
                 return false;
 
-            using var image = await global::SixLabors.ImageSharp.Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            using var image = await Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
             {
                 ctx.AutoOrient();
                 ctx.Resize(new ResizeOptions
                 {
-                    Mode = global::SixLabors.ImageSharp.Processing.ResizeMode.Max,
-                    Size = new global::SixLabors.ImageSharp.Size(ThumbMaxSize, ThumbMaxSize)
+                    Mode = ResizeMode.Max,
+                    Size = new Size(ThumbMaxSize, ThumbMaxSize)
                 });
             });
 
             var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await global::SixLabors.ImageSharp.ImageExtensions
+            await ImageExtensions
                 .SaveAsJpegAsync(image, tmpPath, encoder, ct)
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);

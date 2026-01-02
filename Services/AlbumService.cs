@@ -151,7 +151,8 @@ public sealed class AlbumService
         int limit)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var (sql, args) = BuildAlbumQuery(albumId, search, sourceId, from, to, mediaTypes, sortKey, offset, limit, false);
+        var (sql, args) =
+            BuildAlbumQuery(albumId, search, sourceId, from, to, mediaTypes, sortKey, offset, limit, false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 

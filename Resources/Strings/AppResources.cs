@@ -40,6 +40,7 @@ public static class AppResources
     public static string NewAlbumConfirm => GetString(nameof(NewAlbumConfirm), "Create");
     public static string NewAlbumPlaceholder => GetString(nameof(NewAlbumPlaceholder), "Album name");
     public static string AlbumExistsTitle => GetString(nameof(AlbumExistsTitle), "Album already exists");
+
     public static string AlbumExistsMessage =>
         GetString(nameof(AlbumExistsMessage), "An album named \"{0}\" already exists.");
 
@@ -111,6 +112,7 @@ public static class AppResources
     public static string ErrorLogTitle => GetString(nameof(ErrorLogTitle), "Error log");
     public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
     public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
+
     public static string ErrorLogClearedMessage =>
         GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");
 
@@ -198,6 +200,7 @@ public static class AppResources
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
+
     public static string SettingsDatabaseResetHint =>
         GetString(nameof(SettingsDatabaseResetHint),
             "Deletes the local database and rebuilds it by rescanning your sources.");
@@ -241,6 +244,7 @@ public static class AppResources
     public static string SettingsDatabaseResetFailedMessage =>
         GetString(nameof(SettingsDatabaseResetFailedMessage),
             "The database could not be rebuilt. Please try again.");
+
     public static string SettingsPlaybackTitle => GetString(nameof(SettingsPlaybackTitle), "Playback");
 
     public static string SettingsInternalPlayerLabel =>
@@ -360,13 +364,17 @@ public static class AppResources
 
     public static string TagPeopleEditorEmptyHint =>
         GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
+
     public static string TagImageEditorTitle => GetString(nameof(TagImageEditorTitle), "Image tags");
     public static string TagImageEditorHeader => GetString(nameof(TagImageEditorHeader), "Image tags");
     public static string TagImageEditorTagsLabel => GetString(nameof(TagImageEditorTagsLabel), "Image tags");
+
     public static string TagImageEditorTagsPlaceholder =>
         GetString(nameof(TagImageEditorTagsPlaceholder), "Add tags, separated by commas...");
+
     public static string TagImageEditorTagsHint =>
         GetString(nameof(TagImageEditorTagsHint), "Tip: You can tag an image even if no automatic tags were detected.");
+
     public static string TagImageEditorEmptyHint =>
         GetString(nameof(TagImageEditorEmptyHint), "No image tags detected for this photo.");
 

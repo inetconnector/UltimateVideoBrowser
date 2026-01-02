@@ -10,8 +10,8 @@ public class MediaItem : INotifyPropertyChanged
     private bool isMarked;
     private string name = "";
     private string path = "";
-    private string peopleTagsSummary = "";
     private string peopleTagActionLabel = AppResources.TagPeopleNoFacesAction;
+    private string peopleTagsSummary = "";
     private string? thumbnailPath;
 
     [PrimaryKey]
@@ -119,8 +119,7 @@ public class MediaItem : INotifyPropertyChanged
 
     public long FaceScanAtSeconds { get; set; }
 
-    [Ignore]
-    public bool HasLocation => Latitude.HasValue && Longitude.HasValue;
+    [Ignore] public bool HasLocation => Latitude.HasValue && Longitude.HasValue;
 
     [Ignore]
     public string LocationText

@@ -69,7 +69,8 @@ public sealed class PeopleTagService
         await db.EnsureInitializedAsync().ConfigureAwait(false);
 
         var placeholders = string.Join(", ", paths.Select(_ => "?"));
-        var query = $"SELECT MediaPath, COUNT(*) AS Count FROM FaceEmbedding WHERE MediaPath IN ({placeholders}) GROUP BY MediaPath;";
+        var query =
+            $"SELECT MediaPath, COUNT(*) AS Count FROM FaceEmbedding WHERE MediaPath IN ({placeholders}) GROUP BY MediaPath;";
         var results = await db.Db.QueryAsync<FaceCountRow>(query, paths.Cast<object>().ToArray())
             .ConfigureAwait(false);
 
@@ -169,7 +170,7 @@ public sealed class PeopleTagService
 
     private sealed class FaceCountRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
         public int Count { get; set; }
     }
 }

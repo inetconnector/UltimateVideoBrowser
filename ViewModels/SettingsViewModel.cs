@@ -269,10 +269,8 @@ public partial class SettingsViewModel : ObservableObject
         {
             await db.ResetAsync().ConfigureAwait(false);
             if (keepSources && sources is { Count: > 0 })
-            {
                 foreach (var source in sources)
                     await sourceService.UpsertAsync(source).ConfigureAwait(false);
-            }
 
             await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
             await MainThread.InvokeOnMainThreadAsync(() => NeedsReindex = true);

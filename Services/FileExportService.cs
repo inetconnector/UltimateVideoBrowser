@@ -1,11 +1,9 @@
-using UltimateVideoBrowser.Models;
-using UltimateVideoBrowser.Resources.Strings;
 #if !WINDOWS
 #endif
 
+using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Resources.Strings;
 #if WINDOWS
-using Microsoft.Maui.Platform;
-using Windows.Storage;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
 #endif
@@ -107,7 +105,6 @@ public sealed class FileExportService : IFileExportService
         var failed = 0;
 
         foreach (var item in list)
-        {
             try
             {
                 if (!File.Exists(item.Path))
@@ -123,7 +120,6 @@ public sealed class FileExportService : IFileExportService
             {
                 failed++;
             }
-        }
 
         var message = string.Format(AppResources.DeleteCompletedMessageFormat, deleted.Count, failed);
         await dialogService.DisplayAlertAsync(AppResources.DeleteCompletedTitle, message, AppResources.OkButton);
@@ -166,7 +162,6 @@ public sealed class FileExportService : IFileExportService
         var failed = 0;
 
         foreach (var item in list)
-        {
             try
             {
                 if (!File.Exists(item.Path))
@@ -193,7 +188,6 @@ public sealed class FileExportService : IFileExportService
             {
                 failed++;
             }
-        }
 
         var title = isMove ? AppResources.TransferMoveCompletedTitle : AppResources.TransferCopyCompletedTitle;
         var message = string.Format(

@@ -1,3 +1,7 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
+
 namespace UltimateVideoBrowser.Helpers;
 
 public static class Tooltip
@@ -44,16 +48,16 @@ public static class Tooltip
 #if WINDOWS
         try
         {
-            if (element.Handler?.PlatformView is Microsoft.UI.Xaml.FrameworkElement fe)
+            if (element.Handler?.PlatformView is FrameworkElement fe)
             {
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(fe, null);
+                    ToolTipService.SetToolTip(fe, null);
                 }
                 else
                 {
-                    var tt = new Microsoft.UI.Xaml.Controls.ToolTip { Content = text };
-                    Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(fe, tt);
+                    var tt = new ToolTip { Content = text };
+                    ToolTipService.SetToolTip(fe, tt);
                 }
             }
         }

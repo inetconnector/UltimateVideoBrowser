@@ -1,5 +1,5 @@
-using UltimateVideoBrowser.Resources.Styles;
 using UltimateVideoBrowser.Helpers;
+using UltimateVideoBrowser.Resources.Styles;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Views;
 

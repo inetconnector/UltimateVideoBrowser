@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Services;
@@ -92,8 +91,8 @@ public sealed partial class PeopleViewModel : ObservableObject
 
 public sealed partial class PersonListItemViewModel : ObservableObject
 {
-    [ObservableProperty] private string name;
     [ObservableProperty] private bool isIgnored;
+    [ObservableProperty] private string name;
 
     public PersonListItemViewModel(string id, string name, int photoCount, float qualityScore,
         string? coverThumbnailPath, bool isIgnored)

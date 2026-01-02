@@ -73,13 +73,11 @@ public partial class MainPage : ContentPage
                     pendingScrollToMediaPath = null;
                     var target = await vm.EnsureMediaItemLoadedAsync(path, ct);
                     if (target != null)
-                    {
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {
                             MediaItemsView.ScrollTo(target, position: ScrollToPosition.MakeVisible, animate: false);
                             MediaItemsView.Focus();
                         });
-                    }
                 }
             }
             catch
@@ -159,22 +157,22 @@ public partial class MainPage : ContentPage
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(isDown: false);
+        ScrollMediaByPage(false);
     }
 
     public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
     {
-        ScrollMediaByPage(isDown: false);
+        ScrollMediaByPage(false);
     }
 
     public void OnTimelineScrollDownClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(isDown: true);
+        ScrollMediaByPage(true);
     }
 
     public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
     {
-        ScrollMediaByPage(isDown: true);
+        ScrollMediaByPage(true);
     }
 
     private void ScrollMediaByPage(bool isDown)
@@ -188,8 +186,8 @@ public partial class MainPage : ContentPage
 
         var targetIndex = isDown
             ? Math.Min(vm.MediaItems.Count - 1,
-                (lastLastVisibleIndex >= 0 ? lastLastVisibleIndex + 1 : pageSize))
-            : Math.Max(0, (lastFirstVisibleIndex >= 0 ? lastFirstVisibleIndex - pageSize : 0));
+                lastLastVisibleIndex >= 0 ? lastLastVisibleIndex + 1 : pageSize)
+            : Math.Max(0, lastFirstVisibleIndex >= 0 ? lastFirstVisibleIndex - pageSize : 0);
 
         var target = vm.MediaItems[targetIndex];
         MediaItemsView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);

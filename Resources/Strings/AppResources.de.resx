@@ -654,7 +654,13 @@ Fehlend:
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Aus Personenindex entfernen</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Zusammenführen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Zusammenführen in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data><data name="ErrorLogTitle" xml:space="preserve"><value>Fehlerprotokoll</value></data><data name="ErrorLogHint" xml:space="preserve"><value>Teile dieses Protokoll, wenn etwas fehlschlägt oder ein Thumbnail leer ist.</value></data><data name="ErrorLogShowButton" xml:space="preserve"><value>Log anzeigen</value></data><data name="ErrorLogShareButton" xml:space="preserve"><value>Log teilen</value></data><data name="ErrorLogClearButton" xml:space="preserve"><value>Log leeren</value></data><data name="ErrorLogEmptyMessage" xml:space="preserve"><value>Noch keine Fehler protokolliert.</value></data><data name="ErrorLogClearedMessage" xml:space="preserve"><value>Fehlerprotokoll gelöscht.</value></data><data name="ErrorLogShareTitle" xml:space="preserve"><value>Fehlerprotokoll teilen</value></data></root>
+<data name="MergeButton" xml:space="preserve">
+  <value>Zusammenführen</value>
+</data>
+  <data name="MergeIntoTitle" xml:space="preserve"
+        ><value>Zusammenführen in…</value>
+  </data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data><data name="ErrorLogTitle" xml:space="preserve"><value>Fehlerprotokoll</value></data><data name="ErrorLogHint" xml:space="preserve"><value>Teile dieses Protokoll, wenn etwas fehlschlägt oder ein Thumbnail leer ist.</value></data><data name="ErrorLogShowButton" xml:space="preserve"><value>Log anzeigen</value></data><data name="ErrorLogShareButton" xml:space="preserve"><value>Log teilen</value></data><data name="ErrorLogClearButton" xml:space="preserve"><value>Log leeren</value></data><data name="ErrorLogEmptyMessage" xml:space="preserve"><value>Noch keine Fehler protokolliert.</value></data><data name="ErrorLogClearedMessage" xml:space="preserve"><value>Fehlerprotokoll gelöscht.</value></data><data name="ErrorLogShareTitle" xml:space="preserve"><value>Fehlerprotokoll teilen</value></data>
+  
   <data name="AlbumsButton" xml:space="preserve">
     <value>Alben</value>
   </data>

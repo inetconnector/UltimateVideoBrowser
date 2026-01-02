@@ -8,10 +8,10 @@ namespace UltimateVideoBrowser.Services;
 public sealed class IndexService
 {
     private readonly AppDb db;
-    private readonly LocationMetadataService locationMetadataService;
 
     // Prevent concurrent indexing runs across the whole app instance
     private readonly SemaphoreSlim indexGate = new(1, 1);
+    private readonly LocationMetadataService locationMetadataService;
     private readonly MediaStoreScanner scanner;
 
     public IndexService(AppDb db, MediaStoreScanner scanner, LocationMetadataService locationMetadataService)
@@ -121,11 +121,9 @@ public sealed class IndexService
                             {
                                 if ((!exists.Latitude.HasValue || !exists.Longitude.HasValue) &&
                                     (v.MediaType == MediaType.Photos || v.MediaType == MediaType.Videos))
-                                {
                                     if (locationsEnabled)
                                         await QueueLocationLookupAsync(locationQueue, v.Path, v.MediaType, ct)
                                             .ConfigureAwait(false);
-                                }
 
                                 if (exists.Name != v.Name ||
                                     exists.DurationMs != v.DurationMs ||
@@ -185,7 +183,6 @@ public sealed class IndexService
             {
                 locationQueue.Writer.TryComplete();
                 if (locationWorkers != null)
-                {
                     try
                     {
                         await Task.WhenAll(locationWorkers).ConfigureAwait(false);
@@ -194,7 +191,6 @@ public sealed class IndexService
                     {
                         // Ignore cancellation while draining location workers.
                     }
-                }
             }
 
             indexGate.Release();
@@ -204,7 +200,6 @@ public sealed class IndexService
     private async Task ProcessLocationQueueAsync(ChannelReader<MediaItem> reader, CancellationToken ct)
     {
         await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
-        {
             try
             {
                 if (!await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false))
@@ -224,7 +219,6 @@ public sealed class IndexService
             {
                 Debug.WriteLine($"Location metadata update failed for '{item.Path}': {ex}");
             }
-        }
     }
 
     private static ValueTask QueueLocationLookupAsync(Channel<MediaItem>? locationQueue, string path,

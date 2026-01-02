@@ -22,11 +22,11 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private const int PageSize = 60;
+    private readonly AlbumService albumService;
     private readonly IDialogService dialogService;
     private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
-    private readonly AlbumService albumService;
 
     private readonly PropertyChangedEventHandler mediaMarkedHandler;
     private readonly ModelFileService modelFileService;
@@ -42,6 +42,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ThumbnailService thumbnailService;
     [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private List<AlbumListItem> albumTabs = new();
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private string currentMediaName = "";
     [ObservableProperty] private string? currentMediaSource;
@@ -69,8 +70,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isIndexing;
     private bool isInitialized;
     [ObservableProperty] private bool isInternalPlayerEnabled;
-    [ObservableProperty] private bool isLocationEnabled;
     private bool isLoadingMoreMediaItems;
+    [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
@@ -93,7 +94,6 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SortOption? selectedSortOption;
-    [ObservableProperty] private List<AlbumListItem> albumTabs = new();
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
     [ObservableProperty] private int taggedPeopleCount;
@@ -245,7 +245,7 @@ public partial class MainViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(path))
             return null;
 
-        MediaItem? target = FindMediaItem(path);
+        var target = FindMediaItem(path);
         var lastCount = -1;
 
         while (target == null && hasMoreMediaItems && !cancellationToken.IsCancellationRequested)
@@ -741,12 +741,10 @@ public partial class MainViewModel : ObservableObject
 
         var updated = await indexService.RenameAsync(item, newPath, finalName);
         if (!updated)
-        {
             await dialogService.DisplayAlertAsync(
                 AppResources.RenameFailedTitle,
                 AppResources.RenameFailedMessage,
                 AppResources.OkButton);
-        }
 #else
         await dialogService.DisplayAlertAsync(
             AppResources.RenameFailedTitle,
@@ -898,7 +896,8 @@ public partial class MainViewModel : ObservableObject
             shell.DisplayActionSheet(AppResources.AddToAlbumAction, AppResources.CancelButton, null,
                 choices.ToArray()));
 
-        if (string.IsNullOrWhiteSpace(choice) || string.Equals(choice, AppResources.CancelButton, StringComparison.Ordinal))
+        if (string.IsNullOrWhiteSpace(choice) ||
+            string.Equals(choice, AppResources.CancelButton, StringComparison.Ordinal))
             return;
 
         Album? targetAlbum = null;
