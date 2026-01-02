@@ -326,18 +326,21 @@
                         <Label Text="{Binding ErrorLogPath}"
                                FontSize="11"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Grid ColumnDefinitions="*,*"
+                        <Grid ColumnDefinitions="Auto,Auto"
                               ColumnSpacing="12">
                             <Button Text="{x:Static strings:AppResources.ErrorLogShowButton}"
                                     Command="{Binding ShowErrorLogCommand}"
+                                    HorizontalOptions="Start"
                                     Padding="16,6" />
                             <Button Grid.Column="1"
                                     Text="{x:Static strings:AppResources.ErrorLogShareButton}"
                                     Command="{Binding ShareErrorLogCommand}"
+                                    HorizontalOptions="Start"
                                     Padding="16,6" />
                         </Grid>
                         <Button Text="{x:Static strings:AppResources.ErrorLogClearButton}"
                                 Command="{Binding ClearErrorLogCommand}"
+                                HorizontalOptions="Start"
                                 Padding="16,6" />
                     </VerticalStackLayout>
                 </Frame>
