@@ -56,6 +56,7 @@
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
     <MauiImage Include="Resources\Images\*" />
     <MauiAsset Include="Resources\Images\*.svg" LogicalName="%(Filename)%(Extension)" />
+    <MauiAsset Include="Resources\Legal\LegalImprint.txt" LogicalName="legal/LegalImprint.txt" />
   </ItemGroup>
 
   <ItemGroup>

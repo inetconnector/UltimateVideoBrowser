@@ -1,4 +1,5 @@
 using UltimateVideoBrowser.Resources.Strings;
+using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -29,7 +30,8 @@ public partial class SettingsPage : ContentPage
 
     private async void OnImprintClicked(object sender, EventArgs e)
     {
-        await NavigateToDocumentAsync(AppResources.LegalImprintTitle, AppResources.LegalImprintBody);
+        var body = await LegalDocumentLoader.LoadImprintAsync();
+        await NavigateToDocumentAsync(AppResources.LegalImprintTitle, body);
     }
 
     private async void OnPrivacyClicked(object sender, EventArgs e)

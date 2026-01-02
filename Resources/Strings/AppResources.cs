@@ -593,6 +593,30 @@ public static class AppResources
     public static string RenameConfirmMessage =>
         GetString(nameof(RenameConfirmMessage), "Rename \"{0}\" to \"{1}\"?");
 
+    public static string LegalImprintTitle => GetString(nameof(LegalImprintTitle), "Imprint");
+    public static string LegalPrivacyTitle => GetString(nameof(LegalPrivacyTitle), "Privacy policy");
+    public static string LegalTermsTitle => GetString(nameof(LegalTermsTitle), "Terms & conditions");
+    public static string LegalWithdrawalTitle => GetString(nameof(LegalWithdrawalTitle), "Withdrawal");
+    public static string LegalPrivacyBody => GetString(nameof(LegalPrivacyBody), string.Empty);
+    public static string LegalTermsBody => GetString(nameof(LegalTermsBody), string.Empty);
+    public static string LegalWithdrawalBody => GetString(nameof(LegalWithdrawalBody), string.Empty);
+    public static string LegalConsentTitle => GetString(nameof(LegalConsentTitle), "Legal consent");
+    public static string LegalConsentHeader => GetString(nameof(LegalConsentHeader), "Legal consent");
+    public static string LegalConsentIntro => GetString(nameof(LegalConsentIntro), string.Empty);
+    public static string LegalConsentProductTitle => GetString(nameof(LegalConsentProductTitle), string.Empty);
+    public static string LegalConsentProductScope => GetString(nameof(LegalConsentProductScope), string.Empty);
+    public static string LegalConsentPriceFormat => GetString(nameof(LegalConsentPriceFormat), "{0}");
+    public static string LegalConsentPaymentHint => GetString(nameof(LegalConsentPaymentHint), string.Empty);
+    public static string LegalConsentWithdrawalTitle => GetString(nameof(LegalConsentWithdrawalTitle), string.Empty);
+    public static string LegalConsentWithdrawalCheckbox => GetString(nameof(LegalConsentWithdrawalCheckbox), string.Empty);
+    public static string LegalConsentWithdrawalHint => GetString(nameof(LegalConsentWithdrawalHint), string.Empty);
+    public static string LegalConsentDocumentsTitle => GetString(nameof(LegalConsentDocumentsTitle), string.Empty);
+    public static string LegalConsentDocumentsHint => GetString(nameof(LegalConsentDocumentsHint), string.Empty);
+    public static string LegalConsentConfirmButton => GetString(nameof(LegalConsentConfirmButton), "Confirm");
+    public static string LegalConsentMissingTitle => GetString(nameof(LegalConsentMissingTitle), "Consent required");
+    public static string LegalConsentMissingMessage =>
+        GetString(nameof(LegalConsentMissingMessage), "Please confirm before continuing.");
+
     private static string GetString(string key, string fallback)
     {
         return ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? fallback;
