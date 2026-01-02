@@ -39,14 +39,14 @@ public sealed partial class PeopleViewModel : ObservableObject
             foreach (var p in overview)
             {
                 ct.ThrowIfCancellationRequested();
-                if (p.CoverFace == null)
-                    continue;
-                var coverPath = p.CoverFace != null
-                    ? await faceThumbnails.EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
-                        .ConfigureAwait(false)
-                    : null;
-                if (string.IsNullOrWhiteSpace(coverPath))
-                    continue;
+                string? coverPath = null;
+                if (p.CoverFace != null)
+                {
+                    coverPath = await faceThumbnails
+                        .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
+                        .ConfigureAwait(false);
+                }
+
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
                     p.IsIgnored));
             }
