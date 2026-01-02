@@ -22,7 +22,6 @@ public partial class MainPage : ContentPage
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
     private string? pendingScrollToMediaPath;
-    private bool topScrollPrimed;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider,
         PeopleDataService peopleData)
@@ -139,8 +138,6 @@ public partial class MainPage : ContentPage
         vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
         lastFirstVisibleIndex = e.FirstVisibleItemIndex;
         lastLastVisibleIndex = e.LastVisibleItemIndex;
-        if (lastFirstVisibleIndex > 0)
-            topScrollPrimed = false;
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
@@ -190,19 +187,9 @@ public partial class MainPage : ContentPage
 
         if (!isDown && lastFirstVisibleIndex <= 0)
         {
-            if (!topScrollPrimed)
-            {
-                topScrollPrimed = true;
-                MediaItemsView.ScrollTo(vm.MediaItems[0], position: ScrollToPosition.Start, animate: true);
-                return;
-            }
-
-            topScrollPrimed = false;
             ScrollToHeader();
             return;
         }
-
-        topScrollPrimed = false;
 
         var targetIndex = isDown
             ? Math.Min(vm.MediaItems.Count - 1,
