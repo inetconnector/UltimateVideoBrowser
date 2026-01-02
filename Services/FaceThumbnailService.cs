@@ -207,14 +207,39 @@ public sealed class FaceThumbnailService
 
     private static void TryDeleteFile(string path)
     {
-        try
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        const int maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
         {
-            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+            try
+            {
+                if (!File.Exists(path))
+                    return;
+
                 File.Delete(path);
+                return;
+            }
+            catch (IOException ex) when (IsFileInUse(ex))
+            {
+                if (attempt == maxAttempts - 1)
+                    return;
+
+                Thread.Sleep(50 * (attempt + 1));
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "FaceThumbnailService.TryDeleteFile", $"Path={path}");
+                return;
+            }
         }
-        catch (Exception ex)
-        {
-            ErrorLog.LogException(ex, "FaceThumbnailService.TryDeleteFile", $"Path={path}");
-        }
+    }
+
+    private static bool IsFileInUse(IOException ex)
+    {
+        const int sharingViolation = unchecked((int)0x80070020);
+        const int lockViolation = unchecked((int)0x80070021);
+        return ex.HResult == sharingViolation || ex.HResult == lockViolation;
     }
 }
