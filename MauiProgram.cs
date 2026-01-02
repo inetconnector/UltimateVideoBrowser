@@ -48,6 +48,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<YuNetFaceDetector>();
         builder.Services.AddSingleton<SFaceRecognizer>();
         builder.Services.AddSingleton<PeopleRecognitionService>();
+        builder.Services.AddSingleton<FaceScanQueueService>();
         builder.Services.AddSingleton<ISourceService, SourceService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();

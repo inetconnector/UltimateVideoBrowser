@@ -35,6 +35,7 @@ public sealed class AppDb
             await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
             await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
             await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
+            await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);")
@@ -52,6 +53,8 @@ public sealed class AppDb
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);")
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
+                .ConfigureAwait(false);
+            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);")
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
             await TryAddMediaItemLocationColumnsAsync().ConfigureAwait(false);
@@ -82,6 +85,7 @@ public sealed class AppDb
             await Db.DropTableAsync<Album>().ConfigureAwait(false);
             await Db.DropTableAsync<MediaItem>().ConfigureAwait(false);
             await Db.DropTableAsync<MediaSource>().ConfigureAwait(false);
+            await Db.DropTableAsync<FaceScanJob>().ConfigureAwait(false);
             isInitialized = false;
         }
         finally
