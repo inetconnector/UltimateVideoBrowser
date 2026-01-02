@@ -88,7 +88,7 @@ public sealed class ThumbnailService
 
                     using var bmp = item.MediaType switch
                     {
-                        MediaType.Photos => LoadImageBitmap(item.Path),
+                        MediaType.Photos or MediaType.Graphics => LoadImageBitmap(item.Path),
                         MediaType.Videos => LoadVideoBitmap(item),
                         _ => null
                     };
@@ -132,7 +132,7 @@ public sealed class ThumbnailService
                 var file = await GetStorageFileAsync(item).ConfigureAwait(false);
                 if (file == null)
                 {
-                    if (item.MediaType != MediaType.Photos)
+                    if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
                         return null;
 
                     Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
@@ -148,7 +148,7 @@ public sealed class ThumbnailService
                         ThumbnailOptions.UseCurrentScale);
                 if (thumb == null || thumb.Size == 0)
                 {
-                    if (item.MediaType == MediaType.Photos)
+                    if (item.MediaType is MediaType.Photos or MediaType.Graphics)
                     {
                         Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
                         if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
@@ -450,6 +450,7 @@ public sealed class ThumbnailService
         return mediaType switch
         {
             MediaType.Photos => ThumbnailMode.PicturesView,
+            MediaType.Graphics => ThumbnailMode.PicturesView,
             MediaType.Documents => ThumbnailMode.DocumentsView,
             _ => ThumbnailMode.VideosView
         };
