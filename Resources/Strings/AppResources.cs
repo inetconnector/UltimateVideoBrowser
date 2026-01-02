@@ -130,6 +130,12 @@ public static class AppResources
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
     public static string ErrorLogTitle => GetString(nameof(ErrorLogTitle), "Error log");
+    public static string ErrorLogHint =>
+        GetString(nameof(ErrorLogHint), "Share this log if something fails or a thumbnail is blank.");
+
+    public static string ErrorLogShowButton => GetString(nameof(ErrorLogShowButton), "Show log");
+    public static string ErrorLogShareButton => GetString(nameof(ErrorLogShareButton), "Share log");
+    public static string ErrorLogClearButton => GetString(nameof(ErrorLogClearButton), "Clear log");
     public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
     public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
 
