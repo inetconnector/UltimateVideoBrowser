@@ -233,6 +233,13 @@
                                     IsToggled="{Binding IsPhotosIndexed}" />
                         </Grid>
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.MediaTypeGraphics}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding IsGraphicsIndexed}" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.MediaTypeDocuments}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    VerticalOptions="Center" />

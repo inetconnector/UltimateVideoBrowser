@@ -15,6 +15,7 @@ public sealed class MediaTypeLabelConverter : IValueConverter
         {
             MediaType.Photos => AppResources.MediaTypePhotos,
             MediaType.Documents => AppResources.MediaTypeDocuments,
+            MediaType.Graphics => AppResources.MediaTypeGraphics,
             _ => AppResources.MediaTypeVideos
         };
     }
