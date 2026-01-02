@@ -14,4 +14,10 @@ public interface IDialogService
         int maxLength,
         Keyboard keyboard,
         string? initialValue = null);
+
+    Task<string?> DisplayActionSheetAsync(
+        string title,
+        string cancel,
+        string? destruction,
+        params string[] buttons);
 }

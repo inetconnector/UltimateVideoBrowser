@@ -884,17 +884,15 @@ public partial class MainViewModel : ObservableObject
         if (markedItems.Count == 0)
             return;
 
-        var shell = Shell.Current;
-        if (shell == null)
-            return;
-
         var albums = await albumService.GetAlbumsAsync().ConfigureAwait(false);
         var choices = albums.Select(a => a.Name).ToList();
         choices.Add(AppResources.NewAlbumAction);
 
-        var choice = await MainThread.InvokeOnMainThreadAsync(() =>
-            shell.DisplayActionSheet(AppResources.AddToAlbumAction, AppResources.CancelButton, null,
-                choices.ToArray()));
+        var choice = await dialogService.DisplayActionSheetAsync(
+            AppResources.AddToAlbumAction,
+            AppResources.CancelButton,
+            null,
+            choices.ToArray());
 
         if (string.IsNullOrWhiteSpace(choice) ||
             string.Equals(choice, AppResources.CancelButton, StringComparison.Ordinal))
@@ -1077,10 +1075,6 @@ public partial class MainViewModel : ObservableObject
         if (item == null)
             return;
 
-        var shell = Shell.Current;
-        if (shell == null)
-            return;
-
         var actions = new List<string>
         {
             AppResources.ShareAction,
@@ -1090,8 +1084,11 @@ public partial class MainViewModel : ObservableObject
         if (AllowFileChanges)
             actions.Add(AppResources.DeleteMarkedAction);
 
-        var choice = await MainThread.InvokeOnMainThreadAsync(() =>
-            shell.DisplayActionSheet(item.Name, AppResources.CancelButton, null, actions.ToArray()));
+        var choice = await dialogService.DisplayActionSheetAsync(
+            item.Name,
+            AppResources.CancelButton,
+            null,
+            actions.ToArray());
 
         if (string.Equals(choice, AppResources.ShareAction, StringComparison.Ordinal))
         {
