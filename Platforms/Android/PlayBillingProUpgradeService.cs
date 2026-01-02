@@ -138,11 +138,11 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         var result = await client.QueryProductDetailsAsync(queryParams).ConfigureAwait(false);
 
-        var billingResult = result.GetBillingResult();
-        if (billingResult.ResponseCode != BillingResponseCode.Ok)
+        var billingResult = ExtractBillingResult(result);
+        if (billingResult == null || billingResult.ResponseCode != BillingResponseCode.Ok)
             return cachedProduct;
 
-        cachedProduct = result.GetProductDetailsList()?.FirstOrDefault();
+        cachedProduct = ExtractProductDetailsList(result)?.FirstOrDefault();
         var offerDetails = cachedProduct?.GetOneTimePurchaseOfferDetails();
         if (offerDetails != null)
             PriceText = offerDetails.FormattedPrice;
@@ -158,11 +158,11 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         var result = await client.QueryPurchasesAsync(queryParams).ConfigureAwait(false);
 
-        var billingResult = result.GetBillingResult();
-        if (billingResult.ResponseCode != BillingResponseCode.Ok)
+        var billingResult = ExtractBillingResult(result);
+        if (billingResult == null || billingResult.ResponseCode != BillingResponseCode.Ok)
             return false;
 
-        var purchase = result.GetPurchasesList()?
+        var purchase = ExtractPurchasesList(result)?
             .FirstOrDefault(p => p.Products.Contains(ProductId) && p.PurchaseState == PurchaseState.Purchased);
 
         if (purchase == null)
@@ -223,6 +223,57 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
         }
 
         public void OnAcknowledgePurchaseResponse(BillingResult billingResult) => tcs.TrySetResult(billingResult);
+    }
+
+    private static BillingResult? ExtractBillingResult(object? result)
+    {
+        if (result == null)
+            return null;
+
+        var type = result.GetType();
+        var prop = type.GetProperty("BillingResult");
+        if (prop?.GetValue(result) is BillingResult billingResult)
+            return billingResult;
+
+        var method = type.GetMethod("GetBillingResult", Type.EmptyTypes);
+        if (method?.Invoke(result, null) is BillingResult methodResult)
+            return methodResult;
+
+        return null;
+    }
+
+    private static IList<ProductDetails>? ExtractProductDetailsList(object? result)
+    {
+        if (result == null)
+            return null;
+
+        var type = result.GetType();
+        var prop = type.GetProperty("ProductDetailsList");
+        if (prop?.GetValue(result) is IList<ProductDetails> list)
+            return list;
+
+        var method = type.GetMethod("GetProductDetailsList", Type.EmptyTypes);
+        if (method?.Invoke(result, null) is IList<ProductDetails> methodList)
+            return methodList;
+
+        return null;
+    }
+
+    private static IList<Purchase>? ExtractPurchasesList(object? result)
+    {
+        if (result == null)
+            return null;
+
+        var type = result.GetType();
+        var prop = type.GetProperty("PurchasesList");
+        if (prop?.GetValue(result) is IList<Purchase> list)
+            return list;
+
+        var method = type.GetMethod("GetPurchasesList", Type.EmptyTypes);
+        if (method?.Invoke(result, null) is IList<Purchase> methodList)
+            return methodList;
+
+        return null;
     }
 
     private sealed class PurchasesUpdatedListener : Java.Lang.Object, IPurchasesUpdatedListener
