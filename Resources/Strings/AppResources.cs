@@ -79,6 +79,12 @@ public static class AppResources
     public static string SaveAsNotSupportedMessage =>
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
+    public static string ErrorLogTitle => GetString(nameof(ErrorLogTitle), "Error log");
+    public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
+    public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
+    public static string ErrorLogClearedMessage =>
+        GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");
+
     public static string RenameAction => GetString(nameof(RenameAction), "Rename");
     public static string RenameTitle => GetString(nameof(RenameTitle), "Rename file");
     public static string RenameMessage => GetString(nameof(RenameMessage), "Enter a new name for this file.");

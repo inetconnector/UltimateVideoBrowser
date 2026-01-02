@@ -141,6 +141,18 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>Save as isn't supported on this device.</value>
   </data>
+  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Error log</value>
+  </data>
+  <data name="ErrorLogEmptyMessage" xml:space="preserve">
+    <value>No errors logged yet.</value>
+  </data>
+  <data name="ErrorLogShareTitle" xml:space="preserve">
+    <value>Share error log</value>
+  </data>
+  <data name="ErrorLogClearedMessage" xml:space="preserve">
+    <value>The error log has been cleared.</value>
+  </data>
   <data name="RenameAction" xml:space="preserve">
     <value>Rename</value>
   </data>

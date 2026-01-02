@@ -138,6 +138,18 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     <value>„Speichern unter“ wird auf diesem Gerät nicht unterstützt.</value>
   </data>
+  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Fehlerprotokoll</value>
+  </data>
+  <data name="ErrorLogEmptyMessage" xml:space="preserve">
+    <value>Noch keine Fehler protokolliert.</value>
+  </data>
+  <data name="ErrorLogShareTitle" xml:space="preserve">
+    <value>Fehlerprotokoll teilen</value>
+  </data>
+  <data name="ErrorLogClearedMessage" xml:space="preserve">
+    <value>Das Fehlerprotokoll wurde gelöscht.</value>
+  </data>
   <data name="RenameAction" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
@@ -344,6 +356,15 @@
   </data>
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
     <value>Aktiviere dies, um Personen in Fotos und Videos zu taggen.</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Standorte</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>GPS-Metadaten aus Fotos und Videos extrahieren, damit sie auf der Weltkarte angezeigt werden können.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Standorte anzeigen</value>
   </data>
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
     <value>Gesichtsmodelle</value>
