@@ -10,6 +10,8 @@ namespace UltimateVideoBrowser.Services.Faces;
 public sealed class PeopleRecognitionService
 {
     private const float DefaultMatchThreshold = 0.5f;
+    private const float RelaxedUnknownMatchThreshold = 0.45f;
+    private const float RelaxedUnknownMinQuality = 0.6f;
     private static readonly float DefaultMinScore = 0.65f;
 
     private readonly AppDb db;
@@ -149,7 +151,15 @@ public sealed class PeopleRecognitionService
                 var embedding = BytesToFloats(face.Embedding);
                 var match = FindBestMatch(embedding, personEmbeddings);
 
-                if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
+                var useMatch = match.PersonId != null && match.Similarity >= DefaultMatchThreshold;
+                if (!useMatch && match.PersonId != null && peopleMap.TryGetValue(match.PersonId, out var candidate))
+                {
+                    useMatch = IsUnknownName(candidate.Name) &&
+                               face.FaceQuality >= RelaxedUnknownMinQuality &&
+                               match.Similarity >= RelaxedUnknownMatchThreshold;
+                }
+
+                if (!useMatch)
                 {
                     if (!proUpgradeService.IsProUnlocked &&
                         peopleMap.Values.Count(p => string.IsNullOrWhiteSpace(p.MergedIntoPersonId)) >=
@@ -633,6 +643,9 @@ public sealed class PeopleRecognitionService
             UpdatedUtc = DateTimeOffset.UtcNow
         };
     }
+
+    private static bool IsUnknownName(string name)
+        => name.StartsWith("Unknown ", StringComparison.OrdinalIgnoreCase);
 
     private static byte[] FloatsToBytes(float[] values)
     {
