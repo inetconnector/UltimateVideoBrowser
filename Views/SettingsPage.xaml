@@ -371,8 +371,10 @@
                         <Button Text="{x:Static strings:AppResources.SettingsDatabaseResetButton}"
                                 Command="{Binding ResetDatabaseCommand}"
                                 IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
                                 HorizontalOptions="Start"
-                                Padding="16,6" />
+                                Padding="12,6" />
                     </VerticalStackLayout>
                 </Frame>
 
@@ -392,23 +394,23 @@
                         <HorizontalStackLayout Spacing="12">
                             <Button Text="{x:Static strings:AppResources.ErrorLogShowButton}"
                                     Command="{Binding ShowErrorLogCommand}"
-                                    TextColor="{DynamicResource OnAccent}"
-                                    BackgroundColor="{DynamicResource Accent}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
                                     HorizontalOptions="Start"
-                                    Padding="16,6" />
+                                    Padding="12,6" />
                             <Button Text="{x:Static strings:AppResources.ErrorLogShareButton}"
                                     Command="{Binding ShareErrorLogCommand}"
-                                    TextColor="{DynamicResource OnAccent}"
-                                    BackgroundColor="{DynamicResource Accent}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
                                     HorizontalOptions="Start"
-                                    Padding="16,6" />
+                                    Padding="12,6" />
                         </HorizontalStackLayout>
                         <Button Text="{x:Static strings:AppResources.ErrorLogClearButton}"
                                 Command="{Binding ClearErrorLogCommand}"
-                                TextColor="{DynamicResource OnAccent}"
-                                BackgroundColor="{DynamicResource Accent}"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
                                 HorizontalOptions="Start"
-                                Padding="16,6" />
+                                Padding="12,6" />
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>

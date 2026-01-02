@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>دمج</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>دمج إلى…</value></data><data name="QualityLabel" xml:space="preserve"><value>الجودة</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>دمج</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>دمج إلى…</value></data><data name="QualityLabel" xml:space="preserve"><value>الجودة</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>سجل الأخطاء</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>شارك هذا السجل إذا فشل شيء ما أو كانت الصورة المصغرة فارغة.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>عرض السجل</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>مشاركة السجل</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>مسح السجل</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>المستندات</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>الرسومات ولقطات الشاشة</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>الفيديوهات</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>حذف قاعدة البيانات</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>يحذف قاعدة البيانات المحلية ويعيد بناؤها بإعادة فحص المصادر.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>افصل الامتدادات بفواصل (مثال: ‎.mp4، ‎.mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>امتدادات الملفات</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>فعّل هذا لعرض الإجراءات التي تغيّر الملفات على القرص.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>السماح بإعادة التسمية والنقل والنسخ والحذف</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>تغييرات الملفات</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>استخدام مشغل الفيديو الداخلي للفيديوهات</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>تبقى بيانات الموقع على جهازك، لكن قد تتلقى خوادم الخرائط الخارجية بيانات طلب (مثل عنوان IP). أنت مسؤول عن مشاركة المواقع الحساسة؛ خدمات الجهات الخارجية لديها شروط وسياسات خصوصية خاصة بها.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>استخرج بيانات GPS من الصور والفيديوهات لعرضها على خريطة العالم. يتم تحميل بلاطات الخريطة من خوادم خارجية.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>عرض المواقع</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>المواقع</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>اختر أنواع الوسائط التي تريد فهرستها في مكتبتك.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>أنواع الوسائط</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>تنزيل نماذج الوجوه</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>نماذج الوجوه</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>فعّل هذا لوضع علامات على الأشخاص في الصور والفيديوهات من المكتبة.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>تمكين وسم الأشخاص</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>وسم الأشخاص</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>التشغيل</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• التعرف غير المحدود على الوجوه
+• ألبومات الأشخاص التلقائية
+• فرز دفعي (1000+ صورة)
+• تصدير ونسخ احتياطي محلي
+• بدون إعلانات</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>استعادة الشراء</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>ترقية Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>فتح Pro</value>
+  </data>
+</root>

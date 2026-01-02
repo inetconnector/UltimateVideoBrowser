@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Îmbină</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Îmbină în…</value></data><data name="QualityLabel" xml:space="preserve"><value>Calitate</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Îmbină</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Îmbină în…</value></data><data name="QualityLabel" xml:space="preserve"><value>Calitate</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Jurnal de erori</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Distribuie acest jurnal dacă ceva eșuează sau o miniatură este goală.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Afișează jurnalul</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Distribuie jurnalul</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Șterge jurnalul</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documente</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafică și capturi de ecran</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotografii</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videoclipuri</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Șterge baza de date</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Șterge baza de date locală și o reconstruiește prin rescanarea surselor.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Separă extensiile cu virgule (ex.: .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Extensii de fișiere</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Activează această opțiune pentru a afișa acțiuni care modifică fișierele pe disc.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Permite redenumirea, mutarea, copierea și ștergerea</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Modificări ale fișierelor</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Stare</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Folosește playerul video intern pentru videoclipuri</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Datele de locație rămân pe dispozitiv, dar serverele de hărți externe pot primi date de solicitare (ex. adresă IP). Ești responsabil pentru partajarea locațiilor sensibile; serviciile terțe au propriile condiții și politici de confidențialitate.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Extrage metadate GPS din fotografii și videoclipuri pentru a fi afișate pe harta lumii. Plăcile hărții sunt încărcate de pe servere externe.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Afișează locațiile</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Locații</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Alege ce tipuri să fie indexate în biblioteca ta.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Tipuri media</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Descarcă modele de fețe</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Modele de fețe</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Activează aceasta pentru a eticheta persoane în fotografii și videoclipuri din bibliotecă.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Activează etichetarea persoanelor</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Etichetarea persoanelor</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Redare</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Recunoaștere facială nelimitată
+• Albume automate de persoane
+• Sortare în lot (1000+ fotografii)
+• Export local și copii de siguranță
+• Fără reclame</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Restaurează achiziția</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Upgrade Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Deblochează Pro</value>
+  </data>
+</root>

@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>統合</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>統合先…</value></data><data name="QualityLabel" xml:space="preserve"><value>品質</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>統合</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>統合先…</value></data><data name="QualityLabel" xml:space="preserve"><value>品質</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>エラーログ</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>何かが失敗した場合やサムネイルが空白の場合は、このログを共有してください。</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>ログを表示</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>ログを共有</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>ログを消去</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>書類</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>グラフィックとスクリーンショット</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>写真</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>データベースを削除</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>ローカルデータベースを削除し、ソースを再スキャンして再構築します。</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>拡張子はカンマで区切ってください（例: .mp4, .mkv）。</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>ファイル拡張子</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>これを有効にすると、ディスク上のファイルを変更する操作が表示されます。</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>名前変更、移動、コピー、削除を許可</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>ファイル変更</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>状態</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>動画に内部ビデオプレーヤーを使用する</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>位置情報はデバイスに保存されますが、外部マップサーバーが要求データ（例: IPアドレス）を受け取る場合があります。機密な場所の共有は自己責任で行ってください。サードパーティサービスには独自の利用規約とプライバシーポリシーがあります。</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>写真や動画からGPSメタデータを抽出して世界地図に表示します。地図タイルは外部タイルサーバーから読み込まれます。</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>位置情報を表示</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>位置情報</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>ライブラリでインデックスする種類を選択してください。</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>メディアの種類</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>顔モデルをダウンロード</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>顔モデル</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>ライブラリの写真や動画で人物をタグ付けするにはこれをオンにします。</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>人物タグ付けを有効にする</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>人物タグ付け</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>再生</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• 無制限の顔認識
+• 自動人物アルバム
+• 一括並べ替え（1000枚以上）
+• ローカルエクスポートとバックアップ
+• 広告なし</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>購入を復元</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro にアップグレード</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro を解除</value>
+  </data>
+</root>

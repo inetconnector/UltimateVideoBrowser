@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Объединить</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Объединить в…</value></data><data name="QualityLabel" xml:space="preserve"><value>Качество</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Объединить</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Объединить в…</value></data><data name="QualityLabel" xml:space="preserve"><value>Качество</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Журнал ошибок</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Поделитесь этим журналом, если что-то не работает или миниатюра пустая.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Показать журнал</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Поделиться журналом</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Очистить журнал</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Графика и снимки экрана</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Фото</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Видео</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Удалить базу данных</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Удаляет локальную базу данных и пересоздаёт её, повторно сканируя источники.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Разделяйте расширения запятыми (например, .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Расширения файлов</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Включите это, чтобы показывать действия, которые изменяют файлы на диске.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Разрешить переименование, перемещение, копирование и удаление</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Изменения файлов</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Использовать встроенный видеоплеер для видео</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Данные о местоположении остаются на вашем устройстве, но внешние серверы карт могут получать данные запроса (например, IP-адрес). Вы несёте ответственность за обмен конфиденциальными местоположениями; у сторонних сервисов есть собственные условия и политики конфиденциальности.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Извлекайте GPS-метаданные из фото и видео, чтобы показывать их на карте мира. Картографические плитки загружаются с внешних серверов.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Показывать местоположения</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Местоположения</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Выберите типы для индексирования в вашей библиотеке.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Типы медиа</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Скачать модели лиц</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Модели лиц</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Включите это, чтобы отмечать людей на фото и видео из библиотеки.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Включить отметки людей</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Отметки людей</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Воспроизведение</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Неограниченное распознавание лиц
+• Автоматические альбомы людей
+• Пакетная сортировка (1000+ фото)
+• Локальный экспорт и резервные копии
+• Без рекламы</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Восстановить покупку</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Обновление Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Разблокировать Pro</value>
+  </data>
+</root>

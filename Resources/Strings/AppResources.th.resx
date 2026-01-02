@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>ผสาน</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>ผสานไปยัง…</value></data><data name="QualityLabel" xml:space="preserve"><value>คุณภาพ</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>ผสาน</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>ผสานไปยัง…</value></data><data name="QualityLabel" xml:space="preserve"><value>คุณภาพ</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>บันทึกข้อผิดพลาด</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>แชร์บันทึกนี้หากมีบางอย่างล้มเหลวหรือภาพขนาดย่อว่างเปล่า</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>แสดงบันทึก</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>แชร์บันทึก</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>ล้างบันทึก</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>เอกสาร</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>กราฟิกและภาพหน้าจอ</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>รูปภาพ</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>วิดีโอ</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>ลบฐานข้อมูล</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>ลบฐานข้อมูลภายในเครื่องและสร้างใหม่โดยสแกนแหล่งที่มาอีกครั้ง</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>แยกนามสกุลด้วยจุลภาค (เช่น .mp4, .mkv)</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>นามสกุลไฟล์</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>เปิดใช้งานนี้เพื่อแสดงการดำเนินการที่เปลี่ยนไฟล์บนดิสก์</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>อนุญาตให้เปลี่ยนชื่อ ย้าย คัดลอก และลบ</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>การเปลี่ยนแปลงไฟล์</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>สถานะ</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>ใช้เครื่องเล่นวิดีโอภายในสำหรับวิดีโอ</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>ข้อมูลตำแหน่งจะอยู่บนอุปกรณ์ของคุณ แต่เซิร์ฟเวอร์แผนที่ภายนอกอาจได้รับข้อมูลคำขอ (เช่น ที่อยู่ IP) คุณรับผิดชอบในการแชร์สถานที่ที่ละเอียดอ่อน; บริการของบุคคลที่สามมีข้อกำหนดและนโยบายความเป็นส่วนตัวของตนเอง</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>ดึงเมทาดาทา GPS จากรูปภาพและวิดีโอเพื่อแสดงบนแผนที่โลก ไทล์แผนที่จะโหลดจากเซิร์ฟเวอร์ภายนอก</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>แสดงตำแหน่ง</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>ตำแหน่ง</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>เลือกประเภทที่จะทำดัชนีในคลังของคุณ</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>ประเภทสื่อ</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>ดาวน์โหลดโมเดลใบหน้า</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>โมเดลใบหน้า</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>เปิดสิ่งนี้เพื่อแท็กผู้คนในรูปภาพและวิดีโอจากคลัง</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>เปิดใช้งานการแท็กผู้คน</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>การแท็กผู้คน</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>การเล่น</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• การจดจำใบหน้าแบบไม่จำกัด
+• อัลบั้มผู้คนอัตโนมัติ
+• การจัดเรียงแบบกลุ่ม (1000+ รูป)
+• การส่งออกและสำรองข้อมูลภายในเครื่อง
+• ไม่มีโฆษณา</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>คืนค่าการซื้อ</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>อัปเกรด Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>ปลดล็อก Pro</value>
+  </data>
+</root>

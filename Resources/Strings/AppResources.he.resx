@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>מיזוג</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>מיזוג אל…</value></data><data name="QualityLabel" xml:space="preserve"><value>איכות</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>מיזוג</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>מיזוג אל…</value></data><data name="QualityLabel" xml:space="preserve"><value>איכות</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>יומן שגיאות</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>שתף יומן זה אם משהו נכשל או שתמונה ממוזערת ריקה.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>הצג יומן</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>שתף יומן</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>נקה יומן</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>מסמכים</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>גרפיקה וצילומי מסך</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>תמונות</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>סרטונים</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>מחיקת מסד נתונים</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>מוחק את מסד הנתונים המקומי ובונה אותו מחדש על ידי סריקה חוזרת של המקורות.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>הפרד סיומות באמצעות פסיקים (לדוגמה: ‎.mp4, ‎.mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>סיומות קבצים</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>הפעל זאת כדי להציג פעולות שמשנות קבצים בדיסק.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>אפשר שינוי שם, העברה, העתקה ומחיקה</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>שינויים בקבצים</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>מצב</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>השתמש בנגן וידאו פנימי עבור סרטונים</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>נתוני המיקום נשארים במכשיר שלך, אך שרתי מפות חיצוניים עשויים לקבל נתוני בקשה (למשל כתובת IP). אתה אחראי לשיתוף מיקומים רגישים; לשירותי צד שלישי יש תנאים ומדיניות פרטיות משלהם.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>חלץ מטא-נתוני GPS מתמונות וסרטונים כדי שיוצגו במפת העולם. אריחי המפה נטענים משרתי אריחים חיצוניים.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>הצג מיקומים</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>מיקומים</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>בחר אילו סוגים ייאונדקסו בספרייה שלך.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>סוגי מדיה</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>הורדת מודלי פנים</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>מודלי פנים</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>הפעל זאת כדי לתייג אנשים בתמונות ובסרטונים מהספרייה.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>הפעל תיוג אנשים</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>תיוג אנשים</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>ניגון</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• זיהוי פנים ללא הגבלה
+• אלבומי אנשים אוטומטיים
+• מיון אצווה (1000+ תמונות)
+• ייצוא מקומי וגיבויים
+• ללא פרסומות</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>שחזר רכישה</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>שדרוג Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>פתח Pro</value>
+  </data>
+</root>

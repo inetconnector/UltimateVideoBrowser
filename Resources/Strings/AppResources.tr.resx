@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Birleştir</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Şununla birleştir…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kalite</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Birleştir</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Şununla birleştir…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kalite</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Hata günlüğü</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Bir şey başarısız olursa veya küçük resim boşsa bu günlüğü paylaşın.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Günlüğü göster</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Günlüğü paylaş</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Günlüğü temizle</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Belgeler</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafikler ve ekran görüntüleri</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotoğraflar</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videolar</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Veritabanını sil</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Yerel veritabanını siler ve kaynaklarınızı yeniden tarayarak yeniden oluşturur.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Uzantıları virgülle ayırın (örn. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Dosya uzantıları</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Diskteki dosyaları değiştiren eylemleri göstermek için bunu etkinleştirin.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Yeniden adlandırma, taşıma, kopyalama ve silmeye izin ver</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Dosya değişiklikleri</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Durum</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Videolar için dahili video oynatıcıyı kullan</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Konum verileri cihazınızda kalır, ancak harici harita sunucuları istek verileri (örn. IP adresi) alabilir. Hassas konumları paylaşmaktan siz sorumlusunuz; üçüncü taraf hizmetlerin kendi şartları ve gizlilik politikaları vardır.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Fotoğraf ve videolardan GPS meta verilerini çıkararak dünya haritasında gösterin. Harita döşemeleri harici döşeme sunucularından yüklenir.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Konumları göster</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Konumlar</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Kütüphanenizde hangi türlerin indeksleneceğini seçin.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Medya türleri</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Yüz modellerini indir</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Yüz modelleri</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Kütüphanedeki fotoğraf ve videolarda kişileri etiketlemek için bunu açın.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Kişi etiketlemeyi etkinleştir</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Kişi etiketleme</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Oynatma</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Sınırsız yüz tanıma
+• Otomatik kişi albümleri
+• Toplu sıralama (1000+ fotoğraf)
+• Yerel dışa aktarma ve yedekler
+• Reklam yok</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Satın almayı geri yükle</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro yükseltme</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro kilidini aç</value>
+  </data>
+</root>

@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Samenvoegen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Samenvoegen naar…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kwaliteit</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Samenvoegen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Samenvoegen naar…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kwaliteit</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Foutenlogboek</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Deel dit logboek als iets mislukt of een miniatuur leeg is.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Logboek tonen</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Logboek delen</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Logboek wissen</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documenten</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafische weergaven en schermafbeeldingen</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Foto's</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Video's</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Database verwijderen</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Verwijdert de lokale database en bouwt deze opnieuw op door je bronnen opnieuw te scannen.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Scheid extensies met komma's (bijv. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Bestandsextensies</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Schakel dit in om acties te tonen die bestanden op schijf wijzigen.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Naam wijzigen, verplaatsen, kopiëren en verwijderen toestaan</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Bestandswijzigingen</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Interne videospeler gebruiken voor video's</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Locatiegegevens blijven op je apparaat, maar externe kaartservers kunnen aanvraaggegevens ontvangen (bijv. IP-adres). Je bent verantwoordelijk voor het delen van gevoelige locaties; diensten van derden hebben hun eigen voorwaarden en privacybeleid.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Haal GPS-metadata uit foto's en video's zodat ze op de wereldkaart kunnen worden weergegeven. Kaarttegels worden geladen van externe tegelservers.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Locaties tonen</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Locaties</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Kies welke typen je in je bibliotheek wilt indexeren.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Mediatypen</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Gezichtsmodellen downloaden</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Gezichtsmodellen</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Schakel dit in om mensen te taggen in foto's en video's uit de bibliotheek.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Personen taggen inschakelen</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Personen taggen</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Afspelen</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Onbeperkte gezichtsherkenning
+• Automatische personenalbums
+• Batchsortering (1000+ foto's)
+• Lokale export en back-ups
+• Geen advertenties</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Aankoop herstellen</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro-upgrade</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro ontgrendelen</value>
+  </data>
+</root>
