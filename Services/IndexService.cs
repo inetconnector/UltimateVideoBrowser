@@ -13,12 +13,15 @@ public sealed class IndexService
     private readonly SemaphoreSlim indexGate = new(1, 1);
     private readonly LocationMetadataService locationMetadataService;
     private readonly MediaStoreScanner scanner;
+    private readonly ThumbnailService thumbnailService;
 
-    public IndexService(AppDb db, MediaStoreScanner scanner, LocationMetadataService locationMetadataService)
+    public IndexService(AppDb db, MediaStoreScanner scanner, LocationMetadataService locationMetadataService,
+        ThumbnailService thumbnailService)
     {
         this.db = db;
         this.scanner = scanner;
         this.locationMetadataService = locationMetadataService;
+        this.thumbnailService = thumbnailService;
     }
 
     public async Task<int> IndexSourcesAsync(
@@ -53,22 +56,7 @@ public sealed class IndexService
                     .ToList();
             }
 
-            var sw = Stopwatch.StartNew();
-            const int minReportMs = 150;
-
-            void SafeReport(IndexProgress p)
-            {
-                if (progress == null) return;
-                try
-                {
-                    progress.Report(p);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Progress handler crashed: {ex}");
-                    // Swallow to avoid bringing the app down
-                }
-            }
+            var scheduler = new ProgressScheduler(progress, 150);
 
             foreach (var source in sources)
             {
@@ -83,12 +71,13 @@ public sealed class IndexService
                     Debug.WriteLine($"Indexing count failed for source '{source.DisplayName}': {ex}");
                 }
 
-                SafeReport(new IndexProgress(
-                    processedOverall,
-                    totalOverall,
-                    inserted,
-                    source.DisplayName ?? "",
-                    "")); // never null
+                scheduler.Report(new IndexProgress(
+                        processedOverall,
+                        totalOverall,
+                        inserted,
+                        source.DisplayName ?? "",
+                        ""),
+                    force: true);
 
                 try
                 {
@@ -99,16 +88,12 @@ public sealed class IndexService
                         totalOverall++;
 
                         // Throttle progress updates to protect UI thread
-                        if (sw.ElapsedMilliseconds >= minReportMs)
-                        {
-                            sw.Restart();
-                            SafeReport(new IndexProgress(
-                                processedOverall,
-                                totalOverall,
-                                inserted,
-                                source.DisplayName ?? "",
-                                v.Path ?? ""));
-                        }
+                        scheduler.Report(new IndexProgress(
+                            processedOverall,
+                            totalOverall,
+                            inserted,
+                            source.DisplayName ?? "",
+                            v.Path ?? ""));
 
                         try
                         {
@@ -163,16 +148,12 @@ public sealed class IndexService
                         processedOverall++;
 
                         // Final per-item report can also be throttled; keep it safe
-                        if (sw.ElapsedMilliseconds >= minReportMs)
-                        {
-                            sw.Restart();
-                            SafeReport(new IndexProgress(
-                                processedOverall,
-                                totalOverall,
-                                inserted,
-                                source.DisplayName ?? "",
-                                v.Path ?? ""));
-                        }
+                        scheduler.Report(new IndexProgress(
+                            processedOverall,
+                            totalOverall,
+                            inserted,
+                            source.DisplayName ?? "",
+                            v.Path ?? ""));
                     }
                 }
                 catch (Exception ex)
@@ -182,7 +163,8 @@ public sealed class IndexService
             }
 
             // One last report at the end (not throttled)
-            SafeReport(new IndexProgress(processedOverall, totalOverall, inserted, "", ""));
+            scheduler.Report(new IndexProgress(processedOverall, totalOverall, inserted, "", ""), force: true);
+            scheduler.Flush();
 
             return inserted;
         }
@@ -292,6 +274,8 @@ public sealed class IndexService
                 .ConfigureAwait(false);
             await db.Db.ExecuteAsync("DELETE FROM AlbumItem WHERE MediaPath = ?;", item.Path)
                 .ConfigureAwait(false);
+            await db.Db.DeleteAsync<FaceScanJob>(item.Path).ConfigureAwait(false);
+            thumbnailService.DeleteThumbnailForPath(item.Path);
         }
     }
 
@@ -326,6 +310,12 @@ public sealed class IndexService
                         newPath,
                         oldPath)
                     .ConfigureAwait(false);
+                await db.Db.ExecuteAsync(
+                        "UPDATE FaceScanJob SET MediaPath = ? WHERE MediaPath = ?;",
+                        newPath,
+                        oldPath)
+                    .ConfigureAwait(false);
+                thumbnailService.DeleteThumbnailForPath(oldPath);
             }
 
             return true;
@@ -418,5 +408,54 @@ public sealed class IndexService
         };
 
         return q;
+    }
+
+    private sealed class ProgressScheduler
+    {
+        private readonly IProgress<IndexProgress>? progress;
+        private readonly int minReportMs;
+        private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+        private IndexProgress? pending;
+
+        public ProgressScheduler(IProgress<IndexProgress>? progress, int minReportMs)
+        {
+            this.progress = progress;
+            this.minReportMs = Math.Max(1, minReportMs);
+        }
+
+        public void Report(IndexProgress value, bool force = false)
+        {
+            if (progress == null)
+                return;
+
+            if (force || stopwatch.ElapsedMilliseconds >= minReportMs)
+            {
+                pending = null;
+                stopwatch.Restart();
+                TryReport(value);
+            }
+            else
+            {
+                pending = value;
+            }
+        }
+
+        public void Flush()
+        {
+            if (pending != null)
+                Report(pending, force: true);
+        }
+
+        private void TryReport(IndexProgress value)
+        {
+            try
+            {
+                progress?.Report(value);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Progress handler crashed: {ex}");
+            }
+        }
     }
 }

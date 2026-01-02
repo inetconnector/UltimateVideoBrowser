@@ -10,9 +10,6 @@
 - [ ] **Mehr Metadaten aufnehmen:** Dauer/Dimensionen für Photos/Videos im Index speichern und als Filter verfügbar machen.
 
 ## Performance & Cache
-- [ ] **Thumbnail-Cache bereinigen:** Orphaned Thumbs nach Löschen/Move entfernen und optional eine Cache-Size-Limitierung (LRU) einführen (`ThumbnailService`).
-- [ ] **Index-Progress throttling vereinheitlichen:** Progress-Updates zentral drosseln und UI-Thread-Last reduzieren (z. B. über einen gemeinsamen „progress scheduler“ in `IndexService`).
-- [ ] **Background-Face-Scan robust machen:** Nach Indexing Jobs persistieren (Queue) und resumierbar gestalten, statt nur flüchtig in `MainViewModel`.
 
 ## UI/UX
 - [ ] **Suche über Tags/Personen/Album:** UI-Filter erweitern, damit Suche nicht nur `MediaItem.Name` umfasst.
@@ -26,4 +23,3 @@
 ## Tests & Qualitätssicherung
 - [ ] **Unit-Tests für Indexing/Query:** z. B. `IndexService.BuildQuery`/`AlbumService.BuildAlbumQuery`/`PeopleTagService`.
 - [ ] **Smoke-Tests für People-Model-Download:** Falls möglich, logische Tests über `ModelFileService` (mocked FS/HTTP).
-

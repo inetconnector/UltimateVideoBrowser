@@ -25,6 +25,7 @@ public partial class MainViewModel : ObservableObject
     private readonly AlbumService albumService;
     private readonly IDialogService dialogService;
     private readonly IFileExportService fileExportService;
+    private readonly FaceScanQueueService faceScanQueueService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
 
@@ -119,7 +120,8 @@ public partial class MainViewModel : ObservableObject
         AlbumService albumService,
         PeopleTagService peopleTagService,
         ModelFileService modelFileService,
-        PeopleRecognitionService peopleRecognitionService)
+        PeopleRecognitionService peopleRecognitionService,
+        FaceScanQueueService faceScanQueueService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
@@ -133,6 +135,7 @@ public partial class MainViewModel : ObservableObject
         this.peopleTagService = peopleTagService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
+        this.faceScanQueueService = faceScanQueueService;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
         SortOptions = new[]
@@ -514,34 +517,16 @@ public partial class MainViewModel : ObservableObject
 
                 await peopleRecognitionService.WarmupModelsAsync(ct).ConfigureAwait(false);
 
-                var offset = 0;
-                const int batchSize = 200;
+                var sourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+                var sortKey = SelectedSortOption?.Key ?? "date";
+                DateTime? from = IsDateFilterEnabled ? DateFilterFrom : null;
+                DateTime? to = IsDateFilterEnabled ? DateFilterTo : null;
 
-                // Page through all photos (current source filter if one is selected).
-                while (!ct.IsCancellationRequested)
-                {
-                    var sourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-                    var sortKey = SelectedSortOption?.Key ?? "date";
-                    DateTime? from = IsDateFilterEnabled ? DateFilterFrom : null;
-                    DateTime? to = IsDateFilterEnabled ? DateFilterTo : null;
+                await faceScanQueueService
+                    .EnqueuePhotosForScanAsync(sourceId, sortKey, from, to, ct)
+                    .ConfigureAwait(false);
 
-                    var page = await indexService
-                        .QueryPageAsync("", sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
-                        .ConfigureAwait(false);
-
-                    if (page.Count == 0)
-                        break;
-
-                    foreach (var item in page)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await peopleRecognitionService.EnsurePeopleTagsForMediaAsync(item, ct).ConfigureAwait(false);
-                    }
-
-                    offset += page.Count;
-                    if (page.Count < batchSize)
-                        break;
-                }
+                await faceScanQueueService.ProcessQueueAsync(ct).ConfigureAwait(false);
 
                 // Refresh UI once after the scan to populate People/Tag counts.
                 await MainThread.InvokeOnMainThreadAsync(async () =>

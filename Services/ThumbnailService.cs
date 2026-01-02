@@ -28,9 +28,13 @@ public sealed class ThumbnailService
 {
     private const int ThumbMaxSize = 320;
     private const int ThumbQuality = 82;
+    private const long DefaultCacheSizeLimitBytes = 512L * 1024 * 1024;
 
     private readonly string cacheDir;
     private readonly ISourceService sourceService;
+    private readonly SemaphoreSlim cacheTrimGate = new(1, 1);
+
+    public long CacheSizeLimitBytes { get; set; } = DefaultCacheSizeLimitBytes;
 
     private readonly ConcurrentDictionary<string, SemaphoreSlim> thumbLocks
         = new(StringComparer.OrdinalIgnoreCase);
@@ -52,12 +56,25 @@ public sealed class ThumbnailService
         return IOPath.Combine(cacheDir, safe + ".jpg");
     }
 
+    public void DeleteThumbnailForPath(string? mediaPath)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath))
+            return;
+
+        var safe = MakeSafeFileName(mediaPath);
+        var path = IOPath.Combine(cacheDir, safe + ".jpg");
+        TryDeleteFile(path);
+    }
+
     public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
     {
         var thumbPath = GetThumbnailPath(item);
 
         if (IsUsableThumbFile(thumbPath))
+        {
+            TouchThumbFile(thumbPath);
             return thumbPath;
+        }
 
         // Prevent concurrent writers from producing corrupted/0-byte thumbnails.
         var gate = thumbLocks.GetOrAdd(thumbPath, _ => new SemaphoreSlim(1, 1));
@@ -76,7 +93,10 @@ public sealed class ThumbnailService
         {
             // Re-check after we acquired the lock.
             if (IsUsableThumbFile(thumbPath))
+            {
+                TouchThumbFile(thumbPath);
                 return thumbPath;
+            }
 
 #if ANDROID && !WINDOWS
             var tmpPath = GetTempPath(thumbPath);
@@ -112,6 +132,7 @@ public sealed class ThumbnailService
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
+                    FinalizeNewThumbnailAsync(thumbPath, ct).GetAwaiter().GetResult();
                     return thumbPath;
                 }
                 catch (Exception ex)
@@ -135,13 +156,14 @@ public sealed class ThumbnailService
                     if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
                         return null;
 
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
-                    if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
-                        return null;
+                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                        if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
+                            return null;
 
-                    File.Move(tmpPath, thumbPath, true);
-                    return thumbPath;
-                }
+                        File.Move(tmpPath, thumbPath, true);
+                        await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
+                        return thumbPath;
+                    }
 
                 using var thumb =
                     await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize,
@@ -172,6 +194,7 @@ public sealed class ThumbnailService
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
+                    await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
                     return thumbPath;
                 }
 
@@ -185,6 +208,7 @@ public sealed class ThumbnailService
                     return null;
 
                 File.Move(tmpPath, thumbPath, true);
+                await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
                 return thumbPath;
             }
             catch (Exception ex)
@@ -210,6 +234,79 @@ public sealed class ThumbnailService
             // Best-effort cleanup to keep the dictionary from growing unbounded.
             if (lockTaken && gate.CurrentCount == 1)
                 thumbLocks.TryRemove(thumbPath, out _);
+        }
+    }
+
+    private void TouchThumbFile(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+                return;
+
+            var now = DateTime.UtcNow;
+            File.SetLastWriteTimeUtc(path, now);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TouchThumbFile", $"Path={path}");
+        }
+    }
+
+    private async Task FinalizeNewThumbnailAsync(string path, CancellationToken ct)
+    {
+        TouchThumbFile(path);
+        await TrimCacheAsync(ct).ConfigureAwait(false);
+    }
+
+    private async Task TrimCacheAsync(CancellationToken ct)
+    {
+        var limit = CacheSizeLimitBytes;
+        if (limit <= 0)
+            return;
+
+        if (!await cacheTrimGate.WaitAsync(0).ConfigureAwait(false))
+            return;
+
+        try
+        {
+            if (!Directory.Exists(cacheDir))
+                return;
+
+            var files = Directory
+                .EnumerateFiles(cacheDir, "*.jpg", SearchOption.TopDirectoryOnly)
+                .Select(path => new FileInfo(path))
+                .Where(fi => fi.Exists)
+                .OrderBy(fi => fi.LastWriteTimeUtc)
+                .ToList();
+
+            long total = 0;
+            foreach (var file in files)
+                total += file.Length;
+
+            if (total <= limit)
+                return;
+
+            foreach (var file in files)
+            {
+                ct.ThrowIfCancellationRequested();
+                TryDeleteFile(file.FullName);
+                total -= file.Length;
+                if (total <= limit)
+                    break;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore cancellation during cache trimming.
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TrimCacheAsync", $"CacheDir={cacheDir}");
+        }
+        finally
+        {
+            cacheTrimGate.Release();
         }
     }
 
