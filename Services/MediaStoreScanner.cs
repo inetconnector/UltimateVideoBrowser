@@ -18,6 +18,7 @@ using System.Threading.Channels;
 using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
 using UltimateVideoBrowser.Models;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 
@@ -347,7 +348,7 @@ public sealed class MediaStoreScanner
         {
             return !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagMake)) ||
                    !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagModel)) ||
-                   !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagDateTimeOriginal));
+                   !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagDateTime));
         }
         catch
         {
@@ -363,7 +364,7 @@ public sealed class MediaStoreScanner
                 return false;
 
             using var stream = File.OpenRead(path);
-            var info = Image.Identify(stream);
+            var info = ImageSharpImage.Identify(stream);
             return HasCameraExifProfile(info?.Metadata.ExifProfile);
         }
         catch
@@ -377,18 +378,18 @@ public sealed class MediaStoreScanner
         if (profile == null)
             return false;
 
-        return HasExifValue(profile, ExifTag.Make) ||
-               HasExifValue(profile, ExifTag.Model) ||
-               HasExifValue(profile, ExifTag.DateTimeOriginal) ||
-               HasExifValue(profile, ExifTag.DateTimeDigitized);
+        return HasExifStringValue(profile, ExifTag.Make) ||
+               HasExifStringValue(profile, ExifTag.Model) ||
+               HasExifStringValue(profile, ExifTag.DateTimeOriginal) ||
+               HasExifStringValue(profile, ExifTag.DateTimeDigitized);
     }
 
-    private static bool HasExifValue(ExifProfile profile, ExifTag tag)
+    private static bool HasExifStringValue(ExifProfile profile, ExifTag<string> tag)
     {
-        if (!profile.TryGetValue(tag, out var value))
+        if (!profile.TryGetValue(tag, out IExifValue<string>? value))
             return false;
 
-        return !string.IsNullOrWhiteSpace(value?.Value?.ToString());
+        return !string.IsNullOrWhiteSpace(value?.Value);
     }
 #endif
 
