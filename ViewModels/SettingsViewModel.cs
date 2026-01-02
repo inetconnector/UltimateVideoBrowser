@@ -560,6 +560,28 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task CopyErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await Clipboard.Default.SetTextAsync(log);
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ErrorLogTitle,
+                AppResources.ErrorLogCopiedMessage,
+                AppResources.OkButton));
+    }
+
+    [RelayCommand]
     private async Task ClearErrorLogAsync()
     {
         await ErrorLog.ClearLogAsync().ConfigureAwait(false);

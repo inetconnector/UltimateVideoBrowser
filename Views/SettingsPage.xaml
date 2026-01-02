@@ -398,6 +398,12 @@
                                     CornerRadius="6"
                                     HorizontalOptions="Start"
                                     Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.ErrorLogCopyButton}"
+                                    Command="{Binding CopyErrorLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
                             <Button Text="{x:Static strings:AppResources.ErrorLogShareButton}"
                                     Command="{Binding ShareErrorLogCommand}"
                                     Style="{StaticResource OverlayButtonStyle}"
