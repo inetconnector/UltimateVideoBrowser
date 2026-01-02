@@ -17,6 +17,7 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
+    private bool topScrollPrimed;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
@@ -137,6 +138,8 @@ public partial class MainPage : ContentPage
         vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
         lastFirstVisibleIndex = e.FirstVisibleItemIndex;
         lastLastVisibleIndex = e.LastVisibleItemIndex;
+        if (lastFirstVisibleIndex > 0)
+            topScrollPrimed = false;
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
@@ -184,6 +187,22 @@ public partial class MainPage : ContentPage
             ? Math.Max(1, lastLastVisibleIndex - lastFirstVisibleIndex + 1)
             : Math.Min(12, vm.MediaItems.Count);
 
+        if (!isDown && lastFirstVisibleIndex <= 0)
+        {
+            if (!topScrollPrimed)
+            {
+                topScrollPrimed = true;
+                MediaItemsView.ScrollTo(vm.MediaItems[0], position: ScrollToPosition.Start, animate: true);
+                return;
+            }
+
+            topScrollPrimed = false;
+            ScrollToHeader();
+            return;
+        }
+
+        topScrollPrimed = false;
+
         var targetIndex = isDown
             ? Math.Min(vm.MediaItems.Count - 1,
                 lastLastVisibleIndex >= 0 ? lastLastVisibleIndex + 1 : pageSize)
@@ -191,6 +210,11 @@ public partial class MainPage : ContentPage
 
         var target = vm.MediaItems[targetIndex];
         MediaItemsView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollToHeader()
+    {
+        MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
     }
 
     private void TryHookHeaderSize()
