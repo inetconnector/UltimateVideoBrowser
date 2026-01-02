@@ -75,8 +75,10 @@ public sealed partial class PersonViewModel : ObservableObject
     {
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            var p = await thumbnails.EnsureThumbnailAsync(item, cts.Token).ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var p = await thumbnails
+                .EnsureThumbnailWithRetryAsync(item, TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(2), cts.Token)
+                .ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(p))
                 return;
 

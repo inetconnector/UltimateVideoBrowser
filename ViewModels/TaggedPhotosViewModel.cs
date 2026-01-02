@@ -200,7 +200,10 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
         try
         {
-            var p = await thumbnails.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var p = await thumbnails
+                .EnsureThumbnailWithRetryAsync(item, TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(2), cts.Token)
+                .ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(p))
                 return;
 
