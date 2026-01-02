@@ -9,6 +9,7 @@ namespace UltimateVideoBrowser.Services;
 public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 {
     private const string OneTimeProductId = "photoapp_pro_unlock";
+    private const string InAppProductType = "inapp";
     private readonly object sync = new();
     private BillingClient? billingClient;
     private TaskCompletionSource<ProUpgradeResult>? purchaseTcs;
@@ -51,7 +52,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
             .Build();
 
         var launchResult = client.LaunchBillingFlow(activity, flowParams);
-        if (launchResult.ResponseCode != BillingClient.BillingResponseCode.Ok)
+        if (launchResult.ResponseCode != BillingResponseCode.Ok)
             return ProUpgradeResult.Failed(AppResources.SettingsProPurchaseFailedMessage);
 
         purchaseTcs = new TaskCompletionSource<ProUpgradeResult>();
@@ -70,13 +71,13 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
     private void OnPurchasesUpdated(BillingResult billingResult, IList<Purchase>? purchases)
     {
-        if (billingResult.ResponseCode == BillingClient.BillingResponseCode.UserCanceled)
+        if (billingResult.ResponseCode == BillingResponseCode.UserCanceled)
         {
             purchaseTcs?.TrySetResult(ProUpgradeResult.Cancelled(AppResources.SettingsProPurchaseCancelledMessage));
             return;
         }
 
-        if (billingResult.ResponseCode != BillingClient.BillingResponseCode.Ok)
+        if (billingResult.ResponseCode != BillingResponseCode.Ok)
         {
             purchaseTcs?.TrySetResult(ProUpgradeResult.Failed(AppResources.SettingsProPurchaseFailedMessage));
             return;
@@ -113,7 +114,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
         using var _ = ct.Register(() => tcs.TrySetCanceled());
         var result = await tcs.Task.ConfigureAwait(false);
 
-        if (result.ResponseCode != BillingClient.BillingResponseCode.Ok)
+        if (result.ResponseCode != BillingResponseCode.Ok)
             throw new InvalidOperationException("Unable to connect to Google Play Billing.");
 
         lock (sync)
@@ -128,24 +129,22 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
     {
         var product = QueryProductDetailsParams.Product.NewBuilder()
             .SetProductId(ProductId)
-            .SetProductType(BillingClient.ProductTypeInapp)
+            .SetProductType(InAppProductType)
             .Build();
 
         var queryParams = QueryProductDetailsParams.NewBuilder()
             .SetProductList(new List<QueryProductDetailsParams.Product> { product })
             .Build();
 
-        var tcs = new TaskCompletionSource<ProductDetailsResult>();
-        client.QueryProductDetailsAsync(queryParams, new ProductDetailsListener(tcs));
-        using var _ = ct.Register(() => tcs.TrySetCanceled());
-        var result = await tcs.Task.ConfigureAwait(false);
+        var result = await client.QueryProductDetailsAsync(queryParams).ConfigureAwait(false);
 
-        if (result.BillingResult.ResponseCode != BillingClient.BillingResponseCode.Ok)
+        if (result.BillingResult.ResponseCode != BillingResponseCode.Ok)
             return cachedProduct;
 
         cachedProduct = result.ProductDetailsList?.FirstOrDefault();
-        if (cachedProduct?.OneTimePurchaseOfferDetails != null)
-            PriceText = cachedProduct.OneTimePurchaseOfferDetails.FormattedPrice;
+        var offerDetails = cachedProduct?.GetOneTimePurchaseOfferDetails();
+        if (offerDetails != null)
+            PriceText = offerDetails.FormattedPrice;
 
         return cachedProduct;
     }
@@ -153,19 +152,16 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
     private async Task<bool> RefreshPurchasesAsync(BillingClient client, CancellationToken ct)
     {
         var queryParams = QueryPurchasesParams.NewBuilder()
-            .SetProductType(BillingClient.ProductTypeInapp)
+            .SetProductType(InAppProductType)
             .Build();
 
-        var tcs = new TaskCompletionSource<PurchasesResult>();
-        client.QueryPurchasesAsync(queryParams, new PurchasesListener(tcs));
-        using var _ = ct.Register(() => tcs.TrySetCanceled());
-        var result = await tcs.Task.ConfigureAwait(false);
+        var result = await client.QueryPurchasesAsync(queryParams).ConfigureAwait(false);
 
-        if (result.BillingResult.ResponseCode != BillingClient.BillingResponseCode.Ok)
+        if (result.BillingResult.ResponseCode != BillingResponseCode.Ok)
             return false;
 
         var purchase = result.PurchasesList?
-            .FirstOrDefault(p => p.Products.Contains(ProductId) && p.PurchaseState == Purchase.PurchaseStatePurchased);
+            .FirstOrDefault(p => p.Products.Contains(ProductId) && p.PurchaseState == PurchaseState.Purchased);
 
         if (purchase == null)
             return false;
@@ -189,7 +185,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
             using var _ = ct.Register(() => ackTcs.TrySetCanceled());
             var ackResult = await ackTcs.Task.ConfigureAwait(false);
-            if (ackResult.ResponseCode != BillingClient.BillingResponseCode.Ok)
+            if (ackResult.ResponseCode != BillingResponseCode.Ok)
             {
                 purchaseTcs?.TrySetResult(ProUpgradeResult.Failed(AppResources.SettingsProPurchaseFailedMessage));
                 return;
@@ -211,38 +207,8 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         public void OnBillingSetupFinished(BillingResult billingResult) => tcs.TrySetResult(billingResult);
         public void OnBillingServiceDisconnected() => tcs.TrySetResult(BillingResult.NewBuilder()
-            .SetResponseCode(BillingClient.BillingResponseCode.ServiceDisconnected)
+            .SetResponseCode(BillingResponseCode.ServiceDisconnected)
             .Build());
-    }
-
-    private sealed class ProductDetailsListener : Java.Lang.Object, IProductDetailsResponseListener
-    {
-        private readonly TaskCompletionSource<ProductDetailsResult> tcs;
-
-        public ProductDetailsListener(TaskCompletionSource<ProductDetailsResult> tcs)
-        {
-            this.tcs = tcs;
-        }
-
-        public void OnProductDetailsResponse(BillingResult billingResult, IList<ProductDetails>? productDetailsList)
-        {
-            tcs.TrySetResult(new ProductDetailsResult(billingResult, productDetailsList));
-        }
-    }
-
-    private sealed class PurchasesListener : Java.Lang.Object, IPurchasesResponseListener
-    {
-        private readonly TaskCompletionSource<PurchasesResult> tcs;
-
-        public PurchasesListener(TaskCompletionSource<PurchasesResult> tcs)
-        {
-            this.tcs = tcs;
-        }
-
-        public void OnQueryPurchasesResponse(BillingResult billingResult, IList<Purchase>? purchases)
-        {
-            tcs.TrySetResult(new PurchasesResult(billingResult, purchases));
-        }
     }
 
     private sealed class AckListener : Java.Lang.Object, IAcknowledgePurchaseResponseListener
@@ -273,7 +239,5 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
         }
     }
 
-    private sealed record ProductDetailsResult(BillingResult BillingResult, IList<ProductDetails>? ProductDetailsList);
-    private sealed record PurchasesResult(BillingResult BillingResult, IList<Purchase>? PurchasesList);
 }
 #endif
