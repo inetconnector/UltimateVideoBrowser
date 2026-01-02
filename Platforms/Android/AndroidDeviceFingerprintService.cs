@@ -9,7 +9,9 @@ public sealed class AndroidDeviceFingerprintService : IDeviceFingerprintService
 
     public Task<string> GetFingerprintAsync(CancellationToken ct)
     {
-        var androidId = Secure.GetString(Android.App.Application.Context.ContentResolver, Secure.AndroidId) ?? string.Empty;
+        var androidId = Settings.Secure.GetString(
+            Android.App.Application.Context.ContentResolver,
+            Settings.Secure.AndroidId) ?? string.Empty;
         var installationId = Preferences.Default.Get(InstallationIdKey, string.Empty);
         if (string.IsNullOrWhiteSpace(installationId))
         {

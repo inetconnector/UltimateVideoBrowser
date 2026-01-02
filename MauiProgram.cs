@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
@@ -53,7 +54,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
         builder.Services.AddSingleton<IFileExportService, FileExportService>();
-        builder.Services.AddHttpClient<LicenseServerClient>();
+        builder.Services.AddSingleton(new HttpClient());
+        builder.Services.AddSingleton<LicenseServerClient>();
         builder.Services.AddSingleton<IProUpgradeService, ProUpgradeService>();
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
