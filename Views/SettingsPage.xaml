@@ -326,22 +326,22 @@
                         <Label Text="{Binding ErrorLogPath}"
                                FontSize="11"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Grid ColumnDefinitions="*,*"
+                        <Grid ColumnDefinitions="Auto,Auto"
                               ColumnSpacing="12">
                             <Button Text="{x:Static strings:AppResources.ErrorLogShowButton}"
                                     Command="{Binding ShowErrorLogCommand}"
-                                    BackgroundColor="{DynamicResource Surface2}"
-                                    TextColor="{DynamicResource OnSurface}" />
+                                    HorizontalOptions="Start"
+                                    Padding="16,6" />
                             <Button Grid.Column="1"
                                     Text="{x:Static strings:AppResources.ErrorLogShareButton}"
                                     Command="{Binding ShareErrorLogCommand}"
-                                    BackgroundColor="{DynamicResource Surface2}"
-                                    TextColor="{DynamicResource OnSurface}" />
+                                    HorizontalOptions="Start"
+                                    Padding="16,6" />
                         </Grid>
                         <Button Text="{x:Static strings:AppResources.ErrorLogClearButton}"
                                 Command="{Binding ClearErrorLogCommand}"
-                                BackgroundColor="{DynamicResource Surface2}"
-                                TextColor="{DynamicResource OnSurface}" />
+                                HorizontalOptions="Start"
+                                Padding="16,6" />
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>
