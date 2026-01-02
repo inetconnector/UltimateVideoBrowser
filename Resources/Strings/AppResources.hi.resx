@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>मर्ज करें</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>में मर्ज करें…</value></data><data name="QualityLabel" xml:space="preserve"><value>गुणवत्ता</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>मर्ज करें</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>में मर्ज करें…</value></data><data name="QualityLabel" xml:space="preserve"><value>गुणवत्ता</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>त्रुटि लॉग</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>यदि कुछ विफल हो या थंबनेल खाली हो तो यह लॉग साझा करें।</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>लॉग दिखाएँ</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>लॉग साझा करें</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>लॉग साफ़ करें</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>दस्तावेज़</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>ग्राफ़िक्स और स्क्रीनशॉट</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>फ़ोटो</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>वीडियो</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>डेटाबेस हटाएँ</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>स्थानीय डेटाबेस हटाता है और आपके स्रोतों को फिर से स्कैन करके इसे पुनर्निर्मित करता है।</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>एक्सटेंशन को कॉमा से अलग करें (जैसे .mp4, .mkv)।</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>फ़ाइल एक्सटेंशन</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>इसे सक्षम करें ताकि डिस्क पर फ़ाइलों को बदलने वाली कार्रवाइयाँ दिखाई दें।</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>नाम बदलने, स्थानांतरित करने, कॉपी करने और हटाने की अनुमति दें</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>फ़ाइल परिवर्तन</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>स्थिति</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>वीडियो के लिए आंतरिक वीडियो प्लेयर का उपयोग करें</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>लोकेशन डेटा आपके डिवाइस पर रहता है, लेकिन बाहरी मानचित्र सर्वर अनुरोध डेटा (जैसे IP पता) प्राप्त कर सकते हैं। संवेदनशील स्थान साझा करने के लिए आप जिम्मेदार हैं; तृतीय-पक्ष सेवाओं के अपने नियम और गोपनीयता नीतियां होती हैं।</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>फ़ोटो और वीडियो से GPS मेटाडेटा निकालें ताकि वे विश्व मानचित्र पर दिख सकें। मैप टाइलें बाहरी टाइल सर्वरों से लोड होती हैं।</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>स्थान दिखाएँ</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>स्थान</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>अपनी लाइब्रेरी में कौन से प्रकार इंडेक्स करने हैं चुनें।</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>मीडिया प्रकार</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>फेस मॉडल डाउनलोड करें</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>फेस मॉडल</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>लाइब्रेरी से फ़ोटो और वीडियो में लोगों को टैग करने के लिए इसे चालू करें।</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>लोगों को टैग करना सक्षम करें</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>लोग टैगिंग</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>प्लेबैक</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• असीमित चेहरा पहचान
+• स्वचालित लोगों के एल्बम
+• बैच क्रमबद्ध (1000+ फ़ोटो)
+• स्थानीय निर्यात और बैकअप
+• कोई विज्ञापन नहीं</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>खरीदारी पुनर्स्थापित करें</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro अपग्रेड</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro अनलॉक करें</value>
+  </data>
+</root>

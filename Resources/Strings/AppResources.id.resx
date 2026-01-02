@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Gabungkan</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Gabungkan ke…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kualitas</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Gabungkan</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Gabungkan ke…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kualitas</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Log kesalahan</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Bagikan log ini jika sesuatu gagal atau thumbnail kosong.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Tampilkan log</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Bagikan log</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Hapus log</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Dokumen</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafis &amp; tangkapan layar</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Hapus database</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Menghapus database lokal dan membangunnya kembali dengan memindai ulang sumber Anda.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Pisahkan ekstensi dengan koma (mis. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Ekstensi file</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Aktifkan ini untuk menampilkan tindakan yang mengubah file di disk.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Izinkan mengganti nama, memindahkan, menyalin, dan menghapus</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Perubahan file</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Gunakan pemutar video internal untuk video</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Data lokasi tetap di perangkat Anda, tetapi server peta eksternal dapat menerima data permintaan (mis. alamat IP). Anda bertanggung jawab membagikan lokasi sensitif; layanan pihak ketiga memiliki ketentuan dan kebijakan privasinya sendiri.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Ekstrak metadata GPS dari foto dan video agar dapat ditampilkan di peta dunia. Ubin peta dimuat dari server ubin eksternal.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Tampilkan lokasi</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Lokasi</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Pilih jenis yang akan diindeks di perpustakaan Anda.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Jenis media</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Unduh model wajah</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Model wajah</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Aktifkan ini untuk menandai orang di foto dan video dari perpustakaan.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Aktifkan penandaan orang</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Penandaan orang</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Pemutaran</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Pengenalan wajah tanpa batas
+• Album orang otomatis
+• Penyortiran batch (1000+ foto)
+• Ekspor lokal &amp; cadangan
+• Tanpa iklan</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Pulihkan pembelian</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Upgrade Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Buka Pro</value>
+  </data>
+</root>

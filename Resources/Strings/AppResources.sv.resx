@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Slå ihop</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Slå ihop till…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kvalitet</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Slå ihop</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Slå ihop till…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kvalitet</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Fellogg</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Dela den här loggen om något misslyckas eller om en miniatyr är tom.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Visa logg</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Dela logg</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Rensa logg</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Dokument</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafik och skärmbilder</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Foton</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videor</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Ta bort databas</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Tar bort den lokala databasen och bygger om den genom att skanna källorna igen.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Separera filändelser med kommatecken (t.ex. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Filändelser</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Aktivera detta för att visa åtgärder som ändrar filer på disk.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Tillåt namnändring, flytt, kopiering och borttagning</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Filändringar</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Använd intern videospelare för videor</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Platsdata stannar på din enhet, men externa kartservrar kan ta emot begärandata (t.ex. IP-adress). Du ansvarar för att dela känsliga platser; tredjepartstjänster har egna villkor och sekretesspolicyer.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Extrahera GPS-metadata från foton och videor så att de kan visas på världskartan. Kartplattor laddas från externa tileservrar.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Visa platser</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Platser</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Välj vilka typer som ska indexeras i ditt bibliotek.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Mediatyper</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Ladda ner ansiktsmodeller</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Ansiktsmodeller</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Slå på detta för att tagga personer i foton och videor från biblioteket.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Aktivera person-tagging</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Person-tagging</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Uppspelning</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Obegränsad ansiktsigenkänning
+• Automatiska personalbum
+• Batchsortering (1000+ foton)
+• Lokal export och säkerhetskopior
+• Ingen reklam</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Återställ köp</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro-uppgradering</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Lås upp Pro</value>
+  </data>
+</root>

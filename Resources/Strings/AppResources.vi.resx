@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Hợp nhất</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Hợp nhất vào…</value></data><data name="QualityLabel" xml:space="preserve"><value>Chất lượng</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Hợp nhất</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Hợp nhất vào…</value></data><data name="QualityLabel" xml:space="preserve"><value>Chất lượng</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Nhật ký lỗi</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Chia sẻ nhật ký này nếu có lỗi xảy ra hoặc ảnh thu nhỏ trống.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Hiển thị nhật ký</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Chia sẻ nhật ký</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Xóa nhật ký</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Tài liệu</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Đồ họa &amp; ảnh chụp màn hình</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Ảnh</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Xóa cơ sở dữ liệu</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Xóa cơ sở dữ liệu cục bộ và xây dựng lại bằng cách quét lại các nguồn.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Tách phần mở rộng bằng dấu phẩy (ví dụ: .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Phần mở rộng tệp</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Bật mục này để hiển thị các thao tác thay đổi tệp trên đĩa.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Cho phép đổi tên, di chuyển, sao chép và xóa</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Thay đổi tệp</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Dùng trình phát video nội bộ cho video</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Dữ liệu vị trí vẫn ở trên thiết bị của bạn, nhưng máy chủ bản đồ bên ngoài có thể nhận dữ liệu yêu cầu (ví dụ: địa chỉ IP). Bạn chịu trách nhiệm khi chia sẻ vị trí nhạy cảm; dịch vụ bên thứ ba có điều khoản và chính sách quyền riêng tư riêng.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Trích xuất siêu dữ liệu GPS từ ảnh và video để hiển thị trên bản đồ thế giới. Các ô bản đồ được tải từ máy chủ bên ngoài.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Hiển thị vị trí</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Chọn loại cần lập chỉ mục trong thư viện của bạn.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Loại phương tiện</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Tải xuống mô hình khuôn mặt</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Mô hình khuôn mặt</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Bật mục này để gắn thẻ người trong ảnh và video từ thư viện.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Bật gắn thẻ người</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Gắn thẻ người</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Phát lại</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Nhận dạng khuôn mặt không giới hạn
+• Album người tự động
+• Sắp xếp hàng loạt (1000+ ảnh)
+• Xuất cục bộ &amp; sao lưu
+• Không quảng cáo</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Khôi phục mua hàng</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Nâng cấp Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Mở khóa Pro</value>
+  </data>
+</root>

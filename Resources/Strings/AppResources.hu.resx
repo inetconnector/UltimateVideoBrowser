@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Egyesítés</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Egyesítés ide…</value></data><data name="QualityLabel" xml:space="preserve"><value>Minőség</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Egyesítés</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Egyesítés ide…</value></data><data name="QualityLabel" xml:space="preserve"><value>Minőség</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Hibanapló</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Oszd meg ezt a naplót, ha valami nem sikerül, vagy egy miniatűr üres.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Napló megjelenítése</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Napló megosztása</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Napló törlése</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Dokumentumok</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafikák és képernyőképek</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fényképek</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videók</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Adatbázis törlése</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Törli a helyi adatbázist, és újraépíti a források újbóli beolvasásával.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>A kiterjesztéseket vesszővel válaszd el (pl. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Fájlkiterjesztések</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Engedélyezd ezt, hogy megjelenjenek a lemezen lévő fájlokat módosító műveletek.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Átnevezés, áthelyezés, másolás és törlés engedélyezése</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Fájlváltozások</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Állapot</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Belső videólejátszó használata videókhoz</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>A helyadatok a készülékeden maradnak, de a külső térképszerverek kérési adatokat kaphatnak (pl. IP-cím). A kényes helyek megosztása a te felelősséged; a harmadik felek szolgáltatásainak saját feltételeik és adatvédelmi irányelveik vannak.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>GPS metaadatok kinyerése a fényképekből és videókból, hogy megjeleníthetők legyenek a világtérképen. A térképcsempék külső szerverekről töltődnek be.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Helyek megjelenítése</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Helyek</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Válaszd ki, mely típusok legyenek indexelve a könyvtáradban.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Médiatípusok</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Arcfelismerő modellek letöltése</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Arcfelismerő modellek</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Kapcsold be, hogy a könyvtár fotóin és videóin személyek meg legyenek jelölve.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Személymegjelölés engedélyezése</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Személymegjelölés</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Lejátszás</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Korlátlan arcfelismerés
+• Automatikus személyalbumok
+• Kötegelt rendezés (1000+ fotó)
+• Helyi export és biztonsági mentések
+• Nincsenek hirdetések</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Vásárlás visszaállítása</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro frissítés</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro feloldása</value>
+  </data>
+</root>

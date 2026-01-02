@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Yhdistä</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Yhdistä kohteeseen…</value></data><data name="QualityLabel" xml:space="preserve"><value>Laatu</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Yhdistä</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Yhdistä kohteeseen…</value></data><data name="QualityLabel" xml:space="preserve"><value>Laatu</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Virheloki</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Jaa tämä loki, jos jokin epäonnistuu tai pikkukuva on tyhjä.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Näytä loki</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Jaa loki</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Tyhjennä loki</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Asiakirjat</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Grafiikka ja kuvakaappaukset</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Valokuvat</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Videot</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Poista tietokanta</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Poistaa paikallisen tietokannan ja rakentaa sen uudelleen skannaamalla lähteet uudestaan.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Erottele tiedostopäätteet pilkuilla (esim. .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Tiedostopäätteet</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Ota tämä käyttöön näyttääksesi toiminnot, jotka muuttavat levyssä olevia tiedostoja.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Salli uudelleennimeäminen, siirtäminen, kopiointi ja poistaminen</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Tiedostomuutokset</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Tila</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Käytä sisäistä videotoistinta videoille</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Sijaintitiedot pysyvät laitteellasi, mutta ulkoiset karttapalvelimet voivat saada pyyntötietoja (esim. IP-osoite). Olet vastuussa arkaluonteisten sijaintien jakamisesta; kolmannen osapuolen palveluilla on omat ehdot ja tietosuojakäytännöt.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Poimi GPS-metatiedot kuvista ja videoista, jotta ne voidaan näyttää maailmankartalla. Karttatiilet ladataan ulkoisilta palvelimilta.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Näytä sijainnit</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Sijainnit</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Valitse, mitkä tyypit indeksoidaan kirjastoosi.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Mediatyypit</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Lataa kasvomallit</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Kasvomallit</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Ota tämä käyttöön, jotta henkilöitä voidaan merkitä kirjaston valokuvissa ja videoissa.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Ota henkilötunnistus käyttöön</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Henkilömerkintä</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Toisto</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Rajaton kasvojentunnistus
+• Automaattiset henkilöalbumit
+• Eräjärjestely (1000+ kuvaa)
+• Paikallinen vienti ja varmuuskopiot
+• Ei mainoksia</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Palauta ostos</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro-päivitys</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Avaa Pro</value>
+  </data>
+</root>

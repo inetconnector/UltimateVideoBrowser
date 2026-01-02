@@ -279,4 +279,113 @@
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
     <value>Remove from people index</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Fusionar</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Fusionar en…</value></data><data name="QualityLabel" xml:space="preserve"><value>Calidad</value></data></root>
+<data name="MergeButton" xml:space="preserve"><value>Fusionar</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Fusionar en…</value></data><data name="QualityLabel" xml:space="preserve"><value>Calidad</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+    <value>Registro de errores</value>
+  </data>
+  <data name="ErrorLogHint" xml:space="preserve">
+    <value>Comparte este registro si algo falla o una miniatura está en blanco.</value>
+  </data>
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    <value>Mostrar registro</value>
+  </data>
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    <value>Compartir registro</value>
+  </data>
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    <value>Borrar registro</value>
+  </data>
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Gráficos y capturas de pantalla</value>
+  </data>
+  <data name="MediaTypePhotos" xml:space="preserve">
+    <value>Fotos</value>
+  </data>
+  <data name="MediaTypeVideos" xml:space="preserve">
+    <value>Vídeos</value>
+  </data>
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    <value>Eliminar base de datos</value>
+  </data>
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    <value>Elimina la base de datos local y la reconstruye al volver a escanear tus fuentes.</value>
+  </data>
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    <value>Separa las extensiones con comas (p. ej., .mp4, .mkv).</value>
+  </data>
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    <value>.mp4, .mkv, .avi</value>
+  </data>
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    <value>Extensiones de archivo</value>
+  </data>
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    <value>Activa esto para mostrar acciones que cambian archivos en el disco.</value>
+  </data>
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    <value>Permitir renombrar, mover, copiar y eliminar</value>
+  </data>
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    <value>Cambios de archivos</value>
+  </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    <value>Usar reproductor de vídeo interno para vídeos</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Los datos de ubicación permanecen en tu dispositivo, pero los servidores de mapas externos pueden recibir datos de solicitud (p. ej., dirección IP). Eres responsable de compartir ubicaciones sensibles; los servicios de terceros tienen sus propios términos y políticas de privacidad.</value>
+  </data>
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    <value>Extrae metadatos GPS de fotos y vídeos para mostrarlos en el mapa mundial. Los mosaicos del mapa se cargan desde servidores externos.</value>
+  </data>
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    <value>Mostrar ubicaciones</value>
+  </data>
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    <value>Ubicaciones</value>
+  </data>
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    <value>Elige qué tipos indexar en tu biblioteca.</value>
+  </data>
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    <value>Tipos de medios</value>
+  </data>
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    <value>Descargar modelos de rostros</value>
+  </data>
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    <value>Modelos de rostros</value>
+  </data>
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    <value>Activa esto para etiquetar personas en fotos y vídeos de la biblioteca.</value>
+  </data>
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    <value>Habilitar etiquetado de personas</value>
+  </data>
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    <value>Etiquetado de personas</value>
+  </data>
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    <value>Reproducción</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Reconocimiento facial ilimitado
+• Álbumes de personas automáticos
+• Ordenación por lotes (1000+ fotos)
+• Exportación local y copias de seguridad
+• Sin anuncios</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Restaurar compra</value>
+  </data>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Actualización Pro</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Desbloquear Pro</value>
+  </data>
+</root>
