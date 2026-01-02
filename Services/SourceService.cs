@@ -1,6 +1,9 @@
-using Windows.Storage.AccessCache;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
+
+#if WINDOWS
+using Windows.Storage.AccessCache;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
