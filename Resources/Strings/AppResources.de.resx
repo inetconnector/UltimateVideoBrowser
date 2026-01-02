@@ -27,6 +27,18 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Medien suchen...</value>
   </data>
+  <data name="SearchScopeTitle" xml:space="preserve">
+    <value>Suchen in</value>
+  </data>
+  <data name="SearchScopeName" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="SearchScopePeople" xml:space="preserve">
+    <value>Personen/Tags</value>
+  </data>
+  <data name="SearchScopeAlbums" xml:space="preserve">
+    <value>Alben</value>
+  </data>
   <data name="HeroEyebrow" xml:space="preserve">
     <value>Deine persönliche Bibliothek</value>
   </data>
@@ -80,6 +92,27 @@
   </data>
 <data name="Indexing" xml:space="preserve">
     <value>Indizierung...</value>
+  </data>
+  <data name="IndexStatusRunningTitle" xml:space="preserve">
+    <value>Index läuft</value>
+  </data>
+  <data name="IndexStatusRunningMessage" xml:space="preserve">
+    <value>Deine Bibliothek wird indiziert. Fortschrittsdetails sind verfügbar.</value>
+  </data>
+  <data name="IndexStatusReadyTitle" xml:space="preserve">
+    <value>Index aktuell</value>
+  </data>
+  <data name="IndexStatusReadyMessage" xml:space="preserve">
+    <value>Derzeit ist keine Indizierung erforderlich.</value>
+  </data>
+  <data name="IndexStatusNeededTitle" xml:space="preserve">
+    <value>Index benötigt</value>
+  </data>
+  <data name="IndexStatusNeededMessage" xml:space="preserve">
+    <value>Quellen haben sich geändert. Starte die Indizierung, um die Bibliothek zu aktualisieren.</value>
+  </data>
+  <data name="IndexStatusActionStart" xml:space="preserve">
+    <value>Indizierung starten</value>
   </data>
   <data name="IndexingStatusFormat" xml:space="preserve">
     <value>Indiziere {0} • {1}/{2}</value>
@@ -291,6 +324,9 @@
   <data name="SettingsIndexingTitle" xml:space="preserve">
     <value>Indexierung</value>
   </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Beim nächsten Start neu indizieren</value>
   </data>
@@ -361,10 +397,25 @@
     <value>Standorte</value>
   </data>
   <data name="SettingsLocationsHint" xml:space="preserve">
-    <value>GPS-Metadaten aus Fotos und Videos extrahieren, damit sie auf der Weltkarte angezeigt werden können.</value>
+    <value>GPS-Metadaten aus Fotos und Videos extrahieren, damit sie auf der Weltkarte angezeigt werden können. Kartenkacheln werden von externen Tile-Servern geladen.</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Standortdaten bleiben lokal, aber externe Kartendienste erhalten ggf. Anfragedaten (z. B. IP-Adresse). Du bist verantwortlich für sensible Standortdaten; Drittanbieter haben eigene Nutzungsbedingungen und Datenschutzerklärungen.</value>
   </data>
   <data name="SettingsLocationsLabel" xml:space="preserve">
     <value>Standorte anzeigen</value>
+  </data>
+  <data name="LocationOptInTitle" xml:space="preserve">
+    <value>Standortdaten aktivieren?</value>
+  </data>
+  <data name="LocationOptInMessage" xml:space="preserve">
+    <value>Wenn aktiviert, liest die App GPS-Koordinaten aus EXIF-Metadaten deiner Fotos und Videos. Die Kartenansicht lädt Kacheln von externen Servern, die Anfragedaten (z. B. IP-Adresse) erhalten können. Standortdaten werden lokal auf diesem Gerät gespeichert. Mit dem Fortfahren akzeptierst du, dass Drittanbieter eigene Nutzungsbedingungen und Datenschutzerklärungen haben.</value>
+  </data>
+  <data name="LocationOptInAccept" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="LocationOptInDecline" xml:space="preserve">
+    <value>Jetzt nicht</value>
   </data>
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
     <value>Gesichtsmodelle</value>

@@ -225,22 +225,22 @@ public sealed class IndexService
         }, ct);
     }
 
-    public Task<List<MediaItem>> QueryAsync(string search, string? sourceId, string sortKey, DateTime? from,
+    public Task<List<MediaItem>> QueryAsync(string search, SearchScope searchScope, string? sourceId, string sortKey,
+        DateTime? from, DateTime? to, MediaType mediaTypes)
+    {
+        return QueryAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes);
+    }
+
+    public Task<List<MediaItem>> QueryPageAsync(string search, SearchScope searchScope, string? sourceId,
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        return QueryPageAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit);
+    }
+
+    public Task<int> CountQueryAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
         DateTime? to, MediaType mediaTypes)
     {
-        return QueryAsyncInternal(search, sourceId, sortKey, from, to, mediaTypes);
-    }
-
-    public Task<List<MediaItem>> QueryPageAsync(string search, string? sourceId, string sortKey, DateTime? from,
-        DateTime? to, MediaType mediaTypes, int offset, int limit)
-    {
-        return QueryPageAsyncInternal(search, sourceId, sortKey, from, to, mediaTypes, offset, limit);
-    }
-
-    public Task<int> CountQueryAsync(string search, string? sourceId, DateTime? from, DateTime? to,
-        MediaType mediaTypes)
-    {
-        return CountQueryAsyncInternal(search, sourceId, from, to, mediaTypes);
+        return CountQueryAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes);
     }
 
     public Task<int> CountAsync(MediaType mediaTypes)
@@ -340,30 +340,31 @@ public sealed class IndexService
         return allowed;
     }
 
-    private async Task<List<MediaItem>> QueryAsyncInternal(string search, string? sourceId, string sortKey,
+    private async Task<List<MediaItem>> QueryAsyncInternal(string search, SearchScope searchScope, string? sourceId,
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, null, null,
+            countOnly: false);
+        return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
+    }
+
+    private async Task<List<MediaItem>> QueryPageAsyncInternal(string search, SearchScope searchScope,
+        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit,
+            countOnly: false);
+        return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
+    }
+
+    private async Task<int> CountQueryAsyncInternal(string search, SearchScope searchScope, string? sourceId,
         DateTime? from, DateTime? to, MediaType mediaTypes)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes);
-        return await q.ToListAsync().ConfigureAwait(false);
-    }
-
-    private async Task<List<MediaItem>> QueryPageAsyncInternal(string search, string? sourceId, string sortKey,
-        DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
-    {
-        await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var q = BuildQuery(search, sourceId, sortKey, from, to, mediaTypes)
-            .Skip(offset)
-            .Take(limit);
-        return await q.ToListAsync().ConfigureAwait(false);
-    }
-
-    private async Task<int> CountQueryAsyncInternal(string search, string? sourceId, DateTime? from, DateTime? to,
-        MediaType mediaTypes)
-    {
-        await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var q = BuildQuery(search, sourceId, "name", from, to, mediaTypes);
-        return await q.CountAsync().ConfigureAwait(false);
+        var (sql, args) = BuildQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null, null,
+            countOnly: true);
+        return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private async Task<int> CountAsyncInternal(MediaType mediaTypes)
@@ -376,19 +377,70 @@ public sealed class IndexService
         return await q.CountAsync().ConfigureAwait(false);
     }
 
-    private AsyncTableQuery<MediaItem> BuildQuery(string search, string? sourceId, string sortKey, DateTime? from,
-        DateTime? to, MediaType mediaTypes)
+    private static (string sql, List<object> args) BuildQuerySql(
+        string search,
+        SearchScope searchScope,
+        string? sourceId,
+        string sortKey,
+        DateTime? from,
+        DateTime? to,
+        MediaType mediaTypes,
+        int? offset,
+        int? limit,
+        bool countOnly)
     {
-        var q = db.Db.Table<MediaItem>();
-        var allowedTypes = BuildAllowedTypes(mediaTypes);
-        if (allowedTypes.Count > 0)
-            q = q.Where(v => allowedTypes.Contains(v.MediaType));
+        var args = new List<object>();
+        var filters = new List<string>();
 
         if (!string.IsNullOrWhiteSpace(sourceId))
-            q = q.Where(v => v.SourceId == sourceId);
+        {
+            filters.Add("MediaItem.SourceId = ?");
+            args.Add(sourceId);
+        }
 
-        if (!string.IsNullOrWhiteSpace(search))
-            q = q.Where(v => v.Name.Contains(search));
+        var allowedTypes = BuildAllowedTypes(mediaTypes);
+        if (allowedTypes.Count > 0)
+        {
+            filters.Add($"MediaItem.MediaType IN ({string.Join(",", allowedTypes.Select(_ => "?"))})");
+            args.AddRange(allowedTypes.Cast<object>());
+        }
+
+        var trimmedSearch = (search ?? string.Empty).Trim();
+        if (!string.IsNullOrWhiteSpace(trimmedSearch))
+        {
+            if (searchScope == SearchScope.None)
+            {
+                filters.Add("1 = 0");
+            }
+            else
+            {
+                var searchFilters = new List<string>();
+                var like = $"%{trimmedSearch}%";
+
+                if (searchScope.HasFlag(SearchScope.Name))
+                {
+                    searchFilters.Add("MediaItem.Name LIKE ?");
+                    args.Add(like);
+                }
+
+                if (searchScope.HasFlag(SearchScope.People))
+                {
+                    searchFilters.Add(
+                        "EXISTS (SELECT 1 FROM PersonTag WHERE PersonTag.MediaPath = MediaItem.Path AND PersonTag.PersonName LIKE ?)");
+                    args.Add(like);
+                }
+
+                if (searchScope.HasFlag(SearchScope.Albums))
+                {
+                    searchFilters.Add(
+                        "EXISTS (SELECT 1 FROM AlbumItem INNER JOIN Album ON Album.Id = AlbumItem.AlbumId WHERE AlbumItem.MediaPath = MediaItem.Path AND Album.Name LIKE ?)");
+                    args.Add(like);
+                }
+
+                if (searchFilters.Count > 0)
+                    filters.Add("(" + string.Join(" OR ", searchFilters) + ")");
+            }
+        }
 
         if (from.HasValue || to.HasValue)
         {
@@ -397,17 +449,41 @@ public sealed class IndexService
                 ? new DateTimeOffset(to.Value.Date.AddDays(1).AddTicks(-1)).ToUnixTimeSeconds()
                 : long.MaxValue;
 
-            q = q.Where(v => v.DateAddedSeconds >= fromSeconds && v.DateAddedSeconds <= toSeconds);
+            filters.Add("MediaItem.DateAddedSeconds >= ? AND MediaItem.DateAddedSeconds <= ?");
+            args.Add(fromSeconds);
+            args.Add(toSeconds);
         }
 
-        q = sortKey switch
-        {
-            "date" => q.OrderByDescending(v => v.DateAddedSeconds),
-            "duration" => q.OrderByDescending(v => v.DurationMs),
-            _ => q.OrderBy(v => v.Name)
-        };
+        var sql = countOnly ? "SELECT COUNT(*) FROM MediaItem" : "SELECT MediaItem.* FROM MediaItem";
 
-        return q;
+        if (filters.Count > 0)
+            sql += " WHERE " + string.Join(" AND ", filters);
+
+        if (!countOnly)
+        {
+            var orderBy = sortKey switch
+            {
+                "date" => "MediaItem.DateAddedSeconds DESC",
+                "duration" => "MediaItem.DurationMs DESC",
+                _ => "MediaItem.Name"
+            };
+
+            sql += $" ORDER BY {orderBy}";
+
+            if (limit.HasValue)
+            {
+                sql += " LIMIT ?";
+                args.Add(limit.Value);
+            }
+
+            if (offset.HasValue)
+            {
+                sql += " OFFSET ?";
+                args.Add(offset.Value);
+            }
+        }
+
+        return (sql, args);
     }
 
     private sealed class ProgressScheduler

@@ -6,6 +6,8 @@
              x:Class="UltimateVideoBrowser.Views.Components.MainSearchSortView">
     <Grid Padding="12"
           ColumnDefinitions="*,Auto"
+          RowDefinitions="Auto,Auto"
+          RowSpacing="8"
           BackgroundColor="{DynamicResource AppBg}">
         <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
                    Text="{Binding SearchText}"
@@ -23,5 +25,46 @@
                 TextColor="{DynamicResource OnSurface}"
                 BackgroundColor="{DynamicResource Surface2}"
                 Margin="8,0,0,0" />
+
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="2"
+              ColumnDefinitions="Auto,*"
+              ColumnSpacing="8">
+            <Label Text="{x:Static strings:AppResources.SearchScopeTitle}"
+                   FontSize="12"
+                   TextColor="{DynamicResource OnSurfaceMuted}"
+                   VerticalOptions="Center" />
+            <CollectionView Grid.Column="1"
+                            ItemsSource="{Binding SearchScopeFilters}"
+                            SelectionMode="None"
+                            HorizontalScrollBarVisibility="Never">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Text="{Binding Label}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}"
+                                Command="{Binding BindingContext.ToggleSearchScopeCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                CommandParameter="{Binding Scope}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource SearchScopeSelectedConverter}">
+                                            <Binding Path="BindingContext.SelectedSearchScope"
+                                                     Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
+                                            <Binding Path="Scope" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                    <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </Grid>
 </ContentView>

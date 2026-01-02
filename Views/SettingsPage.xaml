@@ -198,6 +198,9 @@
                         <Label Text="{x:Static strings:AppResources.SettingsLocationsHint}"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{x:Static strings:AppResources.SettingsLocationsDisclaimer}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.SettingsLocationsLabel}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
@@ -303,6 +306,19 @@
                         <Label Text="{x:Static strings:AppResources.SettingsIndexingTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.SettingsIndexingStatusLabel}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Start" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding IndexStatusTitle}"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource OnSurface}" />
+                                <Label Text="{Binding IndexStatusMessage}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource OnSurfaceMuted}" />
+                            </VerticalStackLayout>
+                        </Grid>
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.SettingsReindexLabel}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"

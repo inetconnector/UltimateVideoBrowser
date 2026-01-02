@@ -91,7 +91,9 @@ public partial class MainViewModel : ObservableObject
     private CancellationTokenSource? peopleAutoScanCts;
     private Task? peopleAutoScanTask;
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
+    [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private string searchText = "";
+    [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SortOption? selectedSortOption;
@@ -154,13 +156,22 @@ public partial class MainViewModel : ObservableObject
             new MediaTypeFilterOption(MediaType.Documents, AppResources.MediaTypeDocuments)
         };
 
+        SearchScopeFilters = new[]
+        {
+            new SearchScopeFilterOption(SearchScope.Name, AppResources.SearchScopeName),
+            new SearchScopeFilterOption(SearchScope.People, AppResources.SearchScopePeople),
+            new SearchScopeFilterOption(SearchScope.Albums, AppResources.SearchScopeAlbums)
+        };
+
         MediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
 
         RefreshPeopleModelsStatus();
+        settingsService.NeedsReindexChanged += HandleNeedsReindexChanged;
     }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
+    public IReadOnlyList<SearchScopeFilterOption> SearchScopeFilters { get; }
 
     public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
@@ -179,10 +190,18 @@ public partial class MainViewModel : ObservableObject
 
     public bool ShowPreview => ShowVideoPlayer || ShowPhotoPreview || ShowDocumentPreview;
 
-    private void OnNeedsReindexChanged(object? sender, bool needsReindex)
+    public IndexingState IndexState =>
+        IsIndexing ? IndexingState.Running :
+        NeedsReindex ? IndexingState.NeedsReindex :
+        IndexingState.Ready;
+
+    private void HandleNeedsReindexChanged(object? sender, bool needsReindex)
     {
         if (!needsReindex || IsIndexing)
+        {
+            NeedsReindex = needsReindex;
             return;
+        }
 
         if (!isInitialized)
         {
@@ -190,6 +209,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        NeedsReindex = needsReindex;
         _ = RunIndexAsync();
     }
 
@@ -298,11 +318,11 @@ public partial class MainViewModel : ObservableObject
                 // when the active source wasn't set or when sources were temporarily unavailable.
                 var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
                 var items = string.IsNullOrWhiteSpace(normalizedAlbumId)
-                    ? await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                            SelectedMediaTypes, 0, PageSize)
-                        .ConfigureAwait(false)
-                    : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, querySourceId, sortKey,
+                    ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
                             dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                        .ConfigureAwait(false)
+                    : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
+                            querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
                         .ConfigureAwait(false);
                 var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                 var enabledSources = sources.Where(s => s.IsEnabled).ToList();
@@ -354,11 +374,11 @@ public partial class MainViewModel : ObservableObject
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
             var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
             var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
-                ? await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                        SelectedMediaTypes, mediaItemsOffset, PageSize)
-                    .ConfigureAwait(false)
-                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, querySourceId, sortKey, dateFrom,
+                ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey, dateFrom,
                         dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                    .ConfigureAwait(false)
+                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
+                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
                     .ConfigureAwait(false);
 
             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -481,6 +501,8 @@ public partial class MainViewModel : ObservableObject
 
         if (completed)
             settingsService.NeedsReindex = false;
+        else
+            settingsService.NeedsReindex = true;
 
         await RefreshAsync();
 
@@ -598,6 +620,24 @@ public partial class MainViewModel : ObservableObject
             return;
 
         SelectedMediaTypes = updated;
+    }
+
+    [RelayCommand]
+    public void ToggleSearchScope(SearchScope scope)
+    {
+        if (scope == SearchScope.None)
+            return;
+
+        var updated = SelectedSearchScope;
+        if (updated.HasFlag(scope))
+            updated &= ~scope;
+        else
+            updated |= scope;
+
+        if (updated == SearchScope.None)
+            return;
+
+        SelectedSearchScope = updated;
     }
 
     [RelayCommand]
@@ -803,7 +843,7 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 var photos = await indexService
-                    .QueryAsync(string.Empty, sourceId, "name", null, null, MediaType.Photos)
+                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }
@@ -1389,6 +1429,9 @@ public partial class MainViewModel : ObservableObject
         try
         {
             SearchText = settingsService.SearchText;
+            SelectedSearchScope = settingsService.SearchScope == SearchScope.None
+                ? SearchScope.All
+                : settingsService.SearchScope;
             var sortKey = settingsService.SelectedSortOptionKey;
             SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
             ActiveSourceId = settingsService.ActiveSourceId;
@@ -1399,6 +1442,7 @@ public partial class MainViewModel : ObservableObject
             var visibleTypes = settingsService.VisibleMediaTypes;
             SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
             IsLocationEnabled = settingsService.LocationsEnabled;
+            NeedsReindex = settingsService.NeedsReindex;
             ApplyPlaybackSettings();
             ApplyFileChangeSettings();
             ApplyPeopleTaggingSettings();
@@ -1645,6 +1689,24 @@ public partial class MainViewModel : ObservableObject
         settingsService.SearchText = value;
     }
 
+    partial void OnSelectedSearchScopeChanged(SearchScope value)
+    {
+        settingsService.SearchScope = value == SearchScope.None ? SearchScope.All : value;
+        if (!isApplyingSavedSettings)
+            _ = RefreshAsync();
+    }
+
+    partial void OnNeedsReindexChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IndexState));
+    }
+
+    partial void OnIsIndexingChanged(bool value)
+    {
+        settingsService.IsIndexing = value;
+        OnPropertyChanged(nameof(IndexState));
+    }
+
     partial void OnIsDateFilterEnabledChanged(bool value)
     {
         settingsService.DateFilterEnabled = value;
@@ -1846,4 +1908,6 @@ public partial class MainViewModel : ObservableObject
     }
 
     public sealed record MediaTypeFilterOption(MediaType MediaType, string Label);
+
+    public sealed record SearchScopeFilterOption(SearchScope Scope, string Label);
 }

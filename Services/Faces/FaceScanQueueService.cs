@@ -28,7 +28,7 @@ public sealed class FaceScanQueueService
         while (!ct.IsCancellationRequested)
         {
             var page = await indexService
-                .QueryPageAsync("", sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
+                .QueryPageAsync("", SearchScope.All, sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
                 .ConfigureAwait(false);
 
             if (page.Count == 0)
