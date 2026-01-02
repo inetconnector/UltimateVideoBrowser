@@ -84,7 +84,7 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (OperationCanceledException)
+        catch (System.OperationCanceledException)
         {
             return null;
         }
@@ -296,7 +296,7 @@ public sealed class ThumbnailService
                     break;
             }
         }
-        catch (OperationCanceledException)
+        catch (System.OperationCanceledException)
         {
             // Ignore cancellation during cache trimming.
         }
