@@ -239,6 +239,28 @@ public sealed class ThumbnailService
         }
     }
 
+    public async Task<string?> EnsureThumbnailWithRetryAsync(
+        MediaItem item,
+        TimeSpan maxDuration,
+        TimeSpan retryDelay,
+        CancellationToken ct)
+    {
+        var deadline = DateTime.UtcNow.Add(maxDuration);
+
+        while (true)
+        {
+            ct.ThrowIfCancellationRequested();
+            var path = await EnsureThumbnailAsync(item, ct).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(path))
+                return path;
+
+            if (DateTime.UtcNow >= deadline)
+                return null;
+
+            await Task.Delay(retryDelay, ct).ConfigureAwait(false);
+        }
+    }
+
     private void TouchThumbFile(string path)
     {
         try
