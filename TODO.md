@@ -12,9 +12,6 @@
 ## Performance & Cache
 
 ## UI/UX
-- [ ] **Suche über Tags/Personen/Album:** UI-Filter erweitern, damit Suche nicht nur `MediaItem.Name` umfasst.
-- [ ] **Eindeutige Statusanzeigen:** Bessere Differenzierung zwischen „Index läuft“, „Index steht“, „Index benötigt“ (z. B. Banner + Settings-Status synchronisieren).
-- [ ] **Lokationsdaten-Opt-In erklären:** In UI klarer erklären, dass GPS-EXIF ausgelesen wird und dass die Map externe Tile-Server nutzt.
 
 ## Plattform-spezifisch
 - [ ] **Android Dateisystem-Operationen:** Für SAF-Quellen Copy/Move/Delete über `DocumentFile` unterstützen (aktuell nur Windows).

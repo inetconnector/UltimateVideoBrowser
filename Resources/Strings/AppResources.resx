@@ -27,6 +27,18 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Search media...</value>
   </data>
+  <data name="SearchScopeTitle" xml:space="preserve">
+    <value>Search in</value>
+  </data>
+  <data name="SearchScopeName" xml:space="preserve">
+    <value>Titles</value>
+  </data>
+  <data name="SearchScopePeople" xml:space="preserve">
+    <value>People/Tags</value>
+  </data>
+  <data name="SearchScopeAlbums" xml:space="preserve">
+    <value>Albums</value>
+  </data>
   <data name="HeroEyebrow" xml:space="preserve">
     <value>Your personal library</value>
   </data>
@@ -62,6 +74,27 @@
   </data>
   <data name="Indexing" xml:space="preserve">
     <value>Indexing...</value>
+  </data>
+  <data name="IndexStatusRunningTitle" xml:space="preserve">
+    <value>Index running</value>
+  </data>
+  <data name="IndexStatusRunningMessage" xml:space="preserve">
+    <value>Your library is being indexed. Progress details are available.</value>
+  </data>
+  <data name="IndexStatusReadyTitle" xml:space="preserve">
+    <value>Index up to date</value>
+  </data>
+  <data name="IndexStatusReadyMessage" xml:space="preserve">
+    <value>No indexing is needed right now.</value>
+  </data>
+  <data name="IndexStatusNeededTitle" xml:space="preserve">
+    <value>Index needs update</value>
+  </data>
+  <data name="IndexStatusNeededMessage" xml:space="preserve">
+    <value>Sources changed. Run indexing to refresh your library.</value>
+  </data>
+  <data name="IndexStatusActionStart" xml:space="preserve">
+    <value>Start indexing</value>
   </data>
   <data name="IndexingStatusFormat" xml:space="preserve">
     <value>Indexing {0} • {1}/{2}</value>
@@ -306,6 +339,9 @@
   <data name="SettingsIndexingTitle" xml:space="preserve">
     <value>Indexing</value>
   </data>
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="SettingsReindexLabel" xml:space="preserve">
     <value>Re-index on next launch</value>
   </data>
@@ -376,7 +412,22 @@
     <value>Locations</value>
   </data>
   <data name="SettingsLocationsHint" xml:space="preserve">
-    <value>Extract GPS metadata from photos and videos so they can be displayed on the world map.</value>
+    <value>Extract GPS metadata from photos and videos so they can be displayed on the world map. Map tiles are loaded from external tile servers.</value>
+  </data>
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    <value>Location data stays on your device, but external map servers may receive request data (e.g. IP address). You are responsible for sharing sensitive locations; third-party services have their own terms and privacy policies.</value>
+  </data>
+  <data name="LocationOptInTitle" xml:space="preserve">
+    <value>Enable location data?</value>
+  </data>
+  <data name="LocationOptInMessage" xml:space="preserve">
+    <value>When enabled, the app reads GPS coordinates from EXIF metadata in your photos and videos. The map view loads tiles from external servers, which may receive request data (such as your IP address). Location data is stored locally on this device. By continuing, you accept that third-party services have their own terms and privacy policies.</value>
+  </data>
+  <data name="LocationOptInAccept" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="LocationOptInDecline" xml:space="preserve">
+    <value>Not now</value>
   </data>
   <data name="SettingsLocationsLabel" xml:space="preserve">
     <value>Show locations</value>

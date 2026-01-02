@@ -1,3 +1,4 @@
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Collections;
 using UltimateVideoBrowser.Models;
@@ -282,6 +283,7 @@ public partial class MainPage : ContentPage
             PlayCommand = vm.PlayCommand;
             TogglePlayerFullscreenCommand = vm.TogglePlayerFullscreenCommand;
             ToggleMediaTypeFilterCommand = vm.ToggleMediaTypeFilterCommand;
+            ToggleSearchScopeCommand = vm.ToggleSearchScopeCommand;
             LoadMoreCommand = vm.LoadMoreCommand;
             RequestPermissionCommand = vm.RequestPermissionCommand;
             SaveAsMarkedCommand = vm.SaveAsMarkedCommand;
@@ -326,6 +328,12 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(IsTopBusy));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
+                        OnPropertyChanged(nameof(IndexBannerTitle));
+                        OnPropertyChanged(nameof(IndexBannerMessage));
+                        OnPropertyChanged(nameof(ShowIndexBannerAction));
+                        OnPropertyChanged(nameof(IndexBannerActionText));
+                        OnPropertyChanged(nameof(IndexBannerActionCommand));
+                        OnPropertyChanged(nameof(IndexState));
                         break;
                     case nameof(MainViewModel.IndexedCount):
                         OnPropertyChanged(nameof(IndexedCount));
@@ -390,6 +398,9 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.ActiveAlbumId):
                         OnPropertyChanged(nameof(ActiveAlbumId));
                         break;
+                    case nameof(MainViewModel.SelectedSearchScope):
+                        OnPropertyChanged(nameof(SelectedSearchScope));
+                        break;
                     case nameof(MainViewModel.IsDateFilterEnabled):
                         OnPropertyChanged(nameof(IsDateFilterEnabled));
                         break;
@@ -445,6 +456,15 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IsLocationEnabled):
                         OnPropertyChanged(nameof(IsLocationEnabled));
                         break;
+                    case nameof(MainViewModel.NeedsReindex):
+                        OnPropertyChanged(nameof(ShowIndexingBanner));
+                        OnPropertyChanged(nameof(IndexBannerTitle));
+                        OnPropertyChanged(nameof(IndexBannerMessage));
+                        OnPropertyChanged(nameof(ShowIndexBannerAction));
+                        OnPropertyChanged(nameof(IndexBannerActionText));
+                        OnPropertyChanged(nameof(IndexBannerActionCommand));
+                        OnPropertyChanged(nameof(IndexState));
+                        break;
                 }
             };
         }
@@ -477,6 +497,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand PlayCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
+        public IRelayCommand ToggleSearchScopeCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand CopyMarkedCommand { get; }
         public IAsyncRelayCommand SaveAsMarkedCommand { get; }
@@ -513,6 +534,19 @@ public partial class MainPage : ContentPage
             set
             {
                 vm.SearchText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SearchScope SelectedSearchScope
+        {
+            get => vm.SelectedSearchScope;
+            set
+            {
+                if (vm.SelectedSearchScope == value)
+                    return;
+
+                vm.SelectedSearchScope = value;
                 OnPropertyChanged();
             }
         }
@@ -587,7 +621,34 @@ public partial class MainPage : ContentPage
             }
         }
 
-        public bool ShowIndexingBanner => vm.IsIndexing && !IsIndexingOverlayVisible;
+        public bool ShowIndexingBanner =>
+            vm.IndexState == IndexingState.NeedsReindex ||
+            (vm.IndexState == IndexingState.Running && !IsIndexingOverlayVisible);
+
+        public IndexingState IndexState => vm.IndexState;
+
+        public string IndexBannerTitle => vm.IndexState switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningTitle,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededTitle,
+            _ => AppResources.IndexStatusReadyTitle
+        };
+
+        public string IndexBannerMessage => vm.IndexState switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningMessage,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededMessage,
+            _ => AppResources.IndexStatusReadyMessage
+        };
+
+        public bool ShowIndexBannerAction => vm.IndexState != IndexingState.Ready;
+
+        public string IndexBannerActionText => vm.IndexState == IndexingState.Running
+            ? AppResources.IndexingShowDetailsButton
+            : AppResources.IndexStatusActionStart;
+
+        public ICommand IndexBannerActionCommand =>
+            vm.IndexState == IndexingState.Running ? ShowIndexOverlayCommand : RunIndexCommand;
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;
@@ -606,6 +667,7 @@ public partial class MainPage : ContentPage
         public bool ShowBottomDock => vm.ShowBottomDock;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
         public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
+        public IReadOnlyList<MainViewModel.SearchScopeFilterOption> SearchScopeFilters => vm.SearchScopeFilters;
         public List<AlbumListItem> AlbumTabs => vm.AlbumTabs;
         public List<MediaSource> Sources => vm.Sources;
         public string ActiveSourceId => vm.ActiveSourceId;

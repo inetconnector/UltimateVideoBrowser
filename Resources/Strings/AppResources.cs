@@ -18,6 +18,10 @@ public static class AppResources
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
+    public static string SearchScopeTitle => GetString(nameof(SearchScopeTitle), "Search in");
+    public static string SearchScopeName => GetString(nameof(SearchScopeName), "Titles");
+    public static string SearchScopePeople => GetString(nameof(SearchScopePeople), "People/Tags");
+    public static string SearchScopeAlbums => GetString(nameof(SearchScopeAlbums), "Albums");
     public static string HeroEyebrow => GetString(nameof(HeroEyebrow), "Your personal library");
     public static string HeroTitle => GetString(nameof(HeroTitle), "Discover every file instantly");
 
@@ -63,6 +67,16 @@ public static class AppResources
     public static string DateFilterFromLabel => GetString(nameof(DateFilterFromLabel), "From");
     public static string DateFilterToLabel => GetString(nameof(DateFilterToLabel), "To");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
+    public static string IndexStatusRunningTitle => GetString(nameof(IndexStatusRunningTitle), "Index running");
+    public static string IndexStatusRunningMessage => GetString(nameof(IndexStatusRunningMessage),
+        "Your library is being indexed. Progress details are available.");
+    public static string IndexStatusReadyTitle => GetString(nameof(IndexStatusReadyTitle), "Index up to date");
+    public static string IndexStatusReadyMessage =>
+        GetString(nameof(IndexStatusReadyMessage), "No indexing is needed right now.");
+    public static string IndexStatusNeededTitle => GetString(nameof(IndexStatusNeededTitle), "Index needs update");
+    public static string IndexStatusNeededMessage =>
+        GetString(nameof(IndexStatusNeededMessage), "Sources changed. Run indexing to refresh your library.");
+    public static string IndexStatusActionStart => GetString(nameof(IndexStatusActionStart), "Start indexing");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
     public static string IndexingFileFormat => GetString(nameof(IndexingFileFormat), "File: {0}");
@@ -208,6 +222,7 @@ public static class AppResources
     public static string SettingsDateFromLabel => GetString(nameof(SettingsDateFromLabel), "From");
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
+    public static string SettingsIndexingStatusLabel => GetString(nameof(SettingsIndexingStatusLabel), "Status");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
 
     public static string SettingsDatabaseResetHint =>
@@ -283,10 +298,24 @@ public static class AppResources
 
     public static string SettingsLocationsHint =>
         GetString(nameof(SettingsLocationsHint),
-            "Extract GPS metadata from photos and videos so they can be displayed on the world map.");
+            "Extract GPS metadata from photos and videos so they can be displayed on the world map. Map tiles are loaded from external tile servers.");
+
+    public static string SettingsLocationsDisclaimer =>
+        GetString(nameof(SettingsLocationsDisclaimer),
+            "Location data stays on your device, but external map servers may receive request data (e.g. IP address). You are responsible for sharing sensitive locations; third-party services have their own terms and privacy policies.");
 
     public static string SettingsLocationsLabel =>
         GetString(nameof(SettingsLocationsLabel), "Show locations");
+
+    public static string LocationOptInTitle =>
+        GetString(nameof(LocationOptInTitle), "Enable location data?");
+
+    public static string LocationOptInMessage =>
+        GetString(nameof(LocationOptInMessage),
+            "When enabled, the app reads GPS coordinates from EXIF metadata in your photos and videos. The map view loads tiles from external servers, which may receive request data (such as your IP address). Location data is stored locally on this device. By continuing, you accept that third-party services have their own terms and privacy policies.");
+
+    public static string LocationOptInAccept => GetString(nameof(LocationOptInAccept), "Enable");
+    public static string LocationOptInDecline => GetString(nameof(LocationOptInDecline), "Not now");
 
     public static string SettingsPeopleModelsFolderFormat =>
         GetString(nameof(SettingsPeopleModelsFolderFormat), "Folder: {0}");

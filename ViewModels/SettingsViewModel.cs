@@ -16,6 +16,8 @@ public partial class SettingsViewModel : ObservableObject
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
+    private bool isApplyingLocationToggle;
+    private bool isApplyingNeedsReindex;
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private bool canDownloadPeopleModels;
     [ObservableProperty] private DateTime dateFilterFrom;
@@ -25,6 +27,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
     [ObservableProperty] private bool isGraphicsIndexed;
+    [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleModelsDownloading;
@@ -32,6 +35,8 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isPhotosIndexed;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
+    [ObservableProperty] private string indexStatusMessage = string.Empty;
+    [ObservableProperty] private string indexStatusTitle = string.Empty;
     [ObservableProperty] private string peopleModelsDetailText = string.Empty;
 
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
@@ -74,6 +79,7 @@ public partial class SettingsViewModel : ObservableObject
         DateFilterFrom = settingsService.DateFilterFrom;
         DateFilterTo = settingsService.DateFilterTo;
         NeedsReindex = settingsService.NeedsReindex;
+        IsIndexing = settingsService.IsIndexing;
         IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
 
         var indexed = settingsService.IndexedMediaTypes;
@@ -87,9 +93,28 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+        isApplyingLocationToggle = true;
         IsLocationEnabled = settingsService.LocationsEnabled;
+        isApplyingLocationToggle = false;
 
         RefreshPeopleModelsStatus();
+        UpdateIndexStatusState();
+
+        settingsService.IsIndexingChanged += (_, value) =>
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsIndexing = value;
+                UpdateIndexStatusState();
+            });
+
+        settingsService.NeedsReindexChanged += (_, value) =>
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                isApplyingNeedsReindex = true;
+                NeedsReindex = value;
+                isApplyingNeedsReindex = false;
+                UpdateIndexStatusState();
+            });
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -136,7 +161,10 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnNeedsReindexChanged(bool value)
     {
-        settingsService.NeedsReindex = value;
+        if (!isApplyingNeedsReindex)
+            settingsService.NeedsReindex = value;
+
+        UpdateIndexStatusState();
     }
 
     partial void OnIsInternalPlayerEnabledChanged(bool value)
@@ -217,9 +245,66 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsLocationEnabledChanged(bool value)
     {
-        settingsService.LocationsEnabled = value;
-        if (value && !NeedsReindex)
+        if (isApplyingLocationToggle)
+        {
+            settingsService.LocationsEnabled = value;
+            return;
+        }
+
+        _ = HandleLocationToggleAsync(value);
+    }
+
+    private async Task HandleLocationToggleAsync(bool value)
+    {
+        if (!value)
+        {
+            settingsService.LocationsEnabled = false;
+            return;
+        }
+
+        var accepted = await dialogService.DisplayAlertAsync(
+            AppResources.LocationOptInTitle,
+            AppResources.LocationOptInMessage,
+            AppResources.LocationOptInAccept,
+            AppResources.LocationOptInDecline);
+
+        if (!accepted)
+        {
+            isApplyingLocationToggle = true;
+            IsLocationEnabled = false;
+            isApplyingLocationToggle = false;
+            return;
+        }
+
+        settingsService.LocationsEnabled = true;
+        if (!NeedsReindex)
             NeedsReindex = true;
+    }
+
+    partial void OnIsIndexingChanged(bool value)
+    {
+        UpdateIndexStatusState();
+    }
+
+    private void UpdateIndexStatusState()
+    {
+        var state = IsIndexing ? IndexingState.Running :
+            NeedsReindex ? IndexingState.NeedsReindex :
+            IndexingState.Ready;
+
+        IndexStatusTitle = state switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningTitle,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededTitle,
+            _ => AppResources.IndexStatusReadyTitle
+        };
+
+        IndexStatusMessage = state switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningMessage,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededMessage,
+            _ => AppResources.IndexStatusReadyMessage
+        };
     }
 
     [RelayCommand]

@@ -129,19 +129,22 @@ public sealed class AlbumService
     public async Task<int> CountAlbumItemsAsync(
         string albumId,
         string search,
+        SearchScope searchScope,
         string? sourceId,
         DateTime? from,
         DateTime? to,
         MediaType mediaTypes)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var (sql, args) = BuildAlbumQuery(albumId, search, sourceId, from, to, mediaTypes, "name", null, null, true);
+        var (sql, args) = BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, "name", null,
+            null, true);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     public async Task<List<MediaItem>> QueryAlbumPageAsync(
         string albumId,
         string search,
+        SearchScope searchScope,
         string? sourceId,
         string sortKey,
         DateTime? from,
@@ -152,13 +155,15 @@ public sealed class AlbumService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) =
-            BuildAlbumQuery(albumId, search, sourceId, from, to, mediaTypes, sortKey, offset, limit, false);
+            BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, sortKey, offset, limit,
+                false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private static (string sql, List<object> args) BuildAlbumQuery(
         string albumId,
         string search,
+        SearchScope searchScope,
         string? sourceId,
         DateTime? from,
         DateTime? to,
@@ -190,8 +195,38 @@ public sealed class AlbumService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            filters.Add("MediaItem.Name LIKE ?");
-            args.Add($"%{search}%");
+            var trimmedSearch = search.Trim();
+            if (searchScope == SearchScope.None)
+            {
+                filters.Add("1 = 0");
+            }
+            else
+            {
+                var searchFilters = new List<string>();
+                var like = $"%{trimmedSearch}%";
+
+                if (searchScope.HasFlag(SearchScope.Name))
+                {
+                    searchFilters.Add("MediaItem.Name LIKE ?");
+                    args.Add(like);
+                }
+
+                if (searchScope.HasFlag(SearchScope.People))
+                {
+                    searchFilters.Add(
+                        "EXISTS (SELECT 1 FROM PersonTag WHERE PersonTag.MediaPath = MediaItem.Path AND PersonTag.PersonName LIKE ?)");
+                    args.Add(like);
+                }
+
+                if (searchScope.HasFlag(SearchScope.Albums))
+                {
+                    searchFilters.Add("Album.Name LIKE ?");
+                    args.Add(like);
+                }
+
+                if (searchFilters.Count > 0)
+                    filters.Add("(" + string.Join(" OR ", searchFilters) + ")");
+            }
         }
 
         if (from.HasValue || to.HasValue)
@@ -207,8 +242,8 @@ public sealed class AlbumService
         }
 
         var sql = countOnly
-            ? "SELECT COUNT(*) FROM MediaItem INNER JOIN AlbumItem ON AlbumItem.MediaPath = MediaItem.Path"
-            : "SELECT MediaItem.* FROM MediaItem INNER JOIN AlbumItem ON AlbumItem.MediaPath = MediaItem.Path";
+            ? "SELECT COUNT(*) FROM MediaItem INNER JOIN AlbumItem ON AlbumItem.MediaPath = MediaItem.Path INNER JOIN Album ON Album.Id = AlbumItem.AlbumId"
+            : "SELECT MediaItem.* FROM MediaItem INNER JOIN AlbumItem ON AlbumItem.MediaPath = MediaItem.Path INNER JOIN Album ON Album.Id = AlbumItem.AlbumId";
 
         if (filters.Count > 0)
             sql += " WHERE " + string.Join(" AND ", filters);

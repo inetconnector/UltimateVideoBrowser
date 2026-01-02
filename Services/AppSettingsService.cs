@@ -8,6 +8,7 @@ public sealed class AppSettingsService
     private const string ActiveAlbumKey = "active_album_id";
     private const string SelectedSortKey = "selected_sort_key";
     private const string SearchTextKey = "search_text";
+    private const string SearchScopeKey = "search_scope";
     private const string DateFilterEnabledKey = "date_filter_enabled";
     private const string DateFilterFromKey = "date_filter_from";
     private const string DateFilterToKey = "date_filter_to";
@@ -22,6 +23,7 @@ public sealed class AppSettingsService
     private const string AllowFileChangesKey = "allow_file_changes";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
     private const string LocationsEnabledKey = "locations_enabled";
+    private bool isIndexing;
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
 
@@ -53,6 +55,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(SearchTextKey, "");
         set => Preferences.Default.Set(SearchTextKey, value ?? "");
+    }
+
+    public SearchScope SearchScope
+    {
+        get => (SearchScope)Preferences.Default.Get(SearchScopeKey, (int)SearchScope.All);
+        set => Preferences.Default.Set(SearchScopeKey, (int)value);
     }
 
     public bool DateFilterEnabled
@@ -159,7 +167,21 @@ public sealed class AppSettingsService
         set => Preferences.Default.Set(LocationsEnabledKey, value);
     }
 
+    public bool IsIndexing
+    {
+        get => isIndexing;
+        set
+        {
+            if (isIndexing == value)
+                return;
+
+            isIndexing = value;
+            IsIndexingChanged?.Invoke(this, value);
+        }
+    }
+
     public event EventHandler<bool>? NeedsReindexChanged;
+    public event EventHandler<bool>? IsIndexingChanged;
 
     public IReadOnlySet<string> GetVideoExtensions()
     {

@@ -13,10 +13,25 @@
            VerticalOptions="Start"
            Margin="16,4,16,12"
            HasShadow="False">
-        <Button Text="{x:Static strings:AppResources.IndexingShowDetailsButton}"
-                Command="{Binding ShowIndexOverlayCommand}"
-                Style="{StaticResource OverlayButtonStyle}"
-                Padding="12,8"
-                CornerRadius="12" />
+        <Grid ColumnDefinitions="*,Auto"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="12"
+              RowSpacing="4">
+            <Label Text="{Binding IndexBannerTitle}"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource OnSurface}" />
+            <Label Grid.Row="1"
+                   Text="{Binding IndexBannerMessage}"
+                   FontSize="12"
+                   TextColor="{DynamicResource OnSurfaceMuted}" />
+            <Button Grid.Column="1"
+                    Grid.RowSpan="2"
+                    Text="{Binding IndexBannerActionText}"
+                    Command="{Binding IndexBannerActionCommand}"
+                    IsVisible="{Binding ShowIndexBannerAction}"
+                    Style="{StaticResource OverlayButtonStyle}"
+                    Padding="12,8"
+                    CornerRadius="12" />
+        </Grid>
     </Frame>
 </ContentView>
