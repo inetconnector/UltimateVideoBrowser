@@ -6,18 +6,20 @@ using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Services;
 
-public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase, IPurchasesUpdatedListener
+public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 {
     private const string OneTimeProductId = "photoapp_pro_unlock";
     private readonly object sync = new();
     private BillingClient? billingClient;
     private TaskCompletionSource<ProUpgradeResult>? purchaseTcs;
     private ProductDetails? cachedProduct;
+    private readonly PurchasesUpdatedListener purchasesUpdatedListener;
 
     public PlayBillingProUpgradeService(AppSettingsService settingsService)
         : base(settingsService)
     {
         PriceText = AppResources.SettingsProPriceFallback;
+        purchasesUpdatedListener = new PurchasesUpdatedListener(this);
     }
 
     public override string ProductId => OneTimeProductId;
@@ -66,7 +68,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase, IPurch
             : ProUpgradeResult.Failed(AppResources.SettingsProRestoreFailedMessage);
     }
 
-    public void OnPurchasesUpdated(BillingResult billingResult, IList<Purchase>? purchases)
+    private void OnPurchasesUpdated(BillingResult billingResult, IList<Purchase>? purchases)
     {
         if (billingResult.ResponseCode == BillingClient.BillingResponseCode.UserCanceled)
         {
@@ -102,7 +104,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase, IPurch
 
         var context = Android.App.Application.Context;
         var client = BillingClient.NewBuilder(context)
-            .SetListener(this)
+            .SetListener(purchasesUpdatedListener)
             .EnablePendingPurchases()
             .Build();
 
@@ -253,6 +255,22 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase, IPurch
         }
 
         public void OnAcknowledgePurchaseResponse(BillingResult billingResult) => tcs.TrySetResult(billingResult);
+    }
+
+    private sealed class PurchasesUpdatedListener : Java.Lang.Object, IPurchasesUpdatedListener
+    {
+        private readonly WeakReference<PlayBillingProUpgradeService> serviceRef;
+
+        public PurchasesUpdatedListener(PlayBillingProUpgradeService service)
+        {
+            serviceRef = new WeakReference<PlayBillingProUpgradeService>(service);
+        }
+
+        public void OnPurchasesUpdated(BillingResult billingResult, IList<Purchase>? purchases)
+        {
+            if (serviceRef.TryGetTarget(out var service))
+                service.OnPurchasesUpdated(billingResult, purchases);
+        }
     }
 
     private sealed record ProductDetailsResult(BillingResult BillingResult, IList<ProductDetails>? ProductDetailsList);
