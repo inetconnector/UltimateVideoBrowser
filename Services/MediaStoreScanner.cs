@@ -12,6 +12,7 @@ using Windows.Storage.Search;
 #endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
