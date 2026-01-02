@@ -134,10 +134,12 @@ public static class AppResources
         GetString(nameof(ErrorLogHint), "Share this log if something fails or a thumbnail is blank.");
 
     public static string ErrorLogShowButton => GetString(nameof(ErrorLogShowButton), "Show log");
+    public static string ErrorLogCopyButton => GetString(nameof(ErrorLogCopyButton), "Copy log");
     public static string ErrorLogShareButton => GetString(nameof(ErrorLogShareButton), "Share log");
     public static string ErrorLogClearButton => GetString(nameof(ErrorLogClearButton), "Clear log");
     public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
     public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
+    public static string ErrorLogCopiedMessage => GetString(nameof(ErrorLogCopiedMessage), "Error log copied.");
 
     public static string ErrorLogClearedMessage =>
         GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");

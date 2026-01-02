@@ -174,8 +174,14 @@
   <data name="ErrorLogTitle" xml:space="preserve">
     <value>Fehlerprotokoll</value>
   </data>
+  <data name="ErrorLogCopyButton" xml:space="preserve">
+    <value>Log kopieren</value>
+  </data>
   <data name="ErrorLogEmptyMessage" xml:space="preserve">
     <value>Noch keine Fehler protokolliert.</value>
+  </data>
+  <data name="ErrorLogCopiedMessage" xml:space="preserve">
+    <value>Fehlerprotokoll kopiert.</value>
   </data>
   <data name="ErrorLogShareTitle" xml:space="preserve">
     <value>Fehlerprotokoll teilen</value>

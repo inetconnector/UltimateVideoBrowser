@@ -177,8 +177,14 @@
   <data name="ErrorLogTitle" xml:space="preserve">
     <value>Error log</value>
   </data>
+  <data name="ErrorLogCopyButton" xml:space="preserve">
+    <value>Copy log</value>
+  </data>
   <data name="ErrorLogEmptyMessage" xml:space="preserve">
     <value>No errors logged yet.</value>
+  </data>
+  <data name="ErrorLogCopiedMessage" xml:space="preserve">
+    <value>Error log copied.</value>
   </data>
   <data name="ErrorLogShareTitle" xml:space="preserve">
     <value>Share error log</value>
