@@ -6,6 +6,8 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 
     <ApplicationTitle>Ultimate Video Browser</ApplicationTitle>
     <ApplicationId>com.inetconnector.ultimatevideobrowser</ApplicationId>
