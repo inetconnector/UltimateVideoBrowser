@@ -34,8 +34,6 @@ public sealed class AppSettingsService
     private static readonly string[] DefaultDocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
-    private bool isIndexing;
-
     public string ActiveSourceId
     {
         get => Preferences.Default.Get(ActiveSourceKey, "");
