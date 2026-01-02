@@ -8,6 +8,7 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using Windows.Storage.Search;
 #endif
 using System.Diagnostics;
 using System.Linq;
@@ -471,6 +472,8 @@ public sealed class MediaStoreScanner
         return total;
     }
 
+    private const uint StorageQueryPageSize = 256;
+
     private static async Task<int> CountWindowsFolderAsync(StorageFolder root, ModelMediaType indexedTypes,
         ExtensionLookup extensions, CancellationToken ct)
     {
@@ -483,17 +486,7 @@ public sealed class MediaStoreScanner
             ct.ThrowIfCancellationRequested();
             var folder = queue.Dequeue();
 
-            IReadOnlyList<StorageFile> files;
-            try
-            {
-                files = await folder.GetFilesAsync();
-            }
-            catch
-            {
-                continue;
-            }
-
-            foreach (var file in files)
+            await foreach (var file in EnumerateStorageFilesAsync(folder, ct))
             {
                 ct.ThrowIfCancellationRequested();
                 if (!extensions.IsCandidateName(file.Name, indexedTypes))
@@ -507,17 +500,7 @@ public sealed class MediaStoreScanner
                     total++;
             }
 
-            IReadOnlyList<StorageFolder> subfolders;
-            try
-            {
-                subfolders = await folder.GetFoldersAsync();
-            }
-            catch
-            {
-                continue;
-            }
-
-            foreach (var subfolder in subfolders)
+            await foreach (var subfolder in EnumerateStorageFoldersAsync(folder, ct))
                 queue.Enqueue(subfolder);
         }
 
@@ -611,17 +594,7 @@ public sealed class MediaStoreScanner
         {
             ct.ThrowIfCancellationRequested();
             var folder = queue.Dequeue();
-            IReadOnlyList<StorageFile> files;
-            try
-            {
-                files = await folder.GetFilesAsync();
-            }
-            catch
-            {
-                continue;
-            }
-
-            foreach (var file in files)
+            await foreach (var file in EnumerateStorageFilesAsync(folder, ct))
             {
                 ct.ThrowIfCancellationRequested();
                 if (!extensions.IsCandidateName(file.Name, indexedTypes))
@@ -658,18 +631,92 @@ public sealed class MediaStoreScanner
                 };
             }
 
-            IReadOnlyList<StorageFolder> subfolders;
+            await foreach (var subfolder in EnumerateStorageFoldersAsync(folder, ct))
+                queue.Enqueue(subfolder);
+        }
+    }
+
+    private static async IAsyncEnumerable<StorageFile> EnumerateStorageFilesAsync(StorageFolder folder,
+        [EnumeratorCancellation] CancellationToken ct)
+    {
+        StorageFileQueryResult query;
+        try
+        {
+            query = folder.CreateFileQuery();
+        }
+        catch
+        {
+            yield break;
+        }
+
+        uint index = 0;
+        while (true)
+        {
+            ct.ThrowIfCancellationRequested();
+            IReadOnlyList<StorageFile> batch;
             try
             {
-                subfolders = await folder.GetFoldersAsync();
+                batch = await query.GetFilesAsync(index, StorageQueryPageSize);
             }
             catch
             {
-                continue;
+                yield break;
             }
 
-            foreach (var subfolder in subfolders)
-                queue.Enqueue(subfolder);
+            if (batch.Count == 0)
+                yield break;
+
+            foreach (var file in batch)
+            {
+                ct.ThrowIfCancellationRequested();
+                yield return file;
+            }
+
+            index += (uint)batch.Count;
+            if (batch.Count < StorageQueryPageSize)
+                yield break;
+        }
+    }
+
+    private static async IAsyncEnumerable<StorageFolder> EnumerateStorageFoldersAsync(StorageFolder folder,
+        [EnumeratorCancellation] CancellationToken ct)
+    {
+        StorageFolderQueryResult query;
+        try
+        {
+            query = folder.CreateFolderQuery();
+        }
+        catch
+        {
+            yield break;
+        }
+
+        uint index = 0;
+        while (true)
+        {
+            ct.ThrowIfCancellationRequested();
+            IReadOnlyList<StorageFolder> batch;
+            try
+            {
+                batch = await query.GetFoldersAsync(index, StorageQueryPageSize);
+            }
+            catch
+            {
+                yield break;
+            }
+
+            if (batch.Count == 0)
+                yield break;
+
+            foreach (var subfolder in batch)
+            {
+                ct.ThrowIfCancellationRequested();
+                yield return subfolder;
+            }
+
+            index += (uint)batch.Count;
+            if (batch.Count < StorageQueryPageSize)
+                yield break;
         }
     }
 
