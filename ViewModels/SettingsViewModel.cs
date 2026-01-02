@@ -14,6 +14,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IDialogService dialogService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
+    private readonly IProUpgradeService proUpgradeService;
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     private bool isApplyingLocationToggle;
@@ -41,14 +42,21 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string photoExtensionsText = string.Empty;
+    [ObservableProperty] private string proLimitMessage = string.Empty;
+    [ObservableProperty] private string proPriceText = string.Empty;
+    [ObservableProperty] private string proStatusMessage = string.Empty;
+    [ObservableProperty] private string proStatusTitle = string.Empty;
     [ObservableProperty] private SortOption? selectedSortOption;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
     [ObservableProperty] private string videoExtensionsText = string.Empty;
+    [ObservableProperty] private bool isProBusy;
+    [ObservableProperty] private bool isProLimitReached;
+    [ObservableProperty] private bool isProUnlocked;
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
-        IDialogService dialogService)
+        IDialogService dialogService, IProUpgradeService proUpgradeService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
@@ -56,6 +64,7 @@ public partial class SettingsViewModel : ObservableObject
         this.db = db;
         this.sourceService = sourceService;
         this.dialogService = dialogService;
+        this.proUpgradeService = proUpgradeService;
         ThemeOptions = new[]
         {
             new ThemeOption("light", AppResources.ThemeLight),
@@ -115,6 +124,15 @@ public partial class SettingsViewModel : ObservableObject
                 isApplyingNeedsReindex = false;
                 UpdateIndexStatusState();
             });
+
+        IsProUnlocked = proUpgradeService.IsProUnlocked;
+        UpdateProStatus();
+        _ = RefreshProStatusAsync();
+
+        proUpgradeService.ProStatusChanged += (_, _) =>
+            MainThread.BeginInvokeOnMainThread(UpdateProStatus);
+        proUpgradeService.ProLimitReached += (_, _) =>
+            MainThread.BeginInvokeOnMainThread(UpdateProLimitState);
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -305,6 +323,100 @@ public partial class SettingsViewModel : ObservableObject
             IndexingState.NeedsReindex => AppResources.IndexStatusNeededMessage,
             _ => AppResources.IndexStatusReadyMessage
         };
+    }
+
+    private void UpdateProStatus()
+    {
+        IsProUnlocked = proUpgradeService.IsProUnlocked;
+        ProStatusTitle = IsProUnlocked
+            ? AppResources.SettingsProStatusUnlockedTitle
+            : AppResources.SettingsProStatusFreeTitle;
+        ProStatusMessage = IsProUnlocked
+            ? AppResources.SettingsProUnlockedMessage
+            : AppResources.SettingsProFreeMessage;
+        ProPriceText = string.Format(AppResources.SettingsProPriceFormat,
+            proUpgradeService.PriceText ?? AppResources.SettingsProPriceFallback);
+        ProLimitMessage = string.Format(AppResources.SettingsProLimitReachedMessage,
+            IProUpgradeService.FreePeopleLimit);
+        UpdateProLimitState();
+    }
+
+    private void UpdateProLimitState()
+    {
+        IsProLimitReached = !IsProUnlocked && proUpgradeService.HasReachedFreeLimit;
+    }
+
+    private async Task RefreshProStatusAsync()
+    {
+        try
+        {
+            await proUpgradeService.RefreshAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Best-effort: keep UI responsive if billing cannot refresh.
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(UpdateProStatus);
+    }
+
+    [RelayCommand]
+    private async Task UpgradeToProAsync()
+    {
+        if (IsProBusy || IsProUnlocked)
+            return;
+
+        IsProBusy = true;
+        try
+        {
+            var result = await proUpgradeService.PurchaseAsync(CancellationToken.None).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => HandleProResultAsync(result));
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() => IsProBusy = false);
+        }
+    }
+
+    [RelayCommand]
+    private async Task RestoreProAsync()
+    {
+        if (IsProBusy)
+            return;
+
+        IsProBusy = true;
+        try
+        {
+            var result = await proUpgradeService.RestoreAsync(CancellationToken.None).ConfigureAwait(false);
+            await MainThread.InvokeOnMainThreadAsync(() => HandleProResultAsync(result));
+        }
+        finally
+        {
+            await MainThread.InvokeOnMainThreadAsync(() => IsProBusy = false);
+        }
+    }
+
+    private async Task HandleProResultAsync(ProUpgradeResult result)
+    {
+        string title;
+        switch (result.Status)
+        {
+            case ProUpgradeStatus.Success:
+                title = AppResources.SettingsProPurchaseSuccessTitle;
+                UpdateProStatus();
+                break;
+            case ProUpgradeStatus.Cancelled:
+                title = AppResources.SettingsProPurchaseCancelledTitle;
+                break;
+            case ProUpgradeStatus.NotSupported:
+                title = AppResources.SettingsProNotSupportedTitle;
+                break;
+            default:
+                title = AppResources.SettingsProPurchaseFailedTitle;
+                break;
+        }
+
+        await dialogService.DisplayAlertAsync(title, result.Message, AppResources.OkButton);
     }
 
     [RelayCommand]

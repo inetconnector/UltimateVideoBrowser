@@ -53,6 +53,11 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
         builder.Services.AddSingleton<IFileExportService, FileExportService>();
+#if ANDROID
+        builder.Services.AddSingleton<IProUpgradeService, PlayBillingProUpgradeService>();
+#else
+        builder.Services.AddSingleton<IProUpgradeService, ProUpgradeService>();
+#endif
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #elif WINDOWS

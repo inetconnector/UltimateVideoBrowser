@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Services;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
 namespace UltimateVideoBrowser.Services.Faces;
@@ -17,19 +18,22 @@ public sealed class PeopleRecognitionService
     private readonly SFaceRecognizer faceRecognizer;
     private readonly ModelFileService modelFiles;
     private readonly PeopleTagService peopleTagService;
+    private readonly IProUpgradeService proUpgradeService;
 
     public PeopleRecognitionService(
         AppDb db,
         PeopleTagService peopleTagService,
         ModelFileService modelFiles,
         YuNetFaceDetector faceDetector,
-        SFaceRecognizer faceRecognizer)
+        SFaceRecognizer faceRecognizer,
+        IProUpgradeService proUpgradeService)
     {
         this.db = db;
         this.peopleTagService = peopleTagService;
         this.modelFiles = modelFiles;
         this.faceDetector = faceDetector;
         this.faceRecognizer = faceRecognizer;
+        this.proUpgradeService = proUpgradeService;
     }
 
     public bool IsRuntimeLoaded => faceDetector.IsLoaded && faceRecognizer.IsLoaded;
@@ -148,6 +152,14 @@ public sealed class PeopleRecognitionService
 
                 if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
                 {
+                    if (!proUpgradeService.IsProUnlocked &&
+                        peopleMap.Values.Count(p => string.IsNullOrWhiteSpace(p.MergedIntoPersonId)) >=
+                        IProUpgradeService.FreePeopleLimit)
+                    {
+                        proUpgradeService.NotifyProLimitReached();
+                        continue;
+                    }
+
                     var newPerson = CreateUnknownPerson(peopleMap.Values);
                     await db.Db.InsertAsync(newPerson).ConfigureAwait(false);
 

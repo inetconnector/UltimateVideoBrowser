@@ -23,6 +23,7 @@ public sealed class AppSettingsService
     private const string AllowFileChangesKey = "allow_file_changes";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
     private const string LocationsEnabledKey = "locations_enabled";
+    private const string ProUnlockedKey = "pro_unlocked";
     private bool isIndexing;
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
@@ -165,6 +166,12 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(LocationsEnabledKey, false);
         set => Preferences.Default.Set(LocationsEnabledKey, value);
+    }
+
+    public bool IsProUnlocked
+    {
+        get => Preferences.Default.Get(ProUnlockedKey, false);
+        set => Preferences.Default.Set(ProUnlockedKey, value);
     }
 
     public bool IsIndexing
