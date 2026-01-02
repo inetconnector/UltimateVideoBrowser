@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using UltimateVideoBrowser.LicenseServer.Models;
 
 namespace UltimateVideoBrowser.LicenseServer.Services;
@@ -79,25 +78,7 @@ public static class LegalDocumentBuilder
 
     public static LegalOptions LoadOptions(IConfiguration configuration)
     {
-        var options = configuration.GetSection("Legal").Get<LegalOptions>() ?? new LegalOptions();
-        var fileOptions = configuration.GetSection("LegalFile").Get<LegalFileOptions>() ?? new LegalFileOptions();
-        if (!string.IsNullOrWhiteSpace(fileOptions.OptionsFilePath) && File.Exists(fileOptions.OptionsFilePath))
-        {
-            try
-            {
-                var json = File.ReadAllText(fileOptions.OptionsFilePath);
-                var fileOptionsValue = JsonSerializer.Deserialize<LegalOptions>(json,
-                    new JsonSerializerOptions(JsonSerializerDefaults.Web));
-                if (fileOptionsValue != null)
-                    options = fileOptionsValue;
-            }
-            catch
-            {
-                // Best-effort: keep appsettings values if file is unavailable or invalid.
-            }
-        }
-
-        return options;
+        return OptionsLoader.LoadOptions<LegalOptions>(configuration, "Legal", "LegalFile");
     }
 
     private static string BuildPage(string title, string subtitle, string content)

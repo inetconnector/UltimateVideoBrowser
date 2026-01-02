@@ -12,8 +12,8 @@ public sealed class LicenseService
 
     public LicenseService(IConfiguration configuration)
     {
-        licenseOptions = configuration.GetSection("License").Get<LicenseOptions>() ?? new LicenseOptions();
-        payPalOptions = configuration.GetSection("PayPal").Get<PayPalOptions>() ?? new PayPalOptions();
+        licenseOptions = OptionsLoader.LoadOptions<LicenseOptions>(configuration, "License", "LicenseFile");
+        payPalOptions = OptionsLoader.LoadOptions<PayPalOptions>(configuration, "PayPal", "PayPalFile");
     }
 
     public PricingResponse GetPricing()

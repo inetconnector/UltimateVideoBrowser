@@ -38,7 +38,7 @@ public sealed class LegalOptions
     public string SupportEmail { get; init; } = "sales@digitaxo.com";
 }
 
-public sealed class LegalFileOptions
+public sealed class OptionsFilePath
 {
     public string? OptionsFilePath { get; init; }
 }
