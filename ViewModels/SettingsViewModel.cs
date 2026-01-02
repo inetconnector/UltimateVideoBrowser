@@ -408,6 +408,9 @@ public partial class SettingsViewModel : ObservableObject
             case ProUpgradeStatus.Cancelled:
                 title = AppResources.SettingsProPurchaseCancelledTitle;
                 break;
+            case ProUpgradeStatus.Pending:
+                title = AppResources.SettingsProPurchasePendingTitle;
+                break;
             case ProUpgradeStatus.NotSupported:
                 title = AppResources.SettingsProNotSupportedTitle;
                 break;

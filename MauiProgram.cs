@@ -53,15 +53,19 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<PlaybackService>();
         builder.Services.AddSingleton<IFileExportService, FileExportService>();
-#if ANDROID
-        builder.Services.AddSingleton<IProUpgradeService, PlayBillingProUpgradeService>();
-#else
+        builder.Services.AddHttpClient<LicenseServerClient>();
         builder.Services.AddSingleton<IProUpgradeService, ProUpgradeService>();
-#endif
 #if ANDROID && !WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 #elif WINDOWS
         builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
+#endif
+#if ANDROID
+        builder.Services.AddSingleton<IDeviceFingerprintService, AndroidDeviceFingerprintService>();
+#elif WINDOWS
+        builder.Services.AddSingleton<IDeviceFingerprintService, WindowsDeviceFingerprintService>();
+#else
+        builder.Services.AddSingleton<IDeviceFingerprintService, DefaultDeviceFingerprintService>();
 #endif
 
         // ViewModels

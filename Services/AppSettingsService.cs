@@ -24,6 +24,9 @@ public sealed class AppSettingsService
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
     private const string LocationsEnabledKey = "locations_enabled";
     private const string ProUnlockedKey = "pro_unlocked";
+    private const string ProActivationTokenKey = "pro_activation_token";
+    private const string ProActivationValidUntilKey = "pro_activation_valid_until";
+    private const string LicenseServerBaseUrlKey = "license_server_base_url";
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
 
@@ -173,6 +176,31 @@ public sealed class AppSettingsService
     {
         get => Preferences.Default.Get(ProUnlockedKey, false);
         set => Preferences.Default.Set(ProUnlockedKey, value);
+    }
+
+    public string ProActivationToken
+    {
+        get => Preferences.Default.Get(ProActivationTokenKey, string.Empty);
+        set => Preferences.Default.Set(ProActivationTokenKey, value ?? string.Empty);
+    }
+
+    public DateTimeOffset? ProActivationValidUntil
+    {
+        get
+        {
+            var seconds = Preferences.Default.Get(ProActivationValidUntilKey, 0L);
+            return seconds == 0 ? null : DateTimeOffset.FromUnixTimeSeconds(seconds);
+        }
+        set
+        {
+            Preferences.Default.Set(ProActivationValidUntilKey, value?.ToUnixTimeSeconds() ?? 0L);
+        }
+    }
+
+    public string LicenseServerBaseUrl
+    {
+        get => Preferences.Default.Get(LicenseServerBaseUrlKey, "https://license.netregservice.com");
+        set => Preferences.Default.Set(LicenseServerBaseUrlKey, value ?? string.Empty);
     }
 
     public bool IsIndexing

@@ -323,7 +323,7 @@ public static class AppResources
             "• Unlimited face recognition\n• Automatic people albums\n• Batch sorting (1000+ photos)\n• Local export & backups\n• No ads");
 
     public static string SettingsProPriceFormat =>
-        GetString(nameof(SettingsProPriceFormat), "One-time purchase: {0}");
+        GetString(nameof(SettingsProPriceFormat), "One-time PayPal checkout: {0} (via license server)");
 
     public static string SettingsProPriceFallback => GetString(nameof(SettingsProPriceFallback), "3,92 €");
     public static string SettingsProUnlockButton => GetString(nameof(SettingsProUnlockButton), "Unlock Pro");
@@ -338,6 +338,13 @@ public static class AppResources
 
     public static string SettingsProPurchaseSuccessMessage =>
         GetString(nameof(SettingsProPurchaseSuccessMessage), "Pro features are now enabled.");
+
+    public static string SettingsProPurchasePendingTitle =>
+        GetString(nameof(SettingsProPurchasePendingTitle), "Checkout opened");
+
+    public static string SettingsProPurchasePendingMessage =>
+        GetString(nameof(SettingsProPurchasePendingMessage),
+            "Complete the PayPal payment and enter your license key using Restore purchase.");
 
     public static string SettingsProPurchaseCancelledTitle =>
         GetString(nameof(SettingsProPurchaseCancelledTitle), "Purchase cancelled");
@@ -357,11 +364,23 @@ public static class AppResources
     public static string SettingsProRestoreFailedMessage =>
         GetString(nameof(SettingsProRestoreFailedMessage), "No Pro purchase was found for this account.");
 
+    public static string SettingsProActivateTitle =>
+        GetString(nameof(SettingsProActivateTitle), "Activate license");
+
+    public static string SettingsProActivateMessage =>
+        GetString(nameof(SettingsProActivateMessage), "Enter the license key you received after checkout.");
+
+    public static string SettingsProActivateAccept =>
+        GetString(nameof(SettingsProActivateAccept), "Activate");
+
+    public static string SettingsProActivatePlaceholder =>
+        GetString(nameof(SettingsProActivatePlaceholder), "License key");
+
     public static string SettingsProNotSupportedTitle =>
         GetString(nameof(SettingsProNotSupportedTitle), "Not supported");
 
     public static string SettingsProNotSupportedMessage =>
-        GetString(nameof(SettingsProNotSupportedMessage), "Purchases are only available on Google Play.");
+        GetString(nameof(SettingsProNotSupportedMessage), "Purchases are handled via the licensing server.");
 
     public static string SettingsLocationsTitle =>
         GetString(nameof(SettingsLocationsTitle), "Locations");

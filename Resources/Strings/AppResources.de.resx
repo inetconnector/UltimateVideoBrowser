@@ -810,7 +810,7 @@ Fehlend:
 • Keine Werbung</value>
   </data>
   <data name="SettingsProPriceFormat" xml:space="preserve">
-    <value>Einmalzahlung: {0}</value>
+    <value>Einmalzahlung per PayPal: {0} (über Lizenzserver)</value>
   </data>
   <data name="SettingsProPriceFallback" xml:space="preserve">
     <value>3,92 €</value>
@@ -830,6 +830,12 @@ Fehlend:
   <data name="SettingsProPurchaseSuccessMessage" xml:space="preserve">
     <value>Pro-Funktionen sind jetzt aktiviert.</value>
   </data>
+  <data name="SettingsProPurchasePendingTitle" xml:space="preserve">
+    <value>Checkout geöffnet</value>
+  </data>
+  <data name="SettingsProPurchasePendingMessage" xml:space="preserve">
+    <value>Schließe die PayPal-Zahlung ab und gib anschließend deinen Lizenzschlüssel unter „Kauf wiederherstellen“ ein.</value>
+  </data>
   <data name="SettingsProPurchaseCancelledTitle" xml:space="preserve">
     <value>Kauf abgebrochen</value>
   </data>
@@ -848,11 +854,23 @@ Fehlend:
   <data name="SettingsProRestoreFailedMessage" xml:space="preserve">
     <value>Kein Pro-Kauf für dieses Konto gefunden.</value>
   </data>
+  <data name="SettingsProActivateTitle" xml:space="preserve">
+    <value>Lizenz aktivieren</value>
+  </data>
+  <data name="SettingsProActivateMessage" xml:space="preserve">
+    <value>Gib den Lizenzschlüssel ein, den du nach dem Checkout erhalten hast.</value>
+  </data>
+  <data name="SettingsProActivateAccept" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="SettingsProActivatePlaceholder" xml:space="preserve">
+    <value>Lizenzschlüssel</value>
+  </data>
   <data name="SettingsProNotSupportedTitle" xml:space="preserve">
     <value>Nicht unterstützt</value>
   </data>
   <data name="SettingsProNotSupportedMessage" xml:space="preserve">
-    <value>Käufe sind nur über Google Play verfügbar.</value>
+    <value>Käufe werden über den Lizenzserver abgewickelt.</value>
   </data>
   <data name="MergeButton" xml:space="preserve">
     <value>Zusammenführen</value>
