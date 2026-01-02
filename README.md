@@ -1,6 +1,6 @@
-# UltimateVideoBrowser (Develop)
+# UltimateVideoBrowser
 
-UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a local **SQLite** database to enable fast browsing, filtering, and search.
+UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a **SQLite** database for fast browsing, filtering, and search on your device.
 
 **Targets implemented in this repository:**
 - ✅ **Android** (`net10.0-android`)
@@ -18,6 +18,7 @@ UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a loca
 - [Configuration and settings](#configuration-and-settings)
 - [How indexing works](#how-indexing-works)
 - [People tagging and face recognition](#people-tagging-and-face-recognition)
+- [Map view and location metadata](#map-view-and-location-metadata)
 - [Storage locations](#storage-locations)
 - [Privacy](#privacy)
 - [Repository layout](#repository-layout)
@@ -35,11 +36,13 @@ UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a loca
 - **Multiple sources**:
   - Platform default libraries (Pictures/Videos/Documents)
   - Custom folders
+- **Timeline + grid browser** with filters (type/date range) and sorting
+- **Albums** (create, rename, add/remove items)
+- **People tagging** (optional): on-device face detection + embeddings
+- **Map view** (optional) for media with GPS metadata
 - **Thumbnail cache** for responsive grids/lists
-- **Filtering** (type/date range) and **sorting**
-- Optional **People tagging**:
-  - On-device face detection + embeddings
-  - Local face database (no cloud)
+- **Internal preview** (video player + image/doc preview)
+- **Share / Save As / Copy / Move / Delete** (platform-dependent)
 
 ---
 
@@ -52,6 +55,9 @@ UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a loca
 | Thumbnail caching | ✅ | ✅ |
 | Internal playback (MediaElement) | ✅ | ✅ |
 | People tagging (ONNX) | ✅ | ✅ |
+| Map view (Leaflet + OSM tiles) | ✅ | ✅ |
+| Copy/Move/Delete files (Allow file changes) | ⚠️ (not implemented) | ✅ |
+| Save As / Export | ✅ (Share sheet) | ✅ (FileSavePicker) |
 
 ---
 
@@ -99,14 +105,15 @@ User-facing settings are persisted via `Preferences` in `Services/AppSettingsSer
 
 Common options you will see in the UI:
 
-- **Theme** (`dark` by default)
+- **Theme** (dark by default)
 - **Internal player** (MediaElement)
 - **People tagging** (face detection + embeddings)
+- **Location metadata + Map view** (reads GPS EXIF + shows map)
 - **Indexed media types** vs **visible media types** (you can index more than you display)
 - **Date filter** (from/to + enable toggle)
 - **Search text** and **sort mode**
 - **Custom extension lists** for photos/videos/documents
-- **Allow file changes** (controls whether the app is allowed to perform file operations)
+- **Allow file changes** (controls whether the app is allowed to copy/move/delete)
 
 Tip: If you change settings that affect indexing, the app may set a “needs reindex” flag.
 
@@ -114,7 +121,7 @@ Tip: If you change settings that affect indexing, the app may set a “needs rei
 
 ## How indexing works
 
-Indexing produces a local SQLite index that is used for the UI lists, search, filters, and the thumbnail cache.
+Indexing produces a local SQLite index that is used for UI lists, search, filters, and the thumbnail cache.
 
 ### Sources
 
@@ -131,7 +138,7 @@ A media source is represented by a `MediaSource`.
 ### Android
 
 - If no folder is configured, scanning uses **MediaStore** (fast, no deep recursion).
-- If a folder is configured, scanning uses the **Storage Access Framework (SAF)** via `DocumentFile`.
+- If a folder is configured, scanning uses **Storage Access Framework (SAF)** via `DocumentFile`.
 
 ---
 
@@ -145,6 +152,11 @@ High-level pipeline:
 2. Run face detection model (ONNX Runtime)
 3. For each face: compute embedding (ONNX Runtime)
 4. Store embeddings locally and match by distance threshold
+
+The People UI supports:
+- **Auto-generated people** from face recognition
+- **Manual name edits** and **ignore** toggles
+- **Manual tags** in the photo editor (stored in `PersonTag`)
 
 ### Model downloads
 
@@ -164,6 +176,14 @@ The exact storage location is shown below.
 
 ---
 
+## Map view and location metadata
+
+- Location metadata is read from **GPS EXIF** (photos) and platform-specific metadata (videos).
+- The **Map view** renders a Leaflet map and uses **OpenStreetMap tiles**.
+- Map tiles require network access unless you provide an offline tile cache.
+
+---
+
 ## Storage locations
 
 Paths are per-user and platform-specific. The app uses MAUI `FileSystem.*` locations.
@@ -180,7 +200,7 @@ Paths are per-user and platform-specific. The app uses MAUI `FileSystem.*` locat
 - Thumbnails and the database are stored locally.
 - People tagging runs locally (no cloud inference).
 
-Network access is only required if you enable face recognition and the app downloads the ONNX models.
+Network access is only required if you enable face recognition (model download) or if you use the Map view (OSM tiles).
 
 ---
 
@@ -189,7 +209,7 @@ Network access is only required if you enable face recognition and the app downl
 - `Services/` – indexing, scanning, permissions, thumbnails, face recognition
 - `Models/` – SQLite models / DTOs
 - `ViewModels/` – MVVM view models
-- `Views/` – MAUI pages
+- `Views/` – MAUI pages + components
 - `Platforms/Android`, `Platforms/Windows` – platform-specific services/helpers
 - `UltimateVideoBrowser.Tests/` – unit tests (logic-level)
 
@@ -219,6 +239,11 @@ Network access is only required if you enable face recognition and the app downl
 - Re-pick the folder so the access token is refreshed.
 - Avoid scanning protected system locations.
 
+### Map view shows no pins
+
+- Ensure **Locations** are enabled in Settings and re-run indexing.
+- Only media with GPS metadata will appear on the map.
+
 ### Build issues
 
 - Confirm you have the **.NET 10 SDK** installed.
@@ -229,12 +254,7 @@ Network access is only required if you enable face recognition and the app downl
 
 ## Roadmap
 
-Ideas and likely next steps (not commitments):
-
-- Add iOS/macOS targets when platform services are implemented.
-- Improve incremental indexing (detect file changes faster).
-- Better duplicate detection and smarter thumbnail invalidation.
-- In-app **Licenses/About** page that renders `THIRD_PARTY_NOTICES.md` content.
+See `PLANNED_FEATURES.md` for a curated, prompt-ready list of upcoming features.
 
 ---
 
