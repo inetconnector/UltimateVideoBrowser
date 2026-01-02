@@ -14,9 +14,14 @@
                    FontAttributes="Bold"
                    FontSize="13"
                    TextColor="{DynamicResource OnSurface}" />
-            <Button Grid.Column="1"
-                    Text="{x:Static strings:AppResources.ManageAlbumsButton}"
-                    Command="{Binding OpenAlbumsCommand}" />
+            <HorizontalStackLayout Grid.Column="1"
+                                   Spacing="8">
+                <Button Text="{x:Static strings:AppResources.ManageAlbumsButton}"
+                        Command="{Binding OpenAlbumsCommand}" />
+                <Button Text="{x:Static strings:AppResources.MapButton}"
+                        Command="{Binding OpenMapCommand}"
+                        IsVisible="{Binding IsLocationEnabled}" />
+            </HorizontalStackLayout>
         </Grid>
 
         <CollectionView Grid.Row="1"

@@ -37,9 +37,6 @@
                                 Command="{Binding OpenAlbumsCommand}" />
                         <Button Text="{x:Static strings:AppResources.SettingsButton}"
                                 Command="{Binding OpenSettingsCommand}" />
-                        <Button Text="{x:Static strings:AppResources.MapButton}"
-                                Command="{Binding OpenMapCommand}"
-                                IsVisible="{Binding IsLocationEnabled}" />
                         <Button Text="{x:Static strings:AppResources.ReindexButton}"
                                 ImageSource="icon_reindex.svg"
                                 Command="{Binding RunIndexCommand}" />
