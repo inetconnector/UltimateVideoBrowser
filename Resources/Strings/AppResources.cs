@@ -300,6 +300,59 @@ public static class AppResources
         GetString(nameof(SettingsPeopleTaggingHint),
             "Turn this on to tag people in photos and videos from the library.");
 
+    public static string SettingsProTitle => GetString(nameof(SettingsProTitle), "Pro upgrade");
+    public static string SettingsProStatusFreeTitle => GetString(nameof(SettingsProStatusFreeTitle), "Free");
+    public static string SettingsProStatusUnlockedTitle => GetString(nameof(SettingsProStatusUnlockedTitle), "Pro unlocked");
+
+    public static string SettingsProFreeMessage =>
+        GetString(nameof(SettingsProFreeMessage), "Unlock unlimited face recognition and automation.");
+
+    public static string SettingsProUnlockedMessage =>
+        GetString(nameof(SettingsProUnlockedMessage), "Thanks for supporting local-first photo organization.");
+
+    public static string SettingsProFeatureList =>
+        GetString(nameof(SettingsProFeatureList),
+            "• Unlimited face recognition\n• Automatic people albums\n• Batch sorting (1000+ photos)\n• Local export & backups\n• No ads");
+
+    public static string SettingsProPriceFormat =>
+        GetString(nameof(SettingsProPriceFormat), "One-time purchase: {0}");
+
+    public static string SettingsProPriceFallback => GetString(nameof(SettingsProPriceFallback), "3,92 €");
+    public static string SettingsProUnlockButton => GetString(nameof(SettingsProUnlockButton), "Unlock Pro");
+    public static string SettingsProRestoreButton => GetString(nameof(SettingsProRestoreButton), "Restore purchase");
+    public static string SettingsProLimitReachedMessage =>
+        GetString(nameof(SettingsProLimitReachedMessage), "Free limit reached ({0} people). Upgrade to Pro for unlimited.");
+
+    public static string SettingsProPurchaseSuccessTitle =>
+        GetString(nameof(SettingsProPurchaseSuccessTitle), "Pro unlocked");
+
+    public static string SettingsProPurchaseSuccessMessage =>
+        GetString(nameof(SettingsProPurchaseSuccessMessage), "Pro features are now enabled.");
+
+    public static string SettingsProPurchaseCancelledTitle =>
+        GetString(nameof(SettingsProPurchaseCancelledTitle), "Purchase cancelled");
+
+    public static string SettingsProPurchaseCancelledMessage =>
+        GetString(nameof(SettingsProPurchaseCancelledMessage), "No changes were made.");
+
+    public static string SettingsProPurchaseFailedTitle =>
+        GetString(nameof(SettingsProPurchaseFailedTitle), "Purchase failed");
+
+    public static string SettingsProPurchaseFailedMessage =>
+        GetString(nameof(SettingsProPurchaseFailedMessage), "Please try again or restore your purchase later.");
+
+    public static string SettingsProRestoreSuccessMessage =>
+        GetString(nameof(SettingsProRestoreSuccessMessage), "Your Pro purchase has been restored.");
+
+    public static string SettingsProRestoreFailedMessage =>
+        GetString(nameof(SettingsProRestoreFailedMessage), "No Pro purchase was found for this account.");
+
+    public static string SettingsProNotSupportedTitle =>
+        GetString(nameof(SettingsProNotSupportedTitle), "Not supported");
+
+    public static string SettingsProNotSupportedMessage =>
+        GetString(nameof(SettingsProNotSupportedMessage), "Purchases are only available on Google Play.");
+
     public static string SettingsLocationsTitle =>
         GetString(nameof(SettingsLocationsTitle), "Locations");
 

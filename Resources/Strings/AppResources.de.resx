@@ -787,4 +787,80 @@ Fehlend:
   <data name="DeleteAlbumAction" xml:space="preserve">
     <value>Löschen</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Zusammenführen</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Zusammenführen in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualität</value></data></root>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro-Upgrade</value>
+  </data>
+  <data name="SettingsProStatusFreeTitle" xml:space="preserve">
+    <value>Kostenlos</value>
+  </data>
+  <data name="SettingsProStatusUnlockedTitle" xml:space="preserve">
+    <value>Pro freigeschaltet</value>
+  </data>
+  <data name="SettingsProFreeMessage" xml:space="preserve">
+    <value>Unbegrenzte Gesichtserkennung und Automatisierung freischalten.</value>
+  </data>
+  <data name="SettingsProUnlockedMessage" xml:space="preserve">
+    <value>Danke für die Unterstützung der lokalen Foto-Organisation.</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Unbegrenzte Gesichtserkennung
+• Automatische Personen-Alben
+• Stapelsortierung (1000+ Fotos)
+• Lokaler Export &amp; Backups
+• Keine Werbung</value>
+  </data>
+  <data name="SettingsProPriceFormat" xml:space="preserve">
+    <value>Einmalzahlung: {0}</value>
+  </data>
+  <data name="SettingsProPriceFallback" xml:space="preserve">
+    <value>3,92 €</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Pro freischalten</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Kauf wiederherstellen</value>
+  </data>
+  <data name="SettingsProLimitReachedMessage" xml:space="preserve">
+    <value>Gratis-Limit erreicht ({0} Personen). Upgrade auf Pro für unbegrenzt.</value>
+  </data>
+  <data name="SettingsProPurchaseSuccessTitle" xml:space="preserve">
+    <value>Pro freigeschaltet</value>
+  </data>
+  <data name="SettingsProPurchaseSuccessMessage" xml:space="preserve">
+    <value>Pro-Funktionen sind jetzt aktiviert.</value>
+  </data>
+  <data name="SettingsProPurchaseCancelledTitle" xml:space="preserve">
+    <value>Kauf abgebrochen</value>
+  </data>
+  <data name="SettingsProPurchaseCancelledMessage" xml:space="preserve">
+    <value>Es wurden keine Änderungen vorgenommen.</value>
+  </data>
+  <data name="SettingsProPurchaseFailedTitle" xml:space="preserve">
+    <value>Kauf fehlgeschlagen</value>
+  </data>
+  <data name="SettingsProPurchaseFailedMessage" xml:space="preserve">
+    <value>Bitte erneut versuchen oder später den Kauf wiederherstellen.</value>
+  </data>
+  <data name="SettingsProRestoreSuccessMessage" xml:space="preserve">
+    <value>Dein Pro-Kauf wurde wiederhergestellt.</value>
+  </data>
+  <data name="SettingsProRestoreFailedMessage" xml:space="preserve">
+    <value>Kein Pro-Kauf für dieses Konto gefunden.</value>
+  </data>
+  <data name="SettingsProNotSupportedTitle" xml:space="preserve">
+    <value>Nicht unterstützt</value>
+  </data>
+  <data name="SettingsProNotSupportedMessage" xml:space="preserve">
+    <value>Käufe sind nur über Google Play verfügbar.</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Zusammenführen in…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Qualität</value>
+  </data>
+</root>
