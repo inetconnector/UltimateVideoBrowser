@@ -878,6 +878,39 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task OpenLocationAsync(MediaItem item)
+    {
+        if (item == null || !item.Latitude.HasValue || !item.Longitude.HasValue)
+            return;
+
+        var lat = item.Latitude.Value;
+        var lon = item.Longitude.Value;
+        var latText = lat.ToString("0.######", CultureInfo.InvariantCulture);
+        var lonText = lon.ToString("0.######", CultureInfo.InvariantCulture);
+        var uri = new Uri($"https://earth.google.com/web/@{latText},{lonText},0a,0d,0y,0h,0t,0r");
+
+        try
+        {
+            await Launcher.OpenAsync(uri);
+        }
+        catch (NotImplementedException)
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenLocationFailedTitle,
+                AppResources.OpenLocationNotSupportedMessage,
+                AppResources.OkButton);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Open location failed: {ex}");
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenLocationFailedTitle,
+                AppResources.OpenLocationFailedMessage,
+                AppResources.OkButton);
+        }
+    }
+
+    [RelayCommand]
     public async Task AddMarkedToAlbumAsync()
     {
         var markedItems = MediaItems.Where(v => v.IsMarked).ToList();

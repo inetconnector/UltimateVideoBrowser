@@ -57,7 +57,13 @@ public sealed class LocationMetadataService
 #endif
 
         if (item.MediaType == MediaType.Photos)
-            return await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
+        {
+            var location = await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
+#if WINDOWS
+            location ??= await TryGetLocationFromWindowsAsync(path).ConfigureAwait(false);
+#endif
+            return location;
+        }
 
 #if ANDROID && !WINDOWS
         if (item.MediaType == MediaType.Videos)

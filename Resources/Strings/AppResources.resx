@@ -180,6 +180,9 @@
   <data name="OpenFolderAction" xml:space="preserve">
     <value>Open folder</value>
   </data>
+  <data name="OpenLocationAction" xml:space="preserve">
+    <value>Location</value>
+  </data>
   <data name="OpenFolderFailedTitle" xml:space="preserve">
     <value>Open folder failed</value>
   </data>
@@ -188,6 +191,15 @@
   </data>
   <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
     <value>Opening folders isn't supported on this device.</value>
+  </data>
+  <data name="OpenLocationFailedTitle" xml:space="preserve">
+    <value>Open location failed</value>
+  </data>
+  <data name="OpenLocationFailedMessage" xml:space="preserve">
+    <value>We couldn't open this location. Please try again.</value>
+  </data>
+  <data name="OpenLocationNotSupportedMessage" xml:space="preserve">
+    <value>Opening locations isn't supported on this device.</value>
   </data>
   <data name="MarkedCountFormat" xml:space="preserve">
     <value>Marked: {0}</value>
