@@ -878,6 +878,130 @@ Fehlend:
   <data name="SettingsProNotSupportedMessage" xml:space="preserve">
     <value>Käufe werden über den Lizenzserver abgewickelt.</value>
   </data>
+  <data name="LegalSectionTitle" xml:space="preserve">
+    <value>Rechtliches</value>
+  </data>
+  <data name="LegalSectionHint" xml:space="preserve">
+    <value>Impressum, Datenschutzerklärung, AGB und Widerruf.</value>
+  </data>
+  <data name="LegalImprintTitle" xml:space="preserve">
+    <value>Impressum</value>
+  </data>
+  <data name="LegalPrivacyTitle" xml:space="preserve">
+    <value>Datenschutzerklärung</value>
+  </data>
+  <data name="LegalTermsTitle" xml:space="preserve">
+    <value>AGB</value>
+  </data>
+  <data name="LegalWithdrawalTitle" xml:space="preserve">
+    <value>Widerruf</value>
+  </data>
+  <data name="LegalImprintBody" xml:space="preserve">
+    <value>Angaben gemäß §5 TMG & §18 Abs. 2 MStV:
+
+Digitaxo.com
+Daniel Frede
+Bismarckstrasse 6
+97209 Veitshöchheim
+Deutschland
+E-Mail: sales@digitaxo.com
+
+USt-IdNr.: DE234497343</value>
+  </data>
+  <data name="LegalPrivacyBody" xml:space="preserve">
+    <value>1. Verarbeitete Daten
+- E-Mail-Adresse, PayPal-Zahler-ID / Transaktions-ID, Zahlungsbetrag, IP-Adresse
+- Lizenzdaten (Lizenz-ID, Aktivierungstoken, Gerätefingerprint, Plattform)
+- Zeitpunkte von Kauf und Aktivierung
+
+2. Zweck der Verarbeitung
+- Vertragsabwicklung (Lizenzvergabe, Aktivierung, Support)
+- Betrugsprävention und Missbrauchsschutz
+
+3. Rechtsgrundlage
+Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).
+
+4. Empfänger
+PayPal (Europe) S.à r.l. et Cie, S.C.A. als Zahlungsabwickler sowie Hosting-Provider für den Lizenzserver.
+
+5. Speicherdauer
+So lange wie für die Vertragsabwicklung und gesetzliche Aufbewahrungspflichten erforderlich.
+
+6. Betroffenenrechte
+Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit, Widerspruch sowie Beschwerderecht bei einer Aufsichtsbehörde.</value>
+  </data>
+  <data name="LegalTermsBody" xml:space="preserve">
+    <value>1. Geltungsbereich
+Diese AGB gelten für den Kauf von UltimateVideoBrowser Pro.
+
+2. Lizenz
+Die Lizenz ist nicht übertragbar und gilt für ein Gerät (max. Geräte pro Lizenz). Die Aktivierung erfordert eine Online-Prüfung; die Offline-Nutzung erfolgt über ein zeitlich begrenztes Aktivierungstoken.
+
+3. Zahlung
+Einmalzahlung über PayPal. Kein Abonnement.
+
+4. Updates und Verfügbarkeit
+Kein Anspruch auf zukünftige Funktionen oder fortlaufende Verfügbarkeit, soweit gesetzlich nicht anders geregelt.
+
+5. Haftung
+Haftung bei Vorsatz und grober Fahrlässigkeit. Bei einfacher Fahrlässigkeit nur für vorhersehbare, typische Schäden, soweit gesetzlich zulässig.
+
+6. Support und Rückerstattung
+Support-Kontakt: [support@example.com]. Rückerstattungen richten sich nach den gesetzlichen Widerrufsregeln für digitale Inhalte.</value>
+  </data>
+  <data name="LegalWithdrawalBody" xml:space="preserve">
+    <value>Widerrufsrecht (digitale Inhalte)
+Du hast das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.
+
+Ausnahme: Das Widerrufsrecht erlischt, wenn du ausdrücklich zustimmst, dass die Ausführung des Vertrags vor Ablauf der Widerrufsfrist beginnt, und du zur Kenntnis nimmst, dass du dein Widerrufsrecht verlierst.
+
+Zur Ausübung des Widerrufs kontaktiere: [support@example.com].</value>
+  </data>
+  <data name="LegalConsentTitle" xml:space="preserve">
+    <value>Kauf bestätigen</value>
+  </data>
+  <data name="LegalConsentHeader" xml:space="preserve">
+    <value>Kauf bestätigen</value>
+  </data>
+  <data name="LegalConsentIntro" xml:space="preserve">
+    <value>Bitte prüfe vor dem PayPal-Checkout die rechtlichen Hinweise.</value>
+  </data>
+  <data name="LegalConsentProductTitle" xml:space="preserve">
+    <value>UltimateVideoBrowser Pro</value>
+  </data>
+  <data name="LegalConsentProductScope" xml:space="preserve">
+    <value>Nicht übertragbare Lizenz für ein Gerät. Enthält Pro-Funktionen (Gesichtserkennung &amp; Automatisierung). Kein Abo.</value>
+  </data>
+  <data name="LegalConsentPriceFormat" xml:space="preserve">
+    <value>Endpreis (inkl. MwSt): {0} – einmalig</value>
+  </data>
+  <data name="LegalConsentPaymentHint" xml:space="preserve">
+    <value>Zahlung über PayPal. Die Lizenz wird nach erfolgreicher Zahlung durch den Lizenzserver ausgestellt.</value>
+  </data>
+  <data name="LegalConsentWithdrawalTitle" xml:space="preserve">
+    <value>Widerrufsverzicht (erforderlich)</value>
+  </data>
+  <data name="LegalConsentWithdrawalCheckbox" xml:space="preserve">
+    <value>Ich stimme ausdrücklich zu, dass die Ausführung des Vertrags vor Ablauf der Widerrufsfrist beginnt und verliere mein Widerrufsrecht.</value>
+  </data>
+  <data name="LegalConsentWithdrawalHint" xml:space="preserve">
+    <value>Ohne diese Zustimmung kann der Kauf digitaler Inhalte nicht abgeschlossen werden.</value>
+  </data>
+  <data name="LegalConsentDocumentsTitle" xml:space="preserve">
+    <value>Rechtstexte</value>
+  </data>
+  <data name="LegalConsentDocumentsHint" xml:space="preserve">
+    <value>Hier findest du Impressum, Datenschutz, AGB und Widerruf.</value>
+  </data>
+  <data name="LegalConsentConfirmButton" xml:space="preserve">
+    <value>Weiter zu PayPal</value>
+  </data>
+  <data name="LegalConsentMissingTitle" xml:space="preserve">
+    <value>Zustimmung erforderlich</value>
+  </data>
+  <data name="LegalConsentMissingMessage" xml:space="preserve">
+    <value>Bitte bestätige den Widerrufsverzicht, um fortzufahren.</value>
+  </data>
   <data name="MergeButton" xml:space="preserve">
     <value>Zusammenführen</value>
   </data>

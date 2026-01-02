@@ -18,6 +18,34 @@ app.MapPost("/api/checkout", (LicenseService licenseService) =>
     return Results.Ok(licenseService.CreateCheckout());
 });
 
+app.MapGet("/impressum", (IConfiguration configuration) =>
+{
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
+    var html = LegalDocumentBuilder.BuildImprint(options);
+    return Results.Content(html, "text/html; charset=utf-8");
+});
+
+app.MapGet("/datenschutz", (IConfiguration configuration) =>
+{
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
+    var html = LegalDocumentBuilder.BuildPrivacy(options);
+    return Results.Content(html, "text/html; charset=utf-8");
+});
+
+app.MapGet("/agb", (IConfiguration configuration) =>
+{
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
+    var html = LegalDocumentBuilder.BuildTerms(options);
+    return Results.Content(html, "text/html; charset=utf-8");
+});
+
+app.MapGet("/widerruf", (IConfiguration configuration) =>
+{
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
+    var html = LegalDocumentBuilder.BuildWithdrawal(options);
+    return Results.Content(html, "text/html; charset=utf-8");
+});
+
 app.MapPost("/api/paypal/webhook", async (
     PayPalWebhookRequest request,
     LicenseService licenseService,

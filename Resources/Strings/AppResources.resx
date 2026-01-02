@@ -900,6 +900,130 @@ Missing:
   <data name="SettingsProNotSupportedMessage" xml:space="preserve">
     <value>Purchases are handled via the licensing server.</value>
   </data>
+  <data name="LegalSectionTitle" xml:space="preserve">
+    <value>Legal</value>
+  </data>
+  <data name="LegalSectionHint" xml:space="preserve">
+    <value>Imprint, privacy policy, terms, and withdrawal information.</value>
+  </data>
+  <data name="LegalImprintTitle" xml:space="preserve">
+    <value>Imprint</value>
+  </data>
+  <data name="LegalPrivacyTitle" xml:space="preserve">
+    <value>Privacy policy</value>
+  </data>
+  <data name="LegalTermsTitle" xml:space="preserve">
+    <value>Terms &amp; conditions</value>
+  </data>
+  <data name="LegalWithdrawalTitle" xml:space="preserve">
+    <value>Withdrawal</value>
+  </data>
+  <data name="LegalImprintBody" xml:space="preserve">
+    <value>Angaben gemäß §5 TMG & §18 Abs. 2 MStV:
+
+Digitaxo.com
+Daniel Frede
+Bismarckstrasse 6
+97209 Veitshöchheim
+Deutschland
+E-Mail: sales@digitaxo.com
+
+USt-IdNr.: DE234497343</value>
+  </data>
+  <data name="LegalPrivacyBody" xml:space="preserve">
+    <value>1. Data we process
+- Email address, PayPal payer ID / transaction ID, payment amount, IP address
+- License data (license ID, activation token, device fingerprint, platform)
+- Timestamp of purchase and activation
+
+2. Purpose of processing
+- Contract fulfillment (license issuance, activation, support)
+- Fraud prevention and abuse protection
+
+3. Legal basis
+Art. 6(1)(b) GDPR (performance of a contract).
+
+4. Recipients
+PayPal (Europe) S.à r.l. et Cie, S.C.A. as payment processor, and hosting providers for the license server.
+
+5. Storage period
+As long as necessary for the contract and statutory retention obligations.
+
+6. Your rights
+Access, rectification, erasure, restriction, data portability, objection, and complaint to a supervisory authority.</value>
+  </data>
+  <data name="LegalTermsBody" xml:space="preserve">
+    <value>1. Scope
+These terms apply to the purchase of UltimateVideoBrowser Pro.
+
+2. License
+The license is non-transferable and valid for one device (max devices per license). Activation requires an online check; offline use is provided via a time-limited activation token.
+
+3. Payment
+One-time payment via PayPal. No subscription fees.
+
+4. Updates and availability
+There is no entitlement to future features or continued availability of services, unless legally required.
+
+5. Liability
+We are liable for intent and gross negligence. For simple negligence, liability is limited to foreseeable, typical damages, unless mandatory law applies.
+
+6. Support and refunds
+Support contact: [support@example.com]. Refunds follow the statutory withdrawal rules for digital content.</value>
+  </data>
+  <data name="LegalWithdrawalBody" xml:space="preserve">
+    <value>Right of withdrawal (digital content)
+You have the right to withdraw from this contract within 14 days without giving any reason.
+
+Exception: The right of withdrawal expires if you expressly agree that the execution of the contract begins before the withdrawal period ends and you acknowledge that you lose your right of withdrawal.
+
+To exercise the right of withdrawal, contact: [support@example.com].</value>
+  </data>
+  <data name="LegalConsentTitle" xml:space="preserve">
+    <value>Purchase confirmation</value>
+  </data>
+  <data name="LegalConsentHeader" xml:space="preserve">
+    <value>Confirm your purchase</value>
+  </data>
+  <data name="LegalConsentIntro" xml:space="preserve">
+    <value>Please review the legal information below before proceeding to PayPal checkout.</value>
+  </data>
+  <data name="LegalConsentProductTitle" xml:space="preserve">
+    <value>UltimateVideoBrowser Pro</value>
+  </data>
+  <data name="LegalConsentProductScope" xml:space="preserve">
+    <value>Non-transferable license for one device. Includes Pro features (face recognition &amp; automation). No subscription.</value>
+  </data>
+  <data name="LegalConsentPriceFormat" xml:space="preserve">
+    <value>Final price (incl. VAT): {0} – one-time payment</value>
+  </data>
+  <data name="LegalConsentPaymentHint" xml:space="preserve">
+    <value>Payment is processed by PayPal. The license is issued by the license server after successful payment.</value>
+  </data>
+  <data name="LegalConsentWithdrawalTitle" xml:space="preserve">
+    <value>Withdrawal waiver (required)</value>
+  </data>
+  <data name="LegalConsentWithdrawalCheckbox" xml:space="preserve">
+    <value>I expressly agree that the execution of the contract begins before the withdrawal period ends and acknowledge that I lose my right of withdrawal.</value>
+  </data>
+  <data name="LegalConsentWithdrawalHint" xml:space="preserve">
+    <value>Without this consent, the purchase cannot be completed for digital content.</value>
+  </data>
+  <data name="LegalConsentDocumentsTitle" xml:space="preserve">
+    <value>Legal documents</value>
+  </data>
+  <data name="LegalConsentDocumentsHint" xml:space="preserve">
+    <value>Imprint, privacy policy, terms, and withdrawal information are available here.</value>
+  </data>
+  <data name="LegalConsentConfirmButton" xml:space="preserve">
+    <value>Proceed to PayPal</value>
+  </data>
+  <data name="LegalConsentMissingTitle" xml:space="preserve">
+    <value>Consent required</value>
+  </data>
+  <data name="LegalConsentMissingMessage" xml:space="preserve">
+    <value>Please confirm the withdrawal waiver to continue.</value>
+  </data>
   <data name="MergeButton" xml:space="preserve">
     <value>Merge</value>
   </data>

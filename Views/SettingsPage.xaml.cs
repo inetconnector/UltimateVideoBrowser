@@ -1,3 +1,4 @@
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -19,5 +20,30 @@ public partial class SettingsPage : ContentPage
 
         if (Navigation.NavigationStack.Count > 1)
             await Navigation.PopAsync(false);
+    }
+
+    private Task NavigateToDocumentAsync(string title, string body)
+    {
+        return Navigation.PushAsync(new LegalDocumentPage(title, body), false);
+    }
+
+    private async void OnImprintClicked(object sender, EventArgs e)
+    {
+        await NavigateToDocumentAsync(AppResources.LegalImprintTitle, AppResources.LegalImprintBody);
+    }
+
+    private async void OnPrivacyClicked(object sender, EventArgs e)
+    {
+        await NavigateToDocumentAsync(AppResources.LegalPrivacyTitle, AppResources.LegalPrivacyBody);
+    }
+
+    private async void OnTermsClicked(object sender, EventArgs e)
+    {
+        await NavigateToDocumentAsync(AppResources.LegalTermsTitle, AppResources.LegalTermsBody);
+    }
+
+    private async void OnWithdrawalClicked(object sender, EventArgs e)
+    {
+        await NavigateToDocumentAsync(AppResources.LegalWithdrawalTitle, AppResources.LegalWithdrawalBody);
     }
 }

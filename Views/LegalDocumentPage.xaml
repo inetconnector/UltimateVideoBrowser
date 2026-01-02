@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.LegalDocumentPage"
+             BackgroundColor="{DynamicResource AppBg}">
+    <Grid RowDefinitions="Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button x:Name="BackButton"
+                    Text="{x:Static strings:AppResources.BackButton}"
+                    Clicked="OnBackClicked" />
+            <Label x:Name="DocumentTitleLabel"
+                   Grid.Column="1"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontAttributes="Bold"
+                   FontSize="16" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" Margin="0,12,0,0">
+            <Label x:Name="DocumentBodyLabel"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontSize="12"
+                   LineBreakMode="WordWrap" />
+        </ScrollView>
+    </Grid>
+</ContentPage>

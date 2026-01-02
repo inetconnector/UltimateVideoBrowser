@@ -52,6 +52,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<FaceScanQueueService>();
         builder.Services.AddSingleton<ISourceService, SourceService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
+        builder.Services.AddSingleton<ILegalConsentService, LegalConsentService>();
         builder.Services.AddSingleton<PlaybackService>();
         builder.Services.AddSingleton<IFileExportService, FileExportService>();
         builder.Services.AddSingleton(new HttpClient());
