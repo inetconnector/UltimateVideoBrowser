@@ -832,7 +832,7 @@ Missing:
 • No ads</value>
   </data>
   <data name="SettingsProPriceFormat" xml:space="preserve">
-    <value>One-time purchase: {0}</value>
+    <value>One-time PayPal checkout: {0} (via license server)</value>
   </data>
   <data name="SettingsProPriceFallback" xml:space="preserve">
     <value>3,92 €</value>
@@ -852,6 +852,12 @@ Missing:
   <data name="SettingsProPurchaseSuccessMessage" xml:space="preserve">
     <value>Pro features are now enabled.</value>
   </data>
+  <data name="SettingsProPurchasePendingTitle" xml:space="preserve">
+    <value>Checkout opened</value>
+  </data>
+  <data name="SettingsProPurchasePendingMessage" xml:space="preserve">
+    <value>Complete the PayPal payment and enter your license key using Restore purchase.</value>
+  </data>
   <data name="SettingsProPurchaseCancelledTitle" xml:space="preserve">
     <value>Purchase cancelled</value>
   </data>
@@ -870,11 +876,23 @@ Missing:
   <data name="SettingsProRestoreFailedMessage" xml:space="preserve">
     <value>No Pro purchase was found for this account.</value>
   </data>
+  <data name="SettingsProActivateTitle" xml:space="preserve">
+    <value>Activate license</value>
+  </data>
+  <data name="SettingsProActivateMessage" xml:space="preserve">
+    <value>Enter the license key you received after checkout.</value>
+  </data>
+  <data name="SettingsProActivateAccept" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="SettingsProActivatePlaceholder" xml:space="preserve">
+    <value>License key</value>
+  </data>
   <data name="SettingsProNotSupportedTitle" xml:space="preserve">
     <value>Not supported</value>
   </data>
   <data name="SettingsProNotSupportedMessage" xml:space="preserve">
-    <value>Purchases are only available on Google Play.</value>
+    <value>Purchases are handled via the licensing server.</value>
   </data>
   <data name="MergeButton" xml:space="preserve">
     <value>Merge</value>

@@ -1,29 +1,94 @@
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
 using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Services;
 
 public sealed class ProUpgradeService : ProUpgradeServiceBase
 {
-    public ProUpgradeService(AppSettingsService settingsService)
+    private readonly LicenseServerClient licenseServerClient;
+    private readonly IDeviceFingerprintService deviceFingerprintService;
+    private readonly IDialogService dialogService;
+
+    public ProUpgradeService(
+        AppSettingsService settingsService,
+        LicenseServerClient licenseServerClient,
+        IDeviceFingerprintService deviceFingerprintService,
+        IDialogService dialogService)
         : base(settingsService)
     {
+        this.licenseServerClient = licenseServerClient;
+        this.deviceFingerprintService = deviceFingerprintService;
+        this.dialogService = dialogService;
         PriceText = AppResources.SettingsProPriceFallback;
     }
 
-    public override string ProductId => "photoapp_pro_unlock";
+    public override string ProductId => "ultimatevideobrowser_pro";
 
-    public override Task RefreshAsync(CancellationToken ct)
+    public override async Task RefreshAsync(CancellationToken ct)
     {
-        return Task.CompletedTask;
+        RefreshActivationStatus();
+        var pricing = await licenseServerClient.GetPricingAsync(ct).ConfigureAwait(false);
+        if (pricing?.Price is not null)
+            PriceText = $"{pricing.Price.Value} {pricing.Price.Currency}";
     }
 
-    public override Task<ProUpgradeResult> PurchaseAsync(CancellationToken ct)
+    public override async Task<ProUpgradeResult> PurchaseAsync(CancellationToken ct)
     {
-        return Task.FromResult(ProUpgradeResult.NotSupported(AppResources.SettingsProNotSupportedMessage));
+        var checkout = await licenseServerClient.CreateCheckoutAsync(ct).ConfigureAwait(false);
+        if (checkout?.CheckoutUrl == null)
+            return ProUpgradeResult.Failed(AppResources.SettingsProPurchaseFailedMessage);
+
+        if (!await Launcher.OpenAsync(new Uri(checkout.CheckoutUrl)).ConfigureAwait(false))
+            return ProUpgradeResult.Failed(AppResources.SettingsProPurchaseFailedMessage);
+
+        return ProUpgradeResult.Pending(AppResources.SettingsProPurchasePendingMessage);
     }
 
-    public override Task<ProUpgradeResult> RestoreAsync(CancellationToken ct)
+    public override async Task<ProUpgradeResult> RestoreAsync(CancellationToken ct)
     {
-        return Task.FromResult(ProUpgradeResult.NotSupported(AppResources.SettingsProNotSupportedMessage));
+        var licenseKey = await dialogService.DisplayPromptAsync(
+            AppResources.SettingsProActivateTitle,
+            AppResources.SettingsProActivateMessage,
+            AppResources.SettingsProActivateAccept,
+            AppResources.CancelButton,
+            AppResources.SettingsProActivatePlaceholder,
+            512,
+            Keyboard.Text).ConfigureAwait(false);
+
+        if (string.IsNullOrWhiteSpace(licenseKey))
+            return ProUpgradeResult.Cancelled(AppResources.SettingsProPurchaseCancelledMessage);
+
+        var fingerprint = await deviceFingerprintService.GetFingerprintAsync(ct).ConfigureAwait(false);
+        var platform = DeviceInfo.Platform.ToString().ToLowerInvariant();
+        var response = await licenseServerClient.ActivateAsync(
+            new ActivateRequest(licenseKey.Trim(), fingerprint, platform),
+            ct).ConfigureAwait(false);
+
+        if (response == null || !string.Equals(response.Status, "activated", StringComparison.OrdinalIgnoreCase))
+            return ProUpgradeResult.Failed(AppResources.SettingsProRestoreFailedMessage);
+
+        SettingsService.ProActivationToken = response.ActivationToken ?? string.Empty;
+        SettingsService.ProActivationValidUntil = response.ValidUntil;
+        SetProUnlocked(true);
+        return ProUpgradeResult.Success(AppResources.SettingsProRestoreSuccessMessage);
+    }
+
+    private void RefreshActivationStatus()
+    {
+        var validUntil = SettingsService.ProActivationValidUntil;
+        if (validUntil.HasValue && validUntil <= DateTimeOffset.UtcNow)
+        {
+            SettingsService.ProActivationToken = string.Empty;
+            SettingsService.ProActivationValidUntil = null;
+            SetProUnlocked(false);
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(SettingsService.ProActivationToken))
+            SetProUnlocked(true);
+        else if (IsProUnlocked)
+            SetProUnlocked(false);
     }
 }
