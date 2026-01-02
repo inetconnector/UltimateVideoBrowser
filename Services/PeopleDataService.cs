@@ -149,8 +149,13 @@ public sealed class PeopleDataService
                 p.IsIgnored))
             .ToList();
 
-        // Create synthetic person entries for manual tags.
+        var faceNameSet = new HashSet<string>(
+            facePeople.Select(p => p.Name),
+            StringComparer.OrdinalIgnoreCase);
+
+        // Create synthetic person entries for manual tags (skip ones already represented by face profiles).
         var tagPeople = tagCountMap
+            .Where(kvp => !faceNameSet.Contains(kvp.Key))
             .Select(kvp => new PersonOverview(
                 $"tag:{kvp.Key}",
                 kvp.Key,
