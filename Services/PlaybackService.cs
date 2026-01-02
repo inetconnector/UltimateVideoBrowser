@@ -34,6 +34,7 @@ public sealed class PlaybackService
         return mediaType switch
         {
             MediaType.Photos => "image/*",
+            MediaType.Graphics => "image/*",
             MediaType.Documents => "*/*",
             _ => "video/*"
         };

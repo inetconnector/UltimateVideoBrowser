@@ -444,6 +444,7 @@ public static class AppResources
     public static string MediaTypeVideos => GetString(nameof(MediaTypeVideos), "Videos");
     public static string MediaTypePhotos => GetString(nameof(MediaTypePhotos), "Photos");
     public static string MediaTypeDocuments => GetString(nameof(MediaTypeDocuments), "Documents");
+    public static string MediaTypeGraphics => GetString(nameof(MediaTypeGraphics), "Graphics & screenshots");
     public static string MediaTypeFilterTitle => GetString(nameof(MediaTypeFilterTitle), "Media types");
     public static string SettingsMediaTypesTitle => GetString(nameof(SettingsMediaTypesTitle), "Media types");
 
