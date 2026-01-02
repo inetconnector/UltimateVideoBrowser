@@ -147,6 +147,7 @@ public partial class MainViewModel : ObservableObject
         {
             new MediaTypeFilterOption(MediaType.Videos, AppResources.MediaTypeVideos),
             new MediaTypeFilterOption(MediaType.Photos, AppResources.MediaTypePhotos),
+            new MediaTypeFilterOption(MediaType.Graphics, AppResources.MediaTypeGraphics),
             new MediaTypeFilterOption(MediaType.Documents, AppResources.MediaTypeDocuments)
         };
 
@@ -167,7 +168,7 @@ public partial class MainViewModel : ObservableObject
     public bool ShowVideoPlayer => IsInternalPlayerEnabled && CurrentMediaType == MediaType.Videos
                                                            && !string.IsNullOrWhiteSpace(CurrentMediaSource);
 
-    public bool ShowPhotoPreview => CurrentMediaType == MediaType.Photos
+    public bool ShowPhotoPreview => CurrentMediaType is MediaType.Photos or MediaType.Graphics
                                     && !string.IsNullOrWhiteSpace(CurrentMediaSource);
 
     public bool ShowDocumentPreview => CurrentMediaType == MediaType.Documents

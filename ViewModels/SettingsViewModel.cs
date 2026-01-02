@@ -24,6 +24,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isDatabaseResetting;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
+    [ObservableProperty] private bool isGraphicsIndexed;
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleModelsDownloading;
@@ -78,6 +79,7 @@ public partial class SettingsViewModel : ObservableObject
         var indexed = settingsService.IndexedMediaTypes;
         IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
         IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
+        IsGraphicsIndexed = indexed.HasFlag(MediaType.Graphics);
         IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
 
         VideoExtensionsText = settingsService.VideoExtensions;
@@ -144,7 +146,8 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsVideosIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsPhotosIndexed, IsDocumentsIndexed, () => IsVideosIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsVideosIndexed = true, IsPhotosIndexed, IsGraphicsIndexed,
+                IsDocumentsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -152,7 +155,17 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsPhotosIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsDocumentsIndexed, () => IsPhotosIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsPhotosIndexed = true, IsVideosIndexed, IsGraphicsIndexed,
+                IsDocumentsIndexed))
+            return;
+
+        ApplyIndexedMediaTypes();
+    }
+
+    partial void OnIsGraphicsIndexedChanged(bool value)
+    {
+        if (!EnsureAtLeastOneIndexed(value, () => IsGraphicsIndexed = true, IsVideosIndexed, IsPhotosIndexed,
+                IsDocumentsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -160,7 +173,8 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsDocumentsIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsPhotosIndexed, () => IsDocumentsIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsDocumentsIndexed = true, IsVideosIndexed, IsPhotosIndexed,
+                IsGraphicsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -417,14 +431,16 @@ public partial class SettingsViewModel : ObservableObject
             mediaTypes |= MediaType.Videos;
         if (IsPhotosIndexed)
             mediaTypes |= MediaType.Photos;
+        if (IsGraphicsIndexed)
+            mediaTypes |= MediaType.Graphics;
         if (IsDocumentsIndexed)
             mediaTypes |= MediaType.Documents;
         return mediaTypes;
     }
 
-    private static bool EnsureAtLeastOneIndexed(bool currentValue, bool otherOne, bool otherTwo, Action restore)
+    private static bool EnsureAtLeastOneIndexed(bool currentValue, Action restore, params bool[] otherFlags)
     {
-        if (!currentValue && !otherOne && !otherTwo)
+        if (!currentValue && otherFlags.All(flag => !flag))
         {
             restore();
             return false;

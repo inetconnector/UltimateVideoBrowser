@@ -247,6 +247,8 @@ public sealed class AlbumService
             allowed.Add(MediaType.Videos);
         if (mediaTypes.HasFlag(MediaType.Photos))
             allowed.Add(MediaType.Photos);
+        if (mediaTypes.HasFlag(MediaType.Graphics))
+            allowed.Add(MediaType.Graphics);
         if (mediaTypes.HasFlag(MediaType.Documents))
             allowed.Add(MediaType.Documents);
         return allowed;

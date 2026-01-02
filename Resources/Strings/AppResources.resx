@@ -639,6 +639,9 @@ Missing:
   <data name="MediaTypeDocuments" xml:space="preserve">
     <value>Documents</value>
   </data>
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    <value>Graphics &amp; screenshots</value>
+  </data>
   <data name="MediaTypeFilterTitle" xml:space="preserve">
     <value>Media types</value>
   </data>
