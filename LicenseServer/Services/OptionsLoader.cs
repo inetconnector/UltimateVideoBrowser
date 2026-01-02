@@ -1,4 +1,5 @@
 using System.Text.Json;
+using UltimateVideoBrowser.LicenseServer.Models;
 
 namespace UltimateVideoBrowser.LicenseServer.Services;
 
