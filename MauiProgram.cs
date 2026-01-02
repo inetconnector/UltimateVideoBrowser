@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
