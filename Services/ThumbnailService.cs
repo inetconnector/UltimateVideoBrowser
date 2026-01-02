@@ -187,12 +187,7 @@ public sealed class ThumbnailService
                         return null;
 
                     using var fallbackInput = fallbackThumb.AsStreamForRead();
-                    using (var fallbackStream = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await fallbackInput.CopyToAsync(fallbackStream, ct).ConfigureAwait(false);
-                    }
-
-                    if (!IsUsableThumbFile(tmpPath))
+                    if (!await TryWriteThumbnailStreamAsync(fallbackInput, tmpPath, ct).ConfigureAwait(false))
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
@@ -201,12 +196,7 @@ public sealed class ThumbnailService
                 }
 
                 using var input = thumb.AsStreamForRead();
-                using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await input.CopyToAsync(fs, ct).ConfigureAwait(false);
-                }
-
-                if (!IsUsableThumbFile(tmpPath))
+                if (!await TryWriteThumbnailStreamAsync(input, tmpPath, ct).ConfigureAwait(false))
                     return null;
 
                 File.Move(tmpPath, thumbPath, true);
@@ -432,6 +422,57 @@ public sealed class ThumbnailService
             ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
             return false;
         }
+    }
+
+    private static async Task<bool> TryWriteThumbnailStreamAsync(Stream input, string tmpPath, CancellationToken ct)
+    {
+        try
+        {
+            using var buffer = new MemoryStream();
+            await input.CopyToAsync(buffer, ct).ConfigureAwait(false);
+            if (buffer.Length < 128)
+                return false;
+
+            var length = (int)buffer.Length;
+            var bytes = buffer.GetBuffer();
+            if (IsJpegBuffer(bytes, length))
+            {
+                await File.WriteAllBytesAsync(tmpPath, bytes.AsMemory(0, length), ct).ConfigureAwait(false);
+                return IsUsableThumbFile(tmpPath);
+            }
+
+            buffer.Position = 0;
+            using var image = await ImageSharpImage.LoadAsync(buffer, ct).ConfigureAwait(false);
+            image.Mutate(ctx =>
+            {
+                ctx.AutoOrient();
+                ctx.Resize(new ResizeOptions
+                {
+                    Mode = ImageSharpResizeMode.Max,
+                    Size = new ImageSharpSize(ThumbMaxSize, ThumbMaxSize)
+                });
+            });
+
+            var encoder = new JpegEncoder { Quality = ThumbQuality };
+            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            return IsUsableThumbFile(tmpPath);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TryWriteThumbnailStreamAsync");
+            return false;
+        }
+    }
+
+    private static bool IsJpegBuffer(byte[] buffer, int length)
+    {
+        if (length < 4)
+            return false;
+
+        return buffer[0] == 0xFF
+            && buffer[1] == 0xD8
+            && buffer[length - 2] == 0xFF
+            && buffer[length - 1] == 0xD9;
     }
 #endif
 
