@@ -478,12 +478,15 @@ public partial class SettingsViewModel : ObservableObject
 
         try
         {
-            await db.ResetAsync().ConfigureAwait(false);
-            if (keepSources && sources is { Count: > 0 })
-                foreach (var source in sources)
-                    await sourceService.UpsertAsync(source).ConfigureAwait(false);
+            await Task.Run(async () =>
+            {
+                await db.ResetAsync().ConfigureAwait(false);
+                if (keepSources && sources is { Count: > 0 })
+                    foreach (var source in sources)
+                        await sourceService.UpsertAsync(source).ConfigureAwait(false);
 
-            await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+                await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+            }).ConfigureAwait(false);
             await MainThread.InvokeOnMainThreadAsync(() => NeedsReindex = true);
             await MainThread.InvokeOnMainThreadAsync(() =>
                 dialogService.DisplayAlertAsync(
