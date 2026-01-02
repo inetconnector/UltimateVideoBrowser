@@ -20,28 +20,28 @@ app.MapPost("/api/checkout", (LicenseService licenseService) =>
 
 app.MapGet("/impressum", (IConfiguration configuration) =>
 {
-    var options = configuration.GetSection("Legal").Get<LegalOptions>() ?? new LegalOptions();
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
     var html = LegalDocumentBuilder.BuildImprint(options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
 app.MapGet("/datenschutz", (IConfiguration configuration) =>
 {
-    var options = configuration.GetSection("Legal").Get<LegalOptions>() ?? new LegalOptions();
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
     var html = LegalDocumentBuilder.BuildPrivacy(options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
 app.MapGet("/agb", (IConfiguration configuration) =>
 {
-    var options = configuration.GetSection("Legal").Get<LegalOptions>() ?? new LegalOptions();
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
     var html = LegalDocumentBuilder.BuildTerms(options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
 app.MapGet("/widerruf", (IConfiguration configuration) =>
 {
-    var options = configuration.GetSection("Legal").Get<LegalOptions>() ?? new LegalOptions();
+    var options = LegalDocumentBuilder.LoadOptions(configuration);
     var html = LegalDocumentBuilder.BuildWithdrawal(options);
     return Results.Content(html, "text/html; charset=utf-8");
 });

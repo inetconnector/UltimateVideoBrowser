@@ -37,3 +37,8 @@ public sealed class LegalOptions
     public string ResponsiblePerson { get; init; } = "Daniel Frede\nBismarckstrasse 6\n97209 Veitshöchheim\nDeutschland";
     public string SupportEmail { get; init; } = "sales@digitaxo.com";
 }
+
+public sealed class LegalFileOptions
+{
+    public string? OptionsFilePath { get; init; }
+}
