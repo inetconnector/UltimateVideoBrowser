@@ -36,6 +36,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
+    [ObservableProperty] private bool isProBusy;
+    [ObservableProperty] private bool isProLimitReached;
+    [ObservableProperty] private bool isProUnlocked;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private string peopleModelsDetailText = string.Empty;
@@ -50,9 +53,6 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty] private ThemeOption? selectedTheme;
     [ObservableProperty] private string videoExtensionsText = string.Empty;
-    [ObservableProperty] private bool isProBusy;
-    [ObservableProperty] private bool isProLimitReached;
-    [ObservableProperty] private bool isProUnlocked;
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,

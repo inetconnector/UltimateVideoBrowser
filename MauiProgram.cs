@@ -1,14 +1,14 @@
-#if ANDROID
-using UltimateVideoBrowser.Platforms.Android;
-#elif WINDOWS
-using UltimateVideoBrowser.Platforms.Windows;
-#endif
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
+#if ANDROID
+using UltimateVideoBrowser.Platforms.Android;
+#elif WINDOWS
+using UltimateVideoBrowser.Platforms.Windows;
+#endif
 
 namespace UltimateVideoBrowser;
 

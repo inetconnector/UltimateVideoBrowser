@@ -1,11 +1,8 @@
 using System.Collections.Concurrent;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
-using Image = SixLabors.ImageSharp.Image;
-using ImageExtensions = SixLabors.ImageSharp.ImageExtensions;
 using IOPath = System.IO.Path;
-using ResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
-using Size = SixLabors.ImageSharp.Size;
+using OperationCanceledException = System.OperationCanceledException;
 
 #if ANDROID && !WINDOWS
 using Android.OS;
@@ -13,6 +10,7 @@ using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
+
 #elif WINDOWS
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
@@ -84,7 +82,7 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (System.OperationCanceledException)
+        catch (OperationCanceledException)
         {
             return null;
         }
@@ -296,7 +294,7 @@ public sealed class ThumbnailService
                     break;
             }
         }
-        catch (System.OperationCanceledException)
+        catch (OperationCanceledException)
         {
             // Ignore cancellation during cache trimming.
         }

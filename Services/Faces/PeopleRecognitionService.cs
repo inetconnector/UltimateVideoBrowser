@@ -3,7 +3,6 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
-using UltimateVideoBrowser.Services;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
 namespace UltimateVideoBrowser.Services.Faces;

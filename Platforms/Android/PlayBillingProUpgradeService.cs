@@ -1,8 +1,8 @@
 #if ANDROID
 using Android.BillingClient.Api;
-using Android.Content;
-using Microsoft.Maui.ApplicationModel;
 using UltimateVideoBrowser.Resources.Strings;
+using Application = Android.App.Application;
+using Object = Java.Lang.Object;
 
 namespace UltimateVideoBrowser.Services;
 
@@ -10,11 +10,11 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 {
     private const string OneTimeProductId = "photoapp_pro_unlock";
     private const string InAppProductType = "inapp";
+    private readonly PurchasesUpdatedListener purchasesUpdatedListener;
     private readonly object sync = new();
     private BillingClient? billingClient;
-    private TaskCompletionSource<ProUpgradeResult>? purchaseTcs;
     private ProductDetails? cachedProduct;
-    private readonly PurchasesUpdatedListener purchasesUpdatedListener;
+    private TaskCompletionSource<ProUpgradeResult>? purchaseTcs;
 
     public PlayBillingProUpgradeService(AppSettingsService settingsService)
         : base(settingsService)
@@ -103,7 +103,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
                 return billingClient;
         }
 
-        var context = Android.App.Application.Context;
+        var context = Application.Context;
         var client = BillingClient.NewBuilder(context)
             .SetListener(purchasesUpdatedListener)
             .EnablePendingPurchases()
@@ -198,33 +198,6 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
         purchaseTcs?.TrySetResult(ProUpgradeResult.Success(AppResources.SettingsProPurchaseSuccessMessage));
     }
 
-    private sealed class BillingStateListener : Java.Lang.Object, IBillingClientStateListener
-    {
-        private readonly TaskCompletionSource<BillingResult> tcs;
-
-        public BillingStateListener(TaskCompletionSource<BillingResult> tcs)
-        {
-            this.tcs = tcs;
-        }
-
-        public void OnBillingSetupFinished(BillingResult billingResult) => tcs.TrySetResult(billingResult);
-        public void OnBillingServiceDisconnected() => tcs.TrySetResult(BillingResult.NewBuilder()
-            .SetResponseCode((int)BillingResponseCode.ServiceDisconnected)
-            .Build());
-    }
-
-    private sealed class AckListener : Java.Lang.Object, IAcknowledgePurchaseResponseListener
-    {
-        private readonly TaskCompletionSource<BillingResult> tcs;
-
-        public AckListener(TaskCompletionSource<BillingResult> tcs)
-        {
-            this.tcs = tcs;
-        }
-
-        public void OnAcknowledgePurchaseResponse(BillingResult billingResult) => tcs.TrySetResult(billingResult);
-    }
-
     private static BillingResult? ExtractBillingResult(object? result)
     {
         if (result == null)
@@ -276,7 +249,44 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
         return null;
     }
 
-    private sealed class PurchasesUpdatedListener : Java.Lang.Object, IPurchasesUpdatedListener
+    private sealed class BillingStateListener : Object, IBillingClientStateListener
+    {
+        private readonly TaskCompletionSource<BillingResult> tcs;
+
+        public BillingStateListener(TaskCompletionSource<BillingResult> tcs)
+        {
+            this.tcs = tcs;
+        }
+
+        public void OnBillingSetupFinished(BillingResult billingResult)
+        {
+            tcs.TrySetResult(billingResult);
+        }
+
+        public void OnBillingServiceDisconnected()
+        {
+            tcs.TrySetResult(BillingResult.NewBuilder()
+                .SetResponseCode((int)BillingResponseCode.ServiceDisconnected)
+                .Build());
+        }
+    }
+
+    private sealed class AckListener : Object, IAcknowledgePurchaseResponseListener
+    {
+        private readonly TaskCompletionSource<BillingResult> tcs;
+
+        public AckListener(TaskCompletionSource<BillingResult> tcs)
+        {
+            this.tcs = tcs;
+        }
+
+        public void OnAcknowledgePurchaseResponse(BillingResult billingResult)
+        {
+            tcs.TrySetResult(billingResult);
+        }
+    }
+
+    private sealed class PurchasesUpdatedListener : Object, IPurchasesUpdatedListener
     {
         private readonly WeakReference<PlayBillingProUpgradeService> serviceRef;
 
@@ -291,6 +301,5 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
                 service.OnPurchasesUpdated(billingResult, purchases);
         }
     }
-
 }
 #endif

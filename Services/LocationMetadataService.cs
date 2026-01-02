@@ -6,6 +6,7 @@ using ImageSharpImage = SixLabors.ImageSharp.Image;
 using Android.Media;
 using Uri = Android.Net.Uri;
 #endif
+
 #if WINDOWS
 using Windows.Storage;
 #endif
@@ -91,7 +92,8 @@ public sealed class LocationMetadataService
     }
 
 #if ANDROID && !WINDOWS
-    private static async Task<GeoLocation?> TryGetLocationFromAndroidContentAsync(string contentUri, CancellationToken ct)
+    private static async Task<GeoLocation?> TryGetLocationFromAndroidContentAsync(string contentUri,
+        CancellationToken ct)
     {
         try
         {

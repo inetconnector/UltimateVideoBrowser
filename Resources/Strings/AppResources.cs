@@ -302,7 +302,9 @@ public static class AppResources
 
     public static string SettingsProTitle => GetString(nameof(SettingsProTitle), "Pro upgrade");
     public static string SettingsProStatusFreeTitle => GetString(nameof(SettingsProStatusFreeTitle), "Free");
-    public static string SettingsProStatusUnlockedTitle => GetString(nameof(SettingsProStatusUnlockedTitle), "Pro unlocked");
+
+    public static string SettingsProStatusUnlockedTitle =>
+        GetString(nameof(SettingsProStatusUnlockedTitle), "Pro unlocked");
 
     public static string SettingsProFreeMessage =>
         GetString(nameof(SettingsProFreeMessage), "Unlock unlimited face recognition and automation.");
@@ -320,8 +322,10 @@ public static class AppResources
     public static string SettingsProPriceFallback => GetString(nameof(SettingsProPriceFallback), "3,92 €");
     public static string SettingsProUnlockButton => GetString(nameof(SettingsProUnlockButton), "Unlock Pro");
     public static string SettingsProRestoreButton => GetString(nameof(SettingsProRestoreButton), "Restore purchase");
+
     public static string SettingsProLimitReachedMessage =>
-        GetString(nameof(SettingsProLimitReachedMessage), "Free limit reached ({0} people). Upgrade to Pro for unlimited.");
+        GetString(nameof(SettingsProLimitReachedMessage),
+            "Free limit reached ({0} people). Upgrade to Pro for unlimited.");
 
     public static string SettingsProPurchaseSuccessTitle =>
         GetString(nameof(SettingsProPurchaseSuccessTitle), "Pro unlocked");

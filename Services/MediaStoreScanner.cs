@@ -18,7 +18,6 @@ using IOPath = System.IO.Path;
 #if WINDOWS
 using System.Threading.Channels;
 #endif
-using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 
 namespace UltimateVideoBrowser.Services;
@@ -345,10 +344,10 @@ public sealed class MediaStoreScanner
     {
         try
         {
-            return !string.IsNullOrWhiteSpace(exif.GetAttribute(Android.Media.ExifInterface.TagMake)) ||
-            !string.IsNullOrWhiteSpace(exif.GetAttribute(Android.Media.ExifInterface.TagModel)) ||
-            !string.IsNullOrWhiteSpace(exif.GetAttribute("DateTimeOriginal")) ||
-            !string.IsNullOrWhiteSpace(exif.GetAttribute("DateTime"));
+            return !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagMake)) ||
+                   !string.IsNullOrWhiteSpace(exif.GetAttribute(ExifInterface.TagModel)) ||
+                   !string.IsNullOrWhiteSpace(exif.GetAttribute("DateTimeOriginal")) ||
+                   !string.IsNullOrWhiteSpace(exif.GetAttribute("DateTime"));
         }
         catch
         {

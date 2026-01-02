@@ -10,8 +10,23 @@ public enum ProUpgradeStatus
 
 public sealed record ProUpgradeResult(ProUpgradeStatus Status, string Message)
 {
-    public static ProUpgradeResult Success(string message) => new(ProUpgradeStatus.Success, message);
-    public static ProUpgradeResult Cancelled(string message) => new(ProUpgradeStatus.Cancelled, message);
-    public static ProUpgradeResult Failed(string message) => new(ProUpgradeStatus.Failed, message);
-    public static ProUpgradeResult NotSupported(string message) => new(ProUpgradeStatus.NotSupported, message);
+    public static ProUpgradeResult Success(string message)
+    {
+        return new ProUpgradeResult(ProUpgradeStatus.Success, message);
+    }
+
+    public static ProUpgradeResult Cancelled(string message)
+    {
+        return new ProUpgradeResult(ProUpgradeStatus.Cancelled, message);
+    }
+
+    public static ProUpgradeResult Failed(string message)
+    {
+        return new ProUpgradeResult(ProUpgradeStatus.Failed, message);
+    }
+
+    public static ProUpgradeResult NotSupported(string message)
+    {
+        return new ProUpgradeResult(ProUpgradeStatus.NotSupported, message);
+    }
 }
