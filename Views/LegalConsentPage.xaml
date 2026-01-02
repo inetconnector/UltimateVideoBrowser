@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.LegalConsentPage"
+             BackgroundColor="{DynamicResource AppBg}"
+             Title="{x:Static strings:AppResources.LegalConsentTitle}">
+    <Grid RowDefinitions="Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button x:Name="CloseButton"
+                    Text="{x:Static strings:AppResources.CancelButton}"
+                    Clicked="OnCancelClicked" />
+            <Label Grid.Column="1"
+                   Text="{x:Static strings:AppResources.LegalConsentHeader}"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontAttributes="Bold"
+                   FontSize="16" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" Margin="0,12,0,0">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="{x:Static strings:AppResources.LegalConsentIntro}"
+                       TextColor="{DynamicResource OnSurface}"
+                       FontSize="12"
+                       LineBreakMode="WordWrap" />
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{x:Static strings:AppResources.LegalConsentProductTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.LegalConsentProductScope}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="WordWrap" />
+                        <Label x:Name="PriceLabel"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.LegalConsentPaymentHint}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.LegalConsentWithdrawalTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <HorizontalStackLayout Spacing="10">
+                            <CheckBox x:Name="WithdrawalConsentCheckBox"
+                                      VerticalOptions="Start" />
+                            <Label Text="{x:Static strings:AppResources.LegalConsentWithdrawalCheckbox}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   LineBreakMode="WordWrap"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <Label Text="{x:Static strings:AppResources.LegalConsentWithdrawalHint}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.LegalConsentDocumentsTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.LegalConsentDocumentsHint}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               LineBreakMode="WordWrap" />
+                        <HorizontalStackLayout Spacing="8">
+                            <Button Text="{x:Static strings:AppResources.LegalImprintTitle}"
+                                    Clicked="OnImprintClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                            <Button Text="{x:Static strings:AppResources.LegalPrivacyTitle}"
+                                    Clicked="OnPrivacyClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="8">
+                            <Button Text="{x:Static strings:AppResources.LegalTermsTitle}"
+                                    Clicked="OnTermsClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                            <Button Text="{x:Static strings:AppResources.LegalWithdrawalTitle}"
+                                    Clicked="OnWithdrawalClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="12">
+                    <Button Text="{x:Static strings:AppResources.LegalConsentConfirmButton}"
+                            Clicked="OnConfirmClicked"
+                            BackgroundColor="{DynamicResource Accent}"
+                            TextColor="{DynamicResource OnAccent}" />
+                    <Button Grid.Column="1"
+                            Text="{x:Static strings:AppResources.CancelButton}"
+                            Clicked="OnCancelClicked"
+                            BackgroundColor="{DynamicResource Surface2}"
+                            TextColor="{DynamicResource OnSurface}" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

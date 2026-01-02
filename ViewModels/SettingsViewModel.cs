@@ -12,6 +12,7 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppDb db;
     private readonly IDialogService dialogService;
+    private readonly ILegalConsentService legalConsentService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly IProUpgradeService proUpgradeService;
@@ -56,7 +57,9 @@ public partial class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
-        IDialogService dialogService, IProUpgradeService proUpgradeService)
+        IDialogService dialogService,
+        ILegalConsentService legalConsentService,
+        IProUpgradeService proUpgradeService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
@@ -64,6 +67,7 @@ public partial class SettingsViewModel : ObservableObject
         this.db = db;
         this.sourceService = sourceService;
         this.dialogService = dialogService;
+        this.legalConsentService = legalConsentService;
         this.proUpgradeService = proUpgradeService;
         ThemeOptions = new[]
         {
@@ -364,6 +368,12 @@ public partial class SettingsViewModel : ObservableObject
     private async Task UpgradeToProAsync()
     {
         if (IsProBusy || IsProUnlocked)
+            return;
+
+        var consentAccepted = await legalConsentService.RequestProPurchaseConsentAsync(
+            proUpgradeService.PriceText ?? AppResources.SettingsProPriceFallback,
+            CancellationToken.None).ConfigureAwait(false);
+        if (!consentAccepted)
             return;
 
         IsProBusy = true;
