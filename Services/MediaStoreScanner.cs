@@ -179,37 +179,6 @@ public sealed class MediaStoreScanner
         ".thumbnails"
     };
 
-    private static readonly string[] ScreenshotTokens =
-    {
-        "screenshot",
-        "screen shot",
-        "screen_shot",
-        "screen-shot",
-        "bildschirmfoto",
-        "schirmfoto"
-    };
-
-    private static readonly string[] CameraFolderTokens =
-    {
-        "dcim",
-        "camera",
-        "100apple",
-        "100andro",
-        "100media"
-    };
-
-    private static readonly string[] CameraNamePrefixes =
-    {
-        "img_",
-        "img-",
-        "dsc_",
-        "dsc-",
-        "pxl_",
-        "pxl-",
-        "vid_",
-        "vid-"
-    };
-
     private static bool IsThumbnailPath(string? path, string? name)
     {
         var candidate = path ?? name ?? string.Empty;
@@ -227,63 +196,76 @@ public sealed class MediaStoreScanner
                fileName.Contains("thumb", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsScreenshotNameOrPath(string? path, string? name)
-    {
-        var candidate = name ?? IOPath.GetFileName(path ?? string.Empty);
-        if (string.IsNullOrWhiteSpace(candidate))
-            return false;
-
-        return ScreenshotTokens.Any(token =>
-            candidate.Contains(token, StringComparison.OrdinalIgnoreCase) ||
-            (!string.IsNullOrWhiteSpace(path) && path.Contains(token, StringComparison.OrdinalIgnoreCase)));
-    }
-
-    private static bool IsLikelyCameraPath(string? path, string? name)
-    {
-        if (!string.IsNullOrWhiteSpace(path))
-        {
-            var normalized = path.Replace('\\', '/');
-            var segments = normalized.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var segment in segments)
-                if (CameraFolderTokens.Any(token => segment.Equals(token, StringComparison.OrdinalIgnoreCase)))
-                    return true;
-        }
-
-        var fileName = name ?? IOPath.GetFileName(path ?? string.Empty);
-        return !string.IsNullOrWhiteSpace(fileName) &&
-               CameraNamePrefixes.Any(prefix => fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
-    }
-
     private static ModelMediaType ResolveMediaTypeFromPath(string path, string? name, ModelMediaType indexedTypes,
-        ExtensionLookup extensions)
+        ExtensionLookup extensions, string? mimeType = null, long? sizeBytes = null)
     {
         if (IsThumbnailPath(path, name))
             return ModelMediaType.None;
 
-        var baseType = string.IsNullOrWhiteSpace(name)
-            ? extensions.GetMediaTypeFromPath(path)
-            : extensions.GetMediaTypeFromName(name);
+        var baseType = GetMediaTypeFromMimeType(mimeType);
+        if (baseType == ModelMediaType.None)
+            baseType = string.IsNullOrWhiteSpace(name)
+                ? extensions.GetMediaTypeFromPath(path)
+                : extensions.GetMediaTypeFromName(name);
         return baseType switch
         {
             ModelMediaType.Videos when indexedTypes.HasFlag(ModelMediaType.Videos) => ModelMediaType.Videos,
             ModelMediaType.Documents when indexedTypes.HasFlag(ModelMediaType.Documents) => ModelMediaType.Documents,
-            ModelMediaType.Photos => ResolveImageMediaType(path, name, indexedTypes),
+            ModelMediaType.Photos => ResolveImageMediaType(path, indexedTypes, sizeBytes),
             _ => ModelMediaType.None
         };
     }
 
-    private static ModelMediaType ResolveImageMediaType(string path, string? name, ModelMediaType indexedTypes)
+    private static ModelMediaType ResolveImageMediaType(string path, ModelMediaType indexedTypes, long? sizeBytes)
     {
         if (!indexedTypes.HasFlag(ModelMediaType.Photos) && !indexedTypes.HasFlag(ModelMediaType.Graphics))
             return ModelMediaType.None;
 
-        if (IsScreenshotNameOrPath(path, name))
-            return indexedTypes.HasFlag(ModelMediaType.Graphics) ? ModelMediaType.Graphics : ModelMediaType.None;
+        var contentSize = sizeBytes ?? TryGetFileSizeBytes(path);
+        if (contentSize.HasValue && contentSize.Value <= 0)
+            return ModelMediaType.None;
 
-        if (IsLikelyCameraPath(path, name) || HasCameraExif(path))
+        if (HasCameraExif(path))
             return indexedTypes.HasFlag(ModelMediaType.Photos) ? ModelMediaType.Photos : ModelMediaType.None;
 
         return indexedTypes.HasFlag(ModelMediaType.Graphics) ? ModelMediaType.Graphics : ModelMediaType.None;
+    }
+
+    private static ModelMediaType GetMediaTypeFromMimeType(string? mimeType)
+    {
+        if (string.IsNullOrWhiteSpace(mimeType))
+            return ModelMediaType.None;
+
+        if (mimeType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
+            return ModelMediaType.Videos;
+        if (mimeType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            return ModelMediaType.Photos;
+        if (mimeType.StartsWith("application/", StringComparison.OrdinalIgnoreCase) ||
+            mimeType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) ||
+            mimeType.StartsWith("message/", StringComparison.OrdinalIgnoreCase))
+            return ModelMediaType.Documents;
+
+        return ModelMediaType.None;
+    }
+
+    private static long? TryGetFileSizeBytes(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
+
+#if ANDROID && !WINDOWS
+        if (path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+            return TryGetContentUriSizeBytes(path);
+#endif
+
+        try
+        {
+            return new FileInfo(path).Length;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static bool HasCameraExif(string path)
@@ -302,6 +284,32 @@ public sealed class MediaStoreScanner
     }
 
 #if ANDROID && !WINDOWS
+    private static long? TryGetContentUriSizeBytes(string contentUri)
+    {
+        try
+        {
+            var resolver = Platform.AppContext?.ContentResolver;
+            if (resolver == null)
+                return null;
+
+            var uri = Uri.Parse(contentUri);
+            string[] projection = { OpenableColumns.Size };
+            using var cursor = resolver.Query(uri, projection, null, null, null);
+            if (cursor == null)
+                return null;
+
+            var sizeCol = cursor.GetColumnIndex(OpenableColumns.Size);
+            if (sizeCol < 0 || !cursor.MoveToFirst() || cursor.IsNull(sizeCol))
+                return null;
+
+            return cursor.GetLong(sizeCol);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private static bool HasCameraExifFromAndroidContent(string contentUri)
     {
         try
@@ -1039,7 +1047,9 @@ public sealed class MediaStoreScanner
         {
             MediaStore.Images.Media.InterfaceConsts.Id,
             MediaStore.Images.Media.InterfaceConsts.DisplayName,
-            MediaStore.Images.Media.InterfaceConsts.DateAdded
+            MediaStore.Images.Media.InterfaceConsts.DateAdded,
+            MediaStore.MediaColumns.MimeType,
+            MediaStore.MediaColumns.Size
         };
 
         ICursor? cursor = null;
@@ -1066,6 +1076,8 @@ public sealed class MediaStoreScanner
             var idCol = cursor.GetColumnIndex(MediaStore.Images.Media.InterfaceConsts.Id);
             var nameCol = cursor.GetColumnIndex(MediaStore.Images.Media.InterfaceConsts.DisplayName);
             var addCol = cursor.GetColumnIndex(MediaStore.Images.Media.InterfaceConsts.DateAdded);
+            var mimeCol = cursor.GetColumnIndex(MediaStore.MediaColumns.MimeType);
+            var sizeCol = cursor.GetColumnIndex(MediaStore.MediaColumns.Size);
 
             if (idCol < 0)
                 yield break;
@@ -1128,13 +1140,32 @@ public sealed class MediaStoreScanner
                 if (string.IsNullOrWhiteSpace(name))
                     name = $"photo_{id}";
 
-                if (!extensions.IsPhotoName(name))
-                    continue;
-
                 if (IsThumbnailPath(path, name))
                     continue;
 
-                var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions);
+                string? mimeType = null;
+                if (mimeCol >= 0 && !cursor.IsNull(mimeCol))
+                    try
+                    {
+                        mimeType = cursor.GetString(mimeCol);
+                    }
+                    catch
+                    {
+                        mimeType = null;
+                    }
+
+                long? sizeBytes = null;
+                if (sizeCol >= 0 && !cursor.IsNull(sizeCol))
+                    try
+                    {
+                        sizeBytes = cursor.GetLong(sizeCol);
+                    }
+                    catch
+                    {
+                        sizeBytes = null;
+                    }
+
+                var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions, mimeType, sizeBytes);
                 if (mediaType == ModelMediaType.None)
                     continue;
 
@@ -1166,7 +1197,8 @@ public sealed class MediaStoreScanner
             MediaStore.Files.FileColumns.Id,
             MediaStore.Files.FileColumns.DisplayName,
             MediaStore.Files.FileColumns.MimeType,
-            MediaStore.Files.FileColumns.DateAdded
+            MediaStore.Files.FileColumns.DateAdded,
+            MediaStore.MediaColumns.Size
         };
 
         ICursor? cursor = null;
@@ -1193,6 +1225,7 @@ public sealed class MediaStoreScanner
             var idCol = cursor.GetColumnIndex(MediaStore.Files.FileColumns.Id);
             var nameCol = cursor.GetColumnIndex(MediaStore.Files.FileColumns.DisplayName);
             var addCol = cursor.GetColumnIndex(MediaStore.Files.FileColumns.DateAdded);
+            var mimeCol = cursor.GetColumnIndex(MediaStore.Files.FileColumns.MimeType);
 
             if (idCol < 0)
                 yield break;
@@ -1236,7 +1269,19 @@ public sealed class MediaStoreScanner
                         name = "";
                     }
 
-                if (!extensions.IsDocumentName(name))
+                string? mimeType = null;
+                if (mimeCol >= 0 && !cursor.IsNull(mimeCol))
+                    try
+                    {
+                        mimeType = cursor.GetString(mimeCol);
+                    }
+                    catch
+                    {
+                        mimeType = null;
+                    }
+
+                var isDocument = GetMediaTypeFromMimeType(mimeType) == ModelMediaType.Documents;
+                if (!isDocument && !extensions.IsDocumentName(name))
                     continue;
 
                 var itemUri = ContentUris.WithAppendedId(externalUri, id);
@@ -1367,6 +1412,26 @@ public sealed class MediaStoreScanner
                 if (!extensions.IsCandidateName(name, indexedTypes))
                     continue;
 
+                string? mimeType = null;
+                try
+                {
+                    mimeType = child.Type;
+                }
+                catch
+                {
+                    mimeType = null;
+                }
+
+                long? sizeBytes = null;
+                try
+                {
+                    sizeBytes = child.Length();
+                }
+                catch
+                {
+                    sizeBytes = null;
+                }
+
                 long lastModifiedMs = 0;
                 try
                 {
@@ -1394,7 +1459,7 @@ public sealed class MediaStoreScanner
                 if (string.IsNullOrWhiteSpace(path))
                     continue;
 
-                var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions);
+                var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions, mimeType, sizeBytes);
                 if (mediaType == ModelMediaType.None)
                     continue;
 
