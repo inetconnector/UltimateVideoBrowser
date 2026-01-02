@@ -809,4 +809,80 @@ Missing:
   <data name="DeleteAlbumAction" xml:space="preserve">
     <value>Delete</value>
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Merge</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Merge into…</value></data><data name="QualityLabel" xml:space="preserve"><value>Quality</value></data></root>
+  <data name="SettingsProTitle" xml:space="preserve">
+    <value>Pro upgrade</value>
+  </data>
+  <data name="SettingsProStatusFreeTitle" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="SettingsProStatusUnlockedTitle" xml:space="preserve">
+    <value>Pro unlocked</value>
+  </data>
+  <data name="SettingsProFreeMessage" xml:space="preserve">
+    <value>Unlock unlimited face recognition and automation.</value>
+  </data>
+  <data name="SettingsProUnlockedMessage" xml:space="preserve">
+    <value>Thanks for supporting local-first photo organization.</value>
+  </data>
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    <value>• Unlimited face recognition
+• Automatic people albums
+• Batch sorting (1000+ photos)
+• Local export &amp; backups
+• No ads</value>
+  </data>
+  <data name="SettingsProPriceFormat" xml:space="preserve">
+    <value>One-time purchase: {0}</value>
+  </data>
+  <data name="SettingsProPriceFallback" xml:space="preserve">
+    <value>3,92 €</value>
+  </data>
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    <value>Unlock Pro</value>
+  </data>
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    <value>Restore purchase</value>
+  </data>
+  <data name="SettingsProLimitReachedMessage" xml:space="preserve">
+    <value>Free limit reached ({0} people). Upgrade to Pro for unlimited.</value>
+  </data>
+  <data name="SettingsProPurchaseSuccessTitle" xml:space="preserve">
+    <value>Pro unlocked</value>
+  </data>
+  <data name="SettingsProPurchaseSuccessMessage" xml:space="preserve">
+    <value>Pro features are now enabled.</value>
+  </data>
+  <data name="SettingsProPurchaseCancelledTitle" xml:space="preserve">
+    <value>Purchase cancelled</value>
+  </data>
+  <data name="SettingsProPurchaseCancelledMessage" xml:space="preserve">
+    <value>No changes were made.</value>
+  </data>
+  <data name="SettingsProPurchaseFailedTitle" xml:space="preserve">
+    <value>Purchase failed</value>
+  </data>
+  <data name="SettingsProPurchaseFailedMessage" xml:space="preserve">
+    <value>Please try again or restore your purchase later.</value>
+  </data>
+  <data name="SettingsProRestoreSuccessMessage" xml:space="preserve">
+    <value>Your Pro purchase has been restored.</value>
+  </data>
+  <data name="SettingsProRestoreFailedMessage" xml:space="preserve">
+    <value>No Pro purchase was found for this account.</value>
+  </data>
+  <data name="SettingsProNotSupportedTitle" xml:space="preserve">
+    <value>Not supported</value>
+  </data>
+  <data name="SettingsProNotSupportedMessage" xml:space="preserve">
+    <value>Purchases are only available on Google Play.</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Merge into…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+</root>
