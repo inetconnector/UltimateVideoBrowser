@@ -46,6 +46,11 @@ public sealed class DialogService : IDialogService
 
     private static Page? GetPage()
     {
-        return Shell.Current ?? Application.Current?.Windows.FirstOrDefault()?.Page;
+        var app = Application.Current;
+        if (app == null)
+            return null;
+
+        var windowPage = app.Windows.FirstOrDefault()?.Page;
+        return windowPage ?? app.MainPage;
     }
 }
