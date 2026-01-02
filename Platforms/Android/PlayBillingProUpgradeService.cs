@@ -71,7 +71,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
     private void OnPurchasesUpdated(BillingResult billingResult, IList<Purchase>? purchases)
     {
-        if (billingResult.ResponseCode == BillingResponseCode.UserCanceled)
+        if (billingResult.ResponseCode == BillingResponseCode.UserCancelled)
         {
             purchaseTcs?.TrySetResult(ProUpgradeResult.Cancelled(AppResources.SettingsProPurchaseCancelledMessage));
             return;
@@ -138,10 +138,11 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         var result = await client.QueryProductDetailsAsync(queryParams).ConfigureAwait(false);
 
-        if (result.BillingResult.ResponseCode != BillingResponseCode.Ok)
+        var billingResult = result.GetBillingResult();
+        if (billingResult.ResponseCode != BillingResponseCode.Ok)
             return cachedProduct;
 
-        cachedProduct = result.ProductDetailsList?.FirstOrDefault();
+        cachedProduct = result.GetProductDetailsList()?.FirstOrDefault();
         var offerDetails = cachedProduct?.GetOneTimePurchaseOfferDetails();
         if (offerDetails != null)
             PriceText = offerDetails.FormattedPrice;
@@ -157,10 +158,11 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         var result = await client.QueryPurchasesAsync(queryParams).ConfigureAwait(false);
 
-        if (result.BillingResult.ResponseCode != BillingResponseCode.Ok)
+        var billingResult = result.GetBillingResult();
+        if (billingResult.ResponseCode != BillingResponseCode.Ok)
             return false;
 
-        var purchase = result.PurchasesList?
+        var purchase = result.GetPurchasesList()?
             .FirstOrDefault(p => p.Products.Contains(ProductId) && p.PurchaseState == PurchaseState.Purchased);
 
         if (purchase == null)
@@ -207,7 +209,7 @@ public sealed class PlayBillingProUpgradeService : ProUpgradeServiceBase
 
         public void OnBillingSetupFinished(BillingResult billingResult) => tcs.TrySetResult(billingResult);
         public void OnBillingServiceDisconnected() => tcs.TrySetResult(BillingResult.NewBuilder()
-            .SetResponseCode(BillingResponseCode.ServiceDisconnected)
+            .SetResponseCode((int)BillingResponseCode.ServiceDisconnected)
             .Build());
     }
 
