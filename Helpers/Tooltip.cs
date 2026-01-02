@@ -1,6 +1,8 @@
+#if WINDOWS
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
+#endif
 
 namespace UltimateVideoBrowser.Helpers;
 
