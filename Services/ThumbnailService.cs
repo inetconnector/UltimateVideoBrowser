@@ -84,7 +84,7 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (System.OperationCanceledException)
+        catch (OperationCanceledException)
         {
             return null;
         }
@@ -156,14 +156,14 @@ public sealed class ThumbnailService
                     if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
                         return null;
 
-                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
-                        if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
-                            return null;
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
+                        return null;
 
-                        File.Move(tmpPath, thumbPath, true);
-                        await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
-                        return thumbPath;
-                    }
+                    File.Move(tmpPath, thumbPath, true);
+                    await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
+                    return thumbPath;
+                }
 
                 using var thumb =
                     await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize,

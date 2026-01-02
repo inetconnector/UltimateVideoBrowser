@@ -10,17 +10,14 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Search;
 #endif
-using System.Diagnostics;
-using System.Linq;
+using System.Runtime.CompilerServices;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 #if WINDOWS
 using System.Threading.Channels;
 #endif
-using System.Runtime.CompilerServices;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
-using UltimateVideoBrowser.Models;
 using ModelMediaType = UltimateVideoBrowser.Models.MediaType;
 
 namespace UltimateVideoBrowser.Services;
@@ -388,7 +385,7 @@ public sealed class MediaStoreScanner
 
     private static bool HasExifStringValue(ExifProfile profile, ExifTag<string> tag)
     {
-        if (!profile.TryGetValue(tag, out IExifValue<string>? value))
+        if (!profile.TryGetValue(tag, out var value))
             return false;
 
         return !string.IsNullOrWhiteSpace(value?.Value);

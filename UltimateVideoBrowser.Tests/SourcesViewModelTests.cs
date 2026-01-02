@@ -92,6 +92,12 @@ public sealed class SourcesViewModelTests
         {
             return Task.FromResult(promptResult);
         }
+
+        public Task<string?> DisplayActionSheetAsync(string title, string cancel, string? destruction,
+            params string[] buttons)
+        {
+            return Task.FromResult<string?>(null);
+        }
     }
 
     private sealed class FakeSourceService : ISourceService

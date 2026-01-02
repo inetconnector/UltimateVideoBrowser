@@ -4,8 +4,7 @@ namespace UltimateVideoBrowser.Models;
 
 public sealed class FaceScanJob
 {
-    [PrimaryKey]
-    public string MediaPath { get; set; } = string.Empty;
+    [PrimaryKey] public string MediaPath { get; set; } = string.Empty;
 
     public long EnqueuedAtSeconds { get; set; }
 

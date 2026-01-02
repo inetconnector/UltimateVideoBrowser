@@ -18,11 +18,11 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
-    private bool topScrollPrimed;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
     private string? pendingScrollToMediaPath;
+    private bool topScrollPrimed;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider,
         PeopleDataService peopleData)
@@ -649,6 +649,7 @@ public partial class MainPage : ContentPage
 
         public ICommand IndexBannerActionCommand =>
             vm.IndexState == IndexingState.Running ? ShowIndexOverlayCommand : RunIndexCommand;
+
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;

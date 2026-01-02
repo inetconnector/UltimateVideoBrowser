@@ -54,7 +54,8 @@ public sealed class AppDb
                 .ConfigureAwait(false);
             await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
                 .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);")
+            await Db.ExecuteAsync(
+                    "CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);")
                 .ConfigureAwait(false);
             await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
             await TryAddMediaItemLocationColumnsAsync().ConfigureAwait(false);

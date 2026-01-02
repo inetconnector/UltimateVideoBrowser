@@ -68,14 +68,20 @@ public static class AppResources
     public static string DateFilterToLabel => GetString(nameof(DateFilterToLabel), "To");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
     public static string IndexStatusRunningTitle => GetString(nameof(IndexStatusRunningTitle), "Index running");
+
     public static string IndexStatusRunningMessage => GetString(nameof(IndexStatusRunningMessage),
         "Your library is being indexed. Progress details are available.");
+
     public static string IndexStatusReadyTitle => GetString(nameof(IndexStatusReadyTitle), "Index up to date");
+
     public static string IndexStatusReadyMessage =>
         GetString(nameof(IndexStatusReadyMessage), "No indexing is needed right now.");
+
     public static string IndexStatusNeededTitle => GetString(nameof(IndexStatusNeededTitle), "Index needs update");
+
     public static string IndexStatusNeededMessage =>
         GetString(nameof(IndexStatusNeededMessage), "Sources changed. Run indexing to refresh your library.");
+
     public static string IndexStatusActionStart => GetString(nameof(IndexStatusActionStart), "Start indexing");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
@@ -148,6 +154,7 @@ public static class AppResources
     public static string OpenFolderAction => GetString(nameof(OpenFolderAction), "Open folder");
     public static string OpenLocationAction => GetString(nameof(OpenLocationAction), "Location");
     public static string OpenFolderFailedTitle => GetString(nameof(OpenFolderFailedTitle), "Open folder failed");
+
     public static string OpenLocationFailedTitle =>
         GetString(nameof(OpenLocationFailedTitle), "Open location failed");
 

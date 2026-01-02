@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Threading.Channels;
-using SQLite;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -77,7 +76,7 @@ public sealed class IndexService
                         inserted,
                         source.DisplayName ?? "",
                         ""),
-                    force: true);
+                    true);
 
                 try
                 {
@@ -163,7 +162,7 @@ public sealed class IndexService
             }
 
             // One last report at the end (not throttled)
-            scheduler.Report(new IndexProgress(processedOverall, totalOverall, inserted, "", ""), force: true);
+            scheduler.Report(new IndexProgress(processedOverall, totalOverall, inserted, "", ""), true);
             scheduler.Flush();
 
             return inserted;
@@ -345,7 +344,7 @@ public sealed class IndexService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, null, null,
-            countOnly: false);
+            false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -354,7 +353,7 @@ public sealed class IndexService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit,
-            countOnly: false);
+            false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -363,7 +362,7 @@ public sealed class IndexService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null, null,
-            countOnly: true);
+            true);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -488,8 +487,8 @@ public sealed class IndexService
 
     private sealed class ProgressScheduler
     {
-        private readonly IProgress<IndexProgress>? progress;
         private readonly int minReportMs;
+        private readonly IProgress<IndexProgress>? progress;
         private readonly Stopwatch stopwatch = Stopwatch.StartNew();
         private IndexProgress? pending;
 
@@ -519,7 +518,7 @@ public sealed class IndexService
         public void Flush()
         {
             if (pending != null)
-                Report(pending, force: true);
+                Report(pending, true);
         }
 
         private void TryReport(IndexProgress value)

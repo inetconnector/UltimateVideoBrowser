@@ -23,7 +23,6 @@ public sealed class AppSettingsService
     private const string AllowFileChangesKey = "allow_file_changes";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
     private const string LocationsEnabledKey = "locations_enabled";
-    private bool isIndexing;
 
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
 
@@ -32,6 +31,8 @@ public sealed class AppSettingsService
 
     private static readonly string[] DefaultDocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
+
+    private bool isIndexing;
 
     public string ActiveSourceId
     {

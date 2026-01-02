@@ -24,8 +24,8 @@ public partial class MainViewModel : ObservableObject
     private const int PageSize = 60;
     private readonly AlbumService albumService;
     private readonly IDialogService dialogService;
-    private readonly IFileExportService fileExportService;
     private readonly FaceScanQueueService faceScanQueueService;
+    private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
 
@@ -85,17 +85,17 @@ public partial class MainViewModel : ObservableObject
     private int mediaItemsOffset;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
+    [ObservableProperty] private bool needsReindex;
     private IndexProgress? pendingIndexProgress;
 
     // Best-effort background people scan after indexing so the People browser is populated automatically.
     private CancellationTokenSource? peopleAutoScanCts;
     private Task? peopleAutoScanTask;
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
-    [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private string searchText = "";
-    [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
+    [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";

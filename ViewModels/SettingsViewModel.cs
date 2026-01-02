@@ -16,13 +16,15 @@ public partial class SettingsViewModel : ObservableObject
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
-    private bool isApplyingLocationToggle;
-    private bool isApplyingNeedsReindex;
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private bool canDownloadPeopleModels;
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
+    [ObservableProperty] private string indexStatusMessage = string.Empty;
+    [ObservableProperty] private string indexStatusTitle = string.Empty;
+    private bool isApplyingLocationToggle;
+    private bool isApplyingNeedsReindex;
     [ObservableProperty] private bool isDatabaseResetting;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
@@ -35,8 +37,6 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isPhotosIndexed;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
-    [ObservableProperty] private string indexStatusMessage = string.Empty;
-    [ObservableProperty] private string indexStatusTitle = string.Empty;
     [ObservableProperty] private string peopleModelsDetailText = string.Empty;
 
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
