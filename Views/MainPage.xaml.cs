@@ -275,6 +275,7 @@ public partial class MainPage : ContentPage
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             OpenPeopleCommand = new AsyncRelayCommand(OpenPeopleAsync);
             OpenMapCommand = new AsyncRelayCommand(OpenMapAsync);
+            OpenLocationCommand = vm.OpenLocationCommand;
             RefreshCommand = vm.RefreshCommand;
             RunIndexCommand = vm.RunIndexCommand;
             CancelIndexCommand = vm.CancelIndexCommand;
@@ -466,6 +467,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand OpenPeopleCommand { get; }
         public IAsyncRelayCommand OpenMapCommand { get; }
+        public IAsyncRelayCommand OpenLocationCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
         public IAsyncRelayCommand RunIndexCommand { get; }
         public IRelayCommand CancelIndexCommand { get; }

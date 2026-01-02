@@ -254,7 +254,35 @@
                                         </MenuFlyout>
                                     </Frame.ContextFlyout>
                                     <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                        <components:MediaItemPreviewView HeightRequest="170" />
+                                        <Grid>
+                                            <Grid>
+                                                <components:MediaItemPreviewView HeightRequest="170" />
+                                                <Button Text="{x:Static strings:AppResources.OpenLocationAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenLocationCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsVisible="{Binding HasLocation}"
+                                                        FontSize="10"
+                                                        Padding="8,2"
+                                                        Margin="8"
+                                                        CornerRadius="12"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}"
+                                                        HorizontalOptions="Start"
+                                                        VerticalOptions="Start" />
+                                            </Grid>
+                                            <Button Text="{x:Static strings:AppResources.OpenLocationAction}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenLocationCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    IsVisible="{Binding HasLocation}"
+                                                    FontSize="10"
+                                                    Padding="8,2"
+                                                    Margin="8"
+                                                    CornerRadius="12"
+                                                    BackgroundColor="{DynamicResource Surface2}"
+                                                    TextColor="{DynamicResource OnSurfaceMuted}"
+                                                    HorizontalOptions="Start"
+                                                    VerticalOptions="Start" />
+                                        </Grid>
 
                                         <Grid Grid.Row="1"
                                               RowDefinitions="Auto,Auto"
@@ -422,7 +450,21 @@
                                                 LongPressCommandParameter="{Binding .}" />
                                         </Frame.Behaviors>
                                         <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
-                                            <components:MediaItemPreviewView HeightRequest="170" />
+                                            <Grid>
+                                                <components:MediaItemPreviewView HeightRequest="170" />
+                                                <Button Text="{x:Static strings:AppResources.OpenLocationAction}"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenLocationCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        IsVisible="{Binding HasLocation}"
+                                                        FontSize="10"
+                                                        Padding="8,2"
+                                                        Margin="8"
+                                                        CornerRadius="12"
+                                                        BackgroundColor="{DynamicResource Surface2}"
+                                                        TextColor="{DynamicResource OnSurfaceMuted}"
+                                                        HorizontalOptions="Start"
+                                                        VerticalOptions="Start" />
+                                            </Grid>
 
                                             <Grid Grid.Row="1"
                                                   RowDefinitions="Auto,Auto"

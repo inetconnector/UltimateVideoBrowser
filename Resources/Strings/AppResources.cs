@@ -132,13 +132,22 @@ public static class AppResources
         GetString(nameof(RenameExistsMessage), "A file with that name already exists in this folder.");
 
     public static string OpenFolderAction => GetString(nameof(OpenFolderAction), "Open folder");
+    public static string OpenLocationAction => GetString(nameof(OpenLocationAction), "Location");
     public static string OpenFolderFailedTitle => GetString(nameof(OpenFolderFailedTitle), "Open folder failed");
+    public static string OpenLocationFailedTitle =>
+        GetString(nameof(OpenLocationFailedTitle), "Open location failed");
 
     public static string OpenFolderFailedMessage =>
         GetString(nameof(OpenFolderFailedMessage), "We couldn't open this folder. Please try again.");
 
     public static string OpenFolderNotSupportedMessage =>
         GetString(nameof(OpenFolderNotSupportedMessage), "Opening folders isn't supported on this device.");
+
+    public static string OpenLocationFailedMessage =>
+        GetString(nameof(OpenLocationFailedMessage), "We couldn't open this location. Please try again.");
+
+    public static string OpenLocationNotSupportedMessage =>
+        GetString(nameof(OpenLocationNotSupportedMessage), "Opening locations isn't supported on this device.");
 
     public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
