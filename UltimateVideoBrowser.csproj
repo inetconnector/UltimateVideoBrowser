@@ -68,6 +68,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AndroidResource Remove="LicenseServer\**" />
+    <Compile Remove="LicenseServer\**" />
+    <EmbeddedResource Remove="LicenseServer\**" />
+    <MauiCss Remove="LicenseServer\**" />
+    <MauiXaml Remove="LicenseServer\**" />
+    <None Remove="LicenseServer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <MauiXaml Update="**\*.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
