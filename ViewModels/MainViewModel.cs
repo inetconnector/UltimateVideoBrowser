@@ -219,28 +219,48 @@ public partial class MainViewModel : ObservableObject
             return;
 
         isInitialized = true;
-        await sourceService.EnsureDefaultSourceAsync();
-
         ReloadSettingsFromService();
-        var sources = await sourceService.GetSourcesAsync();
-        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
-        await UpdateSourceStatsAsync(sources);
-        Sources = sources.Where(s => s.IsEnabled).ToList();
 
-        HasMediaPermission = await permissionService.CheckMediaReadAsync();
+        var activeSourceId = ActiveSourceId;
+        var selectedMediaTypes = SelectedMediaTypes;
 
-        if (!HasMediaPermission)
+        var initResult = await Task.Run(async () =>
         {
-            MediaItems.Clear();
-            mediaItemsOffset = 0;
-            hasMoreMediaItems = false;
-            var total = await indexService.CountAsync(SelectedMediaTypes);
-            await MainThread.InvokeOnMainThreadAsync(() => IndexedMediaCount = total);
+            await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+
+            var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+            var normalizedSourceId = NormalizeActiveSourceId(sources, activeSourceId);
+            var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+            var hasPermission = await permissionService.CheckMediaReadAsync().ConfigureAwait(false);
+
+            var total = hasPermission
+                ? 0
+                : await indexService.CountAsync(selectedMediaTypes).ConfigureAwait(false);
+
+            return (sources, enabledSources, normalizedSourceId, hasPermission, total);
+        }).ConfigureAwait(false);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            ActiveSourceId = initResult.normalizedSourceId;
+            Sources = initResult.enabledSources;
+            _ = UpdateSourceStatsAsync(initResult.sources);
+            HasMediaPermission = initResult.hasPermission;
+        });
+
+        if (!initResult.hasPermission)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                MediaItems.Clear();
+                mediaItemsOffset = 0;
+                hasMoreMediaItems = false;
+                IndexedMediaCount = initResult.total;
+            });
             return;
         }
 
         _ = RefreshAsync();
-
         _ = RefreshTaggedPeopleCountAsync();
 
         if (settingsService.NeedsReindex)
