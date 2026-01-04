@@ -36,42 +36,48 @@ public sealed class AppSettingsService
     private static readonly string[] DefaultDocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
+    private readonly FileSettingsStore store;
     private bool isIndexing;
+
+    public AppSettingsService(FileSettingsStore store)
+    {
+        this.store = store;
+    }
 
     public string ActiveSourceId
     {
-        get => Preferences.Default.Get(ActiveSourceKey, "");
-        set => Preferences.Default.Set(ActiveSourceKey, value ?? "");
+        get => store.GetString(ActiveSourceKey, "");
+        set => store.SetString(ActiveSourceKey, value ?? "");
     }
 
     public string ActiveAlbumId
     {
-        get => Preferences.Default.Get(ActiveAlbumKey, "");
-        set => Preferences.Default.Set(ActiveAlbumKey, value ?? "");
+        get => store.GetString(ActiveAlbumKey, "");
+        set => store.SetString(ActiveAlbumKey, value ?? "");
     }
 
     public string SelectedSortOptionKey
     {
-        get => Preferences.Default.Get(SelectedSortKey, "name");
-        set => Preferences.Default.Set(SelectedSortKey, value ?? "name");
+        get => store.GetString(SelectedSortKey, "name");
+        set => store.SetString(SelectedSortKey, value ?? "name");
     }
 
     public string SearchText
     {
-        get => Preferences.Default.Get(SearchTextKey, "");
-        set => Preferences.Default.Set(SearchTextKey, value ?? "");
+        get => store.GetString(SearchTextKey, "");
+        set => store.SetString(SearchTextKey, value ?? "");
     }
 
     public SearchScope SearchScope
     {
-        get => (SearchScope)Preferences.Default.Get(SearchScopeKey, (int)SearchScope.All);
-        set => Preferences.Default.Set(SearchScopeKey, (int)value);
+        get => (SearchScope)store.GetInt(SearchScopeKey, (int)SearchScope.All);
+        set => store.SetInt(SearchScopeKey, (int)value);
     }
 
     public bool DateFilterEnabled
     {
-        get => Preferences.Default.Get(DateFilterEnabledKey, false);
-        set => Preferences.Default.Set(DateFilterEnabledKey, value);
+        get => store.GetBool(DateFilterEnabledKey, false);
+        set => store.SetBool(DateFilterEnabledKey, value);
     }
 
     public DateTime DateFilterFrom
@@ -79,9 +85,9 @@ public sealed class AppSettingsService
         get
         {
             var fallback = DateTime.Today.AddMonths(-1).ToBinary();
-            return DateTime.FromBinary(Preferences.Default.Get(DateFilterFromKey, fallback));
+            return DateTime.FromBinary(store.GetLong(DateFilterFromKey, fallback));
         }
-        set => Preferences.Default.Set(DateFilterFromKey, value.Date.ToBinary());
+        set => store.SetLong(DateFilterFromKey, value.Date.ToBinary());
     }
 
     public DateTime DateFilterTo
@@ -89,17 +95,17 @@ public sealed class AppSettingsService
         get
         {
             var fallback = DateTime.Today.ToBinary();
-            return DateTime.FromBinary(Preferences.Default.Get(DateFilterToKey, fallback));
+            return DateTime.FromBinary(store.GetLong(DateFilterToKey, fallback));
         }
-        set => Preferences.Default.Set(DateFilterToKey, value.Date.ToBinary());
+        set => store.SetLong(DateFilterToKey, value.Date.ToBinary());
     }
 
     public bool NeedsReindex
     {
-        get => Preferences.Default.Get(NeedsReindexKey, true);
+        get => store.GetBool(NeedsReindexKey, true);
         set
         {
-            var current = Preferences.Default.Get(NeedsReindexKey, true);
+            var current = store.GetBool(NeedsReindexKey, true);
             if (current == value)
             {
                 if (value)
@@ -107,100 +113,100 @@ public sealed class AppSettingsService
                 return;
             }
 
-            Preferences.Default.Set(NeedsReindexKey, value);
+            store.SetBool(NeedsReindexKey, value);
             NeedsReindexChanged?.Invoke(this, value);
         }
     }
 
     public string ThemePreference
     {
-        get => Preferences.Default.Get(ThemePreferenceKey, "dark");
-        set => Preferences.Default.Set(ThemePreferenceKey, value ?? "dark");
+        get => store.GetString(ThemePreferenceKey, "dark");
+        set => store.SetString(ThemePreferenceKey, value ?? "dark");
     }
 
     public bool InternalPlayerEnabled
     {
-        get => Preferences.Default.Get(InternalPlayerEnabledKey, false);
-        set => Preferences.Default.Set(InternalPlayerEnabledKey, value);
+        get => store.GetBool(InternalPlayerEnabledKey, false);
+        set => store.SetBool(InternalPlayerEnabledKey, value);
     }
 
     public MediaType IndexedMediaTypes
     {
-        get => (MediaType)Preferences.Default.Get(IndexedMediaTypesKey, (int)MediaType.All);
-        set => Preferences.Default.Set(IndexedMediaTypesKey, (int)value);
+        get => (MediaType)store.GetInt(IndexedMediaTypesKey, (int)MediaType.All);
+        set => store.SetInt(IndexedMediaTypesKey, (int)value);
     }
 
     public MediaType VisibleMediaTypes
     {
-        get => (MediaType)Preferences.Default.Get(VisibleMediaTypesKey, (int)MediaType.All);
-        set => Preferences.Default.Set(VisibleMediaTypesKey, (int)value);
+        get => (MediaType)store.GetInt(VisibleMediaTypesKey, (int)MediaType.All);
+        set => store.SetInt(VisibleMediaTypesKey, (int)value);
     }
 
     public string VideoExtensions
     {
-        get => Preferences.Default.Get(VideoExtensionsKey, string.Join(", ", DefaultVideoExtensions));
-        set => Preferences.Default.Set(VideoExtensionsKey, value ?? string.Empty);
+        get => store.GetString(VideoExtensionsKey, string.Join(", ", DefaultVideoExtensions));
+        set => store.SetString(VideoExtensionsKey, value ?? string.Empty);
     }
 
     public string PhotoExtensions
     {
-        get => Preferences.Default.Get(PhotoExtensionsKey, string.Join(", ", DefaultPhotoExtensions));
-        set => Preferences.Default.Set(PhotoExtensionsKey, value ?? string.Empty);
+        get => store.GetString(PhotoExtensionsKey, string.Join(", ", DefaultPhotoExtensions));
+        set => store.SetString(PhotoExtensionsKey, value ?? string.Empty);
     }
 
     public string DocumentExtensions
     {
-        get => Preferences.Default.Get(DocumentExtensionsKey, string.Join(", ", DefaultDocumentExtensions));
-        set => Preferences.Default.Set(DocumentExtensionsKey, value ?? string.Empty);
+        get => store.GetString(DocumentExtensionsKey, string.Join(", ", DefaultDocumentExtensions));
+        set => store.SetString(DocumentExtensionsKey, value ?? string.Empty);
     }
 
     public bool AllowFileChanges
     {
-        get => Preferences.Default.Get(AllowFileChangesKey, false);
-        set => Preferences.Default.Set(AllowFileChangesKey, value);
+        get => store.GetBool(AllowFileChangesKey, false);
+        set => store.SetBool(AllowFileChangesKey, value);
     }
 
     public bool PeopleTaggingEnabled
     {
-        get => Preferences.Default.Get(PeopleTaggingEnabledKey, false);
-        set => Preferences.Default.Set(PeopleTaggingEnabledKey, value);
+        get => store.GetBool(PeopleTaggingEnabledKey, false);
+        set => store.SetBool(PeopleTaggingEnabledKey, value);
     }
 
     public bool LocationsEnabled
     {
-        get => Preferences.Default.Get(LocationsEnabledKey, false);
-        set => Preferences.Default.Set(LocationsEnabledKey, value);
+        get => store.GetBool(LocationsEnabledKey, false);
+        set => store.SetBool(LocationsEnabledKey, value);
     }
 
     public bool IsProUnlocked
     {
-        get => Preferences.Default.Get(ProUnlockedKey, false);
-        set => Preferences.Default.Set(ProUnlockedKey, value);
+        get => store.GetBool(ProUnlockedKey, false);
+        set => store.SetBool(ProUnlockedKey, value);
     }
 
     public string ProActivationToken
     {
-        get => Preferences.Default.Get(ProActivationTokenKey, string.Empty);
-        set => Preferences.Default.Set(ProActivationTokenKey, value ?? string.Empty);
+        get => store.GetString(ProActivationTokenKey, string.Empty);
+        set => store.SetString(ProActivationTokenKey, value ?? string.Empty);
     }
 
     public DateTimeOffset? ProActivationValidUntil
     {
         get
         {
-            var seconds = Preferences.Default.Get(ProActivationValidUntilKey, 0L);
+            var seconds = store.GetLong(ProActivationValidUntilKey, 0L);
             return seconds == 0 ? null : DateTimeOffset.FromUnixTimeSeconds(seconds);
         }
         set
         {
-            Preferences.Default.Set(ProActivationValidUntilKey, value?.ToUnixTimeSeconds() ?? 0L);
+            store.SetLong(ProActivationValidUntilKey, value?.ToUnixTimeSeconds() ?? 0L);
         }
     }
 
     public string LicenseServerBaseUrl
     {
-        get => Preferences.Default.Get(LicenseServerBaseUrlKey, "https://license.netregservice.com");
-        set => Preferences.Default.Set(LicenseServerBaseUrlKey, value ?? string.Empty);
+        get => store.GetString(LicenseServerBaseUrlKey, "https://license.netregservice.com");
+        set => store.SetString(LicenseServerBaseUrlKey, value ?? string.Empty);
     }
 
     public bool IsIndexing
