@@ -85,7 +85,6 @@ public class MediaItem : INotifyPropertyChanged
         }
     }
 
-    [Ignore]
     public string PeopleTagsSummary
     {
         get => peopleTagsSummary;

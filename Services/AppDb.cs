@@ -63,6 +63,7 @@ public sealed class AppDb
             await TryAddFaceEmbeddingBoxColumnsAsync().ConfigureAwait(false);
             await TryAddPeopleModelKeyColumnsAsync().ConfigureAwait(false);
             await TryAddPersonProfileMergeColumnsAsync().ConfigureAwait(false);
+            await TryAddMediaItemPeopleTagsSummaryColumnAsync().ConfigureAwait(false);
             isInitialized = true;
         }
         finally
@@ -288,6 +289,19 @@ public sealed class AppDb
         {
             await Db.ExecuteAsync(
                     "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);")
+                .ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+    }
+
+    private async Task TryAddMediaItemPeopleTagsSummaryColumnAsync()
+    {
+        // Store a denormalized summary for fallback queries and UI resilience.
+        try
+        {
+            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN PeopleTagsSummary TEXT;")
                 .ConfigureAwait(false);
         }
         catch

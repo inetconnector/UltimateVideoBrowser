@@ -420,6 +420,10 @@ public sealed class ThumbnailService
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            return false;
+        }
         catch (Exception ex)
         {
             ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
@@ -459,6 +463,10 @@ public sealed class ThumbnailService
             var encoder = new JpegEncoder { Quality = ThumbQuality };
             await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            return false;
         }
         catch (Exception ex)
         {

@@ -63,7 +63,7 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
             await db.EnsureInitializedAsync().ConfigureAwait(false);
 
             // Remove manual tags and automatic face embeddings for this media item.
-            await db.Db.ExecuteAsync("DELETE FROM PersonTag WHERE MediaPath = ?;", item.Path).ConfigureAwait(false);
+            await peopleTags.SetTagsForMediaAsync(item.Path, Array.Empty<string>()).ConfigureAwait(false);
             await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", item.Path).ConfigureAwait(false);
 
             // Update current list immediately.
