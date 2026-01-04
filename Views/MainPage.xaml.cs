@@ -594,11 +594,11 @@ public partial class MainPage : ContentPage
                 isIndexingOverlayVisible = value;
                 if (value)
                 {
-                    EnsureIndexingWindow();
+                    MainThread.BeginInvokeOnMainThread(EnsureIndexingWindow);
                 }
                 else
                 {
-                    CloseIndexingWindow();
+                    MainThread.BeginInvokeOnMainThread(CloseIndexingWindow);
                     if (vm.IsIndexing)
                         isIndexingOverlaySuppressed = true;
                 }
@@ -786,12 +786,15 @@ public partial class MainPage : ContentPage
 
             window.Destroying += (_, _) =>
             {
-                indexingWindow = null;
-                if (isIndexingOverlayVisible)
-                    isIndexingOverlayVisible = false;
-                if (vm.IsIndexing)
-                    isIndexingOverlaySuppressed = true;
-                OnPropertyChanged(nameof(ShowIndexingBanner));
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    indexingWindow = null;
+                    if (isIndexingOverlayVisible)
+                        IsIndexingOverlayVisible = false;
+                    if (vm.IsIndexing)
+                        isIndexingOverlaySuppressed = true;
+                    OnPropertyChanged(nameof(ShowIndexingBanner));
+                });
             };
 
             indexingWindow = window;
