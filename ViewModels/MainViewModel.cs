@@ -1772,6 +1772,8 @@ public partial class MainViewModel : ObservableObject
             return;
 
         settingsService.VisibleMediaTypes = value;
+        if (CurrentMediaType != MediaType.None && !value.HasFlag(CurrentMediaType))
+            ClearPlayerState();
         if (isApplyingSavedSettings)
             return;
 
