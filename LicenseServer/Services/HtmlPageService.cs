@@ -33,9 +33,9 @@ public sealed class HtmlPageService
         legalLanguages.TryGetValue(documentKey, out var available);
         available ??= new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var language = ResolveLanguage(request, documentKey, available, "de");
-        var path = Path.Combine(htmlRoot, "legal", $"{documentKey}.{language}.html");
+        var path = Path.Combine(htmlRoot, "legal", language, $"{documentKey}.html");
         if (!File.Exists(path))
-            path = Path.Combine(htmlRoot, "legal", $"{documentKey}.de.html");
+            path = Path.Combine(htmlRoot, "legal", "de", $"{documentKey}.html");
 
         var html = File.ReadAllText(path);
         return ReplaceLegalPlaceholders(html, options);
@@ -88,21 +88,26 @@ public sealed class HtmlPageService
         if (!Directory.Exists(legalPath))
             return result;
 
-        foreach (var file in Directory.GetFiles(legalPath, "*.html"))
+        foreach (var directory in Directory.GetDirectories(legalPath))
         {
-            var parts = Path.GetFileName(file).Split('.', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 3)
+            var language = Path.GetFileName(directory);
+            if (string.IsNullOrWhiteSpace(language))
                 continue;
 
-            var key = parts[0];
-            var lang = parts[1];
-            if (!result.TryGetValue(key, out var languages))
+            foreach (var file in Directory.GetFiles(directory, "*.html"))
             {
-                languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                result[key] = languages;
-            }
+                var key = Path.GetFileNameWithoutExtension(file);
+                if (string.IsNullOrWhiteSpace(key))
+                    continue;
 
-            languages.Add(lang);
+                if (!result.TryGetValue(key, out var languages))
+                {
+                    languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    result[key] = languages;
+                }
+
+                languages.Add(language);
+            }
         }
 
         return result;
