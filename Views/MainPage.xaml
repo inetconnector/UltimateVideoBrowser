@@ -863,33 +863,38 @@
                        Padding="12"
                        HasShadow="False"
                        IsVisible="{Binding HasMarked}">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
+                    <Grid ColumnDefinitions="*,Auto"
                           ColumnSpacing="8">
                         <Label
                             Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
                             FontAttributes="Bold"
                             TextColor="{DynamicResource OnSurface}" />
                         <Button Grid.Column="1"
-                                Text="{x:Static strings:AppResources.SaveAsAction}"
-                                Command="{Binding SaveAsMarkedCommand}" />
-                        <Button Grid.Column="2"
-                                Text="{x:Static strings:AppResources.AddToAlbumAction}"
-                                Command="{Binding AddMarkedToAlbumCommand}" />
-                        <Button Grid.Column="3"
-                                Text="{x:Static strings:AppResources.CopyMarkedAction}"
-                                IsVisible="{Binding AllowFileChanges}"
-                                Command="{Binding CopyMarkedCommand}" />
-                        <Button Grid.Column="4"
-                                Text="{x:Static strings:AppResources.MoveMarkedAction}"
-                                IsVisible="{Binding AllowFileChanges}"
-                                Command="{Binding MoveMarkedCommand}" />
-                        <Button Grid.Column="5"
-                                Text="{x:Static strings:AppResources.DeleteMarkedAction}"
-                                IsVisible="{Binding AllowFileChanges}"
-                                Command="{Binding DeleteMarkedCommand}" />
-                        <Button Grid.Column="6"
-                                Text="{x:Static strings:AppResources.ClearMarkedAction}"
-                                Command="{Binding ClearMarkedCommand}" />
+                                Text="{x:Static strings:AppResources.MarkedActionsMenuButton}"
+                                BackgroundColor="{DynamicResource Surface2}"
+                                TextColor="{DynamicResource OnSurface}">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                    Command="{Binding SaveAsMarkedCommand}" />
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.AddToAlbumAction}"
+                                                    Command="{Binding AddMarkedToAlbumCommand}" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.CopyMarkedAction}"
+                                                    IsVisible="{Binding AllowFileChanges}"
+                                                    Command="{Binding CopyMarkedCommand}" />
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.MoveMarkedAction}"
+                                                    IsVisible="{Binding AllowFileChanges}"
+                                                    Command="{Binding MoveMarkedCommand}" />
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.DeleteMarkedAction}"
+                                                    IsVisible="{Binding AllowFileChanges}"
+                                                    Command="{Binding DeleteMarkedCommand}" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Text="{x:Static strings:AppResources.ClearMarkedAction}"
+                                                    Command="{Binding ClearMarkedCommand}" />
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
                     </Grid>
                 </Frame>
 

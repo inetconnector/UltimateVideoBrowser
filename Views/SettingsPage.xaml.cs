@@ -48,4 +48,9 @@ public partial class SettingsPage : ContentPage
     {
         await NavigateToDocumentAsync(AppResources.LegalWithdrawalTitle, AppResources.LegalWithdrawalBody);
     }
+
+    private async void OnAboutClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AboutPage(), false);
+    }
 }

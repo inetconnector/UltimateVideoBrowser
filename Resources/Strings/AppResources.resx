@@ -899,6 +899,30 @@ Missing:
   <data name="SettingsProNotSupportedMessage" xml:space="preserve">
     <value>Purchases are handled via the licensing server.</value>
   </data>
+  <data name="HelpSectionTitle" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="HelpSectionHint" xml:space="preserve">
+    <value>About the app and license information.</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Version details and license information.</value>
+  </data>
+  <data name="AboutVersionFormat" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="AboutLicensesButton" xml:space="preserve">
+    <value>License information</value>
+  </data>
+  <data name="LicenseInfoTitle" xml:space="preserve">
+    <value>License information</value>
+  </data>
+  <data name="MarkedActionsMenuButton" xml:space="preserve">
+    <value>Actions</value>
+  </data>
   <data name="LegalSectionTitle" xml:space="preserve">
     <value>Legal</value>
   </data>
