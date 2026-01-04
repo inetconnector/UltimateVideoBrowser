@@ -29,8 +29,10 @@
                            FontSize="13"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
-                    <Button Text="{x:Static strings:AppResources.ActionsButton}">
-                        <Button.Flyout>
+                    <Button x:Name="ActionsButton"
+                            Text="{x:Static strings:AppResources.ActionsButton}"
+                            Clicked="OnActionsClicked">
+                        <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="{x:Static strings:AppResources.SourcesButton}"
                                                 Command="{Binding OpenSourcesCommand}" />
@@ -41,7 +43,7 @@
                                 <MenuFlyoutItem Text="{x:Static strings:AppResources.ReindexButton}"
                                                 Command="{Binding RunIndexCommand}" />
                             </MenuFlyout>
-                        </Button.Flyout>
+                        </FlyoutBase.AttachedFlyout>
                     </Button>
                 </VerticalStackLayout>
 

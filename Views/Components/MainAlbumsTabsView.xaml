@@ -13,9 +13,11 @@
                    FontAttributes="Bold"
                    FontSize="13"
                    TextColor="{DynamicResource OnSurface}" />
-            <Button Grid.Column="1"
-                    Text="{x:Static strings:AppResources.ActionsButton}">
-                <Button.Flyout>
+            <Button x:Name="ActionsButton"
+                    Grid.Column="1"
+                    Text="{x:Static strings:AppResources.ActionsButton}"
+                    Clicked="OnActionsClicked">
+                <FlyoutBase.AttachedFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem Text="{x:Static strings:AppResources.ManageAlbumsButton}"
                                         Command="{Binding OpenAlbumsCommand}" />
@@ -23,7 +25,7 @@
                                         Command="{Binding OpenMapCommand}"
                                         IsVisible="{Binding IsLocationEnabled}" />
                     </MenuFlyout>
-                </Button.Flyout>
+                </FlyoutBase.AttachedFlyout>
             </Button>
         </Grid>
 

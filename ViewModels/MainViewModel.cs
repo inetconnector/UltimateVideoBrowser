@@ -2036,7 +2036,7 @@ public partial class MainViewModel : ObservableObject
         return $"{datePart}-{baseName}";
     }
 
-    public sealed class MediaTypeFilterOption : ObservableObject
+    public sealed partial class MediaTypeFilterOption : ObservableObject
     {
         public MediaTypeFilterOption(MediaType mediaType, string label)
         {
@@ -2050,7 +2050,7 @@ public partial class MainViewModel : ObservableObject
         [ObservableProperty] private bool isSelected;
     }
 
-    public sealed class SearchScopeFilterOption : ObservableObject
+    public sealed partial class SearchScopeFilterOption : ObservableObject
     {
         public SearchScopeFilterOption(SearchScope scope, string label)
         {
