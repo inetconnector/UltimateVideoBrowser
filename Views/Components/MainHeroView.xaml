@@ -29,20 +29,9 @@
                            FontSize="13"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
-                    <Button Text="{x:Static strings:AppResources.ActionsButton}">
-                        <Button.ContextFlyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem Text="{x:Static strings:AppResources.SourcesButton}"
-                                                Command="{Binding OpenSourcesCommand}" />
-                                <MenuFlyoutItem Text="{x:Static strings:AppResources.AlbumsButton}"
-                                                Command="{Binding OpenAlbumsCommand}" />
-                                <MenuFlyoutItem Text="{x:Static strings:AppResources.SettingsButton}"
-                                                Command="{Binding OpenSettingsCommand}" />
-                                <MenuFlyoutItem Text="{x:Static strings:AppResources.ReindexButton}"
-                                                Command="{Binding RunIndexCommand}" />
-                            </MenuFlyout>
-                        </Button.ContextFlyout>
-                    </Button>
+                    <Button x:Name="ActionsButton"
+                            Text="{x:Static strings:AppResources.ActionsButton}"
+                            Clicked="OnActionsClicked" />
                 </VerticalStackLayout>
 
                 <Image Grid.Column="1"
