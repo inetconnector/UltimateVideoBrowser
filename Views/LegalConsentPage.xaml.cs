@@ -33,7 +33,7 @@ public partial class LegalConsentPage : ContentPage
     {
         if (WithdrawalConsentCheckBox.IsChecked != true)
         {
-            await DisplayAlert(
+            await DisplayAlertAsync(
                 AppResources.LegalConsentMissingTitle,
                 AppResources.LegalConsentMissingMessage,
                 AppResources.OkButton);
