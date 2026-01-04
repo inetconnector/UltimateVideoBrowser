@@ -31,6 +31,8 @@ public partial class MainPage : ContentPage
         this.serviceProvider = serviceProvider;
         this.peopleData = peopleData;
         BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData);
+        HeaderContainer.BindingContext = BindingContext;
+        BindingContextChanged += (_, _) => HeaderContainer.BindingContext = BindingContext;
 
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
