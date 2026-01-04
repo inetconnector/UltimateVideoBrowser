@@ -695,27 +695,40 @@ public partial class MainPage : ContentPage
 
         private async Task OpenSourcesAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SourcesPage>()!);
+            // Do not depend on page.Handler/MauiContext being available.
+            // In some startup/runtime scenarios (especially on Windows), Handler can be null which makes
+            // the app look "unclickable" because navigation commands fault immediately.
+            var target = serviceProvider.GetService<SourcesPage>()
+                         ?? ActivatorUtilities.CreateInstance<SourcesPage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
         private async Task OpenAlbumsAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<AlbumsPage>()!);
+            var target = serviceProvider.GetService<AlbumsPage>()
+                         ?? ActivatorUtilities.CreateInstance<AlbumsPage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
         private async Task OpenSettingsAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<SettingsPage>()!);
+            var target = serviceProvider.GetService<SettingsPage>()
+                         ?? ActivatorUtilities.CreateInstance<SettingsPage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
         private async Task OpenPeopleAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!);
+            var target = serviceProvider.GetService<PeoplePage>()
+                         ?? ActivatorUtilities.CreateInstance<PeoplePage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
         private async Task OpenMapAsync()
         {
-            await page.Navigation.PushAsync(page.Handler!.MauiContext!.Services.GetService<MapPage>()!);
+            var target = serviceProvider.GetService<MapPage>()
+                         ?? ActivatorUtilities.CreateInstance<MapPage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
         private async Task OpenPersonFromTagAsync(TagNavigationContext? context)
@@ -746,7 +759,8 @@ public partial class MainPage : ContentPage
                 // Fallback: open the people list filtered by the tapped name.
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    var peoplePage = page.Handler!.MauiContext!.Services.GetService<PeoplePage>()!;
+                    var peoplePage = serviceProvider.GetService<PeoplePage>()
+                                     ?? ActivatorUtilities.CreateInstance<PeoplePage>(serviceProvider);
                     if (peoplePage.BindingContext is PeopleViewModel pvm)
                         pvm.SearchText = trimmed;
                     await page.Navigation.PushAsync(peoplePage);
@@ -764,9 +778,10 @@ public partial class MainPage : ContentPage
                 return;
 
             page.RememberScrollTarget(item);
-            var editor = page.Handler!.MauiContext!.Services.GetService<PhotoPeopleEditorPage>()!;
+            var editor = serviceProvider.GetService<PhotoPeopleEditorPage>()
+                         ?? ActivatorUtilities.CreateInstance<PhotoPeopleEditorPage>(serviceProvider);
             editor.Initialize(item);
-            await page.Navigation.PushAsync(editor);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(editor));
         }
 
         private void EnsureIndexingWindow()
