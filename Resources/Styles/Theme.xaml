@@ -17,8 +17,7 @@
         <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
-        <Setter Property="Padding" Value="12,8" />
-        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="12,8" /> 
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -46,8 +45,7 @@
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="10" /> 
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -72,8 +70,7 @@
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
         <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
-        <Setter Property="Padding" Value="12,8" />
-        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="12,8" /> 
     </Style>
 
     <Style TargetType="Frame">
