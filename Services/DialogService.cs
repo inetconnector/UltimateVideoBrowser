@@ -41,7 +41,7 @@ public sealed class DialogService : IDialogService
             return Task.FromResult<string?>(null);
 
         return MainThread.InvokeOnMainThreadAsync(() =>
-            page.DisplayActionSheet(title, cancel, destruction, buttons));
+            page.DisplayActionSheetAsync(title, cancel, destruction, buttons));
     }
 
     private static Page? GetPage()
@@ -50,7 +50,6 @@ public sealed class DialogService : IDialogService
         if (app == null)
             return null;
 
-        var windowPage = app.Windows.FirstOrDefault()?.Page;
-        return windowPage ?? app.MainPage;
+        return app.Windows.FirstOrDefault()?.Page;
     }
 }

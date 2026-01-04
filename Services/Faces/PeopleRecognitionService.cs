@@ -183,7 +183,8 @@ public sealed class PeopleRecognitionService
                     face.PersonId = match.PersonId;
                     updatedPersonIds.Add(match.PersonId!);
 
-                    if (personEmbeddings.TryGetValue(match.PersonId, out var list))
+                    if (match.PersonId != null &&
+                        personEmbeddings.TryGetValue(match.PersonId, out var list))
                         list.Add(embedding);
                 }
 

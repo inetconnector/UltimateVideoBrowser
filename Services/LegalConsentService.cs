@@ -10,7 +10,7 @@ public sealed class LegalConsentService : ILegalConsentService
     {
         return MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            var navigation = Application.Current?.MainPage?.Navigation;
+            var navigation = Application.Current?.Windows.FirstOrDefault()?.Page?.Navigation;
             if (navigation == null)
                 return false;
 
