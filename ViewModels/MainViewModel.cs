@@ -618,7 +618,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void TogglePlayerFullscreen()
     {
-        if (!ShowVideoPlayer)
+        if (!ShowVideoPlayer && !IsPlayerFullscreen)
             return;
 
         IsPlayerFullscreen = !IsPlayerFullscreen;

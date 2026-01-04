@@ -198,6 +198,7 @@
                     <VerticalStackLayout Spacing="12"
                                          HorizontalOptions="Center"
                                          VerticalOptions="Center"
+                                         InputTransparent="True"
                                          Margin="24">
                         <Image Source="empty_state.svg"
                                HeightRequest="180"
