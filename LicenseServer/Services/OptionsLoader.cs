@@ -9,7 +9,8 @@ public static class OptionsLoader
         where T : class, new()
     {
         var options = configuration.GetSection(sectionName).Get<T>() ?? new T();
-        var fileOptions = configuration.GetSection(fileSectionName).Get<OptionsFilePath>() ?? new OptionsFilePath();
+        var fileOptions = configuration.GetSection(fileSectionName).Get<OptionsFilePathOptions>()
+            ?? new OptionsFilePathOptions();
         if (!string.IsNullOrWhiteSpace(fileOptions.OptionsFilePath) && File.Exists(fileOptions.OptionsFilePath))
         {
             try
