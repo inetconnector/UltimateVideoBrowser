@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 namespace UltimateVideoBrowser.LicenseServer.Models;
 
 public sealed class LicenseOptions
@@ -25,7 +28,11 @@ public sealed class PayPalOptions
 
 public sealed class DataStorageOptions
 {
-    public string BasePath { get; init; } = "Data";
+    public string BasePath { get; init; } = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "InetConnector",
+        "UltimateVideoBrowser.LicenseServer",
+        "Data");
 }
 
 public sealed class LegalOptions
