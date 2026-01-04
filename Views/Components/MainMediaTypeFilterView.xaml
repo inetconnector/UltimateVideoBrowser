@@ -16,31 +16,19 @@
                         SelectionMode="None"
                         HorizontalScrollBarVisibility="Never">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
-                <!-- Do not use compiled bindings here because the item type is a nested record (MainViewModel.MediaTypeFilterOption). -->
                 <DataTemplate>
-                    <Button Text="{Binding Label}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}"
-                            Command="{Binding BindingContext.ToggleMediaTypeFilterCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                            CommandParameter="{Binding MediaType}">
-                        <Button.Triggers>
-                            <DataTrigger TargetType="Button" Value="True">
-                                <DataTrigger.Binding>
-                                    <MultiBinding
-                                        Converter="{StaticResource MediaTypeSelectedConverter}">
-                                        <Binding Path="BindingContext.SelectedMediaTypes"
-                                                 Source="{RelativeSource AncestorType={x:Type ContentPage}}" />
-                                        <Binding Path="MediaType" />
-                                    </MultiBinding>
-                                </DataTrigger.Binding>
-                                <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
-                                <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                  Color="{DynamicResource Accent}"
+                                  VerticalOptions="Center" />
+                        <Label Text="{Binding Label}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurface}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
