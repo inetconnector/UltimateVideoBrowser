@@ -1,18 +1,22 @@
-using Microsoft.Maui.Storage;
-
 namespace UltimateVideoBrowser.Services;
 
 public sealed class DefaultDeviceFingerprintService : IDeviceFingerprintService
 {
     private const string InstallationIdKey = "device_installation_id";
+    private readonly FileSettingsStore store;
+
+    public DefaultDeviceFingerprintService(FileSettingsStore store)
+    {
+        this.store = store;
+    }
 
     public Task<string> GetFingerprintAsync(CancellationToken ct)
     {
-        var installationId = Preferences.Default.Get(InstallationIdKey, string.Empty);
+        var installationId = store.GetString(InstallationIdKey, string.Empty);
         if (string.IsNullOrWhiteSpace(installationId))
         {
             installationId = Guid.NewGuid().ToString("N");
-            Preferences.Default.Set(InstallationIdKey, installationId);
+            store.SetString(InstallationIdKey, installationId);
         }
 
         var payload = $"default|{installationId}";

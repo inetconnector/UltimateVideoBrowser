@@ -7,7 +7,7 @@ public static class ErrorLog
     private static readonly SemaphoreSlim Gate = new(1, 1);
     private static string? logPath;
 
-    public static string LogPath => logPath ??= Path.Combine(FileSystem.AppDataDirectory, "error.log");
+    public static string LogPath => logPath ??= Path.Combine(AppDataPaths.Root, "error.log");
 
     public static void LogException(Exception exception, string context, string? details = null)
     {
