@@ -863,7 +863,7 @@
                        Padding="12"
                        HasShadow="False"
                        IsVisible="{Binding HasMarked}">
-                    <Grid ColumnDefinitions="*,Auto"
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
                           ColumnSpacing="8">
                         <Label
                             Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
