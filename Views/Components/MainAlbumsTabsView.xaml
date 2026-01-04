@@ -15,7 +15,7 @@
                    TextColor="{DynamicResource OnSurface}" />
             <Button Grid.Column="1"
                     Text="{x:Static strings:AppResources.ActionsButton}">
-                <Button.Flyout>
+                <Button.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem Text="{x:Static strings:AppResources.ManageAlbumsButton}"
                                         Command="{Binding OpenAlbumsCommand}" />
@@ -23,7 +23,7 @@
                                         Command="{Binding OpenMapCommand}"
                                         IsVisible="{Binding IsLocationEnabled}" />
                     </MenuFlyout>
-                </Button.Flyout>
+                </Button.ContextFlyout>
             </Button>
         </Grid>
 

@@ -30,7 +30,7 @@
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
                     <Button Text="{x:Static strings:AppResources.ActionsButton}">
-                        <Button.Flyout>
+                        <Button.ContextFlyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="{x:Static strings:AppResources.SourcesButton}"
                                                 Command="{Binding OpenSourcesCommand}" />
@@ -41,7 +41,7 @@
                                 <MenuFlyoutItem Text="{x:Static strings:AppResources.ReindexButton}"
                                                 Command="{Binding RunIndexCommand}" />
                             </MenuFlyout>
-                        </Button.Flyout>
+                        </Button.ContextFlyout>
                     </Button>
                 </VerticalStackLayout>
 
