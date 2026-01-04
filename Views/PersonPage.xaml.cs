@@ -70,7 +70,7 @@ public partial class PersonPage : ContentPage
             var candidates = await peopleData.ListMergeCandidatesAsync(vm.PersonId, cts.Token).ConfigureAwait(false);
             if (candidates.Count == 0)
             {
-                await DisplayAlert("Merge", "No merge targets available.", "OK");
+                await DisplayAlertAsync("Merge", "No merge targets available.", "OK");
                 return;
             }
 
@@ -82,7 +82,7 @@ public partial class PersonPage : ContentPage
                 .ToArray();
 
             var choice = await MainThread.InvokeOnMainThreadAsync(() =>
-                DisplayActionSheet(
+                DisplayActionSheetAsync(
                     AppResources.MergeIntoTitle,
                     AppResources.CancelButton,
                     null,
@@ -100,7 +100,7 @@ public partial class PersonPage : ContentPage
                 return;
 
             var confirm = await MainThread.InvokeOnMainThreadAsync(() =>
-                DisplayAlert(
+                DisplayAlertAsync(
                     AppResources.MergeButton,
                     $"{vm.Name} → {target.Name}",
                     AppResources.OkButton,

@@ -54,7 +54,7 @@ public sealed class ThumbnailService
 
     public string GetThumbnailPath(MediaItem item)
     {
-        var safe = MakeSafeFileName(item.Path);
+        var safe = MakeSafeFileName(item.Path ?? string.Empty);
         return IOPath.Combine(cacheDir, safe + ".jpg");
     }
 
@@ -70,6 +70,9 @@ public sealed class ThumbnailService
 
     public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(item.Path))
+            return null;
+
         var thumbPath = GetThumbnailPath(item);
 
         if (IsUsableThumbFile(thumbPath))
