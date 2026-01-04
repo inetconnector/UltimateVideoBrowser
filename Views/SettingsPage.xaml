@@ -424,6 +424,25 @@
                        CornerRadius="14"
                        Padding="14">
                     <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.HelpSectionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HelpSectionHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Button Text="{x:Static strings:AppResources.AboutTitle}"
+                                Clicked="OnAboutClicked"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
+                                HorizontalOptions="Start"
+                                Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.LegalSectionTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />

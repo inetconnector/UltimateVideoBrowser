@@ -57,6 +57,7 @@
     <MauiImage Include="Resources\Images\*" />
     <MauiAsset Include="Resources\Images\*.svg" LogicalName="%(Filename)%(Extension)" />
     <MauiAsset Include="Resources\Legal\LegalImprint.txt" LogicalName="legal/LegalImprint.txt" />
+    <MauiAsset Include="Resources\Legal\LicenseInfo.txt" LogicalName="legal/LicenseInfo.txt" />
   </ItemGroup>
 
   <ItemGroup>

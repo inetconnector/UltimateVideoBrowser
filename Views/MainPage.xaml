@@ -101,7 +101,8 @@
                 <CollectionView.Header>
                     <Grid x:Name="HeaderContainer"
                           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                          BackgroundColor="{DynamicResource AppBg}">
+                          BackgroundColor="{DynamicResource AppBg}"
+                          BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}">
                         <!-- Top bar -->
                         <components:MainHeaderView />
 
@@ -862,7 +863,7 @@
                        Padding="12"
                        HasShadow="False"
                        IsVisible="{Binding HasMarked}">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
+                    <Grid ColumnDefinitions="*,Auto"
                           ColumnSpacing="8">
                         <Label
                             Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
