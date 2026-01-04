@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:conv="clr-namespace:UltimateVideoBrowser.Converters"
-    xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls">
+    xmlns:controls="clr-namespace:UltimateVideoBrowser.Views.Controls"
+    xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls">
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
 
@@ -17,7 +18,7 @@
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="Padding" Value="12,8" />
-        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -46,7 +47,7 @@
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="Padding" Value="10" />
-        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -72,7 +73,7 @@
         <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="Padding" Value="12,8" />
-        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="windows:VisualElement.Cursor" Value="Hand" />
     </Style>
 
     <Style TargetType="Frame">
