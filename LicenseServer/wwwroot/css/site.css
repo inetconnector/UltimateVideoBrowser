@@ -1,0 +1,138 @@
+:root{
+  --bg:#0b1020;
+  --panel:#151b2c;
+  --accent:#6d7bff;
+  --accent-2:#8be1ff;
+  --text:#f8fafc;
+  --muted:#cbd5f5;
+}
+*{box-sizing:border-box}
+body.landing-page{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+}
+body.legal-page{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+  background:linear-gradient(135deg,#0f172a 0%,#111827 100%);
+  color:#fff;
+  line-height:1.5;
+}
+
+.landing-page header{
+  position:relative;
+  overflow:hidden;
+  padding:48px 0 80px;
+  background:radial-gradient(circle at 15% 15%,rgba(109,123,255,.35),transparent 50%),
+    radial-gradient(circle at 80% 10%,rgba(139,225,255,.25),transparent 40%),
+    linear-gradient(135deg,#0d1228 0%,#111a33 100%);
+}
+.landing-page .container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 24px;
+}
+.landing-page .topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.landing-page .brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-weight:700;
+  font-size:20px;
+}
+.landing-page .brand img{width:42px;height:42px}
+.landing-page .lang-select{
+  position:fixed;
+  top:18px;
+  right:20px;
+  background:rgba(8,12,25,.7);
+  border:1px solid rgba(255,255,255,.2);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:12px;
+  backdrop-filter:blur(8px);
+  z-index:1000;
+}
+.landing-page .hero{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:40px;
+  align-items:center;
+  margin-top:48px;
+}
+.landing-page .hero h1{font-size:42px;margin:0 0 12px}
+.landing-page .hero p{color:var(--muted);font-size:18px;margin:0 0 24px}
+.landing-page .cta{display:flex;flex-wrap:wrap;gap:16px}
+.landing-page .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 20px;
+  border-radius:12px;
+  border:1px solid transparent;
+  font-weight:600;
+  text-decoration:none;
+  transition:.2s;
+}
+.landing-page .btn.primary{background:var(--accent);color:white;box-shadow:0 10px 25px rgba(109,123,255,.35)}
+.landing-page .btn.secondary{border-color:rgba(255,255,255,.3);color:var(--text);background:rgba(255,255,255,.04)}
+.landing-page .stats{display:flex;flex-wrap:wrap;gap:20px;margin-top:24px}
+.landing-page .stat{background:rgba(255,255,255,.06);padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.1);min-width:160px}
+.landing-page .stat strong{display:block;font-size:22px}
+.landing-page .hero-media{position:relative}
+.landing-page .hero-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:20px;box-shadow:0 25px 60px rgba(0,0,0,.35)}
+.landing-page .hero-card img{width:100%;border-radius:16px}
+.landing-page .section{padding:72px 0}
+.landing-page .section--alt{background:#0f152b}
+.landing-page .section--compact{padding-top:0}
+.landing-page .section-title{font-size:32px;margin:0 0 16px}
+.landing-page .section-sub{color:var(--muted);max-width:720px;margin:0 0 32px}
+.landing-page .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.landing-page .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:180px}
+.landing-page .card img{width:40px;height:40px}
+.landing-page .card h3{margin:0}
+.landing-page .card p{margin:0;color:var(--muted)}
+.landing-page .showcase{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.landing-page .showcase img{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.12)}
+.landing-page .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(109,123,255,.15);border:1px solid rgba(109,123,255,.4);padding:6px 14px;border-radius:999px;font-weight:600;font-size:13px}
+.landing-page .pricing{background:linear-gradient(135deg,rgba(109,123,255,.15),rgba(139,225,255,.12));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:center}
+.landing-page .pricing .price{font-size:40px;font-weight:800}
+.landing-page footer{padding:40px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,.08)}
+.landing-page footer a{color:var(--text);text-decoration:none}
+.landing-page .legal-links{display:flex;gap:16px;flex-wrap:wrap}
+.landing-page .floating-glow{position:absolute;right:-80px;top:60px;width:240px;height:240px;background:radial-gradient(circle,rgba(109,123,255,.6),transparent 70%);filter:blur(4px);opacity:.7}
+.landing-page .inline-form{display:inline}
+.landing-page .muted-text{color:var(--muted)}
+.landing-page .mt-12{margin-top:12px}
+.landing-page .mt-20{margin-top:20px}
+
+@media (max-width:720px){
+  .landing-page .hero h1{font-size:34px}
+  .landing-page .lang-select{top:12px;right:12px}
+}
+
+.legal-page .container{max-width:1100px;margin:80px auto;padding:0 16px}
+.legal-page .lang{position:fixed;top:12px;right:16px;display:flex;gap:.5rem;z-index:1000}
+.legal-page .lang .btn{padding:.35rem .6rem;border:1px solid #8a8a8a;border-radius:8px;text-decoration:none;color:#fff;background:rgba(255,255,255,.06)}
+.legal-page .lang .btn.active{border-color:#fff;background:rgba(255,255,255,.18);font-weight:600}
+.legal-page .hero{margin-top:20px;text-align:center}
+.legal-page .hero h1{font-size:36px;margin:0 0 8px}
+.legal-page .hero p{opacity:.85;margin:0}
+.legal-page .cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-top:28px}
+.legal-page .card{width:220px;height:170px;padding:16px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);text-decoration:none;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.2s ease}
+.legal-page .card:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+.legal-page .card .icon{font-size:28px;margin-bottom:6px}
+.legal-page .card .title{font-weight:700;margin-bottom:6px;text-align:center}
+.legal-page .card .desc{font-size:12px;opacity:.9;text-align:center;line-height:1.35}
+.legal-page .doc-card{width:min(900px,100%);height:auto;align-items:flex-start;text-align:left;gap:8px}
+.legal-page .doc-card h2{margin:0 0 6px}
+.legal-page .doc-card p,.legal-page .doc-card li{font-size:14px;line-height:1.6;color:#f1f5f9}
+.legal-page .doc-card ul{padding-left:18px;margin:8px 0}
