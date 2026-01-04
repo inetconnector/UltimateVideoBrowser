@@ -26,7 +26,8 @@ public sealed class SourcesViewModelTests
             var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
             var dialogService = new FakeDialogService(null);
 
-            var settingsService = new AppSettingsService();
+            var settingsPath = Path.Combine(tempPath, "settings.json");
+            var settingsService = new AppSettingsService(new FileSettingsStore(settingsPath));
 
             var viewModel = new SourcesViewModel(
                 sourceService,

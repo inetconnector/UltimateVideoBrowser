@@ -11,9 +11,12 @@ public sealed class FileSettingsStore
     private Dictionary<string, string> values = new(StringComparer.OrdinalIgnoreCase);
     private bool loaded;
 
-    public FileSettingsStore()
+    public FileSettingsStore(string? settingsPath = null)
     {
-        settingsPath = Path.Combine(AppDataPaths.Root, "settings.json");
+        this.settingsPath = settingsPath ?? Path.Combine(AppDataPaths.Root, "settings.json");
+        var directory = Path.GetDirectoryName(this.settingsPath);
+        if (!string.IsNullOrWhiteSpace(directory))
+            Directory.CreateDirectory(directory);
     }
 
     public string GetString(string key, string fallback)
