@@ -29,18 +29,20 @@
                            FontSize="13"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
-                    <HorizontalStackLayout Spacing="8">
-                        <Button Text="{x:Static strings:AppResources.SourcesButton}"
-                                ImageSource="icon_sources.svg"
-                                Command="{Binding OpenSourcesCommand}" />
-                        <Button Text="{x:Static strings:AppResources.AlbumsButton}"
-                                Command="{Binding OpenAlbumsCommand}" />
-                        <Button Text="{x:Static strings:AppResources.SettingsButton}"
-                                Command="{Binding OpenSettingsCommand}" />
-                        <Button Text="{x:Static strings:AppResources.ReindexButton}"
-                                ImageSource="icon_reindex.svg"
-                                Command="{Binding RunIndexCommand}" />
-                    </HorizontalStackLayout>
+                    <Button Text="{x:Static strings:AppResources.ActionsButton}">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="{x:Static strings:AppResources.SourcesButton}"
+                                                Command="{Binding OpenSourcesCommand}" />
+                                <MenuFlyoutItem Text="{x:Static strings:AppResources.AlbumsButton}"
+                                                Command="{Binding OpenAlbumsCommand}" />
+                                <MenuFlyoutItem Text="{x:Static strings:AppResources.SettingsButton}"
+                                                Command="{Binding OpenSettingsCommand}" />
+                                <MenuFlyoutItem Text="{x:Static strings:AppResources.ReindexButton}"
+                                                Command="{Binding RunIndexCommand}" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
                 </VerticalStackLayout>
 
                 <Image Grid.Column="1"

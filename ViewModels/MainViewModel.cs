@@ -45,6 +45,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private List<AlbumListItem> albumTabs = new();
     [ObservableProperty] private bool allowFileChanges;
+    [ObservableProperty] private AlbumListItem? selectedAlbum;
     [ObservableProperty] private string currentMediaName = "";
     [ObservableProperty] private string? currentMediaSource;
     [ObservableProperty] private MediaType currentMediaType;
@@ -67,6 +68,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int indexTotal;
     private bool isApplyingIndexProgress;
     private bool isApplyingSavedSettings;
+    private bool isSyncingFilterOptions;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isIndexing;
     private bool isInitialized;
@@ -95,6 +97,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string searchText = "";
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
+    [ObservableProperty] private MediaSource? selectedSource;
     [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
     [ObservableProperty] private SortOption? selectedSortOption;
     [ObservableProperty] private List<MediaSource> sources = new();
@@ -162,6 +165,14 @@ public partial class MainViewModel : ObservableObject
             new SearchScopeFilterOption(SearchScope.People, AppResources.SearchScopePeople),
             new SearchScopeFilterOption(SearchScope.Albums, AppResources.SearchScopeAlbums)
         };
+
+        foreach (var option in MediaTypeFilters)
+            option.PropertyChanged += HandleMediaTypeFilterOptionChanged;
+        foreach (var option in SearchScopeFilters)
+            option.PropertyChanged += HandleSearchScopeFilterOptionChanged;
+
+        SyncMediaTypeFilterSelections();
+        SyncSearchScopeFilterSelections();
 
         MediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
 
@@ -658,6 +669,70 @@ public partial class MainViewModel : ObservableObject
             return;
 
         SelectedSearchScope = updated;
+    }
+
+    private void HandleMediaTypeFilterOptionChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(MediaTypeFilterOption.IsSelected) || isSyncingFilterOptions)
+            return;
+
+        var selected = MediaType.None;
+        foreach (var option in MediaTypeFilters.Where(option => option.IsSelected))
+            selected |= option.MediaType;
+
+        if (selected == MediaType.None)
+        {
+            SyncMediaTypeFilterSelections();
+            return;
+        }
+
+        SelectedMediaTypes = selected;
+    }
+
+    private void HandleSearchScopeFilterOptionChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(SearchScopeFilterOption.IsSelected) || isSyncingFilterOptions)
+            return;
+
+        var selected = SearchScope.None;
+        foreach (var option in SearchScopeFilters.Where(option => option.IsSelected))
+            selected |= option.Scope;
+
+        if (selected == SearchScope.None)
+        {
+            SyncSearchScopeFilterSelections();
+            return;
+        }
+
+        SelectedSearchScope = selected;
+    }
+
+    private void SyncMediaTypeFilterSelections()
+    {
+        isSyncingFilterOptions = true;
+        try
+        {
+            foreach (var option in MediaTypeFilters)
+                option.IsSelected = SelectedMediaTypes.HasFlag(option.MediaType);
+        }
+        finally
+        {
+            isSyncingFilterOptions = false;
+        }
+    }
+
+    private void SyncSearchScopeFilterSelections()
+    {
+        isSyncingFilterOptions = true;
+        try
+        {
+            foreach (var option in SearchScopeFilters)
+                option.IsSelected = SelectedSearchScope.HasFlag(option.Scope);
+        }
+        finally
+        {
+            isSyncingFilterOptions = false;
+        }
     }
 
     [RelayCommand]
@@ -1697,11 +1772,15 @@ public partial class MainViewModel : ObservableObject
     partial void OnActiveSourceIdChanged(string value)
     {
         settingsService.ActiveSourceId = value;
+        SelectedSource = Sources.FirstOrDefault(source => source.Id == value)
+                         ?? Sources.FirstOrDefault();
     }
 
     partial void OnActiveAlbumIdChanged(string value)
     {
         settingsService.ActiveAlbumId = value;
+        SelectedAlbum = AlbumTabs.FirstOrDefault(album => album.Id == value)
+                        ?? AlbumTabs.FirstOrDefault();
     }
 
     partial void OnSearchTextChanged(string value)
@@ -1712,6 +1791,7 @@ public partial class MainViewModel : ObservableObject
     partial void OnSelectedSearchScopeChanged(SearchScope value)
     {
         settingsService.SearchScope = value == SearchScope.None ? SearchScope.All : value;
+        SyncSearchScopeFilterSelections();
         if (!isApplyingSavedSettings)
             _ = RefreshAsync();
     }
@@ -1772,12 +1852,39 @@ public partial class MainViewModel : ObservableObject
             return;
 
         settingsService.VisibleMediaTypes = value;
-        if (CurrentMediaType != MediaType.None && !value.HasFlag(CurrentMediaType))
-            ClearPlayerState();
+        SyncMediaTypeFilterSelections();
         if (isApplyingSavedSettings)
             return;
 
         _ = RefreshAsync();
+    }
+
+    partial void OnSelectedSourceChanged(MediaSource? value)
+    {
+        if (value == null || value.Id == ActiveSourceId)
+            return;
+
+        _ = SelectSourceAsync(value);
+    }
+
+    partial void OnSelectedAlbumChanged(AlbumListItem? value)
+    {
+        if (value == null || string.Equals(value.Id, ActiveAlbumId, StringComparison.Ordinal))
+            return;
+
+        _ = SelectAlbumAsync(value);
+    }
+
+    partial void OnSourcesChanged(List<MediaSource> value)
+    {
+        SelectedSource = value.FirstOrDefault(source => source.Id == ActiveSourceId)
+                         ?? value.FirstOrDefault();
+    }
+
+    partial void OnAlbumTabsChanged(List<AlbumListItem> value)
+    {
+        SelectedAlbum = value.FirstOrDefault(album => album.Id == ActiveAlbumId)
+                        ?? value.FirstOrDefault();
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)
@@ -1929,7 +2036,31 @@ public partial class MainViewModel : ObservableObject
         return $"{datePart}-{baseName}";
     }
 
-    public sealed record MediaTypeFilterOption(MediaType MediaType, string Label);
+    public sealed class MediaTypeFilterOption : ObservableObject
+    {
+        public MediaTypeFilterOption(MediaType mediaType, string label)
+        {
+            MediaType = mediaType;
+            Label = label;
+        }
 
-    public sealed record SearchScopeFilterOption(SearchScope Scope, string Label);
+        public MediaType MediaType { get; }
+        public string Label { get; }
+
+        [ObservableProperty] private bool isSelected;
+    }
+
+    public sealed class SearchScopeFilterOption : ObservableObject
+    {
+        public SearchScopeFilterOption(SearchScope scope, string label)
+        {
+            Scope = scope;
+            Label = label;
+        }
+
+        public SearchScope Scope { get; }
+        public string Label { get; }
+
+        [ObservableProperty] private bool isSelected;
+    }
 }

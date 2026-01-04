@@ -24,6 +24,9 @@
   <data name="ReindexButton" xml:space="preserve">
     <value>Neu indizieren</value>
   </data>
+  <data name="ActionsButton" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Medien suchen...</value>
   </data>
