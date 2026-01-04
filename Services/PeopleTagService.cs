@@ -104,6 +104,15 @@ public sealed class PeopleTagService
 
         foreach (var entry in toInsert)
             await db.Db.InsertAsync(entry).ConfigureAwait(false);
+
+        var summary = toInsert.Count == 0
+            ? string.Empty
+            : string.Join(", ", toInsert.Select(entry => entry.PersonName));
+        await db.Db.ExecuteAsync(
+                "UPDATE MediaItem SET PeopleTagsSummary = ? WHERE Path = ?;",
+                summary,
+                mediaPath)
+            .ConfigureAwait(false);
     }
 
     public async Task AddTagsForMediaAsync(string mediaPath, IEnumerable<string> tags)
