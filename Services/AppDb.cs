@@ -1,4 +1,5 @@
 using SQLite;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -10,7 +11,7 @@ public sealed class AppDb
 
     public AppDb()
     {
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "ultimatevideobrowser.db");
+        var dbPath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
         Db = new SQLiteAsyncConnection(dbPath);
     }
 

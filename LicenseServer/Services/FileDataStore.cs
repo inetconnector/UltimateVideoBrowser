@@ -14,7 +14,11 @@ public sealed class FileDataStore
     public FileDataStore(IConfiguration configuration)
     {
         var options = configuration.GetSection("DataStorage").Get<DataStorageOptions>() ?? new DataStorageOptions();
-        basePath = Path.GetFullPath(options.BasePath);
+        var configuredPath = options.BasePath;
+        if (string.IsNullOrWhiteSpace(configuredPath) || string.Equals(configuredPath, "Data", StringComparison.OrdinalIgnoreCase))
+            configuredPath = new DataStorageOptions().BasePath;
+
+        basePath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(configuredPath));
         Directory.CreateDirectory(basePath);
         Directory.CreateDirectory(GetPurchasesPath());
         Directory.CreateDirectory(GetLicensesPath());
