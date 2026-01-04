@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.WebUtilities;
 using UltimateVideoBrowser.LicenseServer.Models;
 
 namespace UltimateVideoBrowser.LicenseServer.Services;
@@ -48,6 +49,22 @@ public sealed class HtmlPageService
             var normalized = NormalizeLang(queryLang.ToString());
             if (available.Contains(normalized))
                 return normalized;
+        }
+
+        var referrer = request.Headers.Referer.ToString();
+        if (!string.IsNullOrWhiteSpace(referrer) && Uri.TryCreate(referrer, UriKind.Absolute, out var refererUri))
+        {
+            var query = QueryHelpers.ParseQuery(refererUri.Query);
+            if (query.TryGetValue("lang", out var referrerLang))
+            {
+                var normalized = NormalizeLang(referrerLang.ToString());
+                if (available.Contains(normalized))
+                    return normalized;
+
+                var prefix = normalized.Split('-', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(prefix) && available.Contains(prefix))
+                    return prefix;
+            }
         }
 
         var header = request.Headers.AcceptLanguage.ToString();
