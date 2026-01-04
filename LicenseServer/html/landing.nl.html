@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UltimateVideoBrowser Pro</title>
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    :root{--bg:#0b1020;--panel:#151b2c;--accent:#6d7bff;--accent-2:#8be1ff;--text:#f8fafc;--muted:#cbd5f5;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);line-height:1.5}
+    header{position:relative;overflow:hidden;padding:48px 0 80px;background:radial-gradient(circle at 15% 15%,rgba(109,123,255,.35),transparent 50%),radial-gradient(circle at 80% 10%,rgba(139,225,255,.25),transparent 40%),linear-gradient(135deg,#0d1228 0%,#111a33 100%)}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:14px;font-weight:700;font-size:20px}
+    .brand img{width:42px;height:42px}
+    .lang-select{position:fixed;top:18px;right:20px;background:rgba(8,12,25,.7);border:1px solid rgba(255,255,255,.2);color:var(--text);padding:8px 12px;border-radius:12px;backdrop-filter:blur(8px);z-index:1000}
+    .hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:center;margin-top:48px}
+    .hero h1{font-size:42px;margin:0 0 12px}
+    .hero p{color:var(--muted);font-size:18px;margin:0 0 24px}
+    .cta{display:flex;flex-wrap:wrap;gap:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:12px;border:1px solid transparent;font-weight:600;text-decoration:none;transition:.2s}
+    .btn.primary{background:var(--accent);color:white;box-shadow:0 10px 25px rgba(109,123,255,.35)}
+    .btn.secondary{border-color:rgba(255,255,255,.3);color:var(--text);background:rgba(255,255,255,.04)}
+    .stats{display:flex;flex-wrap:wrap;gap:20px;margin-top:24px}
+    .stat{background:rgba(255,255,255,.06);padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.1);min-width:160px}
+    .stat strong{display:block;font-size:22px}
+    .hero-media{position:relative}
+    .hero-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:20px;box-shadow:0 25px 60px rgba(0,0,0,.35)}
+    .hero-card img{width:100%;border-radius:16px}
+    .section{padding:72px 0}
+    .section-title{font-size:32px;margin:0 0 16px}
+    .section-sub{color:var(--muted);max-width:720px;margin:0 0 32px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:180px}
+    .card img{width:40px;height:40px}
+    .card h3{margin:0}
+    .card p{margin:0;color:var(--muted)}
+    .showcase{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+    .showcase img{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.12)}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(109,123,255,.15);border:1px solid rgba(109,123,255,.4);padding:6px 14px;border-radius:999px;font-weight:600;font-size:13px}
+    .pricing{background:linear-gradient(135deg,rgba(109,123,255,.15),rgba(139,225,255,.12));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:center}
+    .pricing .price{font-size:40px;font-weight:800}
+    footer{padding:40px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,.08)}
+    footer a{color:var(--text);text-decoration:none}
+    .legal-links{display:flex;gap:16px;flex-wrap:wrap}
+    .floating-glow{position:absolute;right:-80px;top:60px;width:240px;height:240px;background:radial-gradient(circle,rgba(109,123,255,.6),transparent 70%);filter:blur(4px);opacity:.7}
+    @media (max-width:720px){.hero h1{font-size:34px}.lang-select{top:12px;right:12px}}
+  </style>
+</head>
+<body>
+<select class="lang-select" id="langSelect" aria-label="Language"><option value="de">Deutsch</option>
+<option value="en">English</option>
+<option value="fr">Français</option>
+<option value="es">Español</option>
+<option value="it">Italiano</option>
+<option value="pt">Português</option>
+<option value="nl">Nederlands</option>
+<option value="pl">Polski</option>
+<option value="tr">Türkçe</option>
+<option value="ru">Русский</option>
+<option value="zh">中文</option>
+<option value="ja">日本語</option>
+<option value="ko">한국어</option>
+<option value="ar">العربية</option></select>
+<header>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand"><img src="/assets/appicon.svg" alt="UltimateVideoBrowser" /><span>UltimateVideoBrowser Pro</span></div>
+      <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Preis & Lizenz</a>
+    </div>
+    <div class="hero">
+      <div>
+        <span class="pill" data-i18n="pill">Premium Medien-Kontrolle</span>
+        <h1 data-i18n="hero_title">Die professionelle Medienzentrale für Menschen, die keine Kompromisse akzeptieren.</h1>
+        <p data-i18n="hero_subtitle">Durchsuche, indexiere und erlebe deine Videos, Fotos und Dokumente in Sekunden – mit einer Oberfläche, die sich wie Magie anfühlt.</p>
+        <div class="cta">
+          <form action="/api/checkout" method="post" style="display:inline">
+            <button class="btn primary" type="submit" data-i18n="cta_primary">Jetzt Pro freischalten</button>
+          </form>
+          <a class="btn secondary" href="#features" data-i18n="cta_secondary">Funktionen entdecken</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">schnelleres Finden</span></div>
+          <div class="stat"><strong data-i18n="stat_two_value">1 Klick</strong><span data-i18n="stat_two_label">bis zur perfekten Ansicht</span></div>
+          <div class="stat"><strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">Fokus auf deine Daten</span></div>
+        </div>
+      </div>
+      <div class="hero-media">
+        <div class="floating-glow"></div>
+        <div class="hero-card">
+          <img src="/assets/hero_video.svg" alt="App Vorschau" />
+          <p data-i18n="hero_image_caption" style="margin-top:12px;color:var(--muted);">App-Visualisierung mit originalen Assets</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<section class="section" id="features">
+  <div class="container">
+    <h2 class="section-title" data-i18n="features_title">Ein Erlebnis, das deine Medien auf ein neues Level hebt</h2>
+    <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro kombiniert Geschwindigkeit, Intelligenz und Design zu einer Medienplattform, die dich nie warten lässt.</p>
+    <div class="grid">
+      <div class="card"><img src="/assets/icon_sources.svg" alt="Sources" /><h3 data-i18n="feature_one_title">Smarter Quellen-Manager</h3><p data-i18n="feature_one_desc">Verbinde Ordner, Laufwerke und Cloud-Backups – automatisch organisiert, immer bereit.</p></div>
+      <div class="card"><img src="/assets/icon_play.svg" alt="Playback" /><h3 data-i18n="feature_two_title">Sofortige Vorschau</h3><p data-i18n="feature_two_desc">Sieh wichtige Momente direkt – keine Wartezeiten, keine Unterbrechungen.</p></div>
+      <div class="card"><img src="/assets/icon_people.svg" alt="People" /><h3 data-i18n="feature_three_title">Intelligente Erkennung</h3><p data-i18n="feature_three_desc">Finde Inhalte über Gesichter, Orte oder Tags. Deine Bibliothek reagiert, bevor du fragst.</p></div>
+      <div class="card"><img src="/assets/chip_spark.svg" alt="AI" /><h3 data-i18n="feature_four_title">Turbo-Indexierung</h3><p data-i18n="feature_four_desc">Ein neues Level an Performance sorgt dafür, dass selbst riesige Sammlungen sofort durchsucht werden.</p></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="background:#0f152b">
+  <div class="container">
+    <h2 class="section-title" data-i18n="gallery_title">Design, das Vertrauen schafft</h2>
+    <p class="section-sub" data-i18n="gallery_sub">Professionelle Grafiken und echte App-Assets geben dir den Premium-Eindruck, den deine Medien verdienen.</p>
+    <div class="showcase">
+      <div>
+        <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Cinematic visuals" />
+        <p data-i18n="gallery_caption_one" style="color:var(--muted);margin-top:12px">Kino-Look für deine Bibliothek – inspiriert von freien Unsplash-Grafiken.</p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Technology" />
+        <p data-i18n="gallery_caption_two" style="color:var(--muted);margin-top:12px">Technologie-Ästhetik, die Professionalität ausstrahlt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="pricing">
+      <div>
+        <h2 class="section-title" data-i18n="pricing_title">Einmal bezahlen. Für immer genießen.</h2>
+        <p class="section-sub" data-i18n="pricing_sub">Keine Abos, keine versteckten Gebühren. Einmal freischalten und alle Pro-Features dauerhaft nutzen.</p>
+        <div class="legal-links">
+          <a href="/agb" data-i18n="link_terms">AGB</a>
+          <a href="/datenschutz" data-i18n="link_privacy">Datenschutz</a>
+          <a href="/impressum" data-i18n="link_imprint">Impressum</a>
+          <a href="/widerruf" data-i18n="link_withdrawal">Widerruf</a>
+        </div>
+      </div>
+      <div>
+        <div class="price" data-i18n="pricing_value">€3,99</div>
+        <p data-i18n="pricing_note">inkl. Updates für die aktuelle Hauptversion</p>
+        <form action="/api/checkout" method="post" style="display:inline">
+          <button class="btn primary" type="submit" data-i18n="pricing_cta">Pro jetzt sichern</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <h2 class="section-title" data-i18n="trust_title">Entwickelt für Profis, geliebt von Enthusiasten</h2>
+    <p class="section-sub" data-i18n="trust_sub">Vom Hobbyfilmer bis zum Studio-Team: UltimateVideoBrowser Pro schafft Ordnung, Geschwindigkeit und Wow-Momente.</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="trust_one_title">Plattformübergreifend</h3><p data-i18n="trust_one_desc">Nutze deine Lizenz flexibel auf Windows und Android – mit derselben Premium-Erfahrung.</p></div>
+      <div class="card"><h3 data-i18n="trust_two_title">Offline bereit</h3><p data-i18n="trust_two_desc">Selbst ohne Internet bleibt deine Medienbibliothek verfügbar – dank sicherer Offline-Aktivierung.</p></div>
+      <div class="card"><h3 data-i18n="trust_three_title">Datenschutz inklusive</h3><p data-i18n="trust_three_desc">Deine Inhalte bleiben deine Inhalte. Keine Cloud-Pflicht, keine Datenverwertung.</p></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand"><img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo" /><span data-i18n="footer_brand">Medien, die sich wie Zukunft anfühlen.</span></div>
+      <div class="legal-links">
+        <a href="/agb" data-i18n="link_terms">AGB</a>
+        <a href="/datenschutz" data-i18n="link_privacy">Datenschutz</a>
+        <a href="/impressum" data-i18n="link_imprint">Impressum</a>
+      </div>
+    </div>
+    <p style="margin-top:20px" data-i18n="footer_note">UltimateVideoBrowser Pro – der neue Standard für anspruchsvolle Medienverwaltung.</p>
+  </div>
+</footer>
+<script>
+const currentLang = "nl";
+const langSelect = document.getElementById('langSelect');
+if (langSelect) {
+  langSelect.value = currentLang;
+  langSelect.addEventListener('change', e => {
+    const lang = e.target.value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.location.href = url.toString();
+  });
+}
+</script>
+</body></html>

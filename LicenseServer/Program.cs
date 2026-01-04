@@ -5,14 +5,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<FileDataStore>();
 builder.Services.AddSingleton<LicenseService>();
+builder.Services.AddSingleton<HtmlPageService>();
 
 var app = builder.Build();
 
 app.UseStaticFiles();
 
-app.MapGet("/", () =>
+app.MapGet("/", (HttpRequest request, HtmlPageService htmlPageService) =>
 {
-    var html = LandingPageBuilder.BuildLandingPage();
+    var html = htmlPageService.LoadLandingPage(request);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
@@ -21,36 +22,44 @@ app.MapGet("/api/pricing", (LicenseService licenseService) =>
     return Results.Ok(licenseService.GetPricing());
 });
 
-app.MapPost("/api/checkout", (LicenseService licenseService) =>
+app.MapPost("/api/checkout", (HttpRequest request, LicenseService licenseService) =>
 {
-    return Results.Ok(licenseService.CreateCheckout());
+    var checkout = licenseService.CreateCheckout();
+    var acceptsHtml = request.GetTypedHeaders().Accept?.Any(mediaType =>
+        mediaType.MediaType != null
+        && (mediaType.MediaType.Equals("text/html", StringComparison.OrdinalIgnoreCase)
+            || mediaType.MediaType.Equals("application/xhtml+xml", StringComparison.OrdinalIgnoreCase))) == true;
+
+    return acceptsHtml
+        ? Results.Redirect(checkout.CheckoutUrl)
+        : Results.Ok(checkout);
 });
 
-app.MapGet("/impressum", (IConfiguration configuration) =>
+app.MapGet("/impressum", (HttpRequest request, HtmlPageService htmlPageService, IConfiguration configuration) =>
 {
-    var options = LegalDocumentBuilder.LoadOptions(configuration);
-    var html = LegalDocumentBuilder.BuildImprint(options);
+    var options = OptionsLoader.LoadOptions<LegalOptions>(configuration, "Legal", "LegalFile");
+    var html = htmlPageService.LoadLegalPage(request, "impressum", options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
-app.MapGet("/datenschutz", (IConfiguration configuration) =>
+app.MapGet("/datenschutz", (HttpRequest request, HtmlPageService htmlPageService, IConfiguration configuration) =>
 {
-    var options = LegalDocumentBuilder.LoadOptions(configuration);
-    var html = LegalDocumentBuilder.BuildPrivacy(options);
+    var options = OptionsLoader.LoadOptions<LegalOptions>(configuration, "Legal", "LegalFile");
+    var html = htmlPageService.LoadLegalPage(request, "datenschutz", options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
-app.MapGet("/agb", (IConfiguration configuration) =>
+app.MapGet("/agb", (HttpRequest request, HtmlPageService htmlPageService, IConfiguration configuration) =>
 {
-    var options = LegalDocumentBuilder.LoadOptions(configuration);
-    var html = LegalDocumentBuilder.BuildTerms(options);
+    var options = OptionsLoader.LoadOptions<LegalOptions>(configuration, "Legal", "LegalFile");
+    var html = htmlPageService.LoadLegalPage(request, "agb", options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
-app.MapGet("/widerruf", (IConfiguration configuration) =>
+app.MapGet("/widerruf", (HttpRequest request, HtmlPageService htmlPageService, IConfiguration configuration) =>
 {
-    var options = LegalDocumentBuilder.LoadOptions(configuration);
-    var html = LegalDocumentBuilder.BuildWithdrawal(options);
+    var options = OptionsLoader.LoadOptions<LegalOptions>(configuration, "Legal", "LegalFile");
+    var html = htmlPageService.LoadLegalPage(request, "widerruf", options);
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
