@@ -8,6 +8,14 @@ builder.Services.AddSingleton<LicenseService>();
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
+app.MapGet("/", () =>
+{
+    var html = LandingPageBuilder.BuildLandingPage();
+    return Results.Content(html, "text/html; charset=utf-8");
+});
+
 app.MapGet("/api/pricing", (LicenseService licenseService) =>
 {
     return Results.Ok(licenseService.GetPricing());

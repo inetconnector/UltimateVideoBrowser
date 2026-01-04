@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="0.5" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="120" y1="120" x2="392" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect x="40" y="40" width="432" height="432" rx="108" fill="url(#bg)"/>
+  <rect x="92" y="124" width="328" height="264" rx="48" fill="url(#glass)"/>
+  <rect x="122" y="162" width="56" height="56" rx="16" fill="#0F172A" fill-opacity="0.18"/>
+  <rect x="198" y="162" width="56" height="56" rx="16" fill="#0F172A" fill-opacity="0.18"/>
+  <rect x="274" y="162" width="56" height="56" rx="16" fill="#0F172A" fill-opacity="0.18"/>
+  <rect x="350" y="162" width="56" height="56" rx="16" fill="#0F172A" fill-opacity="0.18"/>
+  <path d="M230 210C230 201.163 239.163 195.992 246.5 200.5L328.5 250.5C335.5 254.836 335.5 265.164 328.5 269.5L246.5 319.5C239.163 324.008 230 318.837 230 310V210Z" fill="#0F172A" fill-opacity="0.78"/>
+  <path d="M230 206C230 197.163 239.163 191.992 246.5 196.5L328.5 246.5C335.5 250.836 335.5 261.164 328.5 265.5L246.5 315.5C239.163 320.008 230 314.837 230 306V206Z" fill="#FFFFFF" fill-opacity="0.88"/>
+</svg>

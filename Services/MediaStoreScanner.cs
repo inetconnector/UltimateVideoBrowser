@@ -1195,9 +1195,9 @@ public sealed class MediaStoreScanner
         string[] projection =
         {
             IBaseColumns.Id,
-            MediaStore.Files.IFileColumns.DisplayName,
+            MediaStore.IMediaColumns.DisplayName,
             MediaStore.Files.IFileColumns.MimeType,
-            MediaStore.Files.IFileColumns.DateAdded,
+            MediaStore.IMediaColumns.DateAdded,
             MediaStore.IMediaColumns.Size
         };
 
@@ -1209,7 +1209,7 @@ public sealed class MediaStoreScanner
                 projection,
                 null,
                 null,
-                $"{MediaStore.Files.IFileColumns.DateAdded} DESC");
+                $"{MediaStore.IMediaColumns.DateAdded} DESC");
         }
         catch (Exception ex)
         {
@@ -1223,8 +1223,8 @@ public sealed class MediaStoreScanner
                 yield break;
 
             var idCol = cursor.GetColumnIndex(IBaseColumns.Id);
-            var nameCol = cursor.GetColumnIndex(MediaStore.Files.IFileColumns.DisplayName);
-            var addCol = cursor.GetColumnIndex(MediaStore.Files.IFileColumns.DateAdded);
+            var nameCol = cursor.GetColumnIndex(MediaStore.IMediaColumns.DisplayName);
+            var addCol = cursor.GetColumnIndex(MediaStore.IMediaColumns.DateAdded);
             var mimeCol = cursor.GetColumnIndex(MediaStore.Files.IFileColumns.MimeType);
 
             if (idCol < 0)
