@@ -24,13 +24,13 @@ public partial class MainPage : ContentPage
     private string? pendingScrollToMediaPath;
 
     public MainPage(MainViewModel vm, DeviceModeService deviceMode, IServiceProvider serviceProvider,
-        PeopleDataService peopleData)
+        PeopleDataService peopleData, IProUpgradeService proUpgradeService)
     {
         InitializeComponent();
         this.vm = vm;
         this.serviceProvider = serviceProvider;
         this.peopleData = peopleData;
-        BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData);
+        BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData, proUpgradeService);
         HeaderContainer.BindingContext = BindingContext;
         BindingContextChanged += (_, _) => HeaderContainer.BindingContext = BindingContext;
 
@@ -242,6 +242,7 @@ public partial class MainPage : ContentPage
         private readonly DeviceModeService deviceMode;
         private readonly MainPage page;
         private readonly PeopleDataService peopleData;
+        private readonly IProUpgradeService proUpgradeService;
         private readonly IServiceProvider serviceProvider;
         private readonly MainViewModel vm;
 
@@ -252,17 +253,19 @@ public partial class MainPage : ContentPage
         private bool isIndexingOverlayVisible;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
-            IServiceProvider serviceProvider, PeopleDataService peopleData)
+            IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
         {
             this.vm = vm;
             this.deviceMode = deviceMode;
             this.page = page;
             this.serviceProvider = serviceProvider;
             this.peopleData = peopleData;
+            this.proUpgradeService = proUpgradeService;
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             OpenAlbumsCommand = new AsyncRelayCommand(OpenAlbumsAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
+            OpenProUpgradeCommand = new AsyncRelayCommand(OpenProUpgradeAsync);
             OpenPeopleCommand = new AsyncRelayCommand(OpenPeopleAsync);
             OpenMapCommand = new AsyncRelayCommand(OpenMapAsync);
             OpenLocationCommand = vm.OpenLocationCommand;
@@ -298,6 +301,9 @@ public partial class MainPage : ContentPage
                 isIndexingOverlaySuppressed = false;
                 IsIndexingOverlayVisible = true;
             });
+
+            proUpgradeService.ProStatusChanged += (_, _) =>
+                MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(IsProUnlocked)));
 
             vm.PropertyChanged += (_, args) =>
             {
@@ -377,9 +383,17 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.Sources):
                         OnPropertyChanged(nameof(Sources));
+                        OnPropertyChanged(nameof(HasMultipleSources));
                         break;
                     case nameof(MainViewModel.AlbumTabs):
                         OnPropertyChanged(nameof(AlbumTabs));
+                        OnPropertyChanged(nameof(HasAlbums));
+                        break;
+                    case nameof(MainViewModel.HasMultipleSources):
+                        OnPropertyChanged(nameof(HasMultipleSources));
+                        break;
+                    case nameof(MainViewModel.HasAlbums):
+                        OnPropertyChanged(nameof(HasAlbums));
                         break;
                     case nameof(MainViewModel.ActiveSourceId):
                         OnPropertyChanged(nameof(ActiveSourceId));
@@ -474,6 +488,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand OpenSourcesCommand { get; }
         public IAsyncRelayCommand OpenAlbumsCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
+        public IAsyncRelayCommand OpenProUpgradeCommand { get; }
         public IAsyncRelayCommand OpenPeopleCommand { get; }
         public IAsyncRelayCommand OpenMapCommand { get; }
         public IAsyncRelayCommand OpenLocationCommand { get; }
@@ -660,6 +675,9 @@ public partial class MainPage : ContentPage
         public IReadOnlyList<MainViewModel.SearchScopeFilterOption> SearchScopeFilters => vm.SearchScopeFilters;
         public List<AlbumListItem> AlbumTabs => vm.AlbumTabs;
         public List<MediaSource> Sources => vm.Sources;
+        public bool HasMultipleSources => vm.HasMultipleSources;
+        public bool HasAlbums => vm.HasAlbums;
+        public bool IsProUnlocked => proUpgradeService.IsProUnlocked;
         public string ActiveSourceId => vm.ActiveSourceId;
         public string ActiveAlbumId => vm.ActiveAlbumId;
 
@@ -714,6 +732,13 @@ public partial class MainPage : ContentPage
         {
             var target = serviceProvider.GetService<SettingsPage>()
                          ?? ActivatorUtilities.CreateInstance<SettingsPage>(serviceProvider);
+            await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
+        }
+
+        private async Task OpenProUpgradeAsync()
+        {
+            var target = serviceProvider.GetService<ProUpgradePage>()
+                         ?? ActivatorUtilities.CreateInstance<ProUpgradePage>(serviceProvider);
             await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 

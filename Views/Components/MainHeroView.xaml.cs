@@ -58,12 +58,29 @@ public partial class MainHeroView : ContentView
             options.Add(new ActionOption(AppResources.SettingsButton, openSettings));
         }
 
+        if (!IsProUnlocked() && TryGetCommand("OpenProUpgradeCommand", out var openProUpgrade))
+        {
+            options.Add(new ActionOption(AppResources.SettingsProTitle, openProUpgrade));
+        }
+
         if (TryGetCommand("RunIndexCommand", out var runIndex))
         {
             options.Add(new ActionOption(AppResources.ReindexButton, runIndex));
         }
 
         return options;
+    }
+
+    private bool IsProUnlocked()
+    {
+        if (BindingContext is null)
+            return false;
+
+        var property = BindingContext.GetType().GetProperty("IsProUnlocked");
+        if (property?.GetValue(BindingContext) is bool isProUnlocked)
+            return isProUnlocked;
+
+        return false;
     }
 
     private bool TryGetCommand(string propertyName, out ICommand command)

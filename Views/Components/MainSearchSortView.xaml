@@ -6,8 +6,6 @@
              x:Class="UltimateVideoBrowser.Views.Components.MainSearchSortView">
     <Grid Padding="16,12"
           ColumnDefinitions="*,Auto"
-          RowDefinitions="Auto,Auto"
-          RowSpacing="10"
           BackgroundColor="{DynamicResource AppBg}">
         <Frame Style="{StaticResource InputFrameStyle}">
             <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
@@ -30,37 +28,5 @@
                     BackgroundColor="Transparent" />
         </Frame>
 
-        <Grid Grid.Row="1"
-              Grid.ColumnSpan="2"
-              ColumnDefinitions="Auto,*"
-              ColumnSpacing="8">
-            <Label Text="{x:Static strings:AppResources.SearchScopeTitle}"
-                   FontSize="12"
-                   TextColor="{DynamicResource OnSurfaceMuted}"
-                   VerticalOptions="Center" />
-            <CollectionView Grid.Column="1"
-                            ItemsSource="{Binding SearchScopeFilters}"
-                            SelectionMode="None"
-                            HorizontalScrollBarVisibility="Never">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Style="{StaticResource ChipFrameStyle}">
-                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                          Color="{DynamicResource Accent}"
-                                          VerticalOptions="Center" />
-                                <Label Text="{Binding Label}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurface}"
-                                       VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </Grid>
     </Grid>
 </ContentView>

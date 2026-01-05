@@ -32,6 +32,9 @@
                         <Label x:Name="AppVersionLabel"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label x:Name="LicenseStatusLabel"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Label Text="{x:Static strings:AppResources.AboutDescription}"
                                FontSize="12"
                                TextColor="{DynamicResource OnSurfaceMuted}" />

@@ -914,6 +914,9 @@ Missing:
   <data name="AboutDescription" xml:space="preserve">
     <value>Version details and license information.</value>
   </data>
+  <data name="AboutLicenseStatusFormat" xml:space="preserve">
+    <value>License: {0}</value>
+  </data>
   <data name="AboutVersionFormat" xml:space="preserve">
     <value>Version {0}</value>
   </data>

@@ -183,6 +183,8 @@ public partial class MainViewModel : ObservableObject
     public IReadOnlyList<SortOption> SortOptions { get; }
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
     public IReadOnlyList<SearchScopeFilterOption> SearchScopeFilters { get; }
+    public bool HasAlbums => AlbumTabs.Any(tab => !tab.IsAll);
+    public bool HasMultipleSources => Sources.Count > 1;
 
     public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
@@ -1879,12 +1881,14 @@ public partial class MainViewModel : ObservableObject
     {
         SelectedSource = value.FirstOrDefault(source => source.Id == ActiveSourceId)
                          ?? value.FirstOrDefault();
+        OnPropertyChanged(nameof(HasMultipleSources));
     }
 
     partial void OnAlbumTabsChanged(List<AlbumListItem> value)
     {
         SelectedAlbum = value.FirstOrDefault(album => album.Id == ActiveAlbumId)
                         ?? value.FirstOrDefault();
+        OnPropertyChanged(nameof(HasAlbums));
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)

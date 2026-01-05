@@ -389,6 +389,7 @@ public static class AppResources
     public static string HelpSectionHint => GetString(nameof(HelpSectionHint), "About the app and license information.");
     public static string AboutTitle => GetString(nameof(AboutTitle), "About");
     public static string AboutDescription => GetString(nameof(AboutDescription), "Version details and license information.");
+    public static string AboutLicenseStatusFormat => GetString(nameof(AboutLicenseStatusFormat), "License: {0}");
     public static string AboutVersionFormat => GetString(nameof(AboutVersionFormat), "Version {0}");
     public static string AboutLicensesButton => GetString(nameof(AboutLicensesButton), "License information");
     public static string LicenseInfoTitle => GetString(nameof(LicenseInfoTitle), "License information");

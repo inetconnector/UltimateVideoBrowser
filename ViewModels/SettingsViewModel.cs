@@ -12,10 +12,8 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppDb db;
     private readonly IDialogService dialogService;
-    private readonly ILegalConsentService legalConsentService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
-    private readonly IProUpgradeService proUpgradeService;
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     [ObservableProperty] private bool allowFileChanges;
@@ -37,19 +35,16 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
-    [ObservableProperty] private bool isProBusy;
-    [ObservableProperty] private bool isProLimitReached;
-    [ObservableProperty] private bool isProUnlocked;
+    private bool isApplyingSearchScope;
+    [ObservableProperty] private bool isSearchAlbumsEnabled;
+    [ObservableProperty] private bool isSearchNameEnabled;
+    [ObservableProperty] private bool isSearchPeopleEnabled;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private string peopleModelsDetailText = string.Empty;
 
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string photoExtensionsText = string.Empty;
-    [ObservableProperty] private string proLimitMessage = string.Empty;
-    [ObservableProperty] private string proPriceText = string.Empty;
-    [ObservableProperty] private string proStatusMessage = string.Empty;
-    [ObservableProperty] private string proStatusTitle = string.Empty;
     [ObservableProperty] private SortOption? selectedSortOption;
 
     [ObservableProperty] private ThemeOption? selectedTheme;
@@ -57,9 +52,7 @@ public partial class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
-        IDialogService dialogService,
-        ILegalConsentService legalConsentService,
-        IProUpgradeService proUpgradeService)
+        IDialogService dialogService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
@@ -67,8 +60,6 @@ public partial class SettingsViewModel : ObservableObject
         this.db = db;
         this.sourceService = sourceService;
         this.dialogService = dialogService;
-        this.legalConsentService = legalConsentService;
-        this.proUpgradeService = proUpgradeService;
         ThemeOptions = new[]
         {
             new ThemeOption("light", AppResources.ThemeLight),
@@ -106,6 +97,14 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+        var searchScope = settingsService.SearchScope == SearchScope.None
+            ? SearchScope.All
+            : settingsService.SearchScope;
+        isApplyingSearchScope = true;
+        IsSearchNameEnabled = searchScope.HasFlag(SearchScope.Name);
+        IsSearchPeopleEnabled = searchScope.HasFlag(SearchScope.People);
+        IsSearchAlbumsEnabled = searchScope.HasFlag(SearchScope.Albums);
+        isApplyingSearchScope = false;
         isApplyingLocationToggle = true;
         IsLocationEnabled = settingsService.LocationsEnabled;
         isApplyingLocationToggle = false;
@@ -129,14 +128,6 @@ public partial class SettingsViewModel : ObservableObject
                 UpdateIndexStatusState();
             });
 
-        IsProUnlocked = proUpgradeService.IsProUnlocked;
-        UpdateProStatus();
-        _ = RefreshProStatusAsync();
-
-        proUpgradeService.ProStatusChanged += (_, _) =>
-            MainThread.BeginInvokeOnMainThread(UpdateProStatus);
-        proUpgradeService.ProLimitReached += (_, _) =>
-            MainThread.BeginInvokeOnMainThread(UpdateProLimitState);
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
@@ -265,6 +256,42 @@ public partial class SettingsViewModel : ObservableObject
             _ = DownloadPeopleModelsAsync(CancellationToken.None);
     }
 
+    partial void OnIsSearchNameEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchNameEnabled = true, IsSearchPeopleEnabled,
+                IsSearchAlbumsEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
+    partial void OnIsSearchPeopleEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchPeopleEnabled = true, IsSearchNameEnabled,
+                IsSearchAlbumsEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
+    partial void OnIsSearchAlbumsEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchAlbumsEnabled = true, IsSearchNameEnabled,
+                IsSearchPeopleEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
     partial void OnIsLocationEnabledChanged(bool value)
     {
         if (isApplyingLocationToggle)
@@ -327,109 +354,6 @@ public partial class SettingsViewModel : ObservableObject
             IndexingState.NeedsReindex => AppResources.IndexStatusNeededMessage,
             _ => AppResources.IndexStatusReadyMessage
         };
-    }
-
-    private void UpdateProStatus()
-    {
-        IsProUnlocked = proUpgradeService.IsProUnlocked;
-        ProStatusTitle = IsProUnlocked
-            ? AppResources.SettingsProStatusUnlockedTitle
-            : AppResources.SettingsProStatusFreeTitle;
-        ProStatusMessage = IsProUnlocked
-            ? AppResources.SettingsProUnlockedMessage
-            : AppResources.SettingsProFreeMessage;
-        ProPriceText = string.Format(AppResources.SettingsProPriceFormat,
-            proUpgradeService.PriceText ?? AppResources.SettingsProPriceFallback);
-        ProLimitMessage = string.Format(AppResources.SettingsProLimitReachedMessage,
-            IProUpgradeService.FreePeopleLimit);
-        UpdateProLimitState();
-    }
-
-    private void UpdateProLimitState()
-    {
-        IsProLimitReached = !IsProUnlocked && proUpgradeService.HasReachedFreeLimit;
-    }
-
-    private async Task RefreshProStatusAsync()
-    {
-        try
-        {
-            await proUpgradeService.RefreshAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-        catch
-        {
-            // Best-effort: keep UI responsive if billing cannot refresh.
-        }
-
-        await MainThread.InvokeOnMainThreadAsync(UpdateProStatus);
-    }
-
-    [RelayCommand]
-    private async Task UpgradeToProAsync()
-    {
-        if (IsProBusy || IsProUnlocked)
-            return;
-
-        var consentAccepted = await legalConsentService.RequestProPurchaseConsentAsync(
-            proUpgradeService.PriceText ?? AppResources.SettingsProPriceFallback,
-            CancellationToken.None).ConfigureAwait(false);
-        if (!consentAccepted)
-            return;
-
-        IsProBusy = true;
-        try
-        {
-            var result = await proUpgradeService.PurchaseAsync(CancellationToken.None).ConfigureAwait(false);
-            await MainThread.InvokeOnMainThreadAsync(() => HandleProResultAsync(result));
-        }
-        finally
-        {
-            await MainThread.InvokeOnMainThreadAsync(() => IsProBusy = false);
-        }
-    }
-
-    [RelayCommand]
-    private async Task RestoreProAsync()
-    {
-        if (IsProBusy)
-            return;
-
-        IsProBusy = true;
-        try
-        {
-            var result = await proUpgradeService.RestoreAsync(CancellationToken.None).ConfigureAwait(false);
-            await MainThread.InvokeOnMainThreadAsync(() => HandleProResultAsync(result));
-        }
-        finally
-        {
-            await MainThread.InvokeOnMainThreadAsync(() => IsProBusy = false);
-        }
-    }
-
-    private async Task HandleProResultAsync(ProUpgradeResult result)
-    {
-        string title;
-        switch (result.Status)
-        {
-            case ProUpgradeStatus.Success:
-                title = AppResources.SettingsProPurchaseSuccessTitle;
-                UpdateProStatus();
-                break;
-            case ProUpgradeStatus.Cancelled:
-                title = AppResources.SettingsProPurchaseCancelledTitle;
-                break;
-            case ProUpgradeStatus.Pending:
-                title = AppResources.SettingsProPurchasePendingTitle;
-                break;
-            case ProUpgradeStatus.NotSupported:
-                title = AppResources.SettingsProNotSupportedTitle;
-                break;
-            default:
-                title = AppResources.SettingsProPurchaseFailedTitle;
-                break;
-        }
-
-        await dialogService.DisplayAlertAsync(title, result.Message, AppResources.OkButton);
     }
 
     [RelayCommand]
@@ -653,6 +577,19 @@ public partial class SettingsViewModel : ObservableObject
         App.ApplyTheme(theme);
     }
 
+    private void ApplySearchScope()
+    {
+        var scope = SearchScope.None;
+        if (IsSearchNameEnabled)
+            scope |= SearchScope.Name;
+        if (IsSearchPeopleEnabled)
+            scope |= SearchScope.People;
+        if (IsSearchAlbumsEnabled)
+            scope |= SearchScope.Albums;
+
+        settingsService.SearchScope = scope == SearchScope.None ? SearchScope.All : scope;
+    }
+
     private void ApplyIndexedMediaTypes()
     {
         settingsService.IndexedMediaTypes = BuildIndexedMediaTypes();
@@ -674,6 +611,17 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     private static bool EnsureAtLeastOneIndexed(bool currentValue, Action restore, params bool[] otherFlags)
+    {
+        if (!currentValue && otherFlags.All(flag => !flag))
+        {
+            restore();
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool EnsureAtLeastOneSearchScope(bool currentValue, Action restore, params bool[] otherFlags)
     {
         if (!currentValue && otherFlags.All(flag => !flag))
         {
