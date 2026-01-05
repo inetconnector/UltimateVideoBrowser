@@ -6,6 +6,8 @@ namespace UltimateVideoBrowser.Views.Components;
 
 public partial class MainAlbumsTabsView : ContentView
 {
+    private readonly MenuFlyout actionsFlyout;
+
     public MainAlbumsTabsView()
     {
         InitializeComponent();

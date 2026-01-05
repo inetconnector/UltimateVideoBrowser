@@ -6,6 +6,8 @@ namespace UltimateVideoBrowser.Views.Components;
 
 public partial class MainHeroView : ContentView
 {
+    private readonly MenuFlyout actionsFlyout;
+
     public MainHeroView()
     {
         InitializeComponent();
