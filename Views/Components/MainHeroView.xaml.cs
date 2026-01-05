@@ -4,28 +4,30 @@ namespace UltimateVideoBrowser.Views.Components;
 
 public partial class MainHeroView : ContentView
 {
+    private readonly MenuFlyout actionsFlyout;
+
     public MainHeroView()
     {
         InitializeComponent();
-        ConfigureActionsFlyout();
+        actionsFlyout = CreateActionsFlyout();
     }
 
     private void OnActionsClicked(object sender, EventArgs e)
     {
         if (sender is VisualElement element)
         {
-            FlyoutBase.ShowAttachedFlyout(element);
+            actionsFlyout.ShowAt(element);
         }
     }
 
-    private void ConfigureActionsFlyout()
+    private MenuFlyout CreateActionsFlyout()
     {
         var flyout = new MenuFlyout();
         flyout.Add(CreateFlyoutItem(AppResources.SourcesButton, "OpenSourcesCommand"));
         flyout.Add(CreateFlyoutItem(AppResources.AlbumsButton, "OpenAlbumsCommand"));
         flyout.Add(CreateFlyoutItem(AppResources.SettingsButton, "OpenSettingsCommand"));
         flyout.Add(CreateFlyoutItem(AppResources.ReindexButton, "RunIndexCommand"));
-        FlyoutBase.SetAttachedFlyout(ActionsButton, flyout);
+        return flyout;
     }
 
     private static MenuFlyoutItem CreateFlyoutItem(string text, string commandPath)

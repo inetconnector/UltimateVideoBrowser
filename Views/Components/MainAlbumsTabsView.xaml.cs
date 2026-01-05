@@ -4,30 +4,32 @@ namespace UltimateVideoBrowser.Views.Components;
 
 public partial class MainAlbumsTabsView : ContentView
 {
+    private readonly MenuFlyout actionsFlyout;
+
     public MainAlbumsTabsView()
     {
         InitializeComponent();
-        ConfigureActionsFlyout();
+        actionsFlyout = CreateActionsFlyout();
     }
 
     private void OnActionsClicked(object sender, EventArgs e)
     {
         if (sender is VisualElement element)
         {
-            FlyoutBase.ShowAttachedFlyout(element);
+            actionsFlyout.ShowAt(element);
         }
     }
 
-    private void ConfigureActionsFlyout()
+    private MenuFlyout CreateActionsFlyout()
     {
         var flyout = new MenuFlyout();
         flyout.Add(CreateFlyoutItem(AppResources.ManageAlbumsButton, "OpenAlbumsCommand"));
 
         var mapItem = CreateFlyoutItem(AppResources.MapButton, "OpenMapCommand");
-        mapItem.SetBinding(MenuFlyoutItem.IsVisibleProperty, "IsLocationEnabled");
+        mapItem.SetBinding(MenuFlyoutItem.IsEnabledProperty, "IsLocationEnabled");
         flyout.Add(mapItem);
 
-        FlyoutBase.SetAttachedFlyout(ActionsButton, flyout);
+        return flyout;
     }
 
     private static MenuFlyoutItem CreateFlyoutItem(string text, string commandPath)
