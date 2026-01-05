@@ -11,13 +11,14 @@
 
     <!-- 1) Base style WITH key (reusable) -->
     <Style x:Key="BaseButtonStyle" TargetType="Button">
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="CornerRadius" Value="14" />
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
         <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
-        <Setter Property="Padding" Value="12,8" /> 
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -41,11 +42,11 @@
     <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}" />
 
     <Style TargetType="ImageButton">
-        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="CornerRadius" Value="14" />
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
         <Setter Property="BorderWidth" Value="1" />
-        <Setter Property="Padding" Value="10" /> 
+        <Setter Property="Padding" Value="10" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
@@ -70,11 +71,65 @@
         <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
         <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
         <Setter Property="BorderColor" Value="{DynamicResource AccentStrong}" />
-        <Setter Property="Padding" Value="12,8" /> 
+        <Setter Property="Padding" Value="14,8" />
     </Style>
 
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
+    </Style>
+
+    <Style x:Key="CardFrameStyle" TargetType="Frame">
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="14" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevated}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="Shadow">
+            <Shadow Brush="{DynamicResource ShadowColor}"
+                    Opacity="0.35"
+                    Radius="16"
+                    Offset="0,8" />
+        </Setter>
+    </Style>
+
+    <Style x:Key="HeroFrameStyle" TargetType="Frame" BasedOn="{StaticResource CardFrameStyle}">
+        <Setter Property="CornerRadius" Value="24" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
+        <Setter Property="Shadow">
+            <Shadow Brush="{DynamicResource ShadowColor}"
+                    Opacity="0.45"
+                    Radius="22"
+                    Offset="0,12" />
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputFrameStyle" TargetType="Frame">
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="Shadow">
+            <Shadow Brush="{DynamicResource ShadowColor}"
+                    Opacity="0.2"
+                    Radius="10"
+                    Offset="0,4" />
+        </Setter>
+    </Style>
+
+    <Style x:Key="IconBadgeStyle" TargetType="Frame">
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource AccentSoft}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+    </Style>
+
+    <Style x:Key="ChipFrameStyle" TargetType="Frame">
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
     </Style>
 
     <!-- 3) Overlay style can now safely inherit -->

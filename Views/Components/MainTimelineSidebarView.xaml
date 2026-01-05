@@ -15,22 +15,20 @@
                              Margin="8,8,8,0">
             <Button Text="▲"
                     FontSize="14"
+                    FontAttributes="Bold"
                     HeightRequest="32"
                     Padding="0"
                     HorizontalOptions="FillAndExpand"
-                    BackgroundColor="{DynamicResource Surface2}"
-                    TextColor="{DynamicResource OnSurface}"
-                    BorderColor="{DynamicResource BorderSubtle}"
+                    Style="{StaticResource OverlayButtonStyle}"
                     Clicked="OnScrollUpClicked"
                     AutomationProperties.Name="Scroll timeline up" />
             <Button Text="▼"
                     FontSize="14"
+                    FontAttributes="Bold"
                     HeightRequest="32"
                     Padding="0"
                     HorizontalOptions="FillAndExpand"
-                    BackgroundColor="{DynamicResource Surface2}"
-                    TextColor="{DynamicResource OnSurface}"
-                    BorderColor="{DynamicResource BorderSubtle}"
+                    Style="{StaticResource OverlayButtonStyle}"
                     Clicked="OnScrollDownClicked"
                     AutomationProperties.Name="Scroll timeline down" />
         </VerticalStackLayout>
@@ -62,10 +60,9 @@
                                  VerticalOptions="Fill" />
                         <Frame Grid.Column="1"
                                Padding="6"
-                               CornerRadius="12"
-                               BackgroundColor="{DynamicResource Surface2}"
-                               BorderColor="{DynamicResource BorderSubtle}"
-                               HasShadow="False">
+                               CornerRadius="14"
+                               BackgroundColor="{DynamicResource SurfaceElevated}"
+                               BorderColor="{DynamicResource BorderSubtle}">
                             <Grid RowDefinitions="70,Auto" RowSpacing="6">
                                 <Grid BackgroundColor="{DynamicResource Surface3}"
                                       HeightRequest="70">

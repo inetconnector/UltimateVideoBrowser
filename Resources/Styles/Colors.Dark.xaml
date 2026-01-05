@@ -5,19 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="UltimateVideoBrowser.Resources.Styles.ColorsDark">
 
-    <Color x:Key="AppBg">#0E0F14</Color>
+    <Color x:Key="AppBg">#0B0D12</Color>
 
-    <Color x:Key="Surface">#181B22</Color>
-    <Color x:Key="Surface2">#232734</Color>
-    <Color x:Key="Surface3">#2D3242</Color>
+    <Color x:Key="Surface">#121620</Color>
+    <Color x:Key="Surface2">#1A2030</Color>
+    <Color x:Key="Surface3">#232B3C</Color>
+    <Color x:Key="SurfaceElevated">#1E2536</Color>
 
-    <Color x:Key="BorderSubtle">#30364A</Color>
-    <Color x:Key="OnSurface">#F7F9FF</Color>
-    <Color x:Key="OnSurfaceMuted">#A6AFBE</Color>
+    <Color x:Key="BorderSubtle">#2B3347</Color>
+    <Color x:Key="BorderStrong">#3A4661</Color>
+    <Color x:Key="OnSurface">#F5F7FF</Color>
+    <Color x:Key="OnSurfaceMuted">#9BA6BA</Color>
 
-    <Color x:Key="Accent">#6C8BFF</Color>
-    <Color x:Key="AccentStrong">#8D5BFF</Color>
-    <Color x:Key="AccentGlow">#2C3D6B</Color>
+    <Color x:Key="Accent">#5B8CFF</Color>
+    <Color x:Key="AccentStrong">#7B5CFF</Color>
+    <Color x:Key="AccentGlow">#1E2A4A</Color>
+    <Color x:Key="AccentSoft">#263256</Color>
 
+    <Color x:Key="ShadowColor">#000000</Color>
     <Color x:Key="OnAccent">#FFFFFF</Color>
 </ResourceDictionary>
