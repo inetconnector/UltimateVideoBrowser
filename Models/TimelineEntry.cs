@@ -16,6 +16,7 @@ public class TimelineEntry : INotifyPropertyChanged
         var date = new DateTime(year, month, 1);
         MonthLabel = date.ToString("MMM", CultureInfo.CurrentCulture).ToUpperInvariant();
         YearLabel = year.ToString(CultureInfo.InvariantCulture);
+        PreviewLabel = date.ToString("MMMM yyyy", CultureInfo.CurrentCulture);
 
         AnchorMedia.PropertyChanged += OnAnchorMediaPropertyChanged;
     }
@@ -24,6 +25,7 @@ public class TimelineEntry : INotifyPropertyChanged
     public int Month { get; }
     public string MonthLabel { get; }
     public string YearLabel { get; }
+    public string PreviewLabel { get; }
     public bool ShowYear { get; }
     public MediaItem AnchorMedia { get; }
 

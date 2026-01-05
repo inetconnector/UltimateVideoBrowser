@@ -10,6 +10,7 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class MainPage : ContentPage
 {
+    private const int TimelinePreviewMinCount = 6;
     private readonly PeopleDataService peopleData;
     private readonly IServiceProvider serviceProvider;
     private readonly MainViewModel vm;
@@ -132,6 +133,8 @@ public partial class MainPage : ContentPage
             return;
 
         MediaItemsView.ScrollTo(entry.AnchorMedia, position: ScrollToPosition.Start, animate: true);
+        if (BindingContext is MainPageBinding binding)
+            binding.SetTimelinePreview(entry);
     }
 
     private void OnMediaItemsScrolled(object? sender, ItemsViewScrolledEventArgs e)
@@ -156,6 +159,9 @@ public partial class MainPage : ContentPage
         isTimelineSelectionSyncing = true;
         TimelineSidebar.TimelineView.SelectedItem = entry;
         isTimelineSelectionSyncing = false;
+
+        if (BindingContext is MainPageBinding binding)
+            binding.SetTimelinePreview(entry);
     }
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
@@ -250,6 +256,8 @@ public partial class MainPage : ContentPage
         private Window? indexingWindow;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
+        private bool isTimelinePreviewVisible;
+        private string timelinePreviewLabel = "";
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData)
@@ -351,6 +359,7 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.MediaItems):
                         OnPropertyChanged(nameof(MediaItems));
+                        UpdateTimelinePreviewVisibility();
                         break;
                     case nameof(MainViewModel.MediaCount):
                         OnPropertyChanged(nameof(MediaCount));
@@ -360,6 +369,7 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.TimelineEntries):
                         OnPropertyChanged(nameof(TimelineEntries));
+                        UpdateTimelinePreviewVisibility();
                         break;
                     case nameof(MainViewModel.EnabledSourceCount):
                         OnPropertyChanged(nameof(EnabledSourceCount));
@@ -688,10 +698,47 @@ public partial class MainPage : ContentPage
         public bool ShowPhotoPreview => vm.ShowPhotoPreview;
         public bool ShowDocumentPreview => vm.ShowDocumentPreview;
         public bool ShowPreview => vm.ShowPreview;
+        public bool IsTimelinePreviewVisible
+        {
+            get => isTimelinePreviewVisible;
+            private set
+            {
+                if (isTimelinePreviewVisible == value)
+                    return;
+
+                isTimelinePreviewVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string TimelinePreviewLabel
+        {
+            get => timelinePreviewLabel;
+            private set
+            {
+                if (timelinePreviewLabel == value)
+                    return;
+
+                timelinePreviewLabel = value;
+                OnPropertyChanged();
+            }
+        }
         public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
         public bool AllowFileChanges => vm.AllowFileChanges;
         public bool IsPeopleTaggingEnabled => vm.IsPeopleTaggingEnabled;
         public bool IsLocationEnabled => vm.IsLocationEnabled;
+
+        public void SetTimelinePreview(TimelineEntry entry)
+        {
+            TimelinePreviewLabel = entry.PreviewLabel;
+            UpdateTimelinePreviewVisibility();
+        }
+
+        private void UpdateTimelinePreviewVisibility()
+        {
+            IsTimelinePreviewVisible = vm.TimelineEntries.Count >= TimelinePreviewMinCount
+                                       && !string.IsNullOrWhiteSpace(timelinePreviewLabel);
+        }
 
         private async Task OpenSourcesAsync()
         {
