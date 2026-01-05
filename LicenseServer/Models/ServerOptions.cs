@@ -22,7 +22,7 @@ public sealed class PriceOptions
 public sealed class PayPalOptions
 {
     public string CheckoutBaseUrl { get; init; } = "https://www.paypal.com/cgi-bin/webscr";
-    public string BusinessEmail { get; init; } = "sales@netregservice.com";
+    public string BusinessEmail { get; init; } = "sales@digitaxo.com";
     public string ItemName { get; init; } = "Ultimate Video Browser Pro";
 }
 

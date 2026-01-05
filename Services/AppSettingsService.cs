@@ -205,7 +205,7 @@ public sealed class AppSettingsService
 
     public string LicenseServerBaseUrl
     {
-        get => store.GetString(LicenseServerBaseUrlKey, "https://license.netregservice.com");
+        get => store.GetString(LicenseServerBaseUrlKey, "https://license.digitaxo.com");
         set => store.SetString(LicenseServerBaseUrlKey, value ?? string.Empty);
     }
 
