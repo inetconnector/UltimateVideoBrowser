@@ -84,6 +84,25 @@
                                                 HorizontalOptions="FillAndExpand"
                                                 ZIndex="1" />
 
+            <Grid Grid.Column="0"
+                  InputTransparent="True"
+                  ZIndex="2">
+                <Frame Padding="10,6"
+                       CornerRadius="12"
+                       BackgroundColor="{DynamicResource SurfaceElevated}"
+                       BorderColor="{DynamicResource BorderSubtle}"
+                       HasShadow="True"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"
+                       Margin="0,0,16,0"
+                       IsVisible="{Binding IsTimelinePreviewVisible}">
+                    <Label Text="{Binding TimelinePreviewLabel}"
+                           FontAttributes="Bold"
+                           FontSize="12"
+                           TextColor="{DynamicResource OnSurface}" />
+                </Frame>
+            </Grid>
+
             <CollectionView Grid.Column="0"
                             ItemsSource="{Binding MediaItems}"
                             x:Name="MediaItemsView"
