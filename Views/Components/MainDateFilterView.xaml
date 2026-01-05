@@ -25,18 +25,22 @@
                 <Label Text="{x:Static strings:AppResources.DateFilterFromLabel}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                <DatePicker Date="{Binding DateFilterFrom}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}" />
+                <Frame Style="{StaticResource InputFrameStyle}">
+                    <DatePicker Date="{Binding DateFilterFrom}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource OnSurface}" />
+                </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="1" Spacing="4">
                 <Label Text="{x:Static strings:AppResources.DateFilterToLabel}"
                        FontSize="12"
                        TextColor="{DynamicResource OnSurfaceMuted}" />
-                <DatePicker Date="{Binding DateFilterTo}"
-                            BackgroundColor="{DynamicResource Surface2}"
-                            TextColor="{DynamicResource OnSurface}" />
+                <Frame Style="{StaticResource InputFrameStyle}">
+                    <DatePicker Date="{Binding DateFilterTo}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource OnSurface}" />
+                </Frame>
             </VerticalStackLayout>
         </Grid>
     </Grid>

@@ -20,15 +20,17 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                  Color="{DynamicResource Accent}"
-                                  VerticalOptions="Center" />
-                        <Label Text="{Binding Label}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurface}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                    <Frame Style="{StaticResource ChipFrameStyle}">
+                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                      Color="{DynamicResource Accent}"
+                                      VerticalOptions="Center" />
+                            <Label Text="{Binding Label}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
