@@ -103,6 +103,15 @@ public sealed class FileSettingsStore
         }
     }
 
+    public bool ContainsKey(string key)
+    {
+        lock (gate)
+        {
+            EnsureLoaded();
+            return values.ContainsKey(key);
+        }
+    }
+
     private void EnsureLoaded()
     {
         if (loaded)

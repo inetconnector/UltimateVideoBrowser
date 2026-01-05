@@ -5,6 +5,11 @@ using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
+#if WINDOWS
+using Microsoft.Maui.LifecycleEvents;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
+#endif
 #if ANDROID
 using UltimateVideoBrowser.Platforms.Android;
 #elif WINDOWS
@@ -23,6 +28,35 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseMauiCommunityToolkitMediaElement();
+
+#if WINDOWS
+        builder.ConfigureLifecycleEvents(events =>
+        {
+            events.AddWindows(windows =>
+            {
+                windows.OnWindowCreated(window =>
+                {
+                    try
+                    {
+	                    // In MAUI's Windows lifecycle events, the window parameter is a WinUI window.
+	                    // Avoid MAUI handler APIs here to keep this compiling across target frameworks.
+	                    var hwnd = WindowNative.GetWindowHandle(window);
+	                    var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
+	                    var appWindow = AppWindow.GetFromWindowId(windowId);
+
+	                    // Start maximized (requested).
+	                    appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
+	                    if (appWindow.Presenter is OverlappedPresenter presenter)
+	                        presenter.Maximize();
+                    }
+                    catch
+                    {
+                        // Best-effort only.
+                    }
+                });
+            });
+        });
+#endif
 
 #if WINDOWS
         SvgImageSourceFix.Configure(); 

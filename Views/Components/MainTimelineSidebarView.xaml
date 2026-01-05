@@ -13,6 +13,16 @@
                              Spacing="6"
                              HorizontalOptions="FillAndExpand"
                              Margin="8,8,8,0">
+            <!-- Settings shortcut (requested: above scroll buttons) -->
+            <Button Text="⚙"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    HeightRequest="32"
+                    Padding="0"
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource OverlayButtonStyle}"
+                    Clicked="OnSettingsClicked"
+                    AutomationProperties.Name="Open settings" />
             <Button Text="▲"
                     FontSize="14"
                     FontAttributes="Bold"

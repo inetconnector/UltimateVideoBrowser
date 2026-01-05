@@ -1050,4 +1050,4 @@ To exercise the right of withdrawal, contact: [support@example.com].</value>
   <data name="QualityLabel" xml:space="preserve">
     <value>Quality</value>
   </data>
-</root>
+<data name="ErrorLogCopyFailedMessage" xml:space="preserve"><value>Copy to clipboard failed. Please try again or use "View log" to copy manually.</value></data><data name="UpgradeNowButton" xml:space="preserve"><value>Upgrade now</value></data><data name="PeopleTagsTrialTitle" xml:space="preserve"><value>People tags (trial)</value></data><data name="PeopleTagsTrialHint" xml:space="preserve"><value>People tags are enabled for 14 days in the free version. Upgrade to Pro to keep people tags permanently.</value></data><data name="ReindexTitle" xml:space="preserve"><value>Re-index library</value></data><data name="ReindexPrompt" xml:space="preserve"><value>Do you want to re-index everything now? This can take a while depending on your library size.</value></data></root>

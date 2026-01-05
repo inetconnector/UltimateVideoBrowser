@@ -22,6 +22,8 @@ public sealed class AppSettingsService
     private const string DocumentExtensionsKey = "document_extensions";
     private const string AllowFileChangesKey = "allow_file_changes";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
+    private const string PeopleTaggingTrialStartedUtcKey = "people_tagging_trial_started_utc";
+    private const string PeopleTaggingTrialHintShownKey = "people_tagging_trial_hint_shown";
     private const string LocationsEnabledKey = "locations_enabled";
     private const string ProUnlockedKey = "pro_unlocked";
     private const string ProActivationTokenKey = "pro_activation_token";
@@ -42,6 +44,19 @@ public sealed class AppSettingsService
     public AppSettingsService(FileSettingsStore store)
     {
         this.store = store;
+        EnsureDefaults();
+    }
+
+    private void EnsureDefaults()
+    {
+        // Requested defaults:
+        // - People tagging ON by default
+        // - Trial starts on first run (unless Pro)
+        if (!store.ContainsKey(PeopleTaggingEnabledKey))
+            store.SetBool(PeopleTaggingEnabledKey, true);
+
+        if (!store.ContainsKey(PeopleTaggingTrialStartedUtcKey))
+            store.SetLong(PeopleTaggingTrialStartedUtcKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
     }
 
     public string ActiveSourceId
@@ -168,8 +183,51 @@ public sealed class AppSettingsService
 
     public bool PeopleTaggingEnabled
     {
-        get => store.GetBool(PeopleTaggingEnabledKey, false);
-        set => store.SetBool(PeopleTaggingEnabledKey, value);
+        get
+        {
+            var enabled = store.GetBool(PeopleTaggingEnabledKey, true);
+            if (!enabled)
+                return false;
+
+            // Trial enforcement: in non-Pro mode, people tagging auto-disables after 14 days.
+            if (!IsProUnlocked && IsPeopleTaggingTrialExpired)
+                return false;
+
+            return true;
+        }
+        set
+        {
+            store.SetBool(PeopleTaggingEnabledKey, value);
+
+            // If user enables it manually, (re)start trial timer if not already set.
+            if (value && !store.ContainsKey(PeopleTaggingTrialStartedUtcKey))
+                store.SetLong(PeopleTaggingTrialStartedUtcKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        }
+    }
+
+    public DateTimeOffset PeopleTaggingTrialStartedUtc
+    {
+        get
+        {
+            var seconds = store.GetLong(PeopleTaggingTrialStartedUtcKey, 0L);
+            return seconds <= 0 ? DateTimeOffset.UtcNow : DateTimeOffset.FromUnixTimeSeconds(seconds);
+        }
+        set => store.SetLong(PeopleTaggingTrialStartedUtcKey, value.ToUnixTimeSeconds());
+    }
+
+    public bool PeopleTaggingTrialHintShown
+    {
+        get => store.GetBool(PeopleTaggingTrialHintShownKey, false);
+        set => store.SetBool(PeopleTaggingTrialHintShownKey, value);
+    }
+
+    public bool IsPeopleTaggingTrialExpired
+    {
+        get
+        {
+            var start = PeopleTaggingTrialStartedUtc;
+            return DateTimeOffset.UtcNow >= start.AddDays(14);
+        }
     }
 
     public bool LocationsEnabled

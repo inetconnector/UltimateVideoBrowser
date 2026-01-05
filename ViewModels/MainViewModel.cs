@@ -41,6 +41,8 @@ public partial class MainViewModel : ObservableObject
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
+
+    public event EventHandler? ProUpgradeRequested;
     [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private List<AlbumListItem> albumTabs = new();
@@ -296,6 +298,31 @@ public partial class MainViewModel : ObservableObject
         ReloadSettingsFromService();
         await RefreshAsync().ConfigureAwait(false);
         _ = RefreshTaggedPeopleCountAsync();
+    }
+
+    public async Task TryShowPeopleTaggingTrialHintAsync()
+    {
+        if (settingsService.IsProUnlocked)
+            return;
+        if (!settingsService.PeopleTaggingEnabled)
+            return;
+        if (settingsService.PeopleTaggingTrialHintShown)
+            return;
+
+        settingsService.PeopleTaggingTrialHintShown = true;
+
+        var msg = AppResources.PeopleTagsTrialHint;
+        var ok = AppResources.OkButton;
+        var upgrade = AppResources.UpgradeNowButton;
+
+        var goUpgrade = await dialogService.DisplayAlertAsync(
+            AppResources.PeopleTagsTrialTitle,
+            msg,
+            upgrade,
+            ok).ConfigureAwait(false);
+
+        if (goUpgrade)
+            ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)

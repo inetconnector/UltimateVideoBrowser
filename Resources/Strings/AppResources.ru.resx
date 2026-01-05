@@ -1,391 +1,1189 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Ультимативный видеобраузер</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Видео</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Источники</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Переиндексировать</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Поиск видео...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Сортировать</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Имя</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Дата</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Длительность</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Индексирование...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Новые элементы: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Источники</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Источники (локальные папки / синхронизированные ресурсы)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Включено</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Выключено</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Все видео на устройстве</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>Ваша личная библиотека</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Находите каждое видео мгновенно</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Просматривайте с богатыми миниатюрами, умным поиском и быстрой индексацией по всем папкам.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Управлять источниками</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Диапазон дат</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>С</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>По</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Индексирование {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Папка: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>Файл: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Скрыть</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>Отмена</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Подробности</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>Основные моменты библиотеки</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Проиндексированные видео</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Включенные источники</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>Совет</value>
+    
+    
+    <value>Совет Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Используйте поиск и фильтры, затем выполните переиндексацию после добавления новых папок для лучших результатов.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} из {1} источников активны</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Требуется доступ</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Разрешите доступ к вашим видео, чтобы мы могли индексировать и воспроизводить их.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Разрешить доступ</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Хорошо</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Поделиться</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Поделиться видео</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Сохранить как...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Видео</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Сохранение не удалось</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Не удалось сохранить это видео. Попробуйте другое место.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Сохранить как не поддерживается на этом устройстве.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Назад</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Настройки</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Настройки</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Настройки</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Внешний вид</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Тема</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Сортировка</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Порядок по умолчанию</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Фильтр</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Включить фильтр по дате</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>С</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>По</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Индексирование</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Переиндексировать при следующем запуске</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Светлая</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Тёмная</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Пока нет видео</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Добавьте источник или обновите, чтобы начать просматривать библиотеку.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Добавить источники</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Добавить папку</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Удалить</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Удалить источник?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>Удалить “{0}” из источников?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Удалить</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Добавить источник</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Имя источника</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Добавить</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>Отмена</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Новый источник</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Уже добавлено</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Эта папка уже есть в ваших источниках.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Выберите локальную папку или сетевой ресурс.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Выбрать папку</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Выбрать папку</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Выберите локальную папку или сетевой ресурс.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Добавить ещё одну папку?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Хотите добавить ещё одну папку?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Добавить ещё</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Готово</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Путь не найден</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>Мы не смогли найти эту папку. Проверьте путь.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Медиатека устройства</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Удалить из индекса людей</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Объединить</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Объединить в…</value></data><data name="QualityLabel" xml:space="preserve"><value>Качество</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Объединить</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Объединить в…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Качество</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
     <value>Журнал ошибок</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogHint" xml:space="preserve">
+    
+    
     <value>Поделитесь этим журналом, если что-то не работает или миниатюра пустая.</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
     <value>Показать журнал</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
     <value>Поделиться журналом</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
     <value>Очистить журнал</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
     <value>Документы</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
     <value>Графика и снимки экрана</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
     <value>Фото</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
     <value>Видео</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
     <value>Удалить базу данных</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
     <value>Удаляет локальную базу данных и пересоздаёт её, повторно сканируя источники.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
     <value>Разделяйте расширения запятыми (например, .mp4, .mkv).</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
     <value>.mp4, .mkv, .avi</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
     <value>Расширения файлов</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
     <value>Включите это, чтобы показывать действия, которые изменяют файлы на диске.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
     <value>Разрешить переименование, перемещение, копирование и удаление</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
     <value>Изменения файлов</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
     <value>Статус</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
     <value>Использовать встроенный видеоплеер для видео</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
     <value>Данные о местоположении остаются на вашем устройстве, но внешние серверы карт могут получать данные запроса (например, IP-адрес). Вы несёте ответственность за обмен конфиденциальными местоположениями; у сторонних сервисов есть собственные условия и политики конфиденциальности.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
     <value>Извлекайте GPS-метаданные из фото и видео, чтобы показывать их на карте мира. Картографические плитки загружаются с внешних серверов.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
     <value>Показывать местоположения</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
     <value>Местоположения</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
     <value>Выберите типы для индексирования в вашей библиотеке.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
     <value>Типы медиа</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
     <value>Скачать модели лиц</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
     <value>Модели лиц</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
     <value>Включите это, чтобы отмечать людей на фото и видео из библиотеки.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
     <value>Включить отметки людей</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
     <value>Отметки людей</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
     <value>Воспроизведение</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
     <value>• Неограниченное распознавание лиц
 • Автоматические альбомы людей
 • Пакетная сортировка (1000+ фото)
 • Локальный экспорт и резервные копии
 • Без рекламы</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
     <value>Восстановить покупку</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProTitle" xml:space="preserve">
+    
+    
     <value>Обновление Pro</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
     <value>Разблокировать Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Не удалось скопировать в буфер обмена. Попробуйте ещё раз или используйте «Просмотр журнала», чтобы скопировать вручную.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Обновить сейчас</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Теги людей (пробная)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>Теги людей включены на 14 дней в бесплатной версии. Обновитесь до Pro, чтобы сохранить теги людей навсегда.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Переиндексировать библиотеку</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Хотите переиндексировать всё сейчас? Это может занять некоторое время в зависимости от размера вашей библиотеки.</value>
   </data>
 </root>

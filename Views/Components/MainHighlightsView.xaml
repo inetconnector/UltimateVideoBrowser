@@ -15,6 +15,9 @@
 
         <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="14">
             <Frame Style="{StaticResource CardFrameStyle}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RequestReindexCommand}" />
+                </Frame.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
                     <Frame Style="{StaticResource IconBadgeStyle}">
                         <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
@@ -30,6 +33,9 @@
             </Frame>
 
             <Frame Grid.Column="1" Style="{StaticResource CardFrameStyle}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSourcesCommand}" />
+                </Frame.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
                     <Frame Style="{StaticResource IconBadgeStyle}">
                         <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />

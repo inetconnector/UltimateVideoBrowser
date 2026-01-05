@@ -42,6 +42,12 @@ public partial class MainPage : ContentPage
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
         TryHookHeaderSize();
+
+        vm.ProUpgradeRequested += (_, _) =>
+        {
+            if (BindingContext is MainPageBinding binding && binding.OpenProUpgradeCommand.CanExecute(null))
+                binding.OpenProUpgradeCommand.Execute(null);
+        };
     }
 
     internal void RememberScrollTarget(MediaItem item)
@@ -73,6 +79,9 @@ public partial class MainPage : ContentPage
                     return;
 
                 await vm.OnMainPageAppearingAsync();
+
+                // Requested: default People Tags ON but inform users about the 2-week non-Pro trial.
+                await vm.TryShowPeopleTaggingTrialHintAsync().ConfigureAwait(false);
 
                 // Restore scroll position after returning from a detail page (e.g. tagging).
                 var path = pendingScrollToMediaPath;
@@ -196,6 +205,12 @@ public partial class MainPage : ContentPage
         ScrollMediaByPage(true);
     }
 
+    public void OnSettingsClicked(object sender, EventArgs e)
+    {
+        if (BindingContext is MainPageBinding binding && binding.OpenSettingsCommand.CanExecute(null))
+            binding.OpenSettingsCommand.Execute(null);
+    }
+
     private void ScrollMediaByPage(bool isDown)
     {
         if (vm.MediaItems.Count == 0)
@@ -258,6 +273,7 @@ public partial class MainPage : ContentPage
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
+		private readonly IDialogService dialogService;
         private readonly MainPage page;
         private readonly PeopleDataService peopleData;
         private readonly IProUpgradeService proUpgradeService;
@@ -282,8 +298,10 @@ public partial class MainPage : ContentPage
             this.serviceProvider = serviceProvider;
             this.peopleData = peopleData;
             this.proUpgradeService = proUpgradeService;
+			this.dialogService = serviceProvider.GetService<IDialogService>() ?? new DialogService();
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
+            RequestReindexCommand = new AsyncRelayCommand(RequestReindexAsync);
             OpenAlbumsCommand = new AsyncRelayCommand(OpenAlbumsAsync);
             OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
             OpenProUpgradeCommand = new AsyncRelayCommand(OpenProUpgradeAsync);
@@ -514,6 +532,8 @@ public partial class MainPage : ContentPage
             };
         }
 
+
+
         public double HeaderHeight
         {
             get => headerHeight;
@@ -528,6 +548,7 @@ public partial class MainPage : ContentPage
         }
 
         public IAsyncRelayCommand OpenSourcesCommand { get; }
+        public IAsyncRelayCommand RequestReindexCommand { get; }
         public IAsyncRelayCommand OpenAlbumsCommand { get; }
         public IAsyncRelayCommand OpenSettingsCommand { get; }
         public IAsyncRelayCommand OpenProUpgradeCommand { get; }
@@ -820,6 +841,20 @@ public partial class MainPage : ContentPage
                          ?? ActivatorUtilities.CreateInstance<SourcesPage>(serviceProvider);
             await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
+
+		private async Task RequestReindexAsync()
+		{
+			var confirm = await dialogService.DisplayAlertAsync(
+				AppResources.ReindexTitle,
+				AppResources.ReindexPrompt,
+				AppResources.OkButton,
+				AppResources.CancelButton).ConfigureAwait(false);
+
+			if (!confirm)
+				return;
+
+			await vm.RunIndexAsync().ConfigureAwait(false);
+		}
 
         private async Task OpenAlbumsAsync()
         {

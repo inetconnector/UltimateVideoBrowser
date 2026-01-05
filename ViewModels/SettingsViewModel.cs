@@ -507,12 +507,27 @@ public partial class SettingsViewModel : ObservableObject
             return;
         }
 
-        await Clipboard.Default.SetTextAsync(log);
-        await MainThread.InvokeOnMainThreadAsync(() =>
-            dialogService.DisplayAlertAsync(
-                AppResources.ErrorLogTitle,
-                AppResources.ErrorLogCopiedMessage,
-                AppResources.OkButton));
+        try
+        {
+            // Clipboard APIs can fail on Windows (WinRT clipboard restrictions / background thread access).
+            // Always execute on the UI thread and fall back to showing the log if the clipboard is unavailable.
+            await MainThread.InvokeOnMainThreadAsync(async () => { await Clipboard.Default.SetTextAsync(log); });
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogCopiedMessage,
+                    AppResources.OkButton));
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "CopyErrorLogAsync");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogCopyFailedMessage,
+                    AppResources.OkButton));
+        }
     }
 
     [RelayCommand]

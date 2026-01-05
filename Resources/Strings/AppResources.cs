@@ -17,6 +17,12 @@ public static class AppResources
     public static string MergeButton => GetString(nameof(MergeButton), "Merge");
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
+	public static string ReindexTitle => GetString(nameof(ReindexTitle), "Reindex library");
+	public static string ReindexPrompt => GetString(nameof(ReindexPrompt), "Do you want to reindex everything now? This may take a while depending on your library size.");
+
+	public static string PeopleTagsTrialTitle => GetString(nameof(PeopleTagsTrialTitle), "People tagging trial");
+	public static string PeopleTagsTrialHint => GetString(nameof(PeopleTagsTrialHint), "People tags are enabled for 14 days. Upgrade to Pro to keep them always available.");
+	public static string UpgradeNowButton => GetString(nameof(UpgradeNowButton), "Upgrade now");
     public static string ActionsButton => GetString(nameof(ActionsButton), "Actions");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
     public static string SearchScopeTitle => GetString(nameof(SearchScopeTitle), "Search in");
@@ -141,6 +147,7 @@ public static class AppResources
     public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
     public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
     public static string ErrorLogCopiedMessage => GetString(nameof(ErrorLogCopiedMessage), "Error log copied.");
+	public static string ErrorLogCopyFailedMessage => GetString(nameof(ErrorLogCopyFailedMessage), "Could not copy the error log to the clipboard. Please try again.");
 
     public static string ErrorLogClearedMessage =>
         GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");

@@ -1,391 +1,1189 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Ultimata videobläddraren</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Videor</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Källor</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Indexera om</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Sök videor...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Sortera</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Namn</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Datum</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Längd</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Indexerar...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Nya objekt: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Källor</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Källor (lokala mappar / synkroniserade delningar)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Aktiverad</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Inaktiverad</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Alla videor på enheten</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>Ditt personliga bibliotek</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Upptäck varje video direkt</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Bläddra med rika miniatyrer, smart sökning och snabb indexering i alla dina mappar.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Hantera källor</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Datumintervall</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>Från</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>Till</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Indexerar {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Mapp: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>Fil: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Dölj</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>Avbryt</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Detaljer</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>Bibliotekets höjdpunkter</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Indexerade videor</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Aktiverade källor</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>Tips</value>
+    
+    
+    <value>Pro-tips</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Använd sök + filter och indexera om efter att du lagt till nya mappar för bästa resultat.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} av {1} källor aktiva</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Åtkomst krävs</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Tillåt åtkomst till dina videor så att vi kan indexera och spela upp dem.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Ge åtkomst</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Okej</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Dela</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Dela video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Spara som...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Det gick inte att spara</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Vi kunde inte spara den här videon. Försök med en annan plats.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Spara som stöds inte på den här enheten.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Tillbaka</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Inställningar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Inställningar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Inställningar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Utseende</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Tema</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Sortering</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Standardordning</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Filter</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Aktivera datumfilter</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>Från</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>Till</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Indexering</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Indexera om vid nästa start</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Ljus</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Mörk</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Inga videor ännu</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Lägg till en källa eller uppdatera för att börja bläddra i ditt bibliotek.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Lägg till källor</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Lägg till mapp</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Ta bort</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Ta bort källa?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>Ta bort “{0}” från källor?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Ta bort</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Lägg till källa</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Källnamn</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Lägg till</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>Avbryt</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Ny källa</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Redan tillagd</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Den här mappen finns redan i dina källor.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Välj en lokal mapp eller nätverksdelning.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Bläddra mapp</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Välj mapp</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Välj en lokal mapp eller nätverksdelning.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Lägga till en annan mapp?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Vill du lägga till en annan mapp?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Lägg till en annan</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Klar</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Sökväg hittades inte</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>Vi kunde inte hitta den mappen. Kontrollera sökvägen.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Enhetens mediebibliotek</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Ta bort från personindex</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Slå ihop</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Slå ihop till…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kvalitet</value></data>  <data name="ErrorLogTitle" xml:space="preserve">
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Slå ihop</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Slå ihop till…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Kvalitet</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
     <value>Fellogg</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogHint" xml:space="preserve">
+    
+    
     <value>Dela den här loggen om något misslyckas eller om en miniatyr är tom.</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
     <value>Visa logg</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
     <value>Dela logg</value>
+    
+  
   </data>
+  
+  
   <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
     <value>Rensa logg</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
     <value>Dokument</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
     <value>Grafik och skärmbilder</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
     <value>Foton</value>
+    
+  
   </data>
+  
+  
   <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
     <value>Videor</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
     <value>Ta bort databas</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
     <value>Tar bort den lokala databasen och bygger om den genom att skanna källorna igen.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
     <value>Separera filändelser med kommatecken (t.ex. .mp4, .mkv).</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
     <value>.mp4, .mkv, .avi</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
     <value>Filändelser</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
     <value>Aktivera detta för att visa åtgärder som ändrar filer på disk.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
     <value>Tillåt namnändring, flytt, kopiering och borttagning</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
     <value>Filändringar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
     <value>Status</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
     <value>Använd intern videospelare för videor</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
     <value>Platsdata stannar på din enhet, men externa kartservrar kan ta emot begärandata (t.ex. IP-adress). Du ansvarar för att dela känsliga platser; tredjepartstjänster har egna villkor och sekretesspolicyer.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
     <value>Extrahera GPS-metadata från foton och videor så att de kan visas på världskartan. Kartplattor laddas från externa tileservrar.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
     <value>Visa platser</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
     <value>Platser</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
     <value>Välj vilka typer som ska indexeras i ditt bibliotek.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
     <value>Mediatyper</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
     <value>Ladda ner ansiktsmodeller</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
     <value>Ansiktsmodeller</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
     <value>Slå på detta för att tagga personer i foton och videor från biblioteket.</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
     <value>Aktivera person-tagging</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
     <value>Person-tagging</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
     <value>Uppspelning</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
     <value>• Obegränsad ansiktsigenkänning
 • Automatiska personalbum
 • Batchsortering (1000+ foton)
 • Lokal export och säkerhetskopior
 • Ingen reklam</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
     <value>Återställ köp</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProTitle" xml:space="preserve">
+    
+    
     <value>Pro-uppgradering</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
     <value>Lås upp Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Det gick inte att kopiera till urklipp. Försök igen eller använd &quot;Visa logg&quot; för att kopiera manuellt.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Uppgradera nu</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Persontaggar (test)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>Persontaggar är aktiverade i 14 dagar i gratisversionen. Uppgradera till Pro för att behålla persontaggar permanent.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Indexera om biblioteket</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Vill du indexera om allt nu? Det kan ta en stund beroende på bibliotekets storlek.</value>
   </data>
 </root>
