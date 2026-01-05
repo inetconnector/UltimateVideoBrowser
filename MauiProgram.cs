@@ -77,6 +77,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<AlbumsViewModel>();
         builder.Services.AddSingleton<SourcesViewModel>();
         builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<ProUpgradeViewModel>();
         builder.Services.AddTransient<PeopleViewModel>();
         builder.Services.AddTransient<PersonViewModel>();
         builder.Services.AddTransient<PhotoPeopleEditorViewModel>();
@@ -88,6 +89,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<AlbumsPage>();
         builder.Services.AddSingleton<SourcesPage>();
         builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<AboutPage>();
+        builder.Services.AddSingleton<ProUpgradePage>();
         builder.Services.AddSingleton<PeoplePage>();
         builder.Services.AddTransient<PersonPage>();
         builder.Services.AddTransient<PhotoPeopleEditorPage>();

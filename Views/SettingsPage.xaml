@@ -25,46 +25,6 @@
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="14"
                        Padding="14">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="{x:Static strings:AppResources.SettingsProTitle}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Label Text="{Binding ProStatusTitle}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource Accent}" />
-                        <Label Text="{Binding ProStatusMessage}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Label Text="{Binding ProPriceText}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Label Text="{x:Static strings:AppResources.SettingsProFeatureList}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <Label Text="{Binding ProLimitMessage}"
-                               FontSize="12"
-                               TextColor="{DynamicResource AccentStrong}"
-                               IsVisible="{Binding IsProLimitReached}" />
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                            <Button Text="{x:Static strings:AppResources.SettingsProUnlockButton}"
-                                    Command="{Binding UpgradeToProCommand}"
-                                    IsVisible="{Binding IsProUnlocked, Converter={StaticResource InverseBoolConverter}}"
-                                    IsEnabled="{Binding IsProBusy, Converter={StaticResource InverseBoolConverter}}"
-                                    BackgroundColor="{DynamicResource Accent}"
-                                    TextColor="{DynamicResource OnAccent}" />
-                            <Button Grid.Column="1"
-                                    Text="{x:Static strings:AppResources.SettingsProRestoreButton}"
-                                    Command="{Binding RestoreProCommand}"
-                                    IsEnabled="{Binding IsProBusy, Converter={StaticResource InverseBoolConverter}}"
-                                    BackgroundColor="{DynamicResource Surface2}"
-                                    TextColor="{DynamicResource OnSurface}" />
-                        </Grid>
-                    </VerticalStackLayout>
-                </Frame>
-
-                <Frame BackgroundColor="{DynamicResource Surface}"
-                       CornerRadius="14"
-                       Padding="14">
                     <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.SettingsAppearanceTitle}"
                                FontAttributes="Bold"
@@ -224,6 +184,52 @@
                                         Date="{Binding DateFilterTo}"
                                         IsEnabled="{Binding IsDateFilterEnabled}"
                                         TextColor="{DynamicResource OnSurface}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.SearchScopeTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchNameEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopeName}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchPeopleEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopePeople}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchAlbumsEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopeAlbums}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
@@ -6,10 +7,13 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    public SettingsPage(SettingsViewModel vm)
+    private readonly IServiceProvider serviceProvider;
+
+    public SettingsPage(SettingsViewModel vm, IServiceProvider serviceProvider)
     {
         InitializeComponent();
         BindingContext = vm;
+        this.serviceProvider = serviceProvider;
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
@@ -51,6 +55,8 @@ public partial class SettingsPage : ContentPage
 
     private async void OnAboutClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutPage(), false);
+        var target = serviceProvider.GetService<AboutPage>()
+                     ?? ActivatorUtilities.CreateInstance<AboutPage>(serviceProvider);
+        await Navigation.PushAsync(target, false);
     }
 }

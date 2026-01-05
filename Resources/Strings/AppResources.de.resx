@@ -887,6 +887,9 @@ Fehlend:
   <data name="AboutDescription" xml:space="preserve">
     <value>Versionsdetails und Lizenzinformationen.</value>
   </data>
+  <data name="AboutLicenseStatusFormat" xml:space="preserve">
+    <value>Lizenz: {0}</value>
+  </data>
   <data name="AboutVersionFormat" xml:space="preserve">
     <value>Version {0}</value>
   </data>

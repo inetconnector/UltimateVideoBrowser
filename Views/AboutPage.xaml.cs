@@ -5,12 +5,16 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class AboutPage : ContentPage
 {
-    public AboutPage()
+    public AboutPage(IProUpgradeService proUpgradeService)
     {
         InitializeComponent();
 
         AppNameLabel.Text = AppInfo.Name;
         AppVersionLabel.Text = string.Format(AppResources.AboutVersionFormat, AppInfo.VersionString);
+        var status = proUpgradeService.IsProUnlocked
+            ? AppResources.SettingsProStatusUnlockedTitle
+            : AppResources.SettingsProStatusFreeTitle;
+        LicenseStatusLabel.Text = string.Format(AppResources.AboutLicenseStatusFormat, status);
     }
 
     private async void OnBackClicked(object sender, EventArgs e)

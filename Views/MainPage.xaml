@@ -194,13 +194,16 @@
                         <components:MainMediaTypeFilterView Grid.Row="6" />
 
                         <!-- Date filter -->
-                        <components:MainDateFilterView Grid.Row="7" />
+                        <components:MainDateFilterView Grid.Row="7"
+                                                       IsVisible="{Binding IsDateFilterEnabled}" />
 
                         <!-- Source tabs -->
-                        <components:MainSourcesTabsView Grid.Row="8" />
+                        <components:MainSourcesTabsView Grid.Row="8"
+                                                        IsVisible="{Binding HasMultipleSources}" />
 
                         <!-- Album tabs -->
-                        <components:MainAlbumsTabsView Grid.Row="9" />
+                        <components:MainAlbumsTabsView Grid.Row="9"
+                                                       IsVisible="{Binding HasAlbums}" />
 
                         <!-- Indexing banner -->
                         <components:MainIndexingBannerView Grid.Row="10" />
@@ -214,25 +217,27 @@
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Spacing="12"
-                                         HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         Margin="24"
-                                         InputTransparent="True">
-                        <Image Source="empty_state.svg"
-                               HeightRequest="180"
-                               WidthRequest="240"
-                               HorizontalOptions="Center" />
-                        <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
-                               FontAttributes="Bold"
-                               FontSize="16"
-                               TextColor="{DynamicResource OnSurface}"
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
-                               FontSize="13"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               HorizontalTextAlignment="Center" />
-                    </VerticalStackLayout>
+                    <Grid Padding="24"
+                          InputTransparent="True"
+                          VerticalOptions="End">
+                        <VerticalStackLayout Spacing="12"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="End">
+                            <Image Source="empty_state.svg"
+                                   HeightRequest="180"
+                                   WidthRequest="240"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
+                                   FontSize="13"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
                 </CollectionView.EmptyView>
 
                 <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->

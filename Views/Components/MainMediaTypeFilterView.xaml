@@ -24,6 +24,9 @@
                         <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                             <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                       Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
                                       VerticalOptions="Center" />
                             <Label Text="{Binding Label}"
                                    FontSize="12"
