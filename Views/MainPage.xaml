@@ -216,30 +216,6 @@
                     <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
                 </CollectionView.ItemsLayout>
 
-                <CollectionView.EmptyView>
-                    <Grid Padding="24"
-                          InputTransparent="True"
-                          VerticalOptions="End">
-                        <VerticalStackLayout Spacing="12"
-                                             HorizontalOptions="Center"
-                                             VerticalOptions="End">
-                            <Image Source="empty_state.svg"
-                                   HeightRequest="180"
-                                   WidthRequest="240"
-                                   HorizontalOptions="Center" />
-                            <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
-                                   FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="{DynamicResource OnSurface}"
-                                   HorizontalTextAlignment="Center" />
-                            <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
-                                   FontSize="13"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </CollectionView.EmptyView>
-
                 <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
                 <CollectionView.ItemTemplate>
                     <OnPlatform x:TypeArguments="DataTemplate">
@@ -362,6 +338,19 @@
                                                         Text="{Binding MediaType, Converter={StaticResource MediaTypeLabelConverter}}"
                                                         TextColor="{DynamicResource OnSurfaceMuted}"
                                                         FontSize="11" />
+                                                </HorizontalStackLayout>
+                                            </Frame>
+
+                                            <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                   BorderColor="{DynamicResource BorderSubtle}"
+                                                   CornerRadius="8"
+                                                   Padding="8,4"
+                                                   HorizontalOptions="Start"
+                                                   IsVisible="{Binding HasDateAdded}">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Label Text="{Binding DateAddedText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="11" />
                                                 </HorizontalStackLayout>
                                             </Frame>
                                         </HorizontalStackLayout>
@@ -548,6 +537,19 @@
                                                             FontSize="11" />
                                                     </HorizontalStackLayout>
                                                 </Frame>
+
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start"
+                                                       IsVisible="{Binding HasDateAdded}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Label Text="{Binding DateAddedText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
                                             </HorizontalStackLayout>
 
                                             <VerticalStackLayout Grid.Row="3"
@@ -715,6 +717,19 @@
                                                             FontSize="11" />
                                                     </HorizontalStackLayout>
                                                 </Frame>
+
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="8"
+                                                       Padding="8,4"
+                                                       HorizontalOptions="Start"
+                                                       IsVisible="{Binding HasDateAdded}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Label Text="{Binding DateAddedText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
                                             </HorizontalStackLayout>
 
                                             <VerticalStackLayout Grid.Row="3"
@@ -782,6 +797,35 @@
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
+
+            <!-- Empty state overlay.
+                 IMPORTANT: keep this OUTSIDE of CollectionView.EmptyView to avoid hit-test issues on Windows
+                 where the EmptyView can block interaction with the header controls (search, filters, etc.). -->
+            <Grid Grid.Column="0"
+                  Padding="24"
+                  InputTransparent="True"
+                  IsVisible="{Binding IsEmptyStateVisible}"
+                  ZIndex="5"
+                  VerticalOptions="FillAndExpand"
+                  HorizontalOptions="FillAndExpand">
+                <VerticalStackLayout Spacing="12"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="End">
+                    <Image Source="empty_state.svg"
+                           HeightRequest="180"
+                           WidthRequest="240"
+                           HorizontalOptions="Center" />
+                    <Label Text="{x:Static strings:AppResources.EmptyStateTitle}"
+                           FontAttributes="Bold"
+                           FontSize="16"
+                           TextColor="{DynamicResource OnSurface}"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="{x:Static strings:AppResources.EmptyStateMessage}"
+                           FontSize="13"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
 
         <Grid Grid.RowSpan="2"
@@ -822,12 +866,40 @@
                        Padding="12"
                        BorderColor="{DynamicResource BorderSubtle}"
                        IsVisible="{Binding IsInternalPlayerEnabled}">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="{x:Static strings:AppResources.PreviewTitle}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Grid HeightRequest="220"
-                              BackgroundColor="{DynamicResource Surface2}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Label Text="{x:Static strings:AppResources.PreviewTitle}"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   VerticalOptions="Center" />
+
+                            <!-- Collapse / expand controls (docking-like) -->
+                            <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Button Text="▼"
+                                        WidthRequest="40"
+                                        HeightRequest="32"
+                                        Padding="0"
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource OverlayButtonStyle}"
+                                        IsVisible="{Binding IsPreviewDockExpanded}"
+                                        Command="{Binding TogglePreviewDockExpandedCommand}"
+                                        AutomationProperties.Name="Collapse preview" />
+                                <Button Text="▲"
+                                        Grid.Column="1"
+                                        WidthRequest="40"
+                                        HeightRequest="32"
+                                        Padding="0"
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource OverlayButtonStyle}"
+                                        IsVisible="{Binding IsPreviewDockExpanded, Converter={StaticResource InverseBoolConverter}}"
+                                        Command="{Binding TogglePreviewDockExpandedCommand}"
+                                        AutomationProperties.Name="Expand preview" />
+                            </Grid>
+                        </Grid>
+
+                        <VerticalStackLayout Grid.Row="1" Spacing="8" IsVisible="{Binding IsPreviewDockExpanded}">
+                            <Grid HeightRequest="220"
+                                  BackgroundColor="{DynamicResource Surface2}">
                             <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                                   ShouldAutoPlay="True"
                                                   ShowsPlaybackControls="True"
@@ -856,13 +928,14 @@
                                 <TapGestureRecognizer NumberOfTapsRequired="2"
                                                       Command="{Binding TogglePlayerFullscreenCommand}" />
                             </Grid.GestureRecognizers>
-                        </Grid>
-                        <Label Text="{Binding CurrentMediaName}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               LineBreakMode="TailTruncation"
-                               IsVisible="{Binding ShowPreview}" />
-                    </VerticalStackLayout>
+                            </Grid>
+                            <Label Text="{Binding CurrentMediaName}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   LineBreakMode="TailTruncation"
+                                   IsVisible="{Binding ShowPreview}" />
+                        </VerticalStackLayout>
+                    </Grid>
                 </Frame>
 
                 <Frame BackgroundColor="{DynamicResource Surface}"

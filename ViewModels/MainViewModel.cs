@@ -149,7 +149,8 @@ public partial class MainViewModel : ObservableObject
             new SortOption("date", AppResources.SortDate),
             new SortOption("duration", AppResources.SortDuration)
         };
-        SelectedSortOption = SortOptions.FirstOrDefault();
+        // Default to date sorting so the timeline and date-based navigation are consistent.
+        SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == "date") ?? SortOptions.FirstOrDefault();
 
         MediaTypeFilters = new[]
         {
@@ -1900,7 +1901,14 @@ public partial class MainViewModel : ObservableObject
         var lastKey = "";
         var lastYear = -1;
 
-        foreach (var item in items)
+        // Build the timeline in a deterministic chronological order even when the media grid
+        // is sorted by a different key (name/duration). This keeps the date sidebar stable
+        // and makes it clear which month/year the user is navigating.
+        var ordered = items
+            .OrderByDescending(i => i.DateAddedSeconds)
+            .ToList();
+
+        foreach (var item in ordered)
         {
             var date = DateTimeOffset.FromUnixTimeSeconds(Math.Max(0, item.DateAddedSeconds))
                 .ToLocalTime()

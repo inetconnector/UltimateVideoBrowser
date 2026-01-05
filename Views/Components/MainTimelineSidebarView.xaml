@@ -79,7 +79,7 @@
                                     <Label Text="{Binding YearLabel}"
                                            FontSize="10"
                                            TextColor="{DynamicResource OnSurfaceMuted}"
-                                           IsVisible="{Binding ShowYear}" />
+                                           IsVisible="True" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Frame>

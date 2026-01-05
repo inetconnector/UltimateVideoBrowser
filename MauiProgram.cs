@@ -25,7 +25,7 @@ public static class MauiProgram
             .UseMauiCommunityToolkitMediaElement();
 
 #if WINDOWS
-        SvgImageSourceFix.Configure();
+        SvgImageSourceFix.Configure(); 
 #endif
 
 #if DEBUG

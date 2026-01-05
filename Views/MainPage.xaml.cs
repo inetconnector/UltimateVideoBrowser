@@ -20,6 +20,10 @@ public partial class MainPage : ContentPage
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
 
+    // Implemented per-platform (Windows only) to add reliable keyboard navigation.
+    partial void TryHookPlatformKeyboard();
+    partial void UnhookPlatformKeyboard();
+
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
     private string? pendingScrollToMediaPath;
@@ -94,6 +98,7 @@ public partial class MainPage : ContentPage
         SizeChanged += OnPageSizeChanged;
 
         TryHookHeaderSize();
+        TryHookPlatformKeyboard();
     }
 
     protected override void OnDisappearing()
@@ -103,6 +108,7 @@ public partial class MainPage : ContentPage
         appearingCts?.Dispose();
         appearingCts = null;
         SizeChanged -= OnPageSizeChanged;
+        UnhookPlatformKeyboard();
 
         if (isHeaderSizeHooked)
         {
@@ -145,6 +151,12 @@ public partial class MainPage : ContentPage
         lastLastVisibleIndex = e.LastVisibleItemIndex;
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
+            return;
+
+        // Only sync the timeline selection from scrolling when the grid is sorted by date.
+        // If the user sorts by name/duration, the first visible tile does not represent a
+        // stable point on the timeline, which can cause jitter and broken scrolling.
+        if (!string.Equals(vm.SelectedSortOption?.Key, "date", StringComparison.Ordinal))
             return;
 
         var index = Math.Clamp(e.FirstVisibleItemIndex, 0, vm.MediaItems.Count - 1);
@@ -259,6 +271,7 @@ public partial class MainPage : ContentPage
         private bool isIndexingOverlayVisible;
         private bool isTimelinePreviewVisible;
         private string timelinePreviewLabel = "";
+        private bool isPreviewDockExpanded = true;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
@@ -303,12 +316,16 @@ public partial class MainPage : ContentPage
             CopyItemCommand = vm.CopyItemCommand;
             DeleteItemCommand = vm.DeleteItemCommand;
             OpenItemMenuCommand = vm.OpenItemMenuCommand;
+            TogglePreviewDockExpandedCommand = new RelayCommand(() => IsPreviewDockExpanded = !IsPreviewDockExpanded);
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
                 isIndexingOverlaySuppressed = false;
                 IsIndexingOverlayVisible = true;
             });
+
+            TogglePreviewDockExpandedCommand = new RelayCommand(() =>
+                IsPreviewDockExpanded = !IsPreviewDockExpanded);
 
             proUpgradeService.ProStatusChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(IsProUnlocked)));
@@ -330,6 +347,7 @@ public partial class MainPage : ContentPage
 
                         OnPropertyChanged(nameof(IsIndexing));
                         OnPropertyChanged(nameof(IsTopBusy));
+                        OnPropertyChanged(nameof(IsEmptyStateVisible));
                         OnPropertyChanged(nameof(ShowIndexingBanner));
                         OnPropertyChanged(nameof(IndexBannerTitle));
                         OnPropertyChanged(nameof(IndexBannerMessage));
@@ -362,6 +380,7 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.HasMediaPermission):
                         OnPropertyChanged(nameof(HasMediaPermission));
+                        OnPropertyChanged(nameof(IsEmptyStateVisible));
                         break;
                     case nameof(MainViewModel.MediaItems):
                         OnPropertyChanged(nameof(MediaItems));
@@ -426,10 +445,12 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.IsSourceSwitching):
                         OnPropertyChanged(nameof(IsSourceSwitching));
                         OnPropertyChanged(nameof(IsTopBusy));
+                        OnPropertyChanged(nameof(IsEmptyStateVisible));
                         break;
                     case nameof(MainViewModel.IsRefreshing):
                         OnPropertyChanged(nameof(IsRefreshing));
                         OnPropertyChanged(nameof(IsTopBusy));
+                        OnPropertyChanged(nameof(IsEmptyStateVisible));
                         break;
                     case nameof(MainViewModel.IsInternalPlayerEnabled):
                         OnPropertyChanged(nameof(IsInternalPlayerEnabled));
@@ -480,6 +501,17 @@ public partial class MainPage : ContentPage
                         break;
                 }
             };
+
+            // MediaItems is an ObservableRangeCollection; most changes come via CollectionChanged,
+            // not PropertyChanged. We need to refresh derived UI state (empty overlay) accordingly.
+            vm.MediaItems.CollectionChanged += (_, _) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    OnPropertyChanged(nameof(IsEmptyStateVisible));
+                    OnPropertyChanged(nameof(MediaItems));
+                });
+            };
         }
 
         public double HeaderHeight
@@ -508,6 +540,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand RequestPermissionCommand { get; }
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
+        public IRelayCommand TogglePreviewDockExpandedCommand { get; }
         public IRelayCommand PlayCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
@@ -680,6 +713,26 @@ public partial class MainPage : ContentPage
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
         public bool ShowBottomDock => vm.ShowBottomDock;
+
+        public bool IsPreviewDockExpanded
+        {
+            get => isPreviewDockExpanded;
+            set
+            {
+                if (isPreviewDockExpanded == value)
+                    return;
+
+                isPreviewDockExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsEmptyStateVisible =>
+            vm.HasMediaPermission
+            && !vm.IsIndexing
+            && !vm.IsSourceSwitching
+            && !vm.IsRefreshing
+            && vm.MediaItems.Count == 0;
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
         public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
         public IReadOnlyList<MainViewModel.SearchScopeFilterOption> SearchScopeFilters => vm.SearchScopeFilters;

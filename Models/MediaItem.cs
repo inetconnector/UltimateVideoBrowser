@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using SQLite;
 using UltimateVideoBrowser.Resources.Strings;
@@ -46,6 +47,36 @@ public class MediaItem : INotifyPropertyChanged
 
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
+
+    [Ignore]
+    public bool HasDateAdded => DateAddedSeconds > 0;
+
+    [Ignore]
+    public DateTime DateAddedLocal
+    {
+        get
+        {
+            if (DateAddedSeconds <= 0)
+                return DateTime.MinValue;
+
+            return DateTimeOffset.FromUnixTimeSeconds(DateAddedSeconds)
+                .ToLocalTime()
+                .DateTime;
+        }
+    }
+
+    [Ignore]
+    public string DateAddedText
+    {
+        get
+        {
+            if (!HasDateAdded)
+                return string.Empty;
+
+            // Use the current culture's short date format (e.g. 05.01.2026 in German locales).
+            return DateAddedLocal.ToString("d", CultureInfo.CurrentCulture);
+        }
+    }
 
     [Indexed] public string? SourceId { get; set; }
 
