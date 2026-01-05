@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Windows.Input;
 using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Views.Components;
@@ -9,33 +11,87 @@ public partial class MainAlbumsTabsView : ContentView
     public MainAlbumsTabsView()
     {
         InitializeComponent();
-        actionsFlyout = CreateActionsFlyout();
     }
 
-    private void OnActionsClicked(object sender, EventArgs e)
+    private async void OnActionsClicked(object sender, EventArgs e)
     {
-        if (sender is VisualElement element)
+        var page = GetPage();
+        if (page == null)
+            return;
+
+        var options = BuildActionOptions();
+        if (options.Count == 0)
+            return;
+
+        var selection = await MainThread.InvokeOnMainThreadAsync(() =>
+            page.DisplayActionSheetAsync(
+                AppResources.ActionsButton,
+                AppResources.CancelButton,
+                null,
+                options.Select(option => option.Title).ToArray()));
+
+        if (string.IsNullOrWhiteSpace(selection) || selection == AppResources.CancelButton)
+            return;
+
+        var selected = options.FirstOrDefault(option => option.Title == selection);
+        selected?.Command.Execute(null);
+    }
+
+    private List<ActionOption> BuildActionOptions()
+    {
+        var options = new List<ActionOption>();
+        if (BindingContext is null)
+            return options;
+
+        if (TryGetCommand("OpenAlbumsCommand", out var openAlbums))
         {
-            actionsFlyout.ShowAt(element);
+            options.Add(new ActionOption(AppResources.ManageAlbumsButton, openAlbums));
         }
+
+        if (IsLocationEnabled() && TryGetCommand("OpenMapCommand", out var openMap))
+        {
+            options.Add(new ActionOption(AppResources.MapButton, openMap));
+        }
+
+        return options;
     }
 
-    private MenuFlyout CreateActionsFlyout()
+    private bool IsLocationEnabled()
     {
-        var flyout = new MenuFlyout();
-        flyout.Add(CreateFlyoutItem(AppResources.ManageAlbumsButton, "OpenAlbumsCommand"));
+        if (BindingContext is null)
+            return false;
 
-        var mapItem = CreateFlyoutItem(AppResources.MapButton, "OpenMapCommand");
-        mapItem.SetBinding(MenuFlyoutItem.IsEnabledProperty, "IsLocationEnabled");
-        flyout.Add(mapItem);
+        var property = BindingContext.GetType().GetProperty("IsLocationEnabled");
+        if (property?.GetValue(BindingContext) is bool isEnabled)
+            return isEnabled;
 
-        return flyout;
+        return false;
     }
 
-    private static MenuFlyoutItem CreateFlyoutItem(string text, string commandPath)
+    private bool TryGetCommand(string propertyName, out ICommand command)
     {
-        var item = new MenuFlyoutItem { Text = text };
-        item.SetBinding(MenuFlyoutItem.CommandProperty, commandPath);
-        return item;
+        command = null!;
+        if (BindingContext is null)
+            return false;
+
+        var property = BindingContext.GetType().GetProperty(propertyName);
+        if (property?.GetValue(BindingContext) is ICommand resolved)
+        {
+            command = resolved;
+            return true;
+        }
+
+        return false;
     }
+
+    private static Page? GetPage()
+    {
+        var app = Application.Current;
+        if (app == null)
+            return null;
+
+        return app.Windows.FirstOrDefault()?.Page;
+    }
+
+    private sealed record ActionOption(string Title, ICommand Command);
 }
