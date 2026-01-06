@@ -8,6 +8,11 @@
 
     <conv:BoolToEnabledTextConverter x:Key="BoolToEnabledTextConverter" />
 
+    <!-- Core principles:
+         - Ensure strong contrast for interactive controls in Dark Mode.
+         - Keep Light Mode clean and readable by relying on the same resource keys.
+         - Do not depend on platform defaults for Switch/Picker/Slider colors. -->
+
     <!-- 1) Base style WITH key (reusable) -->
     <Style x:Key="BaseButtonStyle" TargetType="Button">
         <Setter Property="FontSize" Value="14" />
@@ -30,6 +35,11 @@
                     <VisualState Name="Pressed">
                         <VisualState.Setters>
                             <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.55" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -60,6 +70,11 @@
                             <Setter Property="BackgroundColor" Value="{DynamicResource AccentStrong}" />
                         </VisualState.Setters>
                     </VisualState>
+                    <VisualState Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.55" />
+                        </VisualState.Setters>
+                    </VisualState>
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
@@ -73,19 +88,31 @@
         <Setter Property="Padding" Value="14,8" />
     </Style>
 
+    <!-- Text defaults (helps a lot in settings screens) -->
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
+    </Style>
+
+    <!-- Subtle text helper (opt-in by using Style="{StaticResource MutedLabelStyle}") -->
+    <Style x:Key="MutedLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{DynamicResource OnSurfaceMuted}" />
+    </Style>
+
+    <!-- Frame baseline -->
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
     </Style>
 
+    <!-- Cards: stronger border + surface separation for readability -->
     <Style x:Key="CardFrameStyle" TargetType="Frame">
         <Setter Property="CornerRadius" Value="18" />
         <Setter Property="Padding" Value="14" />
-        <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevated}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
         <Setter Property="HasShadow" Value="True" />
         <Setter Property="Shadow">
             <Shadow Brush="{DynamicResource ShadowColor}"
-                    Opacity="0.35"
+                    Opacity="0.30"
                     Radius="16"
                     Offset="0,8" />
         </Setter>
@@ -97,21 +124,22 @@
         <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
         <Setter Property="Shadow">
             <Shadow Brush="{DynamicResource ShadowColor}"
-                    Opacity="0.45"
+                    Opacity="0.40"
                     Radius="22"
                     Offset="0,12" />
         </Setter>
     </Style>
 
+    <!-- Inputs: clear separation from card background -->
     <Style x:Key="InputFrameStyle" TargetType="Frame">
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Padding" Value="6,2" />
-        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
         <Setter Property="HasShadow" Value="True" />
         <Setter Property="Shadow">
             <Shadow Brush="{DynamicResource ShadowColor}"
-                    Opacity="0.2"
+                    Opacity="0.20"
                     Radius="10"
                     Offset="0,4" />
         </Setter>
@@ -121,40 +149,89 @@
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="Padding" Value="6" />
         <Setter Property="BackgroundColor" Value="{DynamicResource AccentSoft}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
     </Style>
 
     <Style x:Key="ChipFrameStyle" TargetType="Frame">
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Padding" Value="10,6" />
-        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
     </Style>
 
     <!-- 3) Overlay style can now safely inherit -->
     <Style x:Key="OverlayButtonStyle"
            TargetType="Button"
            BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
         <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup Name="CommonStates">
                     <VisualState Name="Normal" />
                     <VisualState Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+                            <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevated}" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+                            <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevated}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.55" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
+    </Style>
+
+    <!-- CONTROL VISIBILITY FIXES -->
+    <Style TargetType="Switch">
+        <Setter Property="OnColor" Value="{DynamicResource Accent}" />
+        <Setter Property="ThumbColor" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Scale" Value="1.05" />
+    </Style>
+
+    <Style TargetType="Slider">
+        <Setter Property="MinimumTrackColor" Value="{DynamicResource Accent}" />
+        <Setter Property="MaximumTrackColor" Value="{DynamicResource BorderStrong}" />
+        <Setter Property="ThumbColor" Value="{DynamicResource OnSurface}" />
+    </Style>
+
+    <Style TargetType="Picker">
+        <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+        <Setter Property="TitleColor" Value="{DynamicResource OnSurfaceMuted}" />
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
+        <Setter Property="PlaceholderColor" Value="{DynamicResource OnSurfaceMuted}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+        <Setter Property="ClearButtonVisibility" Value="WhileEditing" />
+    </Style>
+
+    <Style TargetType="Editor">
+        <Setter Property="TextColor" Value="{DynamicResource OnSurface}" />
+        <Setter Property="PlaceholderColor" Value="{DynamicResource OnSurfaceMuted}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+    </Style>
+
+    <Style TargetType="BoxView">
+        <Setter Property="Color" Value="{DynamicResource BorderSubtle}" />
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Helper for settings rows (opt-in) -->
+    <Style x:Key="SettingsRowFrameStyle" TargetType="Frame" BasedOn="{StaticResource CardFrameStyle}">
+        <Setter Property="Padding" Value="18,14" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
     </Style>
 
 </ResourceDictionary>
