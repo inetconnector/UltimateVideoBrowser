@@ -1,17 +1,24 @@
+using System;
+using Window = Microsoft.Maui.Controls.Window;
+
+#if WINDOWS
+using System.Runtime.InteropServices;
+#endif
+
 #if ANDROID
 using Android.Views;
+using Microsoft.Maui.ApplicationModel;
 #endif
 
 #if MACCATALYST
 using UIKit;
 #endif
-using Window = Microsoft.Maui.Controls.Window;
 
 namespace UltimateVideoBrowser.Helpers;
 
 /// <summary>
-///     Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window" /> to the foreground.
-///     This is intentionally resilient: failures must never crash the app.
+/// Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window" /> to the foreground.
+/// This is intentionally resilient: failures must never crash the app.
 /// </summary>
 internal static class WindowFocusHelper
 {
@@ -32,7 +39,7 @@ internal static class WindowFocusHelper
     }
 
 #if WINDOWS
-    private static void TryBringToFrontWindows(Microsoft.Maui.Controls.Window window)
+    private static void TryBringToFrontWindows(Window window)
     {
         // MAUI on Windows uses a WinUI window as its native platform view.
         if (window.Handler.PlatformView is not Microsoft.UI.Xaml.Window xamlWindow)
@@ -65,12 +72,12 @@ internal static class WindowFocusHelper
         }
 
         // Ensure it is not minimized and then request foreground.
-        ShowWindow(hwnd, SW_RESTORE);
+        _ = ShowWindow(hwnd, SW_RESTORE);
 
         // "TopMost toggling" is a common trick to reliably bring a window in front.
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        SetForegroundWindow(hwnd);
+        _ = SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        _ = SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        _ = SetForegroundWindow(hwnd);
 
         // Finally, request activation on the WinUI window.
         try
@@ -98,7 +105,13 @@ internal static class WindowFocusHelper
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy,
+    private static extern bool SetWindowPos(
+        IntPtr hWnd,
+        IntPtr hWndInsertAfter,
+        int x,
+        int y,
+        int cx,
+        int cy,
         uint uFlags);
 #endif
 
@@ -110,7 +123,10 @@ internal static class WindowFocusHelper
         try
         {
             var activity = Platform.CurrentActivity;
-            activity?.RunOnUiThread(() => { activity.Window?.AddFlags(WindowManagerFlags.TurnScreenOn); });
+            activity?.RunOnUiThread(() =>
+            {
+                activity.Window?.AddFlags(WindowManagerFlags.TurnScreenOn);
+            });
         }
         catch
         {
@@ -124,7 +140,7 @@ internal static class WindowFocusHelper
     {
         try
         {
-            UIKit.UIApplication.SharedApplication.KeyWindow?.MakeKeyAndVisible();
+            UIApplication.SharedApplication.KeyWindow?.MakeKeyAndVisible();
         }
         catch
         {

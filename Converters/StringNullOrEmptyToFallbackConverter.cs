@@ -1,6 +1,7 @@
 using System.Globalization;
-using Uri = Android.Net.Uri;
+
 #if ANDROID && !WINDOWS
+using Uri = Android.Net.Uri;
 #endif
 
 namespace UltimateVideoBrowser.Converters;
