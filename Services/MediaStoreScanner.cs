@@ -14,6 +14,11 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
+#if !ANDROID || WINDOWS
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
+#endif
 #if WINDOWS
 using System.Threading.Channels;
 #endif

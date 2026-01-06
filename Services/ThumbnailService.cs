@@ -177,7 +177,7 @@ public sealed class ThumbnailService
                     if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
                         return null;
 
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                     if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
                         return null;
 
@@ -193,7 +193,7 @@ public sealed class ThumbnailService
                 {
                     if (item.MediaType is MediaType.Photos or MediaType.Graphics)
                     {
-                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                         if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
                         {
                             File.Move(tmpPath, thumbPath, true);

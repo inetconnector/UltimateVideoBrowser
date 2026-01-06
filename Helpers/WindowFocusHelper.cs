@@ -1,4 +1,14 @@
+using System;
+using System.Runtime.InteropServices;
+
+#if ANDROID
 using Android.Views;
+using Microsoft.Maui.ApplicationModel;
+#endif
+
+#if MACCATALYST
+using UIKit;
+#endif
 using Window = Microsoft.Maui.Controls.Window;
 
 namespace UltimateVideoBrowser.Helpers;
