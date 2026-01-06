@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Απόλυτος περιηγητής βίντεο</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Βίντεο</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Πηγές</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Επανευρετηρίαση</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Αναζήτηση βίντεο...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Ταξινόμηση</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Όνομα</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Ημερομηνία</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Διάρκεια</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Γίνεται ευρετηρίαση...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Νέα στοιχεία: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Πηγές</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Πηγές (τοπικοί φάκελοι / συγχρονισμένες κοινές χρήσεις)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Ενεργό</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Απενεργοποιημένο</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Όλα τα βίντεο της συσκευής</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>Η προσωπική σας βιβλιοθήκη</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Ανακαλύψτε κάθε βίντεο άμεσα</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Περιηγηθείτε με πλούσιες μικρογραφίες, έξυπνη αναζήτηση και γρήγορη ευρετηρίαση σε όλους τους φακέλους σας.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Διαχείριση πηγών</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Εύρος ημερομηνιών</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>Από</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>Έως</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Γίνεται ευρετηρίαση {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Φάκελος: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>Αρχείο: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Απόκρυψη</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>Ακύρωση</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Λεπτομέρειες</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>Στιγμιότυπα βιβλιοθήκης</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Βίντεο που ευρετηριάστηκαν</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Ενεργοποιημένες πηγές</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>Συμβουλή</value>
+    
+    
+    <value>Συμβουλή Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Χρησιμοποιήστε αναζήτηση + φίλτρα και μετά επανευρετηρίαση αφού προσθέσετε νέους φακέλους για τα καλύτερα αποτελέσματα.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} από {1} πηγές ενεργές</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Απαιτείται πρόσβαση</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Επιτρέψτε την πρόσβαση στα βίντεό σας ώστε να μπορούμε να τα ευρετηριάσουμε και να τα αναπαράγουμε.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Παραχώρηση πρόσβασης</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Εντάξει</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Κοινοποίηση</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Κοινοποίηση βίντεο</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Αποθήκευση ως...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Βίντεο</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Αποτυχία αποθήκευσης</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Δεν μπορέσαμε να αποθηκεύσουμε αυτό το βίντεο. Δοκιμάστε άλλη τοποθεσία.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Η "Αποθήκευση ως" δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Πίσω</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Ρυθμίσεις</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Ρυθμίσεις</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Ρυθμίσεις</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Εμφάνιση</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Θέμα</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Ταξινόμηση</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Προεπιλεγμένη σειρά</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Φίλτρο</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Ενεργοποίηση φίλτρου ημερομηνίας</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>Από</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>Έως</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Ευρετηρίαση</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Επανευρετηρίαση στην επόμενη εκκίνηση</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Φωτεινό</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Σκούρο</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Δεν υπάρχουν βίντεο ακόμη</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Προσθέστε μια πηγή ή ανανεώστε για να ξεκινήσετε την περιήγηση στη βιβλιοθήκη σας.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Προσθήκη πηγών</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Προσθήκη φακέλου</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Αφαίρεση</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Αφαίρεση πηγής;</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>Αφαίρεση “{0}” από τις πηγές;</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Αφαίρεση</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Προσθήκη πηγής</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Όνομα πηγής</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Προσθήκη</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>Ακύρωση</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Νέα πηγή</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Έχει ήδη προστεθεί</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Αυτός ο φάκελος είναι ήδη στις πηγές σας.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Επιλέξτε έναν τοπικό φάκελο ή ένα δικτυακό κοινόχρηστο.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Περιήγηση φακέλου</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Επιλογή φακέλου</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Επιλέξτε έναν τοπικό φάκελο ή ένα δικτυακό κοινόχρηστο.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Προσθήκη άλλου φακέλου;</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Θέλετε να προσθέσετε άλλο φάκελο;</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Προσθήκη άλλου</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Τέλος</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Η διαδρομή δεν βρέθηκε</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>Δεν μπορέσαμε να βρούμε αυτόν τον φάκελο. Ελέγξτε τη διαδρομή.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Βιβλιοθήκη πολυμέσων συσκευής</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Αφαίρεση από το ευρετήριο ατόμων</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Συγχώνευση</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Συγχώνευση σε…</value></data><data name="QualityLabel" xml:space="preserve"><value>Ποιότητα</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Συγχώνευση</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Συγχώνευση σε…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Ποιότητα</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>Αρχείο σφαλμάτων</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>Μοιραστείτε αυτό το αρχείο αν κάτι αποτύχει ή μια μικρογραφία είναι κενή.</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>Εμφάνιση αρχείου</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>Κοινοποίηση αρχείου</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>Εκκαθάριση αρχείου</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>Έγγραφα</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>Γραφικά και στιγμιότυπα</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>Φωτογραφίες</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>Βίντεο</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>Διαγραφή βάσης δεδομένων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>Διαγράφει την τοπική βάση δεδομένων και την αναδημιουργεί επανασκανάροντας τις πηγές σας.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>Διαχωρίστε τις επεκτάσεις με κόμματα (π.χ. .mp4, .mkv).</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>Επεκτάσεις αρχείων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>Ενεργοποιήστε αυτό για να εμφανίζονται ενέργειες που αλλάζουν αρχεία στον δίσκο.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>Να επιτρέπεται η μετονομασία, μετακίνηση, αντιγραφή και διαγραφή</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>Αλλαγές αρχείων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>Κατάσταση</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>Χρήση εσωτερικού προγράμματος αναπαραγωγής βίντεο</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>Τα δεδομένα τοποθεσίας παραμένουν στη συσκευή σας, αλλά οι εξωτερικοί διακομιστές χαρτών ενδέχεται να λαμβάνουν δεδομένα αιτήσεων (π.χ. διεύθυνση IP). Είστε υπεύθυνοι για την κοινή χρήση ευαίσθητων τοποθεσιών· οι υπηρεσίες τρίτων έχουν τους δικούς τους όρους και πολιτικές απορρήτου.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>Εξαγάγετε μεταδεδομένα GPS από φωτογραφίες και βίντεο ώστε να εμφανίζονται στον παγκόσμιο χάρτη. Τα πλακίδια χάρτη φορτώνονται από εξωτερικούς διακομιστές.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>Εμφάνιση τοποθεσιών</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>Τοποθεσίες</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>Επιλέξτε ποιοι τύποι να ευρετηριαστούν στη βιβλιοθήκη σας.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>Τύποι μέσων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>Λήψη μοντέλων προσώπων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>Μοντέλα προσώπων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>Ενεργοποιήστε το για να επισημαίνονται άτομα σε φωτογραφίες και βίντεο από τη βιβλιοθήκη.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>Ενεργοποίηση επισήμανσης ατόμων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>Επισήμανση ατόμων</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>Αναπαραγωγή</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• Απεριόριστη αναγνώριση προσώπων
+• Αυτόματα άλμπουμ ατόμων
+• Μαζική ταξινόμηση (1000+ φωτογραφίες)
+• Τοπική εξαγωγή και αντίγραφα ασφαλείας
+• Χωρίς διαφημίσεις</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>Επαναφορά αγοράς</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>Αναβάθμιση Pro</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>Ξεκλείδωμα Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Η αντιγραφή στο πρόχειρο απέτυχε. Δοκίμασε ξανά ή χρησιμοποίησε «Προβολή αρχείου καταγραφής» για χειροκίνητη αντιγραφή.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Αναβάθμιση τώρα</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Ετικέτες ατόμων (δοκιμή)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>Οι ετικέτες ατόμων είναι ενεργές για 14 ημέρες στη δωρεάν έκδοση. Αναβάθμισε σε Pro για να τις διατηρήσεις μόνιμα.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Επαναδημιουργία ευρετηρίου βιβλιοθήκης</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Θέλεις να επαναδημιουργηθεί το ευρετήριο για όλα τώρα; Αυτό μπορεί να πάρει λίγο χρόνο ανάλογα με το μέγεθος της βιβλιοθήκης σου.</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Αντίγραφο ασφαλείας βάσης</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Εξαγωγή ή εισαγωγή της τοπικής βάσης μαζί με ρυθμίσεις και μικρογραφίες.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Εξαγωγή αντιγράφου</value></data><data name="BackupImportButton" xml:space="preserve"><value>Εισαγωγή αντιγράφου</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Εξαγωγή ολοκληρώθηκε</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Το αντίγραφο ασφαλείας εξήχθη με επιτυχία.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Αποτυχία εξαγωγής</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Δεν ήταν δυνατή η δημιουργία ή αποθήκευση του αντιγράφου.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Επιλέξτε ZIP αντιγράφου</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Επαναφορά αντιγράφου;</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Θα αντικαταστήσει την τρέχουσα βάση, ρυθμίσεις και μικρογραφίες. Συνέχεια;</value></data><data name="RestoreButton" xml:space="preserve"><value>Επαναφορά</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Σε εξέλιξη η ευρετηρίαση</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Σταματήστε την ευρετηρίαση πριν την επαναφορά.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Αποτυχία επαναφοράς</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Δεν ήταν δυνατή η επαναφορά του αντιγράφου.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Το αντίγραφο δεν περιέχει αρχείο βάσης δεδομένων.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Η επαναφορά ολοκληρώθηκε</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Το αντίγραφο επαναφέρθηκε. Ίσως χρειαστεί να ανοίξετε ξανά την εφαρμογή.</value></data></root>

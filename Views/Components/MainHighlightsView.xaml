@@ -5,21 +5,23 @@
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
              x:Class="UltimateVideoBrowser.Views.Components.MainHighlightsView">
-    <Grid Padding="16,0,16,12"
+    <Grid Padding="20,0,20,16"
           RowDefinitions="Auto,Auto,Auto"
-          RowSpacing="10">
+          RowSpacing="12">
         <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
                FontAttributes="Bold"
                FontSize="14"
                TextColor="{DynamicResource OnSurface}" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12">
-            <Frame BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="16"
-                   Padding="12"
-                   BorderColor="{DynamicResource BorderSubtle}">
-                <VerticalStackLayout Spacing="6">
-                    <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="14">
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RequestReindexCommand}" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="8">
+                    <Frame Style="{StaticResource IconBadgeStyle}">
+                        <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
+                    </Frame>
                     <Label Text="{Binding IndexedMediaCount}"
                            FontSize="20"
                            FontAttributes="Bold"
@@ -30,13 +32,14 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Column="1"
-                   BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="16"
-                   Padding="12"
-                   BorderColor="{DynamicResource BorderSubtle}">
-                <VerticalStackLayout Spacing="6">
-                    <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
+            <Frame Grid.Column="1" Style="{StaticResource CardFrameStyle}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSourcesCommand}" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="8">
+                    <Frame Style="{StaticResource IconBadgeStyle}">
+                        <Image Source="icon_sources.svg" HeightRequest="18" WidthRequest="18" />
+                    </Frame>
                     <Label Text="{Binding EnabledSourceCount}"
                            FontSize="20"
                            FontAttributes="Bold"
@@ -50,13 +53,11 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Column="2"
-                   BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="16"
-                   Padding="12"
-                   BorderColor="{DynamicResource BorderSubtle}">
-                <VerticalStackLayout Spacing="6">
-                    <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
+            <Frame Grid.Column="2" Style="{StaticResource CardFrameStyle}">
+                <VerticalStackLayout Spacing="8">
+                    <Frame Style="{StaticResource IconBadgeStyle}">
+                        <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />
+                    </Frame>
                     <Label Text="{x:Static strings:AppResources.HighlightsTipLabel}"
                            FontSize="13"
                            FontAttributes="Bold"

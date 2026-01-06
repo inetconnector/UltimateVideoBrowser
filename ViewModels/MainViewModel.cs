@@ -5,6 +5,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Collections;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -21,7 +22,9 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private const int PageSize = 60;
+    private readonly AlbumService albumService;
     private readonly IDialogService dialogService;
+    private readonly FaceScanQueueService faceScanQueueService;
     private readonly IFileExportService fileExportService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
@@ -33,12 +36,13 @@ public partial class MainViewModel : ObservableObject
     private readonly PermissionService permissionService;
     private readonly PlaybackService playbackService;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
-    private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
+    [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
+    [ObservableProperty] private List<AlbumListItem> albumTabs = new();
     [ObservableProperty] private bool allowFileChanges;
     [ObservableProperty] private string currentMediaName = "";
     [ObservableProperty] private string? currentMediaSource;
@@ -55,6 +59,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int indexedCount;
     [ObservableProperty] private int indexedMediaCount;
     private int indexLastInserted;
+    private int indexLastLiveRefreshInserted;
+    private long indexLastLiveRefreshMs;
     [ObservableProperty] private int indexProcessed;
     [ObservableProperty] private double indexRatio;
     private int indexStartingCount;
@@ -66,12 +72,13 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isIndexing;
     private bool isInitialized;
     [ObservableProperty] private bool isInternalPlayerEnabled;
-    [ObservableProperty] private bool isLocationEnabled;
     private bool isLoadingMoreMediaItems;
+    [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
+    private bool isSyncingFilterOptions;
     [ObservableProperty] private int markedCount;
     [ObservableProperty] private int mediaCount;
 
@@ -80,6 +87,7 @@ public partial class MainViewModel : ObservableObject
     private int mediaItemsOffset;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
+    [ObservableProperty] private bool needsReindex;
     private IndexProgress? pendingIndexProgress;
 
     // Best-effort background people scan after indexing so the People browser is populated automatically.
@@ -87,9 +95,12 @@ public partial class MainViewModel : ObservableObject
     private Task? peopleAutoScanTask;
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string searchText = "";
+    [ObservableProperty] private AlbumListItem? selectedAlbum;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
+    [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
     [ObservableProperty] private SortOption? selectedSortOption;
+    [ObservableProperty] private MediaSource? selectedSource;
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private string sourcesSummary = "";
     [ObservableProperty] private int taggedPeopleCount;
@@ -112,21 +123,25 @@ public partial class MainViewModel : ObservableObject
         PermissionService permissionService,
         IFileExportService fileExportService,
         IDialogService dialogService,
+        AlbumService albumService,
         PeopleTagService peopleTagService,
         ModelFileService modelFileService,
-        PeopleRecognitionService peopleRecognitionService)
+        PeopleRecognitionService peopleRecognitionService,
+        FaceScanQueueService faceScanQueueService)
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
-        this.settingsService = settingsService;
+        this.SettingsService = settingsService;
         this.thumbnailService = thumbnailService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
         this.dialogService = dialogService;
+        this.albumService = albumService;
         this.peopleTagService = peopleTagService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
+        this.faceScanQueueService = faceScanQueueService;
 
         mediaMarkedHandler = OnMediaPropertyChanged;
         SortOptions = new[]
@@ -135,22 +150,45 @@ public partial class MainViewModel : ObservableObject
             new SortOption("date", AppResources.SortDate),
             new SortOption("duration", AppResources.SortDuration)
         };
-        SelectedSortOption = SortOptions.FirstOrDefault();
+        // Default to date sorting so the timeline and date-based navigation are consistent.
+        SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == "date") ?? SortOptions.FirstOrDefault();
 
         MediaTypeFilters = new[]
         {
             new MediaTypeFilterOption(MediaType.Videos, AppResources.MediaTypeVideos),
             new MediaTypeFilterOption(MediaType.Photos, AppResources.MediaTypePhotos),
+            new MediaTypeFilterOption(MediaType.Graphics, AppResources.MediaTypeGraphics),
             new MediaTypeFilterOption(MediaType.Documents, AppResources.MediaTypeDocuments)
         };
+
+        SearchScopeFilters = new[]
+        {
+            new SearchScopeFilterOption(SearchScope.Name, AppResources.SearchScopeName),
+            new SearchScopeFilterOption(SearchScope.People, AppResources.SearchScopePeople),
+            new SearchScopeFilterOption(SearchScope.Albums, AppResources.SearchScopeAlbums)
+        };
+
+        foreach (var option in MediaTypeFilters)
+            option.PropertyChanged += HandleMediaTypeFilterOptionChanged;
+        foreach (var option in SearchScopeFilters)
+            option.PropertyChanged += HandleSearchScopeFilterOptionChanged;
+
+        SyncMediaTypeFilterSelections();
+        SyncSearchScopeFilterSelections();
 
         MediaItems.CollectionChanged += OnMediaItemsCollectionChanged;
 
         RefreshPeopleModelsStatus();
+        settingsService.NeedsReindexChanged += HandleNeedsReindexChanged;
     }
+
+    internal AppSettingsService SettingsService { get; }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
+    public IReadOnlyList<SearchScopeFilterOption> SearchScopeFilters { get; }
+    public bool HasAlbums => AlbumTabs.Any(tab => !tab.IsAll);
+    public bool HasMultipleSources => EnabledSourceCount > 1;
 
     public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
@@ -161,7 +199,7 @@ public partial class MainViewModel : ObservableObject
     public bool ShowVideoPlayer => IsInternalPlayerEnabled && CurrentMediaType == MediaType.Videos
                                                            && !string.IsNullOrWhiteSpace(CurrentMediaSource);
 
-    public bool ShowPhotoPreview => CurrentMediaType == MediaType.Photos
+    public bool ShowPhotoPreview => CurrentMediaType is MediaType.Photos or MediaType.Graphics
                                     && !string.IsNullOrWhiteSpace(CurrentMediaSource);
 
     public bool ShowDocumentPreview => CurrentMediaType == MediaType.Documents
@@ -169,10 +207,26 @@ public partial class MainViewModel : ObservableObject
 
     public bool ShowPreview => ShowVideoPlayer || ShowPhotoPreview || ShowDocumentPreview;
 
-    private void OnNeedsReindexChanged(object? sender, bool needsReindex)
+    public IndexingState IndexState =>
+        IsIndexing ? IndexingState.Running :
+        NeedsReindex ? IndexingState.NeedsReindex :
+        IndexingState.Ready;
+
+    public event EventHandler? ProUpgradeRequested;
+
+    /// <summary>
+    ///     Raised (throttled) during indexing when new items were inserted so the UI can refresh in the background.
+    ///     The view is responsible for preserving the current scroll position and selection.
+    /// </summary>
+    public event EventHandler? IndexLiveRefreshSuggested;
+
+    private void HandleNeedsReindexChanged(object? sender, bool needsReindex)
     {
         if (!needsReindex || IsIndexing)
+        {
+            NeedsReindex = needsReindex;
             return;
+        }
 
         if (!isInitialized)
         {
@@ -180,6 +234,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        NeedsReindex = needsReindex;
         _ = RunIndexAsync();
     }
 
@@ -189,31 +244,49 @@ public partial class MainViewModel : ObservableObject
             return;
 
         isInitialized = true;
-        await sourceService.EnsureDefaultSourceAsync();
-
         ReloadSettingsFromService();
-        var sources = await sourceService.GetSourcesAsync();
-        ActiveSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
-        await UpdateSourceStatsAsync(sources);
-        Sources = sources.Where(s => s.IsEnabled).ToList();
 
-        HasMediaPermission = await permissionService.CheckMediaReadAsync();
+        var activeSourceId = ActiveSourceId;
+        var selectedMediaTypes = SelectedMediaTypes;
 
-        if (!HasMediaPermission)
+        var initResult = await Task.Run(async () =>
         {
-            MediaItems.Clear();
-            mediaItemsOffset = 0;
-            hasMoreMediaItems = false;
-            var total = await indexService.CountAsync(SelectedMediaTypes);
-            await MainThread.InvokeOnMainThreadAsync(() => IndexedMediaCount = total);
+            await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+
+            var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+            var normalizedSourceId = NormalizeActiveSourceId(sources, activeSourceId);
+            var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+            var hasPermission = await permissionService.CheckMediaReadAsync().ConfigureAwait(false);
+
+            var total = await indexService.CountAsync(selectedMediaTypes).ConfigureAwait(false);
+
+            return (sources, enabledSources, normalizedSourceId, hasPermission, total);
+        }).ConfigureAwait(false);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            ActiveSourceId = initResult.normalizedSourceId;
+            Sources = BuildSourceTabs(initResult.enabledSources);
+            _ = UpdateSourceStatsAsync(initResult.sources);
+            HasMediaPermission = initResult.hasPermission;
+        });
+
+        if (!initResult.hasPermission)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                MediaItems.Clear();
+                mediaItemsOffset = 0;
+                hasMoreMediaItems = false;
+                IndexedMediaCount = initResult.total;
+            });
             return;
         }
 
         _ = RefreshAsync();
-
         _ = RefreshTaggedPeopleCountAsync();
 
-        if (settingsService.NeedsReindex)
+        if (SettingsService.NeedsReindex)
             _ = RunIndexAsync();
     }
 
@@ -234,12 +307,37 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshTaggedPeopleCountAsync();
     }
 
+    public async Task TryShowPeopleTaggingTrialHintAsync()
+    {
+        if (SettingsService.IsProUnlocked)
+            return;
+        if (!SettingsService.PeopleTaggingEnabled)
+            return;
+        if (SettingsService.PeopleTaggingTrialHintShown)
+            return;
+
+        SettingsService.PeopleTaggingTrialHintShown = true;
+
+        var msg = AppResources.PeopleTagsTrialHint;
+        var ok = AppResources.OkButton;
+        var upgrade = AppResources.UpgradeNowButton;
+
+        var goUpgrade = await dialogService.DisplayAlertAsync(
+            AppResources.PeopleTagsTrialTitle,
+            msg,
+            upgrade,
+            ok).ConfigureAwait(false);
+
+        if (goUpgrade)
+            ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
+    }
+
     public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(path))
             return null;
 
-        MediaItem? target = FindMediaItem(path);
+        var target = FindMediaItem(path);
         var lastCount = -1;
 
         while (target == null && hasMoreMediaItems && !cancellationToken.IsCancellationRequested)
@@ -270,43 +368,61 @@ public partial class MainViewModel : ObservableObject
         {
             IsRefreshing = true;
             var refreshVersion = Interlocked.Increment(ref mediaQueryVersion);
-            var result = await Task.Run(async () =>
+            try
             {
-                var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
-                var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+                var result = await Task.Run(async () =>
+                {
+                    var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+                    var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+                    var albumSummaries = await albumService.GetAlbumSummariesAsync().ConfigureAwait(false);
+                    var normalizedAlbumId = NormalizeActiveAlbumId(albumSummaries, ActiveAlbumId);
+                    var albumTabs = BuildAlbumTabs(albumSummaries);
 
-                var sortKey = SelectedSortOption?.Key ?? "name";
-                var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-                var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+                    var sortKey = SelectedSortOption?.Key ?? "name";
+                    var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+                    var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
 
-                // IMPORTANT:
-                // An empty source id is treated as "all sources" (no SourceId filter).
-                // Previously we returned an empty list, which made the UI look broken
-                // when the active source wasn't set or when sources were temporarily unavailable.
-                var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
-                var items = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                        SelectedMediaTypes, 0, PageSize)
-                    .ConfigureAwait(false);
-                var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
-                var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+                    // IMPORTANT:
+                    // An empty source id is treated as "all sources" (no SourceId filter).
+                    // Previously we returned an empty list, which made the UI look broken
+                    // when the active source wasn't set or when sources were temporarily unavailable.
+                    var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
+                    var items = string.IsNullOrWhiteSpace(normalizedAlbumId)
+                        ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
+                                dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                            .ConfigureAwait(false)
+                        : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
+                                querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                            .ConfigureAwait(false);
+                    var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
+                    var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
-                return (sources, enabledSources, items, totalCount, normalizedSourceId, refreshVersion);
-            });
+                    return (sources, enabledSources, items, totalCount, normalizedSourceId, normalizedAlbumId,
+                        albumTabs,
+                        refreshVersion);
+                });
 
-            await MainThread.InvokeOnMainThreadAsync(() =>
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (result.refreshVersion != mediaQueryVersion)
+                        return;
+
+                    ActiveSourceId = result.normalizedSourceId;
+                    ActiveAlbumId = result.normalizedAlbumId;
+                    Sources = BuildSourceTabs(result.enabledSources);
+                    AlbumTabs = result.albumTabs;
+                    _ = UpdateSourceStatsAsync(result.sources);
+                    MediaItems.ReplaceRange(result.items);
+                    IndexedMediaCount = result.totalCount;
+                    mediaItemsOffset = result.items.Count;
+                    hasMoreMediaItems = result.items.Count == PageSize;
+                    isLoadingMoreMediaItems = false;
+                });
+            }
+            catch (Exception ex)
             {
-                if (result.refreshVersion != mediaQueryVersion)
-                    return;
-
-                ActiveSourceId = result.normalizedSourceId;
-                Sources = result.enabledSources;
-                _ = UpdateSourceStatsAsync(result.sources);
-                MediaItems.ReplaceRange(result.items);
-                IndexedMediaCount = result.totalCount;
-                mediaItemsOffset = result.items.Count;
-                hasMoreMediaItems = result.items.Count == PageSize;
-                isLoadingMoreMediaItems = false;
-            });
+                ErrorLog.LogException(ex, "MainViewModel.RefreshAsync");
+            }
         }
         finally
         {
@@ -333,9 +449,13 @@ public partial class MainViewModel : ObservableObject
             var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
             var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-            var nextItems = await indexService.QueryPageAsync(SearchText, querySourceId, sortKey, dateFrom, dateTo,
-                    SelectedMediaTypes, mediaItemsOffset, PageSize)
-                .ConfigureAwait(false);
+            var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
+                ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey, dateFrom,
+                        dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                    .ConfigureAwait(false)
+                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
+                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                    .ConfigureAwait(false);
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -426,7 +546,7 @@ public partial class MainViewModel : ObservableObject
             indexCts?.Dispose();
             indexCts = new CancellationTokenSource();
 
-            var indexedTypes = settingsService.IndexedMediaTypes;
+            var indexedTypes = SettingsService.IndexedMediaTypes;
             await Task.Run(
                 async () => { await indexService.IndexSourcesAsync(sources, indexedTypes, progress, indexCts.Token); },
                 indexCts.Token);
@@ -456,7 +576,9 @@ public partial class MainViewModel : ObservableObject
         }
 
         if (completed)
-            settingsService.NeedsReindex = false;
+            SettingsService.NeedsReindex = false;
+        else
+            SettingsService.NeedsReindex = true;
 
         await RefreshAsync();
 
@@ -493,34 +615,16 @@ public partial class MainViewModel : ObservableObject
 
                 await peopleRecognitionService.WarmupModelsAsync(ct).ConfigureAwait(false);
 
-                var offset = 0;
-                const int batchSize = 200;
+                var sourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+                var sortKey = SelectedSortOption?.Key ?? "date";
+                DateTime? from = IsDateFilterEnabled ? DateFilterFrom : null;
+                DateTime? to = IsDateFilterEnabled ? DateFilterTo : null;
 
-                // Page through all photos (current source filter if one is selected).
-                while (!ct.IsCancellationRequested)
-                {
-                    var sourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-                    var sortKey = SelectedSortOption?.Key ?? "date";
-                    DateTime? from = IsDateFilterEnabled ? DateFilterFrom : null;
-                    DateTime? to = IsDateFilterEnabled ? DateFilterTo : null;
+                await faceScanQueueService
+                    .EnqueuePhotosForScanAsync(sourceId, sortKey, from, to, ct)
+                    .ConfigureAwait(false);
 
-                    var page = await indexService
-                        .QueryPageAsync("", sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
-                        .ConfigureAwait(false);
-
-                    if (page.Count == 0)
-                        break;
-
-                    foreach (var item in page)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await peopleRecognitionService.EnsurePeopleTagsForMediaAsync(item, ct).ConfigureAwait(false);
-                    }
-
-                    offset += page.Count;
-                    if (page.Count < batchSize)
-                        break;
-                }
+                await faceScanQueueService.ProcessQueueAsync(ct).ConfigureAwait(false);
 
                 // Refresh UI once after the scan to populate People/Tag counts.
                 await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -561,7 +665,7 @@ public partial class MainViewModel : ObservableObject
         CurrentMediaType = item.MediaType;
         IsPlayerFullscreen = false;
 
-        if (item.MediaType == MediaType.Videos && settingsService.InternalPlayerEnabled)
+        if (item.MediaType == MediaType.Videos && SettingsService.InternalPlayerEnabled)
             return;
 
         playbackService.Open(item);
@@ -570,7 +674,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void TogglePlayerFullscreen()
     {
-        if (!ShowVideoPlayer)
+        if (!ShowVideoPlayer && !IsPlayerFullscreen)
             return;
 
         IsPlayerFullscreen = !IsPlayerFullscreen;
@@ -592,6 +696,88 @@ public partial class MainViewModel : ObservableObject
             return;
 
         SelectedMediaTypes = updated;
+    }
+
+    [RelayCommand]
+    public void ToggleSearchScope(SearchScope scope)
+    {
+        if (scope == SearchScope.None)
+            return;
+
+        var updated = SelectedSearchScope;
+        if (updated.HasFlag(scope))
+            updated &= ~scope;
+        else
+            updated |= scope;
+
+        if (updated == SearchScope.None)
+            return;
+
+        SelectedSearchScope = updated;
+    }
+
+    private void HandleMediaTypeFilterOptionChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(MediaTypeFilterOption.IsSelected) || isSyncingFilterOptions)
+            return;
+
+        var selected = MediaType.None;
+        foreach (var option in MediaTypeFilters.Where(option => option.IsSelected))
+            selected |= option.MediaType;
+
+        if (selected == MediaType.None)
+        {
+            SyncMediaTypeFilterSelections();
+            return;
+        }
+
+        SelectedMediaTypes = selected;
+    }
+
+    private void HandleSearchScopeFilterOptionChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(SearchScopeFilterOption.IsSelected) || isSyncingFilterOptions)
+            return;
+
+        var selected = SearchScope.None;
+        foreach (var option in SearchScopeFilters.Where(option => option.IsSelected))
+            selected |= option.Scope;
+
+        if (selected == SearchScope.None)
+        {
+            SyncSearchScopeFilterSelections();
+            return;
+        }
+
+        SelectedSearchScope = selected;
+    }
+
+    private void SyncMediaTypeFilterSelections()
+    {
+        isSyncingFilterOptions = true;
+        try
+        {
+            foreach (var option in MediaTypeFilters)
+                option.IsSelected = SelectedMediaTypes.HasFlag(option.MediaType);
+        }
+        finally
+        {
+            isSyncingFilterOptions = false;
+        }
+    }
+
+    private void SyncSearchScopeFilterSelections()
+    {
+        isSyncingFilterOptions = true;
+        try
+        {
+            foreach (var option in SearchScopeFilters)
+                option.IsSelected = SelectedSearchScope.HasFlag(option.Scope);
+        }
+        finally
+        {
+            isSyncingFilterOptions = false;
+        }
     }
 
     [RelayCommand]
@@ -721,12 +907,10 @@ public partial class MainViewModel : ObservableObject
 
         var updated = await indexService.RenameAsync(item, newPath, finalName);
         if (!updated)
-        {
             await dialogService.DisplayAlertAsync(
                 AppResources.RenameFailedTitle,
                 AppResources.RenameFailedMessage,
                 AppResources.OkButton);
-        }
 #else
         await dialogService.DisplayAlertAsync(
             AppResources.RenameFailedTitle,
@@ -799,7 +983,7 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 var photos = await indexService
-                    .QueryAsync(string.Empty, sourceId, "name", null, null, MediaType.Photos)
+                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }
@@ -857,6 +1041,94 @@ public partial class MainViewModel : ObservableObject
                 AppResources.OpenFolderFailedMessage,
                 AppResources.OkButton);
         }
+    }
+
+    [RelayCommand]
+    public async Task OpenLocationAsync(MediaItem item)
+    {
+        if (item == null || !item.Latitude.HasValue || !item.Longitude.HasValue)
+            return;
+
+        var lat = item.Latitude.Value;
+        var lon = item.Longitude.Value;
+        var latText = lat.ToString("0.######", CultureInfo.InvariantCulture);
+        var lonText = lon.ToString("0.######", CultureInfo.InvariantCulture);
+        var uri = new Uri($"https://earth.google.com/web/@{latText},{lonText},0a,0d,0y,0h,0t,0r");
+
+        try
+        {
+            await Launcher.OpenAsync(uri);
+        }
+        catch (NotImplementedException)
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenLocationFailedTitle,
+                AppResources.OpenLocationNotSupportedMessage,
+                AppResources.OkButton);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Open location failed: {ex}");
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenLocationFailedTitle,
+                AppResources.OpenLocationFailedMessage,
+                AppResources.OkButton);
+        }
+    }
+
+    [RelayCommand]
+    public async Task AddMarkedToAlbumAsync()
+    {
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return;
+
+        var albums = await albumService.GetAlbumsAsync().ConfigureAwait(false);
+        var choices = albums.Select(a => a.Name).ToList();
+        choices.Add(AppResources.NewAlbumAction);
+
+        var choice = await dialogService.DisplayActionSheetAsync(
+            AppResources.AddToAlbumAction,
+            AppResources.CancelButton,
+            null,
+            choices.ToArray());
+
+        if (string.IsNullOrWhiteSpace(choice) ||
+            string.Equals(choice, AppResources.CancelButton, StringComparison.Ordinal))
+            return;
+
+        Album? targetAlbum = null;
+
+        if (string.Equals(choice, AppResources.NewAlbumAction, StringComparison.Ordinal))
+        {
+            var name = await dialogService.DisplayPromptAsync(
+                AppResources.NewAlbumTitle,
+                AppResources.NewAlbumPrompt,
+                AppResources.NewAlbumConfirm,
+                AppResources.CancelButton,
+                AppResources.NewAlbumPlaceholder,
+                80,
+                Keyboard.Text);
+
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            var existing = await albumService.FindByNameAsync(name).ConfigureAwait(false);
+            targetAlbum = existing ?? await albumService.CreateAlbumAsync(name).ConfigureAwait(false);
+        }
+        else
+        {
+            targetAlbum = albums.FirstOrDefault(a => string.Equals(a.Name, choice, StringComparison.Ordinal));
+        }
+
+        if (targetAlbum == null)
+            return;
+
+        await albumService.AddItemsAsync(targetAlbum.Id, markedItems).ConfigureAwait(false);
+        await RefreshAlbumTabsAsync().ConfigureAwait(false);
+
+        if (string.Equals(ActiveAlbumId, targetAlbum.Id, StringComparison.Ordinal))
+            await RefreshAsync().ConfigureAwait(false);
     }
 
     [RelayCommand]
@@ -1002,10 +1274,6 @@ public partial class MainViewModel : ObservableObject
         if (item == null)
             return;
 
-        var shell = Shell.Current;
-        if (shell == null)
-            return;
-
         var actions = new List<string>
         {
             AppResources.ShareAction,
@@ -1015,8 +1283,11 @@ public partial class MainViewModel : ObservableObject
         if (AllowFileChanges)
             actions.Add(AppResources.DeleteMarkedAction);
 
-        var choice = await MainThread.InvokeOnMainThreadAsync(() =>
-            shell.DisplayActionSheet(item.Name, AppResources.CancelButton, null, actions.ToArray()));
+        var choice = await dialogService.DisplayActionSheetAsync(
+            item.Name,
+            AppResources.CancelButton,
+            null,
+            actions.ToArray());
 
         if (string.Equals(choice, AppResources.ShareAction, StringComparison.Ordinal))
         {
@@ -1057,6 +1328,16 @@ public partial class MainViewModel : ObservableObject
         {
             IsSourceSwitching = false;
         }
+    }
+
+    [RelayCommand]
+    public async Task SelectAlbumAsync(AlbumListItem? album)
+    {
+        if (album == null || string.Equals(album.Id, ActiveAlbumId, StringComparison.Ordinal))
+            return;
+
+        ActiveAlbumId = album.Id;
+        await RefreshAsync();
     }
 
     [RelayCommand]
@@ -1154,9 +1435,13 @@ public partial class MainViewModel : ObservableObject
                     });
                 });
             }
-            catch
+            catch (OperationCanceledException)
             {
-                // Ignore cancellation or retrieval failures.
+                // Ignore cancellation.
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "MainViewModel.StartThumbnailPipeline");
             }
             finally
             {
@@ -1230,10 +1515,10 @@ public partial class MainViewModel : ObservableObject
                     else
                         item.PeopleTagsSummary = string.Empty;
                     var faceCount = faceCounts.TryGetValue(item.Path, out var count) ? count : 0;
-                    var noFacesDetected = item.FaceScanAtSeconds > 0 && faceCount == 0;
-                    item.PeopleTagActionLabel = noFacesDetected
-                        ? AppResources.TagPeopleNoFacesAction
-                        : AppResources.TagPeopleAction;
+                    var hasFacesDetected = faceCount > 0;
+                    item.PeopleTagActionLabel = hasFacesDetected
+                        ? AppResources.TagPeopleAction
+                        : AppResources.TagPeopleNoFacesAction;
                 }
             });
         }
@@ -1283,16 +1568,21 @@ public partial class MainViewModel : ObservableObject
         isApplyingSavedSettings = true;
         try
         {
-            SearchText = settingsService.SearchText;
-            var sortKey = settingsService.SelectedSortOptionKey;
+            SearchText = SettingsService.SearchText;
+            SelectedSearchScope = SettingsService.SearchScope == SearchScope.None
+                ? SearchScope.All
+                : SettingsService.SearchScope;
+            var sortKey = SettingsService.SelectedSortOptionKey;
             SelectedSortOption = SortOptions.FirstOrDefault(o => o.Key == sortKey) ?? SortOptions.FirstOrDefault();
-            ActiveSourceId = settingsService.ActiveSourceId;
-            IsDateFilterEnabled = settingsService.DateFilterEnabled;
-            DateFilterFrom = settingsService.DateFilterFrom;
-            DateFilterTo = settingsService.DateFilterTo;
-            var visibleTypes = settingsService.VisibleMediaTypes;
+            ActiveSourceId = SettingsService.ActiveSourceId;
+            ActiveAlbumId = SettingsService.ActiveAlbumId;
+            IsDateFilterEnabled = SettingsService.DateFilterEnabled;
+            DateFilterFrom = SettingsService.DateFilterFrom;
+            DateFilterTo = SettingsService.DateFilterTo;
+            var visibleTypes = SettingsService.VisibleMediaTypes;
             SelectedMediaTypes = visibleTypes == MediaType.None ? MediaType.All : visibleTypes;
-            IsLocationEnabled = settingsService.LocationsEnabled;
+            IsLocationEnabled = SettingsService.LocationsEnabled;
+            NeedsReindex = SettingsService.NeedsReindex;
             ApplyPlaybackSettings();
             ApplyFileChangeSettings();
             ApplyPeopleTaggingSettings();
@@ -1305,19 +1595,19 @@ public partial class MainViewModel : ObservableObject
 
     public void ApplyPlaybackSettings()
     {
-        IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
+        IsInternalPlayerEnabled = SettingsService.InternalPlayerEnabled;
         if (!IsInternalPlayerEnabled)
             ClearPlayerState();
     }
 
     public void ApplyFileChangeSettings()
     {
-        AllowFileChanges = settingsService.AllowFileChanges;
+        AllowFileChanges = SettingsService.AllowFileChanges;
     }
 
     public void ApplyPeopleTaggingSettings()
     {
-        IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+        IsPeopleTaggingEnabled = SettingsService.PeopleTaggingEnabled;
     }
 
     private void ClearPlayerState()
@@ -1332,13 +1622,75 @@ public partial class MainViewModel : ObservableObject
     {
         var enabledSources = sources.Where(s => s.IsEnabled).ToList();
         if (enabledSources.Count == 0)
-            return "";
+            return string.Empty;
 
+        // Empty source id means "all sources" (no filtering).
         if (string.IsNullOrWhiteSpace(activeSourceId))
-            return enabledSources[0].Id;
+            return string.Empty;
 
         var exists = enabledSources.Any(s => s.Id == activeSourceId);
-        return exists ? activeSourceId : enabledSources[0].Id;
+        return exists ? activeSourceId : string.Empty;
+    }
+
+    private static List<MediaSource> BuildSourceTabs(List<MediaSource> enabledSources)
+    {
+        // Provide a stable "All media" choice (Id = "") at the top so users can view items
+        // that were indexed before SourceId existed or when multiple sources are enabled.
+        var tabs = new List<MediaSource>
+        {
+            new()
+            {
+                Id = string.Empty,
+                DisplayName = AppResources.AllAlbumsTab,
+                LocalFolderPath = string.Empty,
+                IsEnabled = true
+            }
+        };
+
+        if (enabledSources != null && enabledSources.Count > 0)
+            tabs.AddRange(enabledSources);
+
+        return tabs;
+    }
+
+
+    private static string NormalizeActiveAlbumId(List<AlbumListItem> albums, string activeAlbumId)
+    {
+        if (string.IsNullOrWhiteSpace(activeAlbumId))
+            return string.Empty;
+
+        return albums.Any(a => string.Equals(a.Id, activeAlbumId, StringComparison.Ordinal))
+            ? activeAlbumId
+            : string.Empty;
+    }
+
+    private static List<AlbumListItem> BuildAlbumTabs(List<AlbumListItem> albums)
+    {
+        var tabs = new List<AlbumListItem>
+        {
+            new()
+            {
+                Id = string.Empty,
+                Name = AppResources.AllAlbumsTab,
+                IsAll = true
+            }
+        };
+
+        tabs.AddRange(albums);
+        return tabs;
+    }
+
+    private async Task RefreshAlbumTabsAsync()
+    {
+        var albumSummaries = await albumService.GetAlbumSummariesAsync().ConfigureAwait(false);
+        var normalizedAlbumId = NormalizeActiveAlbumId(albumSummaries, ActiveAlbumId);
+        var tabs = BuildAlbumTabs(albumSummaries);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            ActiveAlbumId = normalizedAlbumId;
+            AlbumTabs = tabs;
+        });
     }
 
     private void OnMediaItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -1487,17 +1839,45 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnActiveSourceIdChanged(string value)
     {
-        settingsService.ActiveSourceId = value;
+        SettingsService.ActiveSourceId = value;
+        SelectedSource = Sources.FirstOrDefault(source => source.Id == value)
+                         ?? Sources.FirstOrDefault();
+    }
+
+    partial void OnActiveAlbumIdChanged(string value)
+    {
+        SettingsService.ActiveAlbumId = value;
+        SelectedAlbum = AlbumTabs.FirstOrDefault(album => album.Id == value)
+                        ?? AlbumTabs.FirstOrDefault();
     }
 
     partial void OnSearchTextChanged(string value)
     {
-        settingsService.SearchText = value;
+        SettingsService.SearchText = value;
+    }
+
+    partial void OnSelectedSearchScopeChanged(SearchScope value)
+    {
+        SettingsService.SearchScope = value == SearchScope.None ? SearchScope.All : value;
+        SyncSearchScopeFilterSelections();
+        if (!isApplyingSavedSettings)
+            _ = RefreshAsync();
+    }
+
+    partial void OnNeedsReindexChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IndexState));
+    }
+
+    partial void OnIsIndexingChanged(bool value)
+    {
+        SettingsService.IsIndexing = value;
+        OnPropertyChanged(nameof(IndexState));
     }
 
     partial void OnIsDateFilterEnabledChanged(bool value)
     {
-        settingsService.DateFilterEnabled = value;
+        SettingsService.DateFilterEnabled = value;
         if (isApplyingSavedSettings)
             return;
 
@@ -1508,7 +1888,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (value > DateFilterTo)
             DateFilterTo = value;
-        settingsService.DateFilterFrom = value;
+        SettingsService.DateFilterFrom = value;
         if (isApplyingSavedSettings)
             return;
 
@@ -1520,7 +1900,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (value < DateFilterFrom)
             DateFilterFrom = value;
-        settingsService.DateFilterTo = value;
+        SettingsService.DateFilterTo = value;
         if (isApplyingSavedSettings)
             return;
 
@@ -1531,7 +1911,7 @@ public partial class MainViewModel : ObservableObject
     partial void OnSelectedSortOptionChanged(SortOption? value)
     {
         if (value != null)
-            settingsService.SelectedSortOptionKey = value.Key;
+            SettingsService.SelectedSortOptionKey = value.Key;
     }
 
     partial void OnSelectedMediaTypesChanged(MediaType value)
@@ -1539,11 +1919,42 @@ public partial class MainViewModel : ObservableObject
         if (value == MediaType.None)
             return;
 
-        settingsService.VisibleMediaTypes = value;
+        SettingsService.VisibleMediaTypes = value;
+        SyncMediaTypeFilterSelections();
         if (isApplyingSavedSettings)
             return;
 
         _ = RefreshAsync();
+    }
+
+    partial void OnSelectedSourceChanged(MediaSource? value)
+    {
+        if (value == null || value.Id == ActiveSourceId)
+            return;
+
+        _ = SelectSourceAsync(value);
+    }
+
+    partial void OnSelectedAlbumChanged(AlbumListItem? value)
+    {
+        if (value == null || string.Equals(value.Id, ActiveAlbumId, StringComparison.Ordinal))
+            return;
+
+        _ = SelectAlbumAsync(value);
+    }
+
+    partial void OnSourcesChanged(List<MediaSource> value)
+    {
+        SelectedSource = value.FirstOrDefault(source => source.Id == ActiveSourceId)
+                         ?? value.FirstOrDefault();
+        OnPropertyChanged(nameof(HasMultipleSources));
+    }
+
+    partial void OnAlbumTabsChanged(List<AlbumListItem> value)
+    {
+        SelectedAlbum = value.FirstOrDefault(album => album.Id == ActiveAlbumId)
+                        ?? value.FirstOrDefault();
+        OnPropertyChanged(nameof(HasAlbums));
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)
@@ -1555,7 +1966,14 @@ public partial class MainViewModel : ObservableObject
         var lastKey = "";
         var lastYear = -1;
 
-        foreach (var item in items)
+        // Build the timeline in a deterministic chronological order even when the media grid
+        // is sorted by a different key (name/duration). This keeps the date sidebar stable
+        // and makes it clear which month/year the user is navigating.
+        var ordered = items
+            .OrderByDescending(i => i.DateAddedSeconds)
+            .ToList();
+
+        foreach (var item in ordered)
         {
             var date = DateTimeOffset.FromUnixTimeSeconds(Math.Max(0, item.DateAddedSeconds))
                 .ToLocalTime()
@@ -1670,10 +2088,24 @@ public partial class MainViewModel : ObservableObject
         IndexedCount = progress.Inserted;
         IndexedMediaCount = indexStartingCount + progress.Inserted;
 
+        // IMPORTANT: Do not refresh the visible media list while indexing.
+        // Refreshing without preserving scroll state resets the CollectionView and causes jumpy UI.
+        // We still need a background refresh so newly indexed items become visible.
+        // Therefore we only suggest refreshes (throttled) and the view preserves scroll position.
         if (progress.Inserted > indexLastInserted)
         {
             indexLastInserted = progress.Inserted;
-            _ = RefreshAsync();
+
+            var now = Environment.TickCount64;
+            var insertedDelta = indexLastInserted - indexLastLiveRefreshInserted;
+
+            // Throttle UI refresh suggestions to avoid excessive DB queries.
+            if (insertedDelta >= 6 && now - indexLastLiveRefreshMs >= 1200)
+            {
+                indexLastLiveRefreshMs = now;
+                indexLastLiveRefreshInserted = indexLastInserted;
+                IndexLiveRefreshSuggested?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 
@@ -1695,5 +2127,31 @@ public partial class MainViewModel : ObservableObject
         return $"{datePart}-{baseName}";
     }
 
-    public sealed record MediaTypeFilterOption(MediaType MediaType, string Label);
+    public sealed partial class MediaTypeFilterOption : ObservableObject
+    {
+        [ObservableProperty] private bool isSelected;
+
+        public MediaTypeFilterOption(MediaType mediaType, string label)
+        {
+            MediaType = mediaType;
+            Label = label;
+        }
+
+        public MediaType MediaType { get; }
+        public string Label { get; }
+    }
+
+    public sealed partial class SearchScopeFilterOption : ObservableObject
+    {
+        [ObservableProperty] private bool isSelected;
+
+        public SearchScopeFilterOption(SearchScope scope, string label)
+        {
+            Scope = scope;
+            Label = label;
+        }
+
+        public SearchScope Scope { get; }
+        public string Label { get; }
+    }
 }

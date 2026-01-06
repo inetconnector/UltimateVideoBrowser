@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Nihai Video Tarayıcı</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Videolar</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Kaynaklar</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Yeniden dizine ekle</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Videoları ara...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Sırala</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Ad</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Tarih</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Süre</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Dizinleniyor...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Yeni öğeler: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Kaynaklar</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Kaynaklar (yerel klasörler / eşitlenmiş paylaşımlar)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Etkin</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Devre dışı</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Tüm cihaz videoları</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>Kişisel kütüphaneniz</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Her videoyu anında keşfedin</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Zengin küçük resimler, akıllı arama ve tüm klasörlerinizde hızlı dizinleme ile gezinin.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Kaynakları yönet</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Tarih aralığı</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>Başlangıç</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>Bitiş</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Dizinleniyor {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Klasör: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>Dosya: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Gizle</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>İptal</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Ayrıntılar</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>Kütüphane öne çıkanlar</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Dizinlenmiş videolar</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Etkin kaynaklar</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>İpucu</value>
+    
+    
+    <value>Pro ipucu</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Arama + filtreleri kullanın, ardından en iyi sonuçlar için yeni klasörler ekledikten sonra yeniden dizinleyin.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{1} kaynaktan {0} etkin</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Erişim gerekli</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Videolarınıza erişime izin verin, böylece onları dizinleyip oynatabiliriz.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Erişim ver</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Tamam</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Paylaş</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Videoyu paylaş</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Farklı kaydet...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Kaydetme başarısız</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Bu videoyu kaydedemedik. Lütfen farklı bir konum deneyin.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Farklı kaydet bu cihazda desteklenmiyor.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Geri</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Ayarlar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Ayarlar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Ayarlar</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Görünüm</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Tema</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Sıralama</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Varsayılan sıralama</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Filtre</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Tarih filtresini etkinleştir</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>Başlangıç</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>Bitiş</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Dizinleme</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Bir sonraki açılışta yeniden dizinle</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Açık</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Koyu</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Henüz video yok</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Bir kaynak ekleyin veya kütüphanenizi gezmeye başlamak için yenileyin.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Kaynak ekle</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Klasör ekle</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Kaldır</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Kaynak kaldırılsın mı?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>“{0}” kaynaklardan kaldırılsın mı?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Kaldır</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Kaynak ekle</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Kaynak adı</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Ekle</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>İptal</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Yeni kaynak</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Zaten eklendi</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Bu klasör zaten kaynaklarınızda.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Yerel bir klasör veya ağ paylaşımı seçin.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Klasöre göz at</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Klasör seç</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Yerel bir klasör veya ağ paylaşımı seçin.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Başka bir klasör eklensin mi?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Başka bir klasör eklemek ister misiniz?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Başka ekle</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Bitti</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Yol bulunamadı</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>O klasörü bulamadık. Lütfen yolu kontrol edin.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Cihaz medya kitaplığı</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Kişi dizininden kaldır</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Birleştir</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Şununla birleştir…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kalite</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Birleştir</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Şununla birleştir…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Kalite</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>Hata günlüğü</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>Bir şey başarısız olursa veya küçük resim boşsa bu günlüğü paylaşın.</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>Günlüğü göster</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>Günlüğü paylaş</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>Günlüğü temizle</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>Belgeler</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>Grafikler ve ekran görüntüleri</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>Fotoğraflar</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>Videolar</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>Veritabanını sil</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>Yerel veritabanını siler ve kaynaklarınızı yeniden tarayarak yeniden oluşturur.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>Uzantıları virgülle ayırın (örn. .mp4, .mkv).</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>Dosya uzantıları</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>Diskteki dosyaları değiştiren eylemleri göstermek için bunu etkinleştirin.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>Yeniden adlandırma, taşıma, kopyalama ve silmeye izin ver</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>Dosya değişiklikleri</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>Durum</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>Videolar için dahili video oynatıcıyı kullan</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>Konum verileri cihazınızda kalır, ancak harici harita sunucuları istek verileri (örn. IP adresi) alabilir. Hassas konumları paylaşmaktan siz sorumlusunuz; üçüncü taraf hizmetlerin kendi şartları ve gizlilik politikaları vardır.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>Fotoğraf ve videolardan GPS meta verilerini çıkararak dünya haritasında gösterin. Harita döşemeleri harici döşeme sunucularından yüklenir.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>Konumları göster</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>Konumlar</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>Kütüphanenizde hangi türlerin indeksleneceğini seçin.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>Medya türleri</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>Yüz modellerini indir</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>Yüz modelleri</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>Kütüphanedeki fotoğraf ve videolarda kişileri etiketlemek için bunu açın.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>Kişi etiketlemeyi etkinleştir</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>Kişi etiketleme</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>Oynatma</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• Sınırsız yüz tanıma
+• Otomatik kişi albümleri
+• Toplu sıralama (1000+ fotoğraf)
+• Yerel dışa aktarma ve yedekler
+• Reklam yok</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>Satın almayı geri yükle</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>Pro yükseltme</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>Pro kilidini aç</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Panoya kopyalama başarısız oldu. Lütfen yeniden deneyin veya elle kopyalamak için "Günlüğü görüntüle" seçeneğini kullanın.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Şimdi yükselt</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Kişi etiketleri (deneme)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>Kişi etiketleri ücretsiz sürümde 14 gün boyunca etkindir. Kalıcı olarak kullanmak için Pro'ya yükseltin.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Kitaplığı yeniden dizinle</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Her şeyi şimdi yeniden dizinlemek istiyor musunuz? Bu, kitaplık boyutunuza bağlı olarak biraz zaman alabilir.</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Veritabanı yedeği</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Ayarlar ve küçük resimler dahil yerel veritabanını dışa/içe aktarın.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Yedeği dışa aktar</value></data><data name="BackupImportButton" xml:space="preserve"><value>Yedeği içe aktar</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Yedek dışa aktarıldı</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Yedek başarıyla dışa aktarıldı.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Dışa aktarma başarısız</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Yedek oluşturulamadı veya kaydedilemedi.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Yedek ZIP seç</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Yedek geri yüklensin mi?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Mevcut veritabanı, ayarlar ve küçük resimler üzerine yazılacak. Devam edilsin mi?</value></data><data name="RestoreButton" xml:space="preserve"><value>Geri yükle</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Dizinleme sürüyor</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Yedeği geri yüklemeden önce dizinlemeyi durdurun.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Geri yükleme başarısız</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Yedek geri yüklenemedi.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Bu yedek bir veritabanı dosyası içermiyor.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Geri yükleme tamamlandı</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Yedek geri yüklendi. Tüm değişiklikleri görmek için uygulamayı yeniden açmanız gerekebilir.</value></data></root>

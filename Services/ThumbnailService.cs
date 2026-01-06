@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
+using OperationCanceledException = System.OperationCanceledException;
 
 #if ANDROID && !WINDOWS
 using Android.OS;
@@ -10,11 +12,17 @@ using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
 
 #elif WINDOWS
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
+using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
+using ImageSharpSize = SixLabors.ImageSharp.Size;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
 #endif
+
 
 namespace UltimateVideoBrowser.Services;
 
@@ -22,9 +30,12 @@ public sealed class ThumbnailService
 {
     private const int ThumbMaxSize = 320;
     private const int ThumbQuality = 82;
+    private const long DefaultCacheSizeLimitBytes = 512L * 1024 * 1024;
 
-    private readonly string cacheDir;
     private readonly ISourceService sourceService;
+    private readonly SemaphoreSlim cacheTrimGate = new(1, 1);
+
+    public long CacheSizeLimitBytes { get; set; } = DefaultCacheSizeLimitBytes;
 
     private readonly ConcurrentDictionary<string, SemaphoreSlim> thumbLocks
         = new(StringComparer.OrdinalIgnoreCase);
@@ -36,22 +47,55 @@ public sealed class ThumbnailService
     public ThumbnailService(ISourceService sourceService)
     {
         this.sourceService = sourceService;
-        cacheDir = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
-        Directory.CreateDirectory(cacheDir);
+        ThumbnailsDirectoryPath = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
+        Directory.CreateDirectory(ThumbnailsDirectoryPath);
     }
+
+    public string ThumbnailsDirectoryPath { get; }
 
     public string GetThumbnailPath(MediaItem item)
     {
-        var safe = MakeSafeFileName(item.Path);
-        return IOPath.Combine(cacheDir, safe + ".jpg");
+        var safe = MakeSafeFileName(item.Path ?? string.Empty);
+        return IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
+    }
+
+    public void DeleteThumbnailForPath(string? mediaPath)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath))
+            return;
+
+        var safe = MakeSafeFileName(mediaPath);
+        var path = IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
+        TryDeleteFile(path);
+    }
+
+    public Task<string?> EnsureThumbnailAsync(string path, MediaType mediaType, CancellationToken ct)
+    {
+        // Keep behavior consistent with the MediaItem-based API.
+        if (string.IsNullOrWhiteSpace(path))
+            return Task.FromResult<string?>(null);
+
+        var item = new MediaItem
+        {
+            Path = path,
+            MediaType = mediaType
+        };
+
+        return EnsureThumbnailAsync(item, ct);
     }
 
     public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(item.Path))
+            return null;
+
         var thumbPath = GetThumbnailPath(item);
 
         if (IsUsableThumbFile(thumbPath))
+        {
+            TouchThumbFile(thumbPath);
             return thumbPath;
+        }
 
         // Prevent concurrent writers from producing corrupted/0-byte thumbnails.
         var gate = thumbLocks.GetOrAdd(thumbPath, _ => new SemaphoreSlim(1, 1));
@@ -61,15 +105,19 @@ public sealed class ThumbnailService
             await gate.WaitAsync(ct).ConfigureAwait(false);
             lockTaken = true;
         }
-        catch (System.OperationCanceledException)
+        catch (OperationCanceledException)
         {
             return null;
         }
+
         try
         {
             // Re-check after we acquired the lock.
             if (IsUsableThumbFile(thumbPath))
+            {
+                TouchThumbFile(thumbPath);
                 return thumbPath;
+            }
 
 #if ANDROID && !WINDOWS
             var tmpPath = GetTempPath(thumbPath);
@@ -81,7 +129,7 @@ public sealed class ThumbnailService
 
                     using var bmp = item.MediaType switch
                     {
-                        MediaType.Photos => LoadImageBitmap(item.Path),
+                        MediaType.Photos or MediaType.Graphics => LoadImageBitmap(item.Path),
                         MediaType.Videos => LoadVideoBitmap(item),
                         _ => null
                     };
@@ -89,7 +137,7 @@ public sealed class ThumbnailService
                     if (bmp == null)
                         return null;
 
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                     using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         var format = Bitmap.CompressFormat.Jpeg;
@@ -105,10 +153,12 @@ public sealed class ThumbnailService
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
+                    FinalizeNewThumbnailAsync(thumbPath, ct).GetAwaiter().GetResult();
                     return thumbPath;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ErrorLog.LogException(ex, "ThumbnailService.EnsureThumbnailAsync(Android)", $"Path={item.Path}");
                     return null;
                 }
                 finally
@@ -124,24 +174,26 @@ public sealed class ThumbnailService
                 var file = await GetStorageFileAsync(item).ConfigureAwait(false);
                 if (file == null)
                 {
-                    if (item.MediaType != MediaType.Photos)
+                    if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
                         return null;
 
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                     if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
+                    await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
                     return thumbPath;
                 }
 
                 using var thumb =
-                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize, ThumbnailOptions.UseCurrentScale);
+                    await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize,
+                        ThumbnailOptions.UseCurrentScale);
                 if (thumb == null || thumb.Size == 0)
                 {
-                    if (item.MediaType == MediaType.Photos)
+                    if (item.MediaType is MediaType.Photos or MediaType.Graphics)
                     {
-                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                         if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
                         {
                             File.Move(tmpPath, thumbPath, true);
@@ -154,28 +206,25 @@ public sealed class ThumbnailService
                         return null;
 
                     using var fallbackInput = fallbackThumb.AsStreamForRead();
-                    using (var fallbackStream = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                        await fallbackInput.CopyToAsync(fallbackStream, ct).ConfigureAwait(false);
-
-                    if (!IsUsableThumbFile(tmpPath))
+                    if (!await TryWriteThumbnailStreamAsync(fallbackInput, tmpPath, ct).ConfigureAwait(false))
                         return null;
 
                     File.Move(tmpPath, thumbPath, true);
+                    await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
                     return thumbPath;
                 }
 
                 using var input = thumb.AsStreamForRead();
-                using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    await input.CopyToAsync(fs, ct).ConfigureAwait(false);
-
-                if (!IsUsableThumbFile(tmpPath))
+                if (!await TryWriteThumbnailStreamAsync(input, tmpPath, ct).ConfigureAwait(false))
                     return null;
 
                 File.Move(tmpPath, thumbPath, true);
+                await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
                 return thumbPath;
             }
-            catch
+            catch (Exception ex)
             {
+                ErrorLog.LogException(ex, "ThumbnailService.EnsureThumbnailAsync(Windows)", $"Path={item.Path}");
                 return null;
             }
             finally
@@ -199,6 +248,101 @@ public sealed class ThumbnailService
         }
     }
 
+    public async Task<string?> EnsureThumbnailWithRetryAsync(
+        MediaItem item,
+        TimeSpan maxDuration,
+        TimeSpan retryDelay,
+        CancellationToken ct)
+    {
+        var deadline = DateTime.UtcNow.Add(maxDuration);
+
+        while (true)
+        {
+            ct.ThrowIfCancellationRequested();
+            var path = await EnsureThumbnailAsync(item, ct).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(path))
+                return path;
+
+            if (DateTime.UtcNow >= deadline)
+                return null;
+
+            await Task.Delay(retryDelay, ct).ConfigureAwait(false);
+        }
+    }
+
+    private void TouchThumbFile(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+                return;
+
+            var now = DateTime.UtcNow;
+            File.SetLastWriteTimeUtc(path, now);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TouchThumbFile", $"Path={path}");
+        }
+    }
+
+    private async Task FinalizeNewThumbnailAsync(string path, CancellationToken ct)
+    {
+        TouchThumbFile(path);
+        await TrimCacheAsync(ct).ConfigureAwait(false);
+    }
+
+    private async Task TrimCacheAsync(CancellationToken ct)
+    {
+        var limit = CacheSizeLimitBytes;
+        if (limit <= 0)
+            return;
+
+        if (!await cacheTrimGate.WaitAsync(0).ConfigureAwait(false))
+            return;
+
+        try
+        {
+            if (!Directory.Exists(ThumbnailsDirectoryPath))
+                return;
+
+            var files = Directory
+                .EnumerateFiles(ThumbnailsDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly)
+                .Select(path => new FileInfo(path))
+                .Where(fi => fi.Exists)
+                .OrderBy(fi => fi.LastWriteTimeUtc)
+                .ToList();
+
+            long total = 0;
+            foreach (var file in files)
+                total += file.Length;
+
+            if (total <= limit)
+                return;
+
+            foreach (var file in files)
+            {
+                ct.ThrowIfCancellationRequested();
+                TryDeleteFile(file.FullName);
+                total -= file.Length;
+                if (total <= limit)
+                    break;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore cancellation during cache trimming.
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TrimCacheAsync", $"CacheDir={ThumbnailsDirectoryPath}");
+        }
+        finally
+        {
+            cacheTrimGate.Release();
+        }
+    }
+
 #if WINDOWS
     private async Task<StorageFile?> GetStorageFileAsync(MediaItem item)
     {
@@ -206,15 +350,16 @@ public sealed class ThumbnailService
         {
             return await StorageFile.GetFileFromPathAsync(item.Path);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.GetStorageFileAsync", $"Path={item.Path}");
             var token = await GetSourceTokenAsync(item.SourceId).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(token))
                 return null;
 
             try
             {
-                var folder = await Windows.Storage.AccessCache.StorageApplicationPermissions
+                var folder = await StorageApplicationPermissions
                     .FutureAccessList
                     .GetFolderAsync(token);
 
@@ -228,8 +373,9 @@ public sealed class ThumbnailService
 
                 return await GetFileFromFolderAsync(folder, relativePath).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex1)
             {
+                ErrorLog.LogException(ex1, "ThumbnailService.GetStorageFileAsync(Fallback)", $"Path={item.Path}");
                 return null;
             }
         }
@@ -256,7 +402,8 @@ public sealed class ThumbnailService
     private static async Task<StorageFile> GetFileFromFolderAsync(StorageFolder root, string relativePath)
     {
         var segments = relativePath
-            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
 
         var current = root;
         for (var i = 0; i < segments.Length - 1; i++)
@@ -272,27 +419,87 @@ public sealed class ThumbnailService
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
                 return false;
 
-            using var image = await global::SixLabors.ImageSharp.Image.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            using var image = await ImageSharpImage.LoadAsync(sourcePath, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
             {
                 ctx.AutoOrient();
                 ctx.Resize(new ResizeOptions
                 {
-                    Mode = global::SixLabors.ImageSharp.Processing.ResizeMode.Max,
-                    Size = new global::SixLabors.ImageSharp.Size(ThumbMaxSize, ThumbMaxSize)
+                    Mode = ImageSharpResizeMode.Max,
+                    Size = new ImageSharpSize(ThumbMaxSize, ThumbMaxSize)
                 });
             });
 
             var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await global::SixLabors.ImageSharp.ImageExtensions
-                .SaveAsJpegAsync(image, tmpPath, encoder, ct)
+            await image
+                .SaveAsJpegAsync(tmpPath, encoder, ct)
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
-        catch
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             return false;
         }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
+            return false;
+        }
+    }
+
+    private static async Task<bool> TryWriteThumbnailStreamAsync(Stream input, string tmpPath, CancellationToken ct)
+    {
+        try
+        {
+            using var buffer = new MemoryStream();
+            await input.CopyToAsync(buffer, ct).ConfigureAwait(false);
+            if (buffer.Length < 128)
+                return false;
+
+            var length = (int)buffer.Length;
+            var bytes = buffer.GetBuffer();
+            if (IsJpegBuffer(bytes, length))
+            {
+                await File.WriteAllBytesAsync(tmpPath, bytes.AsMemory(0, length), ct).ConfigureAwait(false);
+                return IsUsableThumbFile(tmpPath);
+            }
+
+            buffer.Position = 0;
+            using var image = await ImageSharpImage.LoadAsync(buffer, ct).ConfigureAwait(false);
+            image.Mutate(ctx =>
+            {
+                ctx.AutoOrient();
+                ctx.Resize(new ResizeOptions
+                {
+                    Mode = ImageSharpResizeMode.Max,
+                    Size = new ImageSharpSize(ThumbMaxSize, ThumbMaxSize)
+                });
+            });
+
+            var encoder = new JpegEncoder { Quality = ThumbQuality };
+            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            return IsUsableThumbFile(tmpPath);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TryWriteThumbnailStreamAsync");
+            return false;
+        }
+    }
+
+    private static bool IsJpegBuffer(byte[] buffer, int length)
+    {
+        if (length < 4)
+            return false;
+
+        return buffer[0] == 0xFF
+            && buffer[1] == 0xD8
+            && buffer[length - 2] == 0xFF
+            && buffer[length - 1] == 0xD9;
     }
 #endif
 
@@ -306,8 +513,9 @@ public sealed class ThumbnailService
 
             return File.Exists(path) ? File.OpenRead(path) : null;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.OpenPathStream", $"Path={path}");
             return null;
         }
     }
@@ -364,8 +572,9 @@ public sealed class ThumbnailService
                 return BitmapFactory.DecodeStream(decodeStream, null, opts);
             }
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.LoadImageBitmap", $"Path={path}");
             return null;
         }
     }
@@ -394,8 +603,10 @@ public sealed class ThumbnailService
                 {
                     frame = retriever.GetScaledFrameAtTime(tUs, Option.ClosestSync, ThumbMaxSize, ThumbMaxSize);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ErrorLog.LogException(ex, "ThumbnailService.LoadVideoBitmap(ScaledFrame)",
+                        $"Path={item.Path}");
                     frame = null;
                 }
 
@@ -414,8 +625,9 @@ public sealed class ThumbnailService
             frame.Dispose();
             return scaled;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.LoadVideoBitmap", $"Path={item.Path}");
             return null;
         }
     }
@@ -427,6 +639,7 @@ public sealed class ThumbnailService
         return mediaType switch
         {
             MediaType.Photos => ThumbnailMode.PicturesView,
+            MediaType.Graphics => ThumbnailMode.PicturesView,
             MediaType.Documents => ThumbnailMode.DocumentsView,
             _ => ThumbnailMode.VideosView
         };
@@ -471,8 +684,9 @@ public sealed class ThumbnailService
 
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "ThumbnailService.IsUsableThumbFile", $"Path={path}");
             return false;
         }
     }
@@ -484,15 +698,38 @@ public sealed class ThumbnailService
 
     private static void TryDeleteFile(string path)
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        const int maxAttempts = 3;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+            try
+            {
+                if (!File.Exists(path))
+                    return;
+
                 File.Delete(path);
-        }
-        catch
-        {
-            // Ignore.
-        }
+                return;
+            }
+            catch (IOException ex) when (IsFileInUse(ex))
+            {
+                if (attempt == maxAttempts - 1)
+                    return;
+
+                Thread.Sleep(50 * (attempt + 1));
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "ThumbnailService.TryDeleteFile", $"Path={path}");
+                return;
+            }
+    }
+
+    private static bool IsFileInUse(IOException ex)
+    {
+        const int sharingViolation = unchecked((int)0x80070020);
+        const int lockViolation = unchecked((int)0x80070021);
+        return ex.HResult == sharingViolation || ex.HResult == lockViolation;
     }
 
     private static string MakeSafeFileName(string input)

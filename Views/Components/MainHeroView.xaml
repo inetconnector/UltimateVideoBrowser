@@ -4,50 +4,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.Components.MainHeroView">
-    <Grid Padding="16,12" BackgroundColor="{DynamicResource AppBg}">
-        <Frame CornerRadius="20"
-               Padding="16"
-               BorderColor="{DynamicResource BorderSubtle}">
+    <Grid Padding="20,14" BackgroundColor="{DynamicResource AppBg}">
+        <Frame Style="{StaticResource HeroFrameStyle}">
             <Frame.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{DynamicResource Surface2}" Offset="0.0" />
-                    <GradientStop Color="{DynamicResource AccentGlow}" Offset="0.6" />
+                    <GradientStop Color="{DynamicResource SurfaceElevated}" Offset="0.0" />
+                    <GradientStop Color="{DynamicResource AccentGlow}" Offset="0.55" />
                     <GradientStop Color="{DynamicResource Surface3}" Offset="1.0" />
                 </LinearGradientBrush>
             </Frame.Background>
 
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <VerticalStackLayout Spacing="8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="10">
                     <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
                            FontSize="12"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
                     <Label Text="{x:Static strings:AppResources.HeroTitle}"
-                           FontSize="22"
+                           FontSize="24"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
                     <Label Text="{x:Static strings:AppResources.HeroSubtitle}"
-                           FontSize="13"
+                           FontSize="14"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
 
-                    <HorizontalStackLayout Spacing="8">
-                        <Button Text="{x:Static strings:AppResources.SourcesButton}"
-                                ImageSource="icon_sources.svg"
-                                Command="{Binding OpenSourcesCommand}" />
-                        <Button Text="{x:Static strings:AppResources.SettingsButton}"
-                                Command="{Binding OpenSettingsCommand}" />
-                        <Button Text="{x:Static strings:AppResources.MapButton}"
-                                Command="{Binding OpenMapCommand}"
-                                IsVisible="{Binding IsLocationEnabled}" />
-                        <Button Text="{x:Static strings:AppResources.ReindexButton}"
-                                ImageSource="icon_reindex.svg"
-                                Command="{Binding RunIndexCommand}" />
-                    </HorizontalStackLayout>
+                    <Button x:Name="ActionsButton"
+                            Text="{x:Static strings:AppResources.ActionsButton}"
+                            FontAttributes="Bold"
+                            Padding="18,10"
+                            Clicked="OnActionsClicked" />
                 </VerticalStackLayout>
 
                 <Image Grid.Column="1"
                        Source="hero_video.svg"
-                       HeightRequest="120"
-                       WidthRequest="140"
+                       HeightRequest="128"
+                       WidthRequest="148"
                        HorizontalOptions="End"
                        VerticalOptions="Center" />
             </Grid>

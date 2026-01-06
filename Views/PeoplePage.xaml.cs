@@ -1,4 +1,3 @@
-using System.Linq;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -27,11 +26,11 @@ public partial class PeoplePage : ContentPage
             return;
 
         var target = vm.People.FirstOrDefault(item =>
-            !string.IsNullOrWhiteSpace(pendingScrollPersonId) &&
-            string.Equals(item.Id, pendingScrollPersonId, StringComparison.OrdinalIgnoreCase))
-            ?? vm.People.FirstOrDefault(item =>
-                !string.IsNullOrWhiteSpace(pendingScrollPersonName) &&
-                string.Equals(item.Name, pendingScrollPersonName, StringComparison.OrdinalIgnoreCase));
+                         !string.IsNullOrWhiteSpace(pendingScrollPersonId) &&
+                         string.Equals(item.Id, pendingScrollPersonId, StringComparison.OrdinalIgnoreCase))
+                     ?? vm.People.FirstOrDefault(item =>
+                         !string.IsNullOrWhiteSpace(pendingScrollPersonName) &&
+                         string.Equals(item.Name, pendingScrollPersonName, StringComparison.OrdinalIgnoreCase));
         if (target == null)
             return;
 

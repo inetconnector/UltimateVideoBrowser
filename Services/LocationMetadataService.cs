@@ -1,11 +1,12 @@
 using SixLabors.ImageSharp;
-using ImageSharpImage = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
 #if ANDROID && !WINDOWS
 using Android.Media;
 using Uri = Android.Net.Uri;
 #endif
+
 #if WINDOWS
 using Windows.Storage;
 #endif
@@ -20,6 +21,8 @@ public sealed class LocationMetadataService
     {
         this.settingsService = settingsService;
     }
+
+    public bool IsEnabled => settingsService.LocationsEnabled;
 
     public async Task<bool> TryPopulateLocationAsync(MediaItem item, CancellationToken ct)
     {
@@ -55,7 +58,13 @@ public sealed class LocationMetadataService
 #endif
 
         if (item.MediaType == MediaType.Photos)
-            return await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
+        {
+            var location = await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
+#if WINDOWS
+            location ??= await TryGetLocationFromWindowsAsync(path).ConfigureAwait(false);
+#endif
+            return location;
+        }
 
 #if ANDROID && !WINDOWS
         if (item.MediaType == MediaType.Videos)
@@ -83,7 +92,8 @@ public sealed class LocationMetadataService
     }
 
 #if ANDROID && !WINDOWS
-    private static async Task<GeoLocation?> TryGetLocationFromAndroidContentAsync(string contentUri, CancellationToken ct)
+    private static async Task<GeoLocation?> TryGetLocationFromAndroidContentAsync(string contentUri,
+        CancellationToken ct)
     {
         try
         {
@@ -206,8 +216,8 @@ public sealed class LocationMetadataService
 
         profile.TryGetValue(ExifTag.GPSLatitudeRef, out var latRefValue);
         profile.TryGetValue(ExifTag.GPSLongitudeRef, out var lonRefValue);
-        var latRef = latRefValue?.Value?.ToString();
-        var lonRef = lonRefValue?.Value?.ToString();
+        var latRef = latRefValue?.Value;
+        var lonRef = lonRefValue?.Value;
         if (string.Equals(latRef, "S", StringComparison.OrdinalIgnoreCase))
             lat = -lat;
         if (string.Equals(lonRef, "W", StringComparison.OrdinalIgnoreCase))
@@ -246,7 +256,7 @@ public sealed class LocationMetadataService
         var deg = ToDouble(values[0]);
         var min = values.Count > 1 ? ToDouble(values[1]) : 0;
         var sec = values.Count > 2 ? ToDouble(values[2]) : 0;
-        return deg + (min / 60.0) + (sec / 3600.0);
+        return deg + min / 60.0 + sec / 3600.0;
     }
 
     private static double ConvertSignedRationalsToDegrees(IReadOnlyList<SignedRational> values)
@@ -257,7 +267,7 @@ public sealed class LocationMetadataService
         var deg = ToDouble(values[0]);
         var min = values.Count > 1 ? ToDouble(values[1]) : 0;
         var sec = values.Count > 2 ? ToDouble(values[2]) : 0;
-        return deg + (min / 60.0) + (sec / 3600.0);
+        return deg + min / 60.0 + sec / 3600.0;
     }
 
     private static double ToDouble(Rational rational)

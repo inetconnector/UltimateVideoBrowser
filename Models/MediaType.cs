@@ -7,5 +7,6 @@ public enum MediaType
     Videos = 1,
     Photos = 2,
     Documents = 4,
-    All = Videos | Photos | Documents
+    Graphics = 8,
+    All = Videos | Photos | Documents | Graphics
 }

@@ -191,12 +191,61 @@
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="14"
                        Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.SearchScopeTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchNameEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopeName}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchPeopleEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopePeople}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <CheckBox IsChecked="{Binding IsSearchAlbumsEnabled}"
+                                      Color="{DynamicResource Accent}"
+                                      WidthRequest="18"
+                                      HeightRequest="18"
+                                      Margin="0"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Static strings:AppResources.SearchScopeAlbums}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="{x:Static strings:AppResources.SettingsLocationsTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
                         <Label Text="{x:Static strings:AppResources.SettingsLocationsHint}"
                                FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{x:Static strings:AppResources.SettingsLocationsDisclaimer}"
+                               FontSize="11"
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.SettingsLocationsLabel}"
@@ -231,6 +280,13 @@
                                    VerticalOptions="Center" />
                             <Switch Grid.Column="1"
                                     IsToggled="{Binding IsPhotosIndexed}" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.MediaTypeGraphics}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding IsGraphicsIndexed}" />
                         </Grid>
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.MediaTypeDocuments}"
@@ -296,6 +352,19 @@
                         <Label Text="{x:Static strings:AppResources.SettingsIndexingTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Text="{x:Static strings:AppResources.SettingsIndexingStatusLabel}"
+                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                   VerticalOptions="Start" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding IndexStatusTitle}"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource OnSurface}" />
+                                <Label Text="{Binding IndexStatusMessage}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource OnSurfaceMuted}" />
+                            </VerticalStackLayout>
+                        </Grid>
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <Label Text="{x:Static strings:AppResources.SettingsReindexLabel}"
                                    TextColor="{DynamicResource OnSurfaceMuted}"
@@ -307,7 +376,128 @@
                                TextColor="{DynamicResource OnSurfaceMuted}" />
                         <Button Text="{x:Static strings:AppResources.SettingsDatabaseResetButton}"
                                 Command="{Binding ResetDatabaseCommand}"
-                                IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}" />
+                                IsEnabled="{Binding IsDatabaseResetting, Converter={StaticResource InverseBoolConverter}}"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
+                                HorizontalOptions="Start"
+                                Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.BackupSectionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.BackupSectionHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <HorizontalStackLayout Spacing="12">
+                            <Button Text="{x:Static strings:AppResources.BackupExportButton}"
+                                    Command="{Binding ExportBackupCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.BackupImportButton}"
+                                    Command="{Binding ImportBackupCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.ErrorLogTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.ErrorLogHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding ErrorLogPath}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <HorizontalStackLayout Spacing="12">
+                            <Button Text="{x:Static strings:AppResources.ErrorLogShowButton}"
+                                    Command="{Binding ShowErrorLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.ErrorLogCopyButton}"
+                                    Command="{Binding CopyErrorLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.ErrorLogShareButton}"
+                                    Command="{Binding ShareErrorLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                        </HorizontalStackLayout>
+                        <Button Text="{x:Static strings:AppResources.ErrorLogClearButton}"
+                                Command="{Binding ClearErrorLogCommand}"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
+                                HorizontalOptions="Start"
+                                Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.HelpSectionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.HelpSectionHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Button Text="{x:Static strings:AppResources.AboutTitle}"
+                                Clicked="OnAboutClicked"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
+                                HorizontalOptions="Start"
+                                Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.LegalSectionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.LegalSectionHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <HorizontalStackLayout Spacing="8">
+                            <Button Text="{x:Static strings:AppResources.LegalImprintTitle}"
+                                    Clicked="OnImprintClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                            <Button Text="{x:Static strings:AppResources.LegalPrivacyTitle}"
+                                    Clicked="OnPrivacyClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="8">
+                            <Button Text="{x:Static strings:AppResources.LegalTermsTitle}"
+                                    Clicked="OnTermsClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                            <Button Text="{x:Static strings:AppResources.LegalWithdrawalTitle}"
+                                    Clicked="OnWithdrawalClicked"
+                                    Style="{StaticResource OverlayButtonStyle}" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>

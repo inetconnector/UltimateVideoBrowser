@@ -4,17 +4,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.Components.PeopleTaggedHighlightView">
-    <Frame BackgroundColor="{DynamicResource Surface}"
-           CornerRadius="16"
-           Padding="12"
-           BorderColor="{DynamicResource BorderSubtle}"
+    <Frame Style="{StaticResource CardFrameStyle}"
            IsVisible="{Binding IsPeopleTaggingEnabled}">
-        <VerticalStackLayout Spacing="4">
+        <VerticalStackLayout Spacing="6">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
-                <Image Source="icon_people.svg"
-                       HeightRequest="18"
-                       WidthRequest="18"
-                       VerticalOptions="Center" />
+                <Frame Style="{StaticResource IconBadgeStyle}">
+                    <Image Source="icon_people.svg"
+                           HeightRequest="18"
+                           WidthRequest="18"
+                           VerticalOptions="Center" />
+                </Frame>
                 <Label Grid.Column="1"
                        Text="{x:Static strings:AppResources.HighlightsPeopleTaggedLabel}"
                        FontSize="12"
@@ -30,7 +29,8 @@
                         Text="{x:Static strings:AppResources.PeopleButton}"
                         ImageSource="icon_people.svg"
                         Command="{Binding OpenPeopleCommand}"
-                        Padding="10,4"
+                        Style="{StaticResource OverlayButtonStyle}"
+                        Padding="12,6"
                         VerticalOptions="Center" />
             </Grid>
 

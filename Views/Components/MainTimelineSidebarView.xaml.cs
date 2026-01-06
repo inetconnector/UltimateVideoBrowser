@@ -7,11 +7,12 @@ public partial class MainTimelineSidebarView : ContentView
         InitializeComponent();
     }
 
+    public CollectionView TimelineView => TimelineCollection;
+
     public event EventHandler? ScrollUpClicked;
     public event EventHandler? ScrollDownClicked;
+    public event EventHandler? SettingsClicked;
     public event EventHandler<SelectionChangedEventArgs>? TimelineSelectionChanged;
-
-    public CollectionView TimelineView => TimelineCollection;
 
     private void OnScrollUpClicked(object sender, EventArgs e)
     {
@@ -26,5 +27,10 @@ public partial class MainTimelineSidebarView : ContentView
     private void OnTimelineSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         TimelineSelectionChanged?.Invoke(this, e);
+    }
+
+    private void OnSettingsClicked(object sender, EventArgs e)
+    {
+        SettingsClicked?.Invoke(this, e);
     }
 }

@@ -1,37 +1,40 @@
 using System.Diagnostics;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
-using System.Runtime.InteropServices;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class PeopleRecognitionService
 {
     private const float DefaultMatchThreshold = 0.5f;
-    private static float DefaultMinScore = 0.65f;
+    private const float RelaxedUnknownMatchThreshold = 0.45f;
+    private const float RelaxedUnknownMinQuality = 0.6f;
+    private static readonly float DefaultMinScore = 0.65f;
 
     private readonly AppDb db;
     private readonly YuNetFaceDetector faceDetector;
     private readonly SFaceRecognizer faceRecognizer;
     private readonly ModelFileService modelFiles;
     private readonly PeopleTagService peopleTagService;
+    private readonly IProUpgradeService proUpgradeService;
 
     public PeopleRecognitionService(
         AppDb db,
         PeopleTagService peopleTagService,
         ModelFileService modelFiles,
         YuNetFaceDetector faceDetector,
-        SFaceRecognizer faceRecognizer)
+        SFaceRecognizer faceRecognizer,
+        IProUpgradeService proUpgradeService)
     {
         this.db = db;
         this.peopleTagService = peopleTagService;
         this.modelFiles = modelFiles;
         this.faceDetector = faceDetector;
         this.faceRecognizer = faceRecognizer;
+        this.proUpgradeService = proUpgradeService;
     }
 
     public bool IsRuntimeLoaded => faceDetector.IsLoaded && faceRecognizer.IsLoaded;
@@ -148,8 +151,22 @@ public sealed class PeopleRecognitionService
                 var embedding = BytesToFloats(face.Embedding);
                 var match = FindBestMatch(embedding, personEmbeddings);
 
-                if (match.PersonId == null || match.Similarity < DefaultMatchThreshold)
+                var useMatch = match.PersonId != null && match.Similarity >= DefaultMatchThreshold;
+                if (!useMatch && match.PersonId != null && peopleMap.TryGetValue(match.PersonId, out var candidate))
+                    useMatch = IsUnknownName(candidate.Name) &&
+                               face.FaceQuality >= RelaxedUnknownMinQuality &&
+                               match.Similarity >= RelaxedUnknownMatchThreshold;
+
+                if (!useMatch)
                 {
+                    if (!proUpgradeService.IsProUnlocked &&
+                        peopleMap.Values.Count(p => string.IsNullOrWhiteSpace(p.MergedIntoPersonId)) >=
+                        IProUpgradeService.FreePeopleLimit)
+                    {
+                        proUpgradeService.NotifyProLimitReached();
+                        continue;
+                    }
+
                     var newPerson = CreateUnknownPerson(peopleMap.Values);
                     await db.Db.InsertAsync(newPerson).ConfigureAwait(false);
 
@@ -164,7 +181,8 @@ public sealed class PeopleRecognitionService
                     face.PersonId = match.PersonId;
                     updatedPersonIds.Add(match.PersonId!);
 
-                    if (personEmbeddings.TryGetValue(match.PersonId, out var list))
+                    if (match.PersonId != null &&
+                        personEmbeddings.TryGetValue(match.PersonId, out var list))
                         list.Add(embedding);
                 }
 
@@ -350,7 +368,7 @@ public sealed class PeopleRecognitionService
         try
         {
             using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
-            YuNetFaceDetector.YuNetTuning? tuning = YuNetFaceDetector.YuNetTuning.Default;
+            var tuning = YuNetFaceDetector.YuNetTuning.Default;
 
             //if (referenceImage != null)
             //{
@@ -360,13 +378,9 @@ public sealed class PeopleRecognitionService
 
             // 2) Use tuned detection if available, otherwise fallback to your default.
             if (tuning != null)
-            {
                 faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
-            }
             else
-            {
                 faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
-            }
         }
         catch (Exception ex)
         {
@@ -629,6 +643,11 @@ public sealed class PeopleRecognitionService
         };
     }
 
+    private static bool IsUnknownName(string name)
+    {
+        return name.StartsWith("Unknown ", StringComparison.OrdinalIgnoreCase);
+    }
+
     private static byte[] FloatsToBytes(float[] values)
     {
         var bytes = new byte[values.Length * sizeof(float)];
@@ -695,32 +714,33 @@ public sealed class PeopleRecognitionService
     {
         return v < 0f ? 0f : v > 1f ? 1f : v;
     }
+
     private static async Task<Image<Rgba32>?> TryLoadReferenceImageFromDesktopAsync(CancellationToken ct)
     {
         // Comments intentionally in English.
 #if WINDOWS
-    // 1) Try: Desktop\ref.jpg
-    var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-    var p1 = Path.Combine(desktop, "ref.jpg");
-    if (File.Exists(p1))
-        return await ImageSharpImage.LoadAsync<Rgba32>(p1, ct).ConfigureAwait(false);
+        // 1) Try: Desktop\ref.jpg
+        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        var p1 = Path.Combine(desktop, "ref.jpg");
+        if (File.Exists(p1))
+            return await ImageSharpImage.LoadAsync<Rgba32>(p1, ct).ConfigureAwait(false);
 
-    // 2) Try: Desktop\ref.JPG (case variants)
-    var p2 = Path.Combine(desktop, "ref.JPG");
-    if (File.Exists(p2))
-        return await ImageSharpImage.LoadAsync<Rgba32>(p2, ct).ConfigureAwait(false);
+        // 2) Try: Desktop\ref.JPG (case variants)
+        var p2 = Path.Combine(desktop, "ref.JPG");
+        if (File.Exists(p2))
+            return await ImageSharpImage.LoadAsync<Rgba32>(p2, ct).ConfigureAwait(false);
 
-    // 3) Try: App base directory (next to exe)
-    var appDir = AppContext.BaseDirectory;
-    var p3 = Path.Combine(appDir, "ref.jpg");
-    if (File.Exists(p3))
-        return await ImageSharpImage.LoadAsync<Rgba32>(p3, ct).ConfigureAwait(false);
+        // 3) Try: App base directory (next to exe)
+        var appDir = AppContext.BaseDirectory;
+        var p3 = Path.Combine(appDir, "ref.jpg");
+        if (File.Exists(p3))
+            return await ImageSharpImage.LoadAsync<Rgba32>(p3, ct).ConfigureAwait(false);
 
-    var p4 = Path.Combine(appDir, "ref.JPG");
-    if (File.Exists(p4))
-        return await ImageSharpImage.LoadAsync<Rgba32>(p4, ct).ConfigureAwait(false);
+        var p4 = Path.Combine(appDir, "ref.JPG");
+        if (File.Exists(p4))
+            return await ImageSharpImage.LoadAsync<Rgba32>(p4, ct).ConfigureAwait(false);
 
-    return null;
+        return null;
 #else
         // Not supported for Android/iOS in this direct "desktop path" form.
         return null;

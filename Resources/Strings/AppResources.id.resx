@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Peramban Video Utama</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Sumber</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Indeks ulang</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Cari video...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Urutkan</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Nama</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Tanggal</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Durasi</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Mengindeks...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Item baru: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Sumber</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Sumber (folder lokal / berbagi tersinkron)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Diaktifkan</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Dinonaktifkan</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Semua video perangkat</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>Perpustakaan pribadi Anda</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Temukan setiap video seketika</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Jelajahi dengan thumbnail kaya, pencarian cerdas, dan pengindeksan cepat di semua folder Anda.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Kelola sumber</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Rentang tanggal</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>Dari</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>Sampai</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Mengindeks {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Folder: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>Berkas: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Sembunyikan</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>Batal</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Detail</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>Sorotan perpustakaan</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Video terindeks</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Sumber diaktifkan</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>Tips</value>
+    
+    
+    <value>Tips Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Gunakan pencarian + filter, lalu indeks ulang setelah menambahkan folder baru untuk hasil terbaik.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} dari {1} sumber aktif</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Akses diperlukan</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Izinkan akses ke video Anda agar kami dapat mengindeks dan memutarnya.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Berikan akses</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Oke</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Bagikan</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Bagikan video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Simpan sebagai...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Gagal menyimpan</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Kami tidak dapat menyimpan video ini. Coba lokasi lain.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Simpan sebagai tidak didukung di perangkat ini.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Kembali</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Pengaturan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Pengaturan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Pengaturan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Tampilan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Tema</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Pengurutan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Urutan default</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Filter</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Aktifkan filter tanggal</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>Dari</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>Sampai</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Pengindeksan</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Indeks ulang saat peluncuran berikutnya</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Terang</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Gelap</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Belum ada video</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Tambahkan sumber atau segarkan untuk mulai menjelajahi perpustakaan Anda.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Tambahkan sumber</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Tambahkan folder</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Hapus</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Hapus sumber?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>Hapus “{0}” dari sumber?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Hapus</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Tambahkan sumber</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Nama sumber</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Tambah</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>Batal</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Sumber baru</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Sudah ditambahkan</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Folder ini sudah ada di sumber Anda.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Pilih folder lokal atau berbagi jaringan.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Telusuri folder</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Pilih folder</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Pilih folder lokal atau berbagi jaringan.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Tambahkan folder lain?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Apakah Anda ingin menambahkan folder lain?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Tambahkan lagi</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Selesai</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Jalur tidak ditemukan</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>Kami tidak dapat menemukan folder tersebut. Periksa jalur.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Pustaka media perangkat</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Hapus dari indeks orang</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Gabungkan</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Gabungkan ke…</value></data><data name="QualityLabel" xml:space="preserve"><value>Kualitas</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Gabungkan</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Gabungkan ke…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Kualitas</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>Log kesalahan</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>Bagikan log ini jika sesuatu gagal atau thumbnail kosong.</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>Tampilkan log</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>Bagikan log</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>Hapus log</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>Dokumen</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>Grafis &amp; tangkapan layar</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>Foto</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>Video</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>Hapus database</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>Menghapus database lokal dan membangunnya kembali dengan memindai ulang sumber Anda.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>Pisahkan ekstensi dengan koma (mis. .mp4, .mkv).</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>Ekstensi file</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>Aktifkan ini untuk menampilkan tindakan yang mengubah file di disk.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>Izinkan mengganti nama, memindahkan, menyalin, dan menghapus</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>Perubahan file</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>Status</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>Gunakan pemutar video internal untuk video</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>Data lokasi tetap di perangkat Anda, tetapi server peta eksternal dapat menerima data permintaan (mis. alamat IP). Anda bertanggung jawab membagikan lokasi sensitif; layanan pihak ketiga memiliki ketentuan dan kebijakan privasinya sendiri.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>Ekstrak metadata GPS dari foto dan video agar dapat ditampilkan di peta dunia. Ubin peta dimuat dari server ubin eksternal.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>Tampilkan lokasi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>Lokasi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>Pilih jenis yang akan diindeks di perpustakaan Anda.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>Jenis media</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>Unduh model wajah</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>Model wajah</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>Aktifkan ini untuk menandai orang di foto dan video dari perpustakaan.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>Aktifkan penandaan orang</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>Penandaan orang</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>Pemutaran</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• Pengenalan wajah tanpa batas
+• Album orang otomatis
+• Penyortiran batch (1000+ foto)
+• Ekspor lokal &amp; cadangan
+• Tanpa iklan</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>Pulihkan pembelian</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>Upgrade Pro</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>Buka Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Gagal menyalin ke clipboard. Coba lagi atau gunakan "Lihat log" untuk menyalin secara manual.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Upgrade sekarang</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Tag orang (uji coba)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>Tag orang diaktifkan selama 14 hari di versi gratis. Upgrade ke Pro untuk menyimpan tag orang secara permanen.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Indeks ulang pustaka</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Apakah Anda ingin mengindeks ulang semuanya sekarang? Ini bisa memakan waktu tergantung ukuran pustaka Anda.</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Cadangan basis data</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Ekspor atau impor basis data lokal termasuk pengaturan dan thumbnail.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Ekspor cadangan</value></data><data name="BackupImportButton" xml:space="preserve"><value>Impor cadangan</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Cadangan diekspor</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Cadangan berhasil diekspor.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Ekspor cadangan gagal</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Cadangan tidak dapat dibuat atau disimpan.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Pilih ZIP cadangan</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Pulihkan cadangan?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Ini akan menimpa basis data, pengaturan, dan thumbnail saat ini. Lanjutkan?</value></data><data name="RestoreButton" xml:space="preserve"><value>Pulihkan</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Pengindeksan sedang berjalan</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Hentikan pengindeksan sebelum memulihkan cadangan.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Pemulihan gagal</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Cadangan tidak dapat dipulihkan.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Cadangan ini tidak berisi file basis data.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Pemulihan selesai</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Cadangan dipulihkan. Anda mungkin perlu membuka ulang aplikasi untuk melihat semua perubahan.</value></data></root>

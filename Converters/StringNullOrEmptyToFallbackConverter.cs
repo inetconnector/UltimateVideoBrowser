@@ -1,4 +1,6 @@
 using System.Globalization;
+#if ANDROID && !WINDOWS
+#endif
 
 namespace UltimateVideoBrowser.Converters;
 
@@ -6,34 +8,57 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var text = value as string;
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            if (text.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-                return ImageSource.FromUri(new Uri(text));
+        var raw = value as string;
+        var fallback = parameter as string ?? "video_placeholder.svg";
 
-            if (File.Exists(text))
-                try
+        if (string.IsNullOrWhiteSpace(raw))
+            return fallback;
+
+        var text = raw.Trim();
+
+        // 1) Android content:// URIs (scoped storage). Use a stream so MAUI can render it.
+#if ANDROID && !WINDOWS
+        if (text.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var ctx = Platform.AppContext;
+                if (ctx != null)
                 {
-                    // Treat 0-byte or obviously broken files as invalid to avoid "blank" thumbnails.
-                    var fi = new FileInfo(text);
-                    if (fi.Length > 0)
-                        return ImageSource.FromFile(text);
+                    var uri = Android.Net.Uri.Parse(text);
+                    return ImageSource.FromStream(() => ctx.ContentResolver?.OpenInputStream(uri) ?? Stream.Null);
                 }
-                catch
-                {
-                    // Ignore and fall back.
-                }
+            }
+            catch
+            {
+                // Best-effort.
+            }
+
+            return fallback;
+        }
+#endif
+
+        // 2) file:// URIs -> local file path (works across platforms).
+        if (Uri.TryCreate(text, UriKind.Absolute, out var u) && u.IsFile)
+        {
+            var local = u.LocalPath;
+            if (!string.IsNullOrWhiteSpace(local))
+                text = local;
         }
 
-        var fallback = parameter as string ?? string.Empty;
-        return string.IsNullOrWhiteSpace(fallback)
-            ? ImageSource.FromFile(string.Empty)
-            : ImageSource.FromFile(fallback);
+        // 3) Regular file path.
+        if (File.Exists(text))
+            return text;
+
+        return fallback;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value ?? string.Empty;
     }
+
+    // NOTE: We intentionally do not validate image bytes here.
+    // Thumbnails are written to a temp file and moved into place atomically.
+    // Any stricter validation can cause false negatives and empty tiles.
 }

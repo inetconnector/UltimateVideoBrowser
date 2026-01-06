@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>Browser video definitivo</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>Sorgenti</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>Reindicizza</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>Cerca video...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>Ordina</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>Nome</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>Data</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>Durata</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>Indicizzazione...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>Nuovi elementi: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>Sorgenti</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>Sorgenti (cartelle locali / condivisioni sincronizzate)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>Abilitato</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>Disabilitato</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>Tutti i video del dispositivo</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>La tua libreria personale</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>Scopri ogni video all'istante</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>Sfoglia con miniature ricche, ricerca intelligente e indicizzazione rapida in tutte le tue cartelle.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>Gestisci sorgenti</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>Intervallo di date</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>Da</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>A</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>Indicizzazione {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>Cartella: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>File: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>Nascondi</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>Annulla</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>Dettagli</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>In evidenza nella libreria</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>Video indicizzati</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>Sorgenti abilitate</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>Suggerimento</value>
+    
+    
+    <value>Suggerimento Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>Usa ricerca + filtri, poi reindicizza dopo aver aggiunto nuove cartelle per ottenere i migliori risultati.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} di {1} sorgenti attive</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>Accesso richiesto</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>Consenti l'accesso ai tuoi video così possiamo indicizzarli e riprodurli.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>Concedi accesso</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>Conferma</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>Condividi</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>Condividi video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>Salva con nome...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>Video</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>Salvataggio non riuscito</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>Non siamo riusciti a salvare questo video. Prova un'altra posizione.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>Salva con nome non è supportato su questo dispositivo.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>Indietro</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>Impostazioni</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>Impostazioni</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>Impostazioni</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>Aspetto</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>Tema</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>Ordinamento</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>Ordine predefinito</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>Filtro</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>Abilita filtro data</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>Da</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>A</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>Indicizzazione</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>Reindicizza al prossimo avvio</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>Chiaro</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>Scuro</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>Nessun video ancora</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>Aggiungi una sorgente o aggiorna per iniziare a sfogliare la tua libreria.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>Aggiungi sorgenti</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>Aggiungi cartella</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>Rimuovi</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>Rimuovere la sorgente?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>Rimuovere “{0}” dalle sorgenti?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>Rimuovi</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>Aggiungi sorgente</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>Nome sorgente</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>Aggiungi</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>Annulla</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>Nuova sorgente</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>Già aggiunta</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>Questa cartella è già nelle tue sorgenti.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>Seleziona una cartella locale o una condivisione di rete.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>Sfoglia cartella</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>Seleziona cartella</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>Seleziona una cartella locale o una condivisione di rete.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>Aggiungere un'altra cartella?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>Vuoi aggiungere un'altra cartella?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>Aggiungi un'altra</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>Fatto</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>Percorso non trovato</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>Non siamo riusciti a trovare quella cartella. Controlla il percorso.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>Libreria multimediale del dispositivo</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>Rimuovi dall'indice persone</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>Unisci</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>Unisci in…</value></data><data name="QualityLabel" xml:space="preserve"><value>Qualità</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>Unisci</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>Unisci in…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Qualità</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>Registro errori</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>Condividi questo registro se qualcosa non funziona o se una miniatura è vuota.</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>Mostra registro</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>Condividi registro</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>Cancella registro</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>Documenti</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>Grafica e screenshot</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>Foto</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>Video</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>Elimina database</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>Elimina il database locale e lo ricostruisce scansionando di nuovo le sorgenti.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>Separa le estensioni con virgole (ad es. .mp4, .mkv).</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>Estensioni file</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>Abilita questa opzione per mostrare azioni che modificano i file sul disco.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>Consenti rinomina, spostamento, copia ed eliminazione</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>Modifiche ai file</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>Stato</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>Usa il lettore video interno per i video</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>I dati sulla posizione restano sul tuo dispositivo, ma i server di mappe esterni possono ricevere dati di richiesta (ad es. indirizzo IP). Sei responsabile della condivisione di posizioni sensibili; i servizi di terze parti hanno i propri termini e politiche sulla privacy.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>Estrai metadati GPS da foto e video per visualizzarli sulla mappa mondiale. Le tessere della mappa vengono caricate da server esterni.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>Mostra posizioni</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>Posizioni</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>Scegli quali tipi indicizzare nella tua libreria.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>Tipi di media</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>Scarica modelli facciali</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>Modelli facciali</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>Attiva questa opzione per taggare le persone in foto e video della libreria.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>Abilita tagging delle persone</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>Tagging delle persone</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>Riproduzione</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• Riconoscimento facciale illimitato
+• Album persone automatici
+• Ordinamento batch (1000+ foto)
+• Esportazione locale e backup
+• Nessuna pubblicità</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>Ripristina acquisto</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>Aggiornamento Pro</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>Sblocca Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>Copia negli appunti non riuscita. Riprova oppure usa "Visualizza registro" per copiare manualmente.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>Passa a Pro</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>Tag persone (prova)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>I tag persone sono attivi per 14 giorni nella versione gratuita. Passa a Pro per mantenerli per sempre.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>Reindicizza libreria</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>Vuoi reindicizzare tutto adesso? Potrebbe richiedere del tempo a seconda delle dimensioni della libreria.</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Backup del database</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Esporta o importa il database locale incluse impostazioni e miniature.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Esporta backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importa backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup esportato</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Il backup è stato esportato correttamente.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Esportazione non riuscita</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Impossibile creare o salvare il backup.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Seleziona un ZIP di backup</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Ripristinare il backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Questo sovrascriverà database, impostazioni e miniature attuali. Continuare?</value></data><data name="RestoreButton" xml:space="preserve"><value>Ripristina</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indicizzazione in corso</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Interrompi l’indicizzazione prima di ripristinare un backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Ripristino non riuscito</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Impossibile ripristinare il backup.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Questo backup non contiene un file di database.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Ripristino completato</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup ripristinato. Potrebbe essere necessario riaprire l’app per vedere tutte le modifiche.</value></data></root>

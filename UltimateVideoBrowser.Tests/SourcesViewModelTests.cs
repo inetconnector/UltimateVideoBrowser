@@ -26,7 +26,8 @@ public sealed class SourcesViewModelTests
             var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
             var dialogService = new FakeDialogService(null);
 
-            var settingsService = new AppSettingsService();
+            var settingsPath = Path.Combine(tempPath, "settings.json");
+            var settingsService = new AppSettingsService(new FileSettingsStore(settingsPath));
 
             var viewModel = new SourcesViewModel(
                 sourceService,
@@ -91,6 +92,12 @@ public sealed class SourcesViewModelTests
             string? initialValue = null)
         {
             return Task.FromResult(promptResult);
+        }
+
+        public Task<string?> DisplayActionSheetAsync(string title, string cancel, string? destruction,
+            params string[] buttons)
+        {
+            return Task.FromResult<string?>(null);
         }
     }
 

@@ -22,6 +22,18 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
     [ObservableProperty] private string mediaPath = string.Empty;
     [ObservableProperty] private string peopleTagsText = string.Empty;
 
+    public PhotoPeopleEditorViewModel(
+        PeopleDataService peopleData,
+        PeopleRecognitionService recognitionService,
+        FaceThumbnailService faceThumbnails,
+        PeopleTagService peopleTagService)
+    {
+        this.peopleData = peopleData;
+        this.recognitionService = recognitionService;
+        this.faceThumbnails = faceThumbnails;
+        this.peopleTagService = peopleTagService;
+    }
+
     private bool UseImageTags => hasLoaded && Faces.Count == 0;
 
     public string TagEditorTitle =>
@@ -41,18 +53,6 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
 
     public string TagEditorEmptyHint =>
         UseImageTags ? AppResources.TagImageEditorEmptyHint : AppResources.TagPeopleEditorEmptyHint;
-
-    public PhotoPeopleEditorViewModel(
-        PeopleDataService peopleData,
-        PeopleRecognitionService recognitionService,
-        FaceThumbnailService faceThumbnails,
-        PeopleTagService peopleTagService)
-    {
-        this.peopleData = peopleData;
-        this.recognitionService = recognitionService;
-        this.faceThumbnails = faceThumbnails;
-        this.peopleTagService = peopleTagService;
-    }
 
     public void Initialize(string path)
     {
@@ -100,7 +100,6 @@ public sealed partial class PhotoPeopleEditorViewModel : ObservableObject
                 hasLoaded = true;
                 NotifyTagEditorTextChanged();
             });
-
         }
         catch
         {

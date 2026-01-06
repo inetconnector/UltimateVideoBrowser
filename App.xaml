@@ -13,6 +13,7 @@
             <converters:StringNullOrEmptyToFallbackConverter x:Key="StringFallbackConverter" />
             <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter" />
             <converters:MediaTypeSelectedConverter x:Key="MediaTypeSelectedConverter" />
+            <converters:SearchScopeSelectedConverter x:Key="SearchScopeSelectedConverter" />
             <converters:MediaTypeLabelConverter x:Key="MediaTypeLabelConverter" />
             <converters:TagNavigationContextConverter x:Key="TagNavigationContextConverter" />
             <ResourceDictionary.MergedDictionaries>

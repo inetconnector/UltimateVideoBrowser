@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -9,6 +10,7 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    private readonly IBackupRestoreService backupRestoreService;
     private readonly AppDb db;
     private readonly IDialogService dialogService;
     private readonly ModelFileService modelFileService;
@@ -20,14 +22,24 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private DateTime dateFilterFrom;
     [ObservableProperty] private DateTime dateFilterTo;
     [ObservableProperty] private string documentExtensionsText = string.Empty;
+    [ObservableProperty] private string indexStatusMessage = string.Empty;
+    [ObservableProperty] private string indexStatusTitle = string.Empty;
+    private bool isApplyingLocationToggle;
+    private bool isApplyingNeedsReindex;
+    private bool isApplyingSearchScope;
     [ObservableProperty] private bool isDatabaseResetting;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
+    [ObservableProperty] private bool isGraphicsIndexed;
+    [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
+    [ObservableProperty] private bool isSearchAlbumsEnabled;
+    [ObservableProperty] private bool isSearchNameEnabled;
+    [ObservableProperty] private bool isSearchPeopleEnabled;
     [ObservableProperty] private bool isVideosIndexed;
     [ObservableProperty] private bool needsReindex;
     [ObservableProperty] private string peopleModelsDetailText = string.Empty;
@@ -41,13 +53,14 @@ public partial class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
-        IDialogService dialogService)
+        IBackupRestoreService backupRestoreService, IDialogService dialogService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
         this.db = db;
         this.sourceService = sourceService;
+        this.backupRestoreService = backupRestoreService;
         this.dialogService = dialogService;
         ThemeOptions = new[]
         {
@@ -72,11 +85,13 @@ public partial class SettingsViewModel : ObservableObject
         DateFilterFrom = settingsService.DateFilterFrom;
         DateFilterTo = settingsService.DateFilterTo;
         NeedsReindex = settingsService.NeedsReindex;
+        IsIndexing = settingsService.IsIndexing;
         IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
 
         var indexed = settingsService.IndexedMediaTypes;
         IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
         IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
+        IsGraphicsIndexed = indexed.HasFlag(MediaType.Graphics);
         IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
 
         VideoExtensionsText = settingsService.VideoExtensions;
@@ -84,13 +99,41 @@ public partial class SettingsViewModel : ObservableObject
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+        var searchScope = settingsService.SearchScope == SearchScope.None
+            ? SearchScope.All
+            : settingsService.SearchScope;
+        isApplyingSearchScope = true;
+        IsSearchNameEnabled = searchScope.HasFlag(SearchScope.Name);
+        IsSearchPeopleEnabled = searchScope.HasFlag(SearchScope.People);
+        IsSearchAlbumsEnabled = searchScope.HasFlag(SearchScope.Albums);
+        isApplyingSearchScope = false;
+        isApplyingLocationToggle = true;
         IsLocationEnabled = settingsService.LocationsEnabled;
+        isApplyingLocationToggle = false;
 
         RefreshPeopleModelsStatus();
+        UpdateIndexStatusState();
+
+        settingsService.IsIndexingChanged += (_, value) =>
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsIndexing = value;
+                UpdateIndexStatusState();
+            });
+
+        settingsService.NeedsReindexChanged += (_, value) =>
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                isApplyingNeedsReindex = true;
+                NeedsReindex = value;
+                isApplyingNeedsReindex = false;
+                UpdateIndexStatusState();
+            });
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
     public IReadOnlyList<SortOption> SortOptions { get; }
+    public string ErrorLogPath => ErrorLog.LogPath;
 
     partial void OnSelectedThemeChanged(ThemeOption? value)
     {
@@ -132,7 +175,10 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnNeedsReindexChanged(bool value)
     {
-        settingsService.NeedsReindex = value;
+        if (!isApplyingNeedsReindex)
+            settingsService.NeedsReindex = value;
+
+        UpdateIndexStatusState();
     }
 
     partial void OnIsInternalPlayerEnabledChanged(bool value)
@@ -142,7 +188,8 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsVideosIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsPhotosIndexed, IsDocumentsIndexed, () => IsVideosIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsVideosIndexed = true, IsPhotosIndexed, IsGraphicsIndexed,
+                IsDocumentsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -150,7 +197,17 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsPhotosIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsDocumentsIndexed, () => IsPhotosIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsPhotosIndexed = true, IsVideosIndexed, IsGraphicsIndexed,
+                IsDocumentsIndexed))
+            return;
+
+        ApplyIndexedMediaTypes();
+    }
+
+    partial void OnIsGraphicsIndexedChanged(bool value)
+    {
+        if (!EnsureAtLeastOneIndexed(value, () => IsGraphicsIndexed = true, IsVideosIndexed, IsPhotosIndexed,
+                IsDocumentsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -158,7 +215,8 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsDocumentsIndexedChanged(bool value)
     {
-        if (!EnsureAtLeastOneIndexed(value, IsVideosIndexed, IsPhotosIndexed, () => IsDocumentsIndexed = true))
+        if (!EnsureAtLeastOneIndexed(value, () => IsDocumentsIndexed = true, IsVideosIndexed, IsPhotosIndexed,
+                IsGraphicsIndexed))
             return;
 
         ApplyIndexedMediaTypes();
@@ -199,11 +257,104 @@ public partial class SettingsViewModel : ObservableObject
             _ = DownloadPeopleModelsAsync(CancellationToken.None);
     }
 
+    partial void OnIsSearchNameEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchNameEnabled = true, IsSearchPeopleEnabled,
+                IsSearchAlbumsEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
+    partial void OnIsSearchPeopleEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchPeopleEnabled = true, IsSearchNameEnabled,
+                IsSearchAlbumsEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
+    partial void OnIsSearchAlbumsEnabledChanged(bool value)
+    {
+        if (isApplyingSearchScope)
+            return;
+
+        if (!EnsureAtLeastOneSearchScope(value, () => IsSearchAlbumsEnabled = true, IsSearchNameEnabled,
+                IsSearchPeopleEnabled))
+            return;
+
+        ApplySearchScope();
+    }
+
     partial void OnIsLocationEnabledChanged(bool value)
     {
-        settingsService.LocationsEnabled = value;
-        if (value && !NeedsReindex)
+        if (isApplyingLocationToggle)
+        {
+            settingsService.LocationsEnabled = value;
+            return;
+        }
+
+        _ = HandleLocationToggleAsync(value);
+    }
+
+    private async Task HandleLocationToggleAsync(bool value)
+    {
+        if (!value)
+        {
+            settingsService.LocationsEnabled = false;
+            return;
+        }
+
+        var accepted = await dialogService.DisplayAlertAsync(
+            AppResources.LocationOptInTitle,
+            AppResources.LocationOptInMessage,
+            AppResources.LocationOptInAccept,
+            AppResources.LocationOptInDecline);
+
+        if (!accepted)
+        {
+            isApplyingLocationToggle = true;
+            IsLocationEnabled = false;
+            isApplyingLocationToggle = false;
+            return;
+        }
+
+        settingsService.LocationsEnabled = true;
+        if (!NeedsReindex)
             NeedsReindex = true;
+    }
+
+    partial void OnIsIndexingChanged(bool value)
+    {
+        UpdateIndexStatusState();
+    }
+
+    private void UpdateIndexStatusState()
+    {
+        var state = IsIndexing ? IndexingState.Running :
+            NeedsReindex ? IndexingState.NeedsReindex :
+            IndexingState.Ready;
+
+        IndexStatusTitle = state switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningTitle,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededTitle,
+            _ => AppResources.IndexStatusReadyTitle
+        };
+
+        IndexStatusMessage = state switch
+        {
+            IndexingState.Running => AppResources.IndexStatusRunningMessage,
+            IndexingState.NeedsReindex => AppResources.IndexStatusNeededMessage,
+            _ => AppResources.IndexStatusReadyMessage
+        };
     }
 
     [RelayCommand]
@@ -265,14 +416,15 @@ public partial class SettingsViewModel : ObservableObject
 
         try
         {
-            await db.ResetAsync().ConfigureAwait(false);
-            if (keepSources && sources is { Count: > 0 })
+            await Task.Run(async () =>
             {
-                foreach (var source in sources)
-                    await sourceService.UpsertAsync(source).ConfigureAwait(false);
-            }
+                await db.ResetAsync().ConfigureAwait(false);
+                if (keepSources && sources is { Count: > 0 })
+                    foreach (var source in sources)
+                        await sourceService.UpsertAsync(source).ConfigureAwait(false);
 
-            await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+                await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
+            }).ConfigureAwait(false);
             await MainThread.InvokeOnMainThreadAsync(() => NeedsReindex = true);
             await MainThread.InvokeOnMainThreadAsync(() =>
                 dialogService.DisplayAlertAsync(
@@ -294,9 +446,162 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private Task ExportBackupAsync(CancellationToken ct)
+    {
+        return backupRestoreService.ExportBackupAsync(ct);
+    }
+
+    [RelayCommand]
+    private async Task ImportBackupAsync(CancellationToken ct)
+    {
+        await backupRestoreService.ImportBackupAsync(ct).ConfigureAwait(false);
+        await MainThread.InvokeOnMainThreadAsync(ReloadFromSettingsService);
+    }
+
+    private void ReloadFromSettingsService()
+    {
+        // Refresh the most relevant UI-bound values after a restore.
+        SelectedTheme = ThemeOptions.FirstOrDefault(option => option.Key == settingsService.ThemePreference)
+                        ?? ThemeOptions.First();
+
+        SelectedSortOption = SortOptions.FirstOrDefault(option => option.Key == settingsService.SelectedSortOptionKey)
+                             ?? SortOptions.First();
+
+        IsDateFilterEnabled = settingsService.DateFilterEnabled;
+        DateFilterFrom = settingsService.DateFilterFrom;
+        DateFilterTo = settingsService.DateFilterTo;
+
+        isApplyingNeedsReindex = true;
+        NeedsReindex = settingsService.NeedsReindex;
+        isApplyingNeedsReindex = false;
+
+        IsIndexing = settingsService.IsIndexing;
+        IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
+
+        var indexed = settingsService.IndexedMediaTypes;
+        IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
+        IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
+        IsGraphicsIndexed = indexed.HasFlag(MediaType.Graphics);
+        IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
+
+        VideoExtensionsText = settingsService.VideoExtensions;
+        PhotoExtensionsText = settingsService.PhotoExtensions;
+        DocumentExtensionsText = settingsService.DocumentExtensions;
+        AllowFileChanges = settingsService.AllowFileChanges;
+        IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+
+        var searchScope = settingsService.SearchScope == SearchScope.None
+            ? SearchScope.All
+            : settingsService.SearchScope;
+        isApplyingSearchScope = true;
+        IsSearchNameEnabled = searchScope.HasFlag(SearchScope.Name);
+        IsSearchPeopleEnabled = searchScope.HasFlag(SearchScope.People);
+        IsSearchAlbumsEnabled = searchScope.HasFlag(SearchScope.Albums);
+        isApplyingSearchScope = false;
+
+        isApplyingLocationToggle = true;
+        IsLocationEnabled = settingsService.LocationsEnabled;
+        isApplyingLocationToggle = false;
+
+        RefreshPeopleModelsStatus();
+        UpdateIndexStatusState();
+    }
+
     private void RefreshPeopleModelsStatus()
     {
         ApplyPeopleModelsSnapshot(modelFileService.GetStatusSnapshot());
+    }
+
+    [RelayCommand]
+    private async Task ShowErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ErrorLogTitle,
+                log,
+                AppResources.OkButton));
+    }
+
+    [RelayCommand]
+    private async Task ShareErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            Share.RequestAsync(new ShareTextRequest
+            {
+                Title = AppResources.ErrorLogShareTitle,
+                Text = log
+            }));
+    }
+
+    [RelayCommand]
+    private async Task CopyErrorLogAsync()
+    {
+        var log = await ErrorLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        try
+        {
+            // Clipboard APIs can fail on Windows (WinRT clipboard restrictions / background thread access).
+            // Always execute on the UI thread and fall back to showing the log if the clipboard is unavailable.
+            await MainThread.InvokeOnMainThreadAsync(async () => { await Clipboard.Default.SetTextAsync(log); });
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogCopiedMessage,
+                    AppResources.OkButton));
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "CopyErrorLogAsync");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ErrorLogTitle,
+                    AppResources.ErrorLogCopyFailedMessage,
+                    AppResources.OkButton));
+        }
+    }
+
+    [RelayCommand]
+    private async Task ClearErrorLogAsync()
+    {
+        await ErrorLog.ClearLogAsync().ConfigureAwait(false);
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ErrorLogTitle,
+                AppResources.ErrorLogClearedMessage,
+                AppResources.OkButton));
     }
 
     private void ApplyPeopleModelsSnapshot(ModelFileService.ModelStatusSnapshot s)
@@ -350,6 +655,19 @@ public partial class SettingsViewModel : ObservableObject
         App.ApplyTheme(theme);
     }
 
+    private void ApplySearchScope()
+    {
+        var scope = SearchScope.None;
+        if (IsSearchNameEnabled)
+            scope |= SearchScope.Name;
+        if (IsSearchPeopleEnabled)
+            scope |= SearchScope.People;
+        if (IsSearchAlbumsEnabled)
+            scope |= SearchScope.Albums;
+
+        settingsService.SearchScope = scope == SearchScope.None ? SearchScope.All : scope;
+    }
+
     private void ApplyIndexedMediaTypes()
     {
         settingsService.IndexedMediaTypes = BuildIndexedMediaTypes();
@@ -363,14 +681,27 @@ public partial class SettingsViewModel : ObservableObject
             mediaTypes |= MediaType.Videos;
         if (IsPhotosIndexed)
             mediaTypes |= MediaType.Photos;
+        if (IsGraphicsIndexed)
+            mediaTypes |= MediaType.Graphics;
         if (IsDocumentsIndexed)
             mediaTypes |= MediaType.Documents;
         return mediaTypes;
     }
 
-    private static bool EnsureAtLeastOneIndexed(bool currentValue, bool otherOne, bool otherTwo, Action restore)
+    private static bool EnsureAtLeastOneIndexed(bool currentValue, Action restore, params bool[] otherFlags)
     {
-        if (!currentValue && !otherOne && !otherTwo)
+        if (!currentValue && otherFlags.All(flag => !flag))
+        {
+            restore();
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool EnsureAtLeastOneSearchScope(bool currentValue, Action restore, params bool[] otherFlags)
+    {
+        if (!currentValue && otherFlags.All(flag => !flag))
         {
             restore();
             return false;

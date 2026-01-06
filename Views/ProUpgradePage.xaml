@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.ProUpgradePage"
+             BackgroundColor="{DynamicResource AppBg}"
+             Title="{x:Static strings:AppResources.SettingsProTitle}">
+
+    <Grid RowDefinitions="Auto,*"
+          Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Button x:Name="BackButton"
+                    Text="{x:Static strings:AppResources.BackButton}"
+                    Clicked="OnBackClicked" />
+            <Label Grid.Column="1"
+                   Text="{x:Static strings:AppResources.SettingsProTitle}"
+                   TextColor="{DynamicResource OnSurface}"
+                   FontAttributes="Bold"
+                   FontSize="16" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" Margin="0,12,0,0">
+            <VerticalStackLayout Spacing="12">
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.SettingsProTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{Binding ProStatusTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Accent}" />
+                        <Label Text="{Binding ProStatusMessage}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding ProPriceText}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.SettingsProFeatureList}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding ProLimitMessage}"
+                               FontSize="12"
+                               TextColor="{DynamicResource AccentStrong}"
+                               IsVisible="{Binding IsProLimitReached}" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Button Text="{x:Static strings:AppResources.SettingsProUnlockButton}"
+                                    Command="{Binding UpgradeToProCommand}"
+                                    IsVisible="{Binding IsProUnlocked, Converter={StaticResource InverseBoolConverter}}"
+                                    IsEnabled="{Binding IsProBusy, Converter={StaticResource InverseBoolConverter}}"
+                                    BackgroundColor="{DynamicResource Accent}"
+                                    TextColor="{DynamicResource OnAccent}" />
+                            <Button Grid.Column="1"
+                                    Text="{x:Static strings:AppResources.SettingsProRestoreButton}"
+                                    Command="{Binding RestoreProCommand}"
+                                    IsEnabled="{Binding IsProBusy, Converter={StaticResource InverseBoolConverter}}"
+                                    BackgroundColor="{DynamicResource Surface2}"
+                                    TextColor="{DynamicResource OnSurface}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

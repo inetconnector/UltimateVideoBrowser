@@ -12,17 +12,17 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class MapViewModel : ObservableObject
 {
-    private readonly AppSettingsService settingsService;
-    private readonly IndexService indexService;
     private readonly IFileExportService fileExportService;
-    private readonly PlaybackService playbackService;
+    private readonly IndexService indexService;
     private readonly Dictionary<string, MediaItem> itemLookup = new(StringComparer.OrdinalIgnoreCase);
+    private readonly PlaybackService playbackService;
+    private readonly AppSettingsService settingsService;
 
     [ObservableProperty] private bool hasLocations;
     [ObservableProperty] private bool isLoading;
+    [ObservableProperty] private MediaItem? selectedItem;
     [ObservableProperty] private string statusMessage = string.Empty;
     [ObservableProperty] private string statusTitle = string.Empty;
-    [ObservableProperty] private MediaItem? selectedItem;
 
     public MapViewModel(
         IndexService indexService,
@@ -170,7 +170,8 @@ public partial class MapViewModel : ObservableObject
         sb.AppendLine("const map = L.map('map', { zoomControl: true }).setView([20, 0], 2);");
         sb.AppendLine(
             "L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map);");
-        sb.AppendLine("function escapeHtml(str) { return str.replace(/[&<>\"']/g, c => ({\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\",\"\\\"\":\"&quot;\",\"'\":\"&#39;\"}[c])); }");
+        sb.AppendLine(
+            "function escapeHtml(str) { return str.replace(/[&<>\"']/g, c => ({\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\",\"\\\"\":\"&quot;\",\"'\":\"&#39;\"}[c])); }");
         sb.AppendLine("const markers = [];");
         sb.AppendLine("items.forEach(item => {");
         sb.AppendLine("  const marker = L.marker([item.lat, item.lon]).addTo(map);");

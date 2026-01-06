@@ -1,5 +1,8 @@
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
+#if WINDOWS
+using Windows.Storage.AccessCache;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
@@ -55,16 +58,14 @@ public sealed class SourceService : ISourceService
         await db.Db.DeleteAsync(src);
 #if WINDOWS
         if (!string.IsNullOrWhiteSpace(src.AccessToken))
-        {
             try
             {
-                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Remove(src.AccessToken);
+                StorageApplicationPermissions.FutureAccessList.Remove(src.AccessToken);
             }
             catch
             {
                 // Ignore missing/invalid access tokens.
             }
-        }
 #endif
     }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using SQLite;
 using UltimateVideoBrowser.Resources.Strings;
@@ -10,8 +11,8 @@ public class MediaItem : INotifyPropertyChanged
     private bool isMarked;
     private string name = "";
     private string path = "";
+    private string peopleTagActionLabel = AppResources.TagPeopleNoFacesAction;
     private string peopleTagsSummary = "";
-    private string peopleTagActionLabel = AppResources.TagPeopleAction;
     private string? thumbnailPath;
 
     [PrimaryKey]
@@ -25,6 +26,7 @@ public class MediaItem : INotifyPropertyChanged
 
             path = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TilePreviewPath));
         }
     }
 
@@ -47,6 +49,35 @@ public class MediaItem : INotifyPropertyChanged
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
 
+    [Ignore] public bool HasDateAdded => DateAddedSeconds > 0;
+
+    [Ignore]
+    public DateTime DateAddedLocal
+    {
+        get
+        {
+            if (DateAddedSeconds <= 0)
+                return DateTime.MinValue;
+
+            return DateTimeOffset.FromUnixTimeSeconds(DateAddedSeconds)
+                .ToLocalTime()
+                .DateTime;
+        }
+    }
+
+    [Ignore]
+    public string DateAddedText
+    {
+        get
+        {
+            if (!HasDateAdded)
+                return string.Empty;
+
+            // Use the current culture's short date format (e.g. 05.01.2026 in German locales).
+            return DateAddedLocal.ToString("d", CultureInfo.CurrentCulture);
+        }
+    }
+
     [Indexed] public string? SourceId { get; set; }
 
     public double? Latitude { get; set; }
@@ -63,6 +94,28 @@ public class MediaItem : INotifyPropertyChanged
 
             thumbnailPath = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TilePreviewPath));
+        }
+    }
+
+    /// <summary>
+    ///     Image source for grid tiles. Uses the generated thumbnail when available.
+    ///     Falls back to the original file path for photos/graphics so users always
+    ///     see images even while the thumbnail pipeline is still running.
+    /// </summary>
+    [Ignore]
+    public string TilePreviewPath
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(ThumbnailPath))
+                return ThumbnailPath!;
+
+            // Only fallback to the original file for still images.
+            if (MediaType is MediaType.Photos or MediaType.Graphics)
+                return Path;
+
+            return string.Empty;
         }
     }
 
@@ -85,7 +138,6 @@ public class MediaItem : INotifyPropertyChanged
         }
     }
 
-    [Ignore]
     public string PeopleTagsSummary
     {
         get => peopleTagsSummary;
@@ -119,8 +171,7 @@ public class MediaItem : INotifyPropertyChanged
 
     public long FaceScanAtSeconds { get; set; }
 
-    [Ignore]
-    public bool HasLocation => Latitude.HasValue && Longitude.HasValue;
+    [Ignore] public bool HasLocation => Latitude.HasValue && Longitude.HasValue;
 
     [Ignore]
     public string LocationText

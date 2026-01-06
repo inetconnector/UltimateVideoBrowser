@@ -30,8 +30,26 @@ public sealed class DialogService : IDialogService
             : page.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue);
     }
 
+    public Task<string?> DisplayActionSheetAsync(
+        string title,
+        string cancel,
+        string? destruction,
+        params string[] buttons)
+    {
+        var page = GetPage();
+        if (page == null)
+            return Task.FromResult<string?>(null);
+
+        return MainThread.InvokeOnMainThreadAsync(() =>
+            page.DisplayActionSheetAsync(title, cancel, destruction, buttons));
+    }
+
     private static Page? GetPage()
     {
-        return Shell.Current ?? Application.Current?.Windows.FirstOrDefault()?.Page;
+        var app = Application.Current;
+        if (app == null)
+            return null;
+
+        return app.Windows.FirstOrDefault()?.Page;
     }
 }

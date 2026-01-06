@@ -13,17 +13,20 @@ public sealed partial class PersonViewModel : ObservableObject
     private readonly ThumbnailService thumbnails;
 
     [ObservableProperty] private bool isBusy;
+    [ObservableProperty] private bool isIgnored;
     [ObservableProperty] private string name = string.Empty;
     [ObservableProperty] private string personId = string.Empty;
     [ObservableProperty] private ObservableCollection<MediaItem> photos = new();
     [ObservableProperty] private float qualityScore;
-    [ObservableProperty] private bool isIgnored;
 
     public PersonViewModel(PeopleDataService peopleData, ThumbnailService thumbnails)
     {
         this.peopleData = peopleData;
         this.thumbnails = thumbnails;
     }
+
+    public string IgnoreActionText =>
+        IsIgnored ? AppResources.UnignorePersonAction : AppResources.IgnorePersonAction;
 
     public void Initialize(string id, string initialName)
     {
@@ -72,8 +75,10 @@ public sealed partial class PersonViewModel : ObservableObject
     {
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            var p = await thumbnails.EnsureThumbnailAsync(item, cts.Token).ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var p = await thumbnails
+                .EnsureThumbnailWithRetryAsync(item, TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(2), cts.Token)
+                .ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(p))
                 return;
 
@@ -118,9 +123,6 @@ public sealed partial class PersonViewModel : ObservableObject
             await MainThread.InvokeOnMainThreadAsync(() => IsBusy = false);
         }
     }
-
-    public string IgnoreActionText =>
-        IsIgnored ? AppResources.UnignorePersonAction : AppResources.IgnorePersonAction;
 
     partial void OnIsIgnoredChanged(bool value)
     {

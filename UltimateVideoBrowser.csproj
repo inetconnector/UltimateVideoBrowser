@@ -37,10 +37,13 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.1" />
+    <PackageReference Include="Xamarin.Android.Google.BillingClient" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +58,8 @@
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="512,512" />
     <MauiImage Include="Resources\Images\*" />
     <MauiAsset Include="Resources\Images\*.svg" LogicalName="%(Filename)%(Extension)" />
+    <MauiAsset Include="Resources\Legal\LegalImprint.txt" LogicalName="legal/LegalImprint.txt" />
+    <MauiAsset Include="Resources\Legal\LicenseInfo.txt" LogicalName="legal/LicenseInfo.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +69,15 @@
     <MauiCss Remove="UltimateVideoBrowser.Tests\**" />
     <MauiXaml Remove="UltimateVideoBrowser.Tests\**" />
     <None Remove="UltimateVideoBrowser.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidResource Remove="LicenseServer\**" />
+    <Compile Remove="LicenseServer\**" />
+    <EmbeddedResource Remove="LicenseServer\**" />
+    <MauiCss Remove="LicenseServer\**" />
+    <MauiXaml Remove="LicenseServer\**" />
+    <None Remove="LicenseServer\**" />
   </ItemGroup>
 
   <ItemGroup>

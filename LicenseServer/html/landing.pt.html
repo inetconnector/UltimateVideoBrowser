@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt" dir="ltr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>UltimateVideoBrowser Pro</title>
+    <link rel="preconnect" href="https://images.unsplash.com"/>
+    <link rel="stylesheet" href="/css/site.css"/>
+</head>
+<body class="landing-page">
+<select class="lang-select" id="langSelect" aria-label="Language">
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+    <option value="it">Italiano</option>
+    <option value="pt">Português</option>
+    <option value="nl">Nederlands</option>
+    <option value="pl">Polski</option>
+    <option value="tr">Türkçe</option>
+    <option value="ru">Русский</option>
+    <option value="zh">中文</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+    <option value="ar">العربية</option>
+</select>
+<header>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/appicon.svg" alt="UltimateVideoBrowser"/><span>UltimateVideoBrowser Pro</span>
+            </div>
+            <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Preço e licença</a>
+        </div>
+        <div class="hero">
+            <div>
+                <span class="pill" data-i18n="pill">Controle de mídia premium</span>
+                <h1 data-i18n="hero_title">A central de mídia profissional para quem não aceita compromissos.</h1>
+                <p data-i18n="hero_subtitle">Pesquise, indexe e aproveite seus vídeos, fotos e documentos em segundos — com uma interface que parece mágica.</p>
+                <div class="cta">
+                    <form action="/api/checkout" method="post" class="inline-form">
+                        <button class="btn primary" type="submit" data-i18n="cta_primary">Desbloquear Pro agora</button>
+                    </form>
+                    <a class="btn secondary" href="#features" data-i18n="cta_secondary">Explorar recursos</a>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">busca mais rápida</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_two_value">1 clique</strong><span data-i18n="stat_two_label">até a visualização perfeita</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">foco nos seus dados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-media">
+                <div class="floating-glow"></div>
+                <div class="hero-card">
+                    <img src="/assets/hero_video.svg" alt="Prévia do app"/>
+                    <p data-i18n="hero_image_caption" class="muted-text mt-12">Visualização do app com recursos originais</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<section class="section" id="features">
+    <div class="container">
+        <h2 class="section-title" data-i18n="features_title">Uma experiência que leva sua mídia a outro nível</h2>
+        <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro combina velocidade, inteligência e design em uma plataforma de mídia que nunca deixa você esperando.</p>
+        <div class="grid">
+            <div class="card">
+                <img src="/assets/icon_sources.svg" alt="Fontes"/>
+                <h3 data-i18n="feature_one_title">Gerenciador inteligente de fontes</h3>
+                <p data-i18n="feature_one_desc">Conecte pastas, unidades e backups na nuvem — organizados automaticamente, sempre prontos.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_play.svg" alt="Reprodução"/>
+                <h3 data-i18n="feature_two_title">Prévia instantânea</h3>
+                <p data-i18n="feature_two_desc">Veja momentos importantes imediatamente — sem espera, sem interrupções.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_people.svg" alt="Pessoas"/>
+                <h3 data-i18n="feature_three_title">Reconhecimento inteligente</h3>
+                <p data-i18n="feature_three_desc">Encontre conteúdo por rostos, lugares ou tags. Sua biblioteca responde antes de você perguntar.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/chip_spark.svg" alt="IA"/>
+                <h3 data-i18n="feature_four_title">Indexação turbo</h3>
+                <p data-i18n="feature_four_desc">Um novo nível de desempenho garante que até coleções enormes sejam pesquisáveis imediatamente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section section--alt">
+    <div class="container">
+        <h2 class="section-title" data-i18n="gallery_title">Design que gera confiança</h2>
+        <p class="section-sub" data-i18n="gallery_sub">Gráficos profissionais e recursos reais do app dão a impressão premium que sua mídia merece.</p>
+        <div class="showcase">
+            <div>
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Visuais cinematográficos"/>
+                <p data-i18n="gallery_caption_one" class="muted-text mt-12">Visual cinematográfico para sua biblioteca — inspirado em imagens gratuitas do Unsplash.</p>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Tecnologia"/>
+                <p data-i18n="gallery_caption_two" class="muted-text mt-12">Uma estética tecnológica que transmite profissionalismo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section" id="pricing">
+    <div class="container">
+        <div class="pricing">
+            <div>
+                <h2 class="section-title" data-i18n="pricing_title">Pague uma vez. Aproveite para sempre.</h2>
+                <p class="section-sub" data-i18n="pricing_sub">Sem assinaturas, sem taxas ocultas. Desbloqueie uma vez e use todos os recursos Pro para sempre.</p>
+                <div class="legal-links">
+                    <a href="/agb" data-i18n="link_terms">Termos</a>
+                    <a href="/datenschutz" data-i18n="link_privacy">Privacidade</a>
+                    <a href="/impressum" data-i18n="link_imprint">Aviso legal</a>
+                    <a href="/widerruf" data-i18n="link_withdrawal">Cancelamento</a>
+                </div>
+            </div>
+            <div>
+                <div class="price" data-i18n="pricing_value">€3,99</div>
+                <p data-i18n="pricing_note">inclui atualizações da versão principal atual</p>
+                <form action="/api/checkout" method="post" class="inline-form">
+                    <button class="btn primary" type="submit" data-i18n="pricing_cta">Garantir Pro agora</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section section--compact">
+    <div class="container">
+        <h2 class="section-title" data-i18n="trust_title">Feito para profissionais, amado por entusiastas</h2>
+        <p class="section-sub" data-i18n="trust_sub">Do cineasta amador às equipes de estúdio: UltimateVideoBrowser Pro traz ordem, velocidade e momentos uau.</p>
+        <div class="grid">
+            <div class="card">
+                <h3 data-i18n="trust_one_title">Multiplataforma</h3>
+                <p data-i18n="trust_one_desc">Use sua licença no Windows e Android — com a mesma experiência premium.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_two_title">Pronto para offline</h3>
+                <p data-i18n="trust_two_desc">Mesmo sem internet, sua biblioteca permanece disponível — graças à ativação offline segura.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_three_title">Privacidade incluída</h3>
+                <p data-i18n="trust_three_desc">Seu conteúdo continua sendo seu. Sem exigência de nuvem, sem exploração de dados.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo"/><span data-i18n="footer_brand">Mídia que parece o futuro.</span>
+            </div>
+            <div class="legal-links">
+                <a href="/agb" data-i18n="link_terms">Termos</a>
+                <a href="/datenschutz" data-i18n="link_privacy">Privacidade</a>
+                <a href="/impressum" data-i18n="link_imprint">Aviso legal</a>
+            </div>
+        </div>
+        <p class="mt-20" data-i18n="footer_note">UltimateVideoBrowser Pro — o novo padrão para gestão de mídia exigente.</p>
+    </div>
+</footer>
+<script>
+const currentLang = "pt";
+const langSelect = document.getElementById('langSelect');
+if (langSelect) {
+  langSelect.value = currentLang;
+  langSelect.addEventListener('change', e => {
+    const lang = e.target.value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.location.href = url.toString();
+  });
+}
+</script>
+</body>
+</html>

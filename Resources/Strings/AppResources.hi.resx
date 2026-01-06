@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>परम वीडियो ब्राउज़र</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>वीडियो</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>स्रोत</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>पुनः अनुक्रमित करें</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>वीडियो खोजें...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>क्रमबद्ध करें</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>नाम</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
-    <value>तारीख</value>
+    
+    
+    <value>तिथि</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>अवधि</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>अनुक्रमित हो रहा है...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>नए आइटम: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>स्रोत</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>स्रोत (स्थानीय फ़ोल्डर / सिंक किए गए साझा)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>सक्रिय</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>निष्क्रिय</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>डिवाइस के सभी वीडियो</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>आपकी व्यक्तिगत लाइब्रेरी</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>हर वीडियो तुरंत खोजें</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>समृद्ध थंबनेल, स्मार्ट खोज और तेज़ अनुक्रमण के साथ अपने सभी फ़ोल्डरों में ब्राउज़ करें।</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>स्रोत प्रबंधित करें</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>तिथि सीमा</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>से</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>तक</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>इंडेक्स हो रहा है {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>फ़ोल्डर: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>फ़ाइल: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>छिपाएँ</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>रद्द करें</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>विवरण</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>लाइब्रेरी हाइलाइट्स</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>इंडेक्स किए गए वीडियो</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>सक्रिय स्रोत</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>प्रो टिप</value>
+    
+    
+    <value>Pro टिप</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>खोज + फ़िल्टर का उपयोग करें, फिर नए फ़ोल्डर जोड़ने के बाद सर्वोत्तम परिणामों के लिए फिर से इंडेक्स करें।</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{1} में से {0} स्रोत सक्रिय</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>अनुमति आवश्यक</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>अपने वीडियो तक पहुँच की अनुमति दें ताकि हम उन्हें इंडेक्स और चला सकें।</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>पहुँच दें</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>ठीक है</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>साझा करें</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>वीडियो साझा करें</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>इस रूप में सहेजें...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>वीडियो</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>सहेजना विफल</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>हम यह वीडियो सहेज नहीं सके। कृपया कोई अन्य स्थान आज़माएँ।</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>इस डिवाइस पर "इस रूप में सहेजें" समर्थित नहीं है।</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>वापस</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>सेटिंग्स</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>सेटिंग्स</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>सेटिंग्स</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>दिखावट</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>थीम</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>छँटाई</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>डिफ़ॉल्ट क्रम</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>फ़िल्टर</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>तिथि फ़िल्टर सक्षम करें</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>से</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>तक</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>इंडेक्सिंग</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>अगले लॉन्च पर फिर से इंडेक्स करें</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>हल्का</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>गहरा</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>अभी कोई वीडियो नहीं</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>अपनी लाइब्रेरी ब्राउज़ करना शुरू करने के लिए कोई स्रोत जोड़ें या रीफ़्रेश करें।</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>स्रोत जोड़ें</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>फ़ोल्डर जोड़ें</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>हटाएँ</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>स्रोत हटाएँ?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>स्रोतों से “{0}” हटाएँ?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>हटाएँ</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>स्रोत जोड़ें</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>स्रोत नाम</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>जोड़ें</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>रद्द करें</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>नया स्रोत</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>पहले से जोड़ा गया</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>यह फ़ोल्डर पहले से आपके स्रोतों में है।</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>एक स्थानीय फ़ोल्डर या नेटवर्क शेयर चुनें।</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>फ़ोल्डर ब्राउज़ करें</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>फ़ोल्डर चुनें</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>एक स्थानीय फ़ोल्डर या नेटवर्क शेयर चुनें।</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>दूसरा फ़ोल्डर जोड़ें?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>क्या आप दूसरा फ़ोल्डर जोड़ना चाहते हैं?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>दूसरा जोड़ें</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>समाप्त</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>पथ नहीं मिला</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>हम उस फ़ोल्डर को नहीं ढूँढ सके। कृपया पथ जाँचें।</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>डिवाइस मीडिया लाइब्रेरी</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>लोगों के इंडेक्स से हटाएँ</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>मर्ज करें</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>में मर्ज करें…</value></data><data name="QualityLabel" xml:space="preserve"><value>गुणवत्ता</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>मर्ज करें</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>में मर्ज करें…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>गुणवत्ता</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>त्रुटि लॉग</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>यदि कुछ विफल हो या थंबनेल खाली हो तो यह लॉग साझा करें।</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>लॉग दिखाएँ</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>लॉग साझा करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>लॉग साफ़ करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>दस्तावेज़</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>ग्राफ़िक्स और स्क्रीनशॉट</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>फ़ोटो</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>वीडियो</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>डेटाबेस हटाएँ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>स्थानीय डेटाबेस हटाता है और आपके स्रोतों को फिर से स्कैन करके इसे पुनर्निर्मित करता है।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>एक्सटेंशन को कॉमा से अलग करें (जैसे .mp4, .mkv)।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>फ़ाइल एक्सटेंशन</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>इसे सक्षम करें ताकि डिस्क पर फ़ाइलों को बदलने वाली कार्रवाइयाँ दिखाई दें।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>नाम बदलने, स्थानांतरित करने, कॉपी करने और हटाने की अनुमति दें</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>फ़ाइल परिवर्तन</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>स्थिति</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>वीडियो के लिए आंतरिक वीडियो प्लेयर का उपयोग करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>लोकेशन डेटा आपके डिवाइस पर रहता है, लेकिन बाहरी मानचित्र सर्वर अनुरोध डेटा (जैसे IP पता) प्राप्त कर सकते हैं। संवेदनशील स्थान साझा करने के लिए आप जिम्मेदार हैं; तृतीय-पक्ष सेवाओं के अपने नियम और गोपनीयता नीतियां होती हैं।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>फ़ोटो और वीडियो से GPS मेटाडेटा निकालें ताकि वे विश्व मानचित्र पर दिख सकें। मैप टाइलें बाहरी टाइल सर्वरों से लोड होती हैं।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>स्थान दिखाएँ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>स्थान</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>अपनी लाइब्रेरी में कौन से प्रकार इंडेक्स करने हैं चुनें।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>मीडिया प्रकार</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>फेस मॉडल डाउनलोड करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>फेस मॉडल</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>लाइब्रेरी से फ़ोटो और वीडियो में लोगों को टैग करने के लिए इसे चालू करें।</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>लोगों को टैग करना सक्षम करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>लोग टैगिंग</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>प्लेबैक</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• असीमित चेहरा पहचान
+• स्वचालित लोगों के एल्बम
+• बैच क्रमबद्ध (1000+ फ़ोटो)
+• स्थानीय निर्यात और बैकअप
+• कोई विज्ञापन नहीं</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>खरीदारी पुनर्स्थापित करें</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>Pro अपग्रेड</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>Pro अनलॉक करें</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>क्लिपबोर्ड पर कॉपी करना विफल रहा। कृपया फिर से कोशिश करें या मैन्युअल कॉपी के लिए "लॉग देखें" का उपयोग करें।</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>अभी अपग्रेड करें</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>लोगों के टैग (ट्रायल)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>मुफ्त संस्करण में लोगों के टैग 14 दिनों के लिए सक्षम हैं। लोगों के टैग को स्थायी रूप से रखने के लिए Pro में अपग्रेड करें।</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>लाइब्रेरी को फिर से इंडेक्स करें</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>क्या आप अभी सब कुछ फिर से इंडेक्स करना चाहते हैं? आपकी लाइब्रेरी के आकार के आधार पर इसमें कुछ समय लग सकता है।</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>डेटाबेस बैकअप</value></data><data name="BackupSectionHint" xml:space="preserve"><value>सेटिंग्स और थंबनेल सहित स्थानीय डेटाबेस निर्यात/आयात करें।</value></data><data name="BackupExportButton" xml:space="preserve"><value>बैकअप निर्यात करें</value></data><data name="BackupImportButton" xml:space="preserve"><value>बैकअप आयात करें</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>बैकअप निर्यात हो गया</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>बैकअप सफलतापूर्वक निर्यात हो गया।</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>बैकअप निर्यात विफल</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>बैकअप बनाया या सहेजा नहीं जा सका।</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>बैकअप ZIP चुनें</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>बैकअप पुनर्स्थापित करें?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>यह आपके वर्तमान डेटाबेस, सेटिंग्स और थंबनेल को ओवरराइट करेगा। जारी रखें?</value></data><data name="RestoreButton" xml:space="preserve"><value>पुनर्स्थापित करें</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>इंडेक्सिंग चल रही है</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित करने से पहले इंडेक्सिंग रोकें।</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>पुनर्स्थापना विफल</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित नहीं हो सका।</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>इस बैकअप में डेटाबेस फ़ाइल नहीं है।</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>पुनर्स्थापना पूर्ण</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित हो गया। सभी बदलाव देखने के लिए ऐप दोबारा खोलना पड़ सकता है।</value></data></root>

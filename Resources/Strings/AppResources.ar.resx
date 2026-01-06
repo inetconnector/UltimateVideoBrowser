@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>متصفح الفيديو النهائي</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>الفيديوهات</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>المصادر</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>إعادة الفهرسة</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>ابحث عن الفيديوهات...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>ترتيب</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>الاسم</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>التاريخ</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>المدة</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>جاري الفهرسة...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>عناصر جديدة: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>المصادر</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>المصادر (مجلدات محلية / مشاركات متزامنة)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>مفعّل</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>معطّل</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>جميع فيديوهات الجهاز</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>مكتبتك الشخصية</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>اكتشف كل فيديو فورًا</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>تصفح بصور مصغّرة غنية، وبحث ذكي، وفهرسة سريعة عبر جميع المجلدات.</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>إدارة المصادر</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>نطاق التاريخ</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>من</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>إلى</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>جارٍ الفهرسة {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
-    <value>المجلد: {0}</value>
+    
+    
+    <value>مجلد: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
-    <value>الملف: {0}</value>
+    
+    
+    <value>ملف: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>إخفاء</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>إلغاء</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>التفاصيل</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>أبرز ما في المكتبة</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>الفيديوهات المفهرسة</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>المصادر المفعّلة</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>نصيحة احترافية</value>
+    
+    
+    <value>نصيحة Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>استخدم البحث + عوامل التصفية، ثم أعد الفهرسة بعد إضافة مجلدات جديدة للحصول على أفضل النتائج.</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>{0} من {1} مصادر نشطة</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>مطلوب إذن</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>اسمح بالوصول إلى فيديوهاتك حتى نتمكن من فهرستها وتشغيلها.</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>منح الوصول</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>موافق</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>مشاركة</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>مشاركة الفيديو</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>حفظ باسم...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>فيديو</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>فشل الحفظ</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>تعذّر حفظ هذا الفيديو. الرجاء تجربة موقع مختلف.</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>الحفظ باسم غير مدعوم على هذا الجهاز.</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>رجوع</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>الإعدادات</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>الإعدادات</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>الإعدادات</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>المظهر</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>السمة</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>الفرز</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>الترتيب الافتراضي</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>عامل التصفية</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>تمكين مرشح التاريخ</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>من</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>إلى</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>الفهرسة</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>إعادة الفهرسة عند التشغيل التالي</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>فاتح</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>داكن</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>لا توجد فيديوهات بعد</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>أضف مصدرًا أو قم بالتحديث لبدء تصفح مكتبتك.</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>إضافة مصادر</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>إضافة مجلد</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>إزالة</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>إزالة المصدر؟</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>إزالة “{0}” من المصادر؟</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>إزالة</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>إضافة مصدر</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>اسم المصدر</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>إضافة</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>إلغاء</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>مصدر جديد</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>تمت الإضافة مسبقًا</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>هذا المجلد موجود بالفعل في مصادرك.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>اختر مجلدًا محليًا أو مشاركة شبكة.</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>استعراض المجلد</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>اختيار مجلد</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>اختر مجلدًا محليًا أو مشاركة شبكة.</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>إضافة مجلد آخر؟</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>هل ترغب في إضافة مجلد آخر؟</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>إضافة آخر</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>تم</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>المسار غير موجود</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>لم نتمكن من العثور على ذلك المجلد. يرجى التحقق من المسار.</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>مكتبة الوسائط على الجهاز</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>إزالة من فهرس الأشخاص</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>دمج</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>دمج إلى…</value></data><data name="QualityLabel" xml:space="preserve"><value>الجودة</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>دمج</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>دمج إلى…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>الجودة</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>سجل الأخطاء</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>شارك هذا السجل إذا فشل شيء ما أو كانت الصورة المصغرة فارغة.</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>عرض السجل</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>مشاركة السجل</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>مسح السجل</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>مستندات</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>الرسومات ولقطات الشاشة</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>صور</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>الفيديوهات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>حذف قاعدة البيانات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>يحذف قاعدة البيانات المحلية ويعيد بناؤها بإعادة فحص المصادر.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>افصل الامتدادات بفواصل (مثال: ‎.mp4، ‎.mkv).</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>امتدادات الملفات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>فعّل هذا لعرض الإجراءات التي تغيّر الملفات على القرص.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>السماح بإعادة التسمية والنقل والنسخ والحذف</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>تغييرات الملفات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>الحالة</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>استخدام مشغل الفيديو الداخلي للفيديوهات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>تبقى بيانات الموقع على جهازك، لكن قد تتلقى خوادم الخرائط الخارجية بيانات طلب (مثل عنوان IP). أنت مسؤول عن مشاركة المواقع الحساسة؛ خدمات الجهات الخارجية لديها شروط وسياسات خصوصية خاصة بها.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>استخرج بيانات GPS من الصور والفيديوهات لعرضها على خريطة العالم. يتم تحميل بلاطات الخريطة من خوادم خارجية.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>عرض المواقع</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>المواقع</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>اختر أنواع الوسائط التي تريد فهرستها في مكتبتك.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>أنواع الوسائط</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>تنزيل نماذج الوجوه</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>نماذج الوجوه</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>فعّل هذا لوضع علامات على الأشخاص في الصور والفيديوهات من المكتبة.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>تمكين وسم الأشخاص</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>وسم الأشخاص</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>التشغيل</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• التعرف غير المحدود على الوجوه
+• ألبومات الأشخاص التلقائية
+• فرز دفعي (1000+ صورة)
+• تصدير ونسخ احتياطي محلي
+• بدون إعلانات</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>استعادة الشراء</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>ترقية Pro</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>فتح Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>فشل النسخ إلى الحافظة. حاول مرة أخرى أو استخدم "عرض السجل" للنسخ يدويًا.</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>الترقية الآن</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>وسوم الأشخاص (تجريبي)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>وسوم الأشخاص مفعّلة لمدة 14 يومًا في النسخة المجانية. قم بالترقية إلى Pro للاحتفاظ بوسوم الأشخاص بشكل دائم.</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>إعادة فهرسة المكتبة</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>هل تريد إعادة فهرسة كل شيء الآن؟ قد يستغرق ذلك بعض الوقت حسب حجم مكتبتك.</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>نسخ احتياطي لقاعدة البيانات</value></data><data name="BackupSectionHint" xml:space="preserve"><value>تصدير أو استيراد قاعدة البيانات المحلية بما في ذلك الإعدادات والصور المصغّرة.</value></data><data name="BackupExportButton" xml:space="preserve"><value>تصدير النسخ الاحتياطي</value></data><data name="BackupImportButton" xml:space="preserve"><value>استيراد النسخ الاحتياطي</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>تم تصدير النسخ الاحتياطي</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>تم تصدير النسخ الاحتياطي بنجاح.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>فشل تصدير النسخ الاحتياطي</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>تعذر إنشاء النسخ الاحتياطي أو حفظه.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>اختر ملف ZIP للنسخ الاحتياطي</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>استعادة النسخ الاحتياطي؟</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>سيؤدي ذلك إلى استبدال قاعدة البيانات والإعدادات والصور المصغّرة الحالية. متابعة؟</value></data><data name="RestoreButton" xml:space="preserve"><value>استعادة</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>جارٍ الفهرسة</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>أوقف الفهرسة قبل استعادة النسخ الاحتياطي.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>فشلت الاستعادة</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>تعذر استعادة النسخ الاحتياطي.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>لا يحتوي هذا النسخ الاحتياطي على ملف قاعدة بيانات.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>اكتملت الاستعادة</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>تمت استعادة النسخ الاحتياطي. قد تحتاج لإعادة فتح التطبيق لرؤية كل التغييرات.</value></data></root>

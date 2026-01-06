@@ -11,12 +11,75 @@ public static class AppResources
     public static string AppTitle => GetString(nameof(AppTitle), "Ultimate Media Browser");
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Media");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
+    public static string AlbumsButton => GetString(nameof(AlbumsButton), "Albums");
     public static string PeopleButton => GetString(nameof(PeopleButton), "People");
     public static string MergeIntoTitle => GetString(nameof(MergeIntoTitle), "Merge into…");
     public static string MergeButton => GetString(nameof(MergeButton), "Merge");
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
+    public static string ReindexTitle => GetString(nameof(ReindexTitle), "Reindex library");
+
+    public static string ReindexPrompt => GetString(nameof(ReindexPrompt),
+        "Do you want to reindex everything now? This may take a while depending on your library size.");
+
+    public static string PeopleTagsTrialTitle => GetString(nameof(PeopleTagsTrialTitle), "People tagging trial");
+
+    public static string PeopleTagsTrialHint => GetString(nameof(PeopleTagsTrialHint),
+        "People tags are enabled for 14 days. Upgrade to Pro to keep them always available.");
+
+    public static string UpgradeNowButton => GetString(nameof(UpgradeNowButton), "Upgrade now");
+
+    // Database backup / restore
+    public static string BackupSectionTitle => GetString(nameof(BackupSectionTitle), "Database backup");
+
+    public static string BackupSectionHint => GetString(nameof(BackupSectionHint),
+        "Export or import the local database including settings and thumbnails.");
+
+    public static string BackupExportButton => GetString(nameof(BackupExportButton), "Export backup");
+    public static string BackupImportButton => GetString(nameof(BackupImportButton), "Import backup");
+    public static string BackupImportPickerTitle => GetString(nameof(BackupImportPickerTitle), "Select a backup ZIP");
+    public static string BackupExportSuccessTitle => GetString(nameof(BackupExportSuccessTitle), "Backup exported");
+
+    public static string BackupExportSuccessMessage =>
+        GetString(nameof(BackupExportSuccessMessage), "Your backup was exported successfully.");
+
+    public static string BackupExportFailedTitle => GetString(nameof(BackupExportFailedTitle), "Backup export failed");
+
+    public static string BackupExportFailedMessage =>
+        GetString(nameof(BackupExportFailedMessage), "The backup could not be created or saved.");
+
+    public static string BackupImportNotAllowedTitle =>
+        GetString(nameof(BackupImportNotAllowedTitle), "Indexing in progress");
+
+    public static string BackupImportNotAllowedMessage => GetString(nameof(BackupImportNotAllowedMessage),
+        "Stop indexing before restoring a backup.");
+
+    public static string BackupImportConfirmTitle => GetString(nameof(BackupImportConfirmTitle), "Restore backup?");
+
+    public static string BackupImportConfirmMessage => GetString(nameof(BackupImportConfirmMessage),
+        "This will overwrite your current database, settings and thumbnails. Continue?");
+
+    public static string RestoreButton => GetString(nameof(RestoreButton), "Restore");
+
+    public static string BackupImportMissingDbMessage => GetString(nameof(BackupImportMissingDbMessage),
+        "This backup does not contain a database file.");
+
+    public static string BackupImportSuccessTitle => GetString(nameof(BackupImportSuccessTitle), "Restore completed");
+
+    public static string BackupImportSuccessMessage => GetString(nameof(BackupImportSuccessMessage),
+        "Backup restored. You may need to reopen the app to see all changes.");
+
+    public static string BackupImportFailedTitle => GetString(nameof(BackupImportFailedTitle), "Restore failed");
+
+    public static string BackupImportFailedMessage =>
+        GetString(nameof(BackupImportFailedMessage), "The backup could not be restored.");
+
+    public static string ActionsButton => GetString(nameof(ActionsButton), "Actions");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
+    public static string SearchScopeTitle => GetString(nameof(SearchScopeTitle), "Search in");
+    public static string SearchScopeName => GetString(nameof(SearchScopeName), "Titles");
+    public static string SearchScopePeople => GetString(nameof(SearchScopePeople), "People/Tags");
+    public static string SearchScopeAlbums => GetString(nameof(SearchScopeAlbums), "Albums");
     public static string HeroEyebrow => GetString(nameof(HeroEyebrow), "Your personal library");
     public static string HeroTitle => GetString(nameof(HeroTitle), "Discover every file instantly");
 
@@ -25,6 +88,35 @@ public static class AppResources
 
     public static string HeroPrimaryAction => GetString(nameof(HeroPrimaryAction), "Manage sources");
     public static string BackButton => GetString(nameof(BackButton), "Back");
+    public static string AlbumsHeader => GetString(nameof(AlbumsHeader), "Albums");
+    public static string ManageAlbumsButton => GetString(nameof(ManageAlbumsButton), "Manage");
+    public static string AlbumsPageTitle => GetString(nameof(AlbumsPageTitle), "Albums");
+    public static string AlbumsPageHeader => GetString(nameof(AlbumsPageHeader), "Manage albums");
+    public static string AddAlbumButton => GetString(nameof(AddAlbumButton), "Add album");
+    public static string AlbumItemCountFormat => GetString(nameof(AlbumItemCountFormat), "{0} items");
+    public static string AllAlbumsTab => GetString(nameof(AllAlbumsTab), "All media");
+    public static string AddToAlbumAction => GetString(nameof(AddToAlbumAction), "Add to album");
+    public static string NewAlbumAction => GetString(nameof(NewAlbumAction), "New album…");
+    public static string NewAlbumTitle => GetString(nameof(NewAlbumTitle), "New album");
+    public static string NewAlbumPrompt => GetString(nameof(NewAlbumPrompt), "Enter a name for the album.");
+    public static string NewAlbumConfirm => GetString(nameof(NewAlbumConfirm), "Create");
+    public static string NewAlbumPlaceholder => GetString(nameof(NewAlbumPlaceholder), "Album name");
+    public static string AlbumExistsTitle => GetString(nameof(AlbumExistsTitle), "Album already exists");
+
+    public static string AlbumExistsMessage =>
+        GetString(nameof(AlbumExistsMessage), "An album named \"{0}\" already exists.");
+
+    public static string RenameAlbumTitle => GetString(nameof(RenameAlbumTitle), "Rename album");
+    public static string RenameAlbumPrompt => GetString(nameof(RenameAlbumPrompt), "Choose a new name for this album.");
+    public static string RenameAlbumConfirm => GetString(nameof(RenameAlbumConfirm), "Rename");
+    public static string RenameAlbumAction => GetString(nameof(RenameAlbumAction), "Rename");
+    public static string DeleteAlbumTitle => GetString(nameof(DeleteAlbumTitle), "Delete album");
+
+    public static string DeleteAlbumMessage =>
+        GetString(nameof(DeleteAlbumMessage), "Delete the album \"{0}\"? The media items remain in your library.");
+
+    public static string DeleteAlbumConfirm => GetString(nameof(DeleteAlbumConfirm), "Delete");
+    public static string DeleteAlbumAction => GetString(nameof(DeleteAlbumAction), "Delete");
     public static string SortTitle => GetString(nameof(SortTitle), "Sort");
     public static string SortName => GetString(nameof(SortName), "Name");
     public static string SortDate => GetString(nameof(SortDate), "Date");
@@ -33,6 +125,22 @@ public static class AppResources
     public static string DateFilterFromLabel => GetString(nameof(DateFilterFromLabel), "From");
     public static string DateFilterToLabel => GetString(nameof(DateFilterToLabel), "To");
     public static string Indexing => GetString(nameof(Indexing), "Indexing...");
+    public static string IndexStatusRunningTitle => GetString(nameof(IndexStatusRunningTitle), "Index running");
+
+    public static string IndexStatusRunningMessage => GetString(nameof(IndexStatusRunningMessage),
+        "Your library is being indexed. Progress details are available.");
+
+    public static string IndexStatusReadyTitle => GetString(nameof(IndexStatusReadyTitle), "Index up to date");
+
+    public static string IndexStatusReadyMessage =>
+        GetString(nameof(IndexStatusReadyMessage), "No indexing is needed right now.");
+
+    public static string IndexStatusNeededTitle => GetString(nameof(IndexStatusNeededTitle), "Index needs update");
+
+    public static string IndexStatusNeededMessage =>
+        GetString(nameof(IndexStatusNeededMessage), "Sources changed. Run indexing to refresh your library.");
+
+    public static string IndexStatusActionStart => GetString(nameof(IndexStatusActionStart), "Start indexing");
     public static string IndexingStatusFormat => GetString(nameof(IndexingStatusFormat), "Indexing {0} • {1}/{2}");
     public static string IndexingFolderFormat => GetString(nameof(IndexingFolderFormat), "Folder: {0}");
     public static string IndexingFileFormat => GetString(nameof(IndexingFileFormat), "File: {0}");
@@ -79,6 +187,25 @@ public static class AppResources
     public static string SaveAsNotSupportedMessage =>
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
+    public static string ErrorLogTitle => GetString(nameof(ErrorLogTitle), "Error log");
+
+    public static string ErrorLogHint =>
+        GetString(nameof(ErrorLogHint), "Share this log if something fails or a thumbnail is blank.");
+
+    public static string ErrorLogShowButton => GetString(nameof(ErrorLogShowButton), "Show log");
+    public static string ErrorLogCopyButton => GetString(nameof(ErrorLogCopyButton), "Copy log");
+    public static string ErrorLogShareButton => GetString(nameof(ErrorLogShareButton), "Share log");
+    public static string ErrorLogClearButton => GetString(nameof(ErrorLogClearButton), "Clear log");
+    public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
+    public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
+    public static string ErrorLogCopiedMessage => GetString(nameof(ErrorLogCopiedMessage), "Error log copied.");
+
+    public static string ErrorLogCopyFailedMessage => GetString(nameof(ErrorLogCopyFailedMessage),
+        "Could not copy the error log to the clipboard. Please try again.");
+
+    public static string ErrorLogClearedMessage =>
+        GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");
+
     public static string RenameAction => GetString(nameof(RenameAction), "Rename");
     public static string RenameTitle => GetString(nameof(RenameTitle), "Rename file");
     public static string RenameMessage => GetString(nameof(RenameMessage), "Enter a new name for this file.");
@@ -95,13 +222,23 @@ public static class AppResources
         GetString(nameof(RenameExistsMessage), "A file with that name already exists in this folder.");
 
     public static string OpenFolderAction => GetString(nameof(OpenFolderAction), "Open folder");
+    public static string OpenLocationAction => GetString(nameof(OpenLocationAction), "Location");
     public static string OpenFolderFailedTitle => GetString(nameof(OpenFolderFailedTitle), "Open folder failed");
+
+    public static string OpenLocationFailedTitle =>
+        GetString(nameof(OpenLocationFailedTitle), "Open location failed");
 
     public static string OpenFolderFailedMessage =>
         GetString(nameof(OpenFolderFailedMessage), "We couldn't open this folder. Please try again.");
 
     public static string OpenFolderNotSupportedMessage =>
         GetString(nameof(OpenFolderNotSupportedMessage), "Opening folders isn't supported on this device.");
+
+    public static string OpenLocationFailedMessage =>
+        GetString(nameof(OpenLocationFailedMessage), "We couldn't open this location. Please try again.");
+
+    public static string OpenLocationNotSupportedMessage =>
+        GetString(nameof(OpenLocationNotSupportedMessage), "Opening locations isn't supported on this device.");
 
     public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
@@ -162,7 +299,9 @@ public static class AppResources
     public static string SettingsDateFromLabel => GetString(nameof(SettingsDateFromLabel), "From");
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
+    public static string SettingsIndexingStatusLabel => GetString(nameof(SettingsIndexingStatusLabel), "Status");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
+
     public static string SettingsDatabaseResetHint =>
         GetString(nameof(SettingsDatabaseResetHint),
             "Deletes the local database and rebuilds it by rescanning your sources.");
@@ -206,6 +345,7 @@ public static class AppResources
     public static string SettingsDatabaseResetFailedMessage =>
         GetString(nameof(SettingsDatabaseResetFailedMessage),
             "The database could not be rebuilt. Please try again.");
+
     public static string SettingsPlaybackTitle => GetString(nameof(SettingsPlaybackTitle), "Playback");
 
     public static string SettingsInternalPlayerLabel =>
@@ -230,15 +370,121 @@ public static class AppResources
         GetString(nameof(SettingsPeopleTaggingHint),
             "Turn this on to tag people in photos and videos from the library.");
 
+    public static string SettingsProTitle => GetString(nameof(SettingsProTitle), "Pro upgrade");
+    public static string SettingsProStatusFreeTitle => GetString(nameof(SettingsProStatusFreeTitle), "Free");
+
+    public static string SettingsProStatusUnlockedTitle =>
+        GetString(nameof(SettingsProStatusUnlockedTitle), "Pro unlocked");
+
+    public static string SettingsProFreeMessage =>
+        GetString(nameof(SettingsProFreeMessage), "Unlock unlimited face recognition and automation.");
+
+    public static string SettingsProUnlockedMessage =>
+        GetString(nameof(SettingsProUnlockedMessage), "Thanks for supporting local-first photo organization.");
+
+    public static string SettingsProFeatureList =>
+        GetString(nameof(SettingsProFeatureList),
+            "• Unlimited face recognition\n• Automatic people albums\n• Batch sorting (1000+ photos)\n• Local export & backups\n• No ads");
+
+    public static string SettingsProPriceFormat =>
+        GetString(nameof(SettingsProPriceFormat), "One-time PayPal checkout: {0} (via license server)");
+
+    public static string SettingsProPriceFallback => GetString(nameof(SettingsProPriceFallback), "3,92 €");
+    public static string SettingsProUnlockButton => GetString(nameof(SettingsProUnlockButton), "Unlock Pro");
+    public static string SettingsProRestoreButton => GetString(nameof(SettingsProRestoreButton), "Restore purchase");
+
+    public static string SettingsProLimitReachedMessage =>
+        GetString(nameof(SettingsProLimitReachedMessage),
+            "Free limit reached ({0} people). Upgrade to Pro for unlimited.");
+
+    public static string SettingsProPurchaseSuccessTitle =>
+        GetString(nameof(SettingsProPurchaseSuccessTitle), "Pro unlocked");
+
+    public static string SettingsProPurchaseSuccessMessage =>
+        GetString(nameof(SettingsProPurchaseSuccessMessage), "Pro features are now enabled.");
+
+    public static string SettingsProPurchasePendingTitle =>
+        GetString(nameof(SettingsProPurchasePendingTitle), "Checkout opened");
+
+    public static string SettingsProPurchasePendingMessage =>
+        GetString(nameof(SettingsProPurchasePendingMessage),
+            "Complete the PayPal payment and enter your license key using Restore purchase.");
+
+    public static string SettingsProPurchaseCancelledTitle =>
+        GetString(nameof(SettingsProPurchaseCancelledTitle), "Purchase cancelled");
+
+    public static string SettingsProPurchaseCancelledMessage =>
+        GetString(nameof(SettingsProPurchaseCancelledMessage), "No changes were made.");
+
+    public static string SettingsProPurchaseFailedTitle =>
+        GetString(nameof(SettingsProPurchaseFailedTitle), "Purchase failed");
+
+    public static string SettingsProPurchaseFailedMessage =>
+        GetString(nameof(SettingsProPurchaseFailedMessage), "Please try again or restore your purchase later.");
+
+    public static string SettingsProRestoreSuccessMessage =>
+        GetString(nameof(SettingsProRestoreSuccessMessage), "Your Pro purchase has been restored.");
+
+    public static string SettingsProRestoreFailedMessage =>
+        GetString(nameof(SettingsProRestoreFailedMessage), "No Pro purchase was found for this account.");
+
+    public static string SettingsProActivateTitle =>
+        GetString(nameof(SettingsProActivateTitle), "Activate license");
+
+    public static string SettingsProActivateMessage =>
+        GetString(nameof(SettingsProActivateMessage), "Enter the license key you received after checkout.");
+
+    public static string SettingsProActivateAccept =>
+        GetString(nameof(SettingsProActivateAccept), "Activate");
+
+    public static string SettingsProActivatePlaceholder =>
+        GetString(nameof(SettingsProActivatePlaceholder), "License key");
+
+    public static string SettingsProNotSupportedTitle =>
+        GetString(nameof(SettingsProNotSupportedTitle), "Not supported");
+
+    public static string SettingsProNotSupportedMessage =>
+        GetString(nameof(SettingsProNotSupportedMessage), "Purchases are handled via the licensing server.");
+
+    public static string HelpSectionTitle => GetString(nameof(HelpSectionTitle), "Help");
+
+    public static string HelpSectionHint =>
+        GetString(nameof(HelpSectionHint), "About the app and license information.");
+
+    public static string AboutTitle => GetString(nameof(AboutTitle), "About");
+
+    public static string AboutDescription =>
+        GetString(nameof(AboutDescription), "Version details and license information.");
+
+    public static string AboutLicenseStatusFormat => GetString(nameof(AboutLicenseStatusFormat), "License: {0}");
+    public static string AboutVersionFormat => GetString(nameof(AboutVersionFormat), "Version {0}");
+    public static string AboutLicensesButton => GetString(nameof(AboutLicensesButton), "License information");
+    public static string LicenseInfoTitle => GetString(nameof(LicenseInfoTitle), "License information");
+    public static string MarkedActionsMenuButton => GetString(nameof(MarkedActionsMenuButton), "Actions");
+
     public static string SettingsLocationsTitle =>
         GetString(nameof(SettingsLocationsTitle), "Locations");
 
     public static string SettingsLocationsHint =>
         GetString(nameof(SettingsLocationsHint),
-            "Extract GPS metadata from photos and videos so they can be displayed on the world map.");
+            "Extract GPS metadata from photos and videos so they can be displayed on the world map. Map tiles are loaded from external tile servers.");
+
+    public static string SettingsLocationsDisclaimer =>
+        GetString(nameof(SettingsLocationsDisclaimer),
+            "Location data stays on your device, but external map servers may receive request data (e.g. IP address). You are responsible for sharing sensitive locations; third-party services have their own terms and privacy policies.");
 
     public static string SettingsLocationsLabel =>
         GetString(nameof(SettingsLocationsLabel), "Show locations");
+
+    public static string LocationOptInTitle =>
+        GetString(nameof(LocationOptInTitle), "Enable location data?");
+
+    public static string LocationOptInMessage =>
+        GetString(nameof(LocationOptInMessage),
+            "When enabled, the app reads GPS coordinates from EXIF metadata in your photos and videos. The map view loads tiles from external servers, which may receive request data (such as your IP address). Location data is stored locally on this device. By continuing, you accept that third-party services have their own terms and privacy policies.");
+
+    public static string LocationOptInAccept => GetString(nameof(LocationOptInAccept), "Enable");
+    public static string LocationOptInDecline => GetString(nameof(LocationOptInDecline), "Not now");
 
     public static string SettingsPeopleModelsFolderFormat =>
         GetString(nameof(SettingsPeopleModelsFolderFormat), "Folder: {0}");
@@ -325,13 +571,17 @@ public static class AppResources
 
     public static string TagPeopleEditorEmptyHint =>
         GetString(nameof(TagPeopleEditorEmptyHint), "No faces detected for this photo.");
+
     public static string TagImageEditorTitle => GetString(nameof(TagImageEditorTitle), "Image tags");
     public static string TagImageEditorHeader => GetString(nameof(TagImageEditorHeader), "Image tags");
     public static string TagImageEditorTagsLabel => GetString(nameof(TagImageEditorTagsLabel), "Image tags");
+
     public static string TagImageEditorTagsPlaceholder =>
         GetString(nameof(TagImageEditorTagsPlaceholder), "Add tags, separated by commas...");
+
     public static string TagImageEditorTagsHint =>
         GetString(nameof(TagImageEditorTagsHint), "Tip: You can tag an image even if no automatic tags were detected.");
+
     public static string TagImageEditorEmptyHint =>
         GetString(nameof(TagImageEditorEmptyHint), "No image tags detected for this photo.");
 
@@ -392,6 +642,7 @@ public static class AppResources
     public static string MediaTypeVideos => GetString(nameof(MediaTypeVideos), "Videos");
     public static string MediaTypePhotos => GetString(nameof(MediaTypePhotos), "Photos");
     public static string MediaTypeDocuments => GetString(nameof(MediaTypeDocuments), "Documents");
+    public static string MediaTypeGraphics => GetString(nameof(MediaTypeGraphics), "Graphics & screenshots");
     public static string MediaTypeFilterTitle => GetString(nameof(MediaTypeFilterTitle), "Media types");
     public static string SettingsMediaTypesTitle => GetString(nameof(SettingsMediaTypesTitle), "Media types");
 
@@ -419,6 +670,34 @@ public static class AppResources
 
     public static string RenameConfirmMessage =>
         GetString(nameof(RenameConfirmMessage), "Rename \"{0}\" to \"{1}\"?");
+
+    public static string LegalImprintTitle => GetString(nameof(LegalImprintTitle), "Imprint");
+    public static string LegalPrivacyTitle => GetString(nameof(LegalPrivacyTitle), "Privacy policy");
+    public static string LegalTermsTitle => GetString(nameof(LegalTermsTitle), "Terms & conditions");
+    public static string LegalWithdrawalTitle => GetString(nameof(LegalWithdrawalTitle), "Withdrawal");
+    public static string LegalPrivacyBody => GetString(nameof(LegalPrivacyBody), string.Empty);
+    public static string LegalTermsBody => GetString(nameof(LegalTermsBody), string.Empty);
+    public static string LegalWithdrawalBody => GetString(nameof(LegalWithdrawalBody), string.Empty);
+    public static string LegalConsentTitle => GetString(nameof(LegalConsentTitle), "Legal consent");
+    public static string LegalConsentHeader => GetString(nameof(LegalConsentHeader), "Legal consent");
+    public static string LegalConsentIntro => GetString(nameof(LegalConsentIntro), string.Empty);
+    public static string LegalConsentProductTitle => GetString(nameof(LegalConsentProductTitle), string.Empty);
+    public static string LegalConsentProductScope => GetString(nameof(LegalConsentProductScope), string.Empty);
+    public static string LegalConsentPriceFormat => GetString(nameof(LegalConsentPriceFormat), "{0}");
+    public static string LegalConsentPaymentHint => GetString(nameof(LegalConsentPaymentHint), string.Empty);
+    public static string LegalConsentWithdrawalTitle => GetString(nameof(LegalConsentWithdrawalTitle), string.Empty);
+
+    public static string LegalConsentWithdrawalCheckbox =>
+        GetString(nameof(LegalConsentWithdrawalCheckbox), string.Empty);
+
+    public static string LegalConsentWithdrawalHint => GetString(nameof(LegalConsentWithdrawalHint), string.Empty);
+    public static string LegalConsentDocumentsTitle => GetString(nameof(LegalConsentDocumentsTitle), string.Empty);
+    public static string LegalConsentDocumentsHint => GetString(nameof(LegalConsentDocumentsHint), string.Empty);
+    public static string LegalConsentConfirmButton => GetString(nameof(LegalConsentConfirmButton), "Confirm");
+    public static string LegalConsentMissingTitle => GetString(nameof(LegalConsentMissingTitle), "Consent required");
+
+    public static string LegalConsentMissingMessage =>
+        GetString(nameof(LegalConsentMissingMessage), "Please confirm before continuing.");
 
     private static string GetString(string key, string fallback)
     {

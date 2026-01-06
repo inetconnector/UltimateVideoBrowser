@@ -1,21 +1,20 @@
+using System.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Diagnostics;
-using System.Linq;
 using Color = SixLabors.ImageSharp.Color;
 using Point = SixLabors.ImageSharp.Point;
 
 namespace UltimateVideoBrowser.Services.Faces;
 
 /// <summary>
-/// YuNet face detector wrapper.
-/// IMPORTANT:
-/// - The app ships the YuNet ONNX model as a MauiAsset and copies it to the cache on first use.
-/// - We treat the model as a "single-session" detector (no extra post-process model file).
-/// - At runtime we expect multi-head outputs (cls/obj/bbox/kps for 8/16/32).
+///     YuNet face detector wrapper.
+///     IMPORTANT:
+///     - The app ships the YuNet ONNX model as a MauiAsset and copies it to the cache on first use.
+///     - We treat the model as a "single-session" detector (no extra post-process model file).
+///     - At runtime we expect multi-head outputs (cls/obj/bbox/kps for 8/16/32).
 /// </summary>
 public sealed class YuNetFaceDetector : IDisposable
 {
@@ -39,48 +38,27 @@ public sealed class YuNetFaceDetector : IDisposable
         detector?.Dispose();
     }
 
-    public Task EnsureLoadedAsync(CancellationToken ct) => EnsureInitializedAsync(ct);
-
-    // ---------------------------
-    // Public tuning API
-    // ---------------------------
-
-    public sealed record YuNetTuning(
-        float MinScore,
-        float GeometryThreshold,
-        float MinSizeFrac,
-        float MinAreaFrac,
-        float MinAspect,
-        float MaxAspect,
-        float NmsIou)
+    public Task EnsureLoadedAsync(CancellationToken ct)
     {
-
-        public static YuNetTuning Default => new(
-            MinScore: 0.50f,
-            GeometryThreshold: 0.45f,
-            MinSizeFrac: 0.06f,
-            MinAreaFrac: 0.0027f,
-            MinAspect: 0.35f,
-            MaxAspect: 2.5f,
-            NmsIou: 0.45f); 
+        return EnsureInitializedAsync(ct);
     }
 
     /// <summary>
-    /// Builds a dynamic default tuning based on the current image size.
+    ///     Builds a dynamic default tuning based on the current image size.
     /// </summary>
     public static YuNetTuning BuildAutoTuning(int imageW, int imageH)
     {
         // Comments intentionally in English.
         // These are "soft defaults" that scale with image size.
-        float shortSide = MathF.Max(1f, MathF.Min(imageW, imageH));
+        var shortSide = MathF.Max(1f, MathF.Min(imageW, imageH));
 
         // On small images we must allow smaller faces.
-        float minSizeFrac = shortSide < 700 ? 0.035f : 0.045f;
+        var minSizeFrac = shortSide < 700 ? 0.035f : 0.045f;
 
         // Area fraction roughly corresponds to (minSizeFrac^2) with extra tolerance.
-        float minAreaFrac = MathF.Max(0.0009f, minSizeFrac * minSizeFrac * 0.75f);
+        var minAreaFrac = MathF.Max(0.0009f, minSizeFrac * minSizeFrac * 0.75f);
 
-        float minScore = shortSide < 700 ? 0.45f : 0.55f;
+        var minScore = shortSide < 700 ? 0.45f : 0.55f;
 
         return YuNetTuning.Default with
         {
@@ -93,8 +71,8 @@ public sealed class YuNetFaceDetector : IDisposable
     }
 
     /// <summary>
-    /// Calibrates all thresholds from a reference image so that the result count is close to expectedFaces.
-    /// This runs the model only once and then searches thresholds on the decoded candidate set.
+    ///     Calibrates all thresholds from a reference image so that the result count is close to expectedFaces.
+    ///     This runs the model only once and then searches thresholds on the decoded candidate set.
     /// </summary>
     public async Task<YuNetTuning> CalibrateFromReferenceImageAsync(
         Image<Rgba32> referenceImage,
@@ -122,53 +100,47 @@ public sealed class YuNetFaceDetector : IDisposable
         float[] minSizeFracs = { 0.02f, 0.025f, 0.03f, 0.035f, 0.04f, 0.045f, 0.05f, 0.06f };
         float[] nmsIous = { 0.30f, 0.35f, 0.40f, 0.45f };
 
-        YuNetTuning best = autoBase;
-        float bestCost = float.PositiveInfinity;
+        var best = autoBase;
+        var bestCost = float.PositiveInfinity;
 
         foreach (var ms in minScores)
+        foreach (var gt in geomTh)
+        foreach (var sz in minSizeFracs)
+        foreach (var iou in nmsIous)
         {
-            foreach (var gt in geomTh)
+            var t = autoBase with
             {
-                foreach (var sz in minSizeFracs)
+                MinScore = ms,
+                GeometryThreshold = gt,
+                MinSizeFrac = sz,
+                MinAreaFrac = MathF.Max(0.0006f, sz * sz * 0.75f),
+                NmsIou = iou
+            };
+
+            var count = CountFacesWithTuning(raw, referenceImage.Width, referenceImage.Height, t);
+
+            // Primary objective: match expectedFaces.
+            var diff = MathF.Abs(count - expectedFaces);
+
+            // Secondary objective: prefer stricter settings (higher thresholds) to suppress junk.
+            // Note: These weights are tuned to keep "match count" most important.
+            var strictnessPenalty =
+                (1f - Clamp01(ms)) * 0.20f +
+                (1f - Clamp01(gt)) * 0.15f +
+                (1f - Clamp01(sz / 0.08f)) * 0.10f +
+                (1f - Clamp01(iou / 0.50f)) * 0.05f;
+
+            var cost = diff * 10f + strictnessPenalty;
+
+            if (cost < bestCost)
+            {
+                bestCost = cost;
+                best = t;
+                if (diff == 0f && strictnessPenalty < 0.20f)
                 {
-                    foreach (var iou in nmsIous)
-                    {
-                        var t = autoBase with
-                        {
-                            MinScore = ms,
-                            GeometryThreshold = gt,
-                            MinSizeFrac = sz,
-                            MinAreaFrac = MathF.Max(0.0006f, sz * sz * 0.75f),
-                            NmsIou = iou
-                        };
-
-                        int count = CountFacesWithTuning(raw, referenceImage.Width, referenceImage.Height, t);
-
-                        // Primary objective: match expectedFaces.
-                        float diff = MathF.Abs(count - expectedFaces);
-
-                        // Secondary objective: prefer stricter settings (higher thresholds) to suppress junk.
-                        // Note: These weights are tuned to keep "match count" most important.
-                        float strictnessPenalty =
-                            (1f - Clamp01(ms)) * 0.20f +
-                            (1f - Clamp01(gt)) * 0.15f +
-                            (1f - Clamp01(sz / 0.08f)) * 0.10f +
-                            (1f - Clamp01(iou / 0.50f)) * 0.05f;
-
-                        float cost = diff * 10f + strictnessPenalty;
-
-                        if (cost < bestCost)
-                        {
-                            bestCost = cost;
-                            best = t;
-                            if (diff == 0f && strictnessPenalty < 0.20f)
-                            {
-                                // Good enough early exit.
-                                // Keep deterministic but avoid wasting CPU.
-                                // (No background work.)
-                            }
-                        }
-                    }
+                    // Good enough early exit.
+                    // Keep deterministic but avoid wasting CPU.
+                    // (No background work.)
                 }
             }
         }
@@ -180,7 +152,7 @@ public sealed class YuNetFaceDetector : IDisposable
     }
 
     /// <summary>
-    /// Main detection. If tuning is null, dynamic defaults are used.
+    ///     Main detection. If tuning is null, dynamic defaults are used.
     /// </summary>
     public async Task<IReadOnlyList<DetectedFace>> DetectFacesAsync(
         Image<Rgba32> image,
@@ -214,38 +186,6 @@ public sealed class YuNetFaceDetector : IDisposable
         return final;
     }
 
-    // ---------------------------
-    // Internals: raw candidates
-    // ---------------------------
-
-    private sealed class MultiStrideHeads
-    {
-        public int[] Strides = Array.Empty<int>();
-        public Dictionary<int, Tensor<float>> Cls = new();
-        public Dictionary<int, Tensor<float>> Obj = new();
-        public Dictionary<int, Tensor<float>> BBox = new();
-        public Dictionary<int, Tensor<float>> Kps = new();
-    }
-
-    private readonly struct RawCandidate
-    {
-        public readonly float X;
-        public readonly float Y;
-        public readonly float W;
-        public readonly float H;
-        public readonly float Score;
-        public readonly float[] Lm;
-        public readonly float Geometry;
-
-        public RawCandidate(float x, float y, float w, float h, float score, float[] lm, float geometry)
-        {
-            X = x; Y = y; W = w; H = h;
-            Score = score;
-            Lm = lm;
-            Geometry = geometry;
-        }
-    }
-
     private async Task<List<RawCandidate>> GetRawCandidatesAsync(Image<Rgba32> image, CancellationToken ct)
     {
         // Comments intentionally in English.
@@ -272,22 +212,20 @@ public sealed class YuNetFaceDetector : IDisposable
             var raw = new List<RawCandidate>(256);
 
             foreach (var s in heads.Strides)
-            {
                 DecodeStrideToRaw(
-                    stride: s,
-                    cls: heads.Cls[s],
-                    obj: heads.Obj[s],
-                    bbox: heads.BBox[s],
-                    kps: heads.Kps[s],
-                    scale: scale,
-                    dx: dx,
-                    dy: dy,
-                    imageW: image.Width,
-                    imageH: image.Height,
-                    inputW: netWidth,
-                    inputH: netHeight,
-                    raw: raw);
-            }
+                    s,
+                    heads.Cls[s],
+                    heads.Obj[s],
+                    heads.BBox[s],
+                    heads.Kps[s],
+                    scale,
+                    dx,
+                    dy,
+                    image.Width,
+                    image.Height,
+                    netWidth,
+                    netHeight,
+                    raw);
 
             return raw;
         }
@@ -322,40 +260,38 @@ public sealed class YuNetFaceDetector : IDisposable
 
         var candBuf = new Candidate[4];
 
-        for (int idx = 0; idx < count; idx++)
+        for (var idx = 0; idx < count; idx++)
         {
             // IMPORTANT: No sqrt, keep native probability product.
-            float score = Sigmoid(clsArr[idx]) * Sigmoid(objArr[idx]);
+            var score = Sigmoid(clsArr[idx]) * Sigmoid(objArr[idx]);
 
-            int gy = idx / gw;
-            int gx = idx - gy * gw;
-            float gridCx = (gx + 0.5f) * stride;
-            float gridCy = (gy + 0.5f) * stride;
+            var gy = idx / gw;
+            var gx = idx - gy * gw;
+            var gridCx = (gx + 0.5f) * stride;
+            var gridCy = (gy + 0.5f) * stride;
 
-            float b0 = bboxArr[idx * 4 + 0];
-            float b1 = bboxArr[idx * 4 + 1];
-            float b2 = bboxArr[idx * 4 + 2];
-            float b3 = bboxArr[idx * 4 + 3];
+            var b0 = bboxArr[idx * 4 + 0];
+            var b1 = bboxArr[idx * 4 + 1];
+            var b2 = bboxArr[idx * 4 + 2];
+            var b3 = bboxArr[idx * 4 + 3];
 
             if (!TryDecodeBestByGeometry(
-                gridCx, gridCy,
-                b0, b1, b2, b3,
-                kpsArr, idx, stride,
-                inputW, inputH,
-                candBuf,
-                out var ax, out var ay, out var aw, out var ah,
-                out var alm, out var geom))
-            {
+                    gridCx, gridCy,
+                    b0, b1, b2, b3,
+                    kpsArr, idx, stride,
+                    inputW, inputH,
+                    candBuf,
+                    out var ax, out var ay, out var aw, out var ah,
+                    out var alm, out var geom))
                 continue;
-            }
 
             // Map from letterboxed input back to original image space.
-            float x0 = (ax - dx) / scale;
-            float y0 = (ay - dy) / scale;
-            float w0 = aw / scale;
-            float h0 = ah / scale;
+            var x0 = (ax - dx) / scale;
+            var y0 = (ay - dy) / scale;
+            var w0 = aw / scale;
+            var h0 = ah / scale;
 
-            for (int k = 0; k < 10; k += 2)
+            for (var k = 0; k < 10; k += 2)
             {
                 alm[k] = (alm[k] - dx) / scale;
                 alm[k + 1] = (alm[k + 1] - dy) / scale;
@@ -368,35 +304,6 @@ public sealed class YuNetFaceDetector : IDisposable
 
             // Keep raw; final filtering happens later using tuning.
             raw.Add(new RawCandidate(x0, y0, w0, h0, score, alm, geom));
-        }
-    }
-
-    // ---------------------------
-    // Candidate decode selection by geometry (order-invariant)
-    // ---------------------------
-
-    private enum DecodeKind
-    {
-        XYWH_Abs,
-        LTRB_FromCenter,
-        LTRB_FromCenterScaled,
-        DeltaExp
-    }
-
-    private readonly struct Candidate
-    {
-        public readonly float X;
-        public readonly float Y;
-        public readonly float W;
-        public readonly float H;
-        public readonly float[] Lm;
-        public readonly DecodeKind Kind;
-
-        public Candidate(float x, float y, float w, float h, float[] lm, DecodeKind kind)
-        {
-            X = x; Y = y; W = w; H = h;
-            Lm = lm;
-            Kind = kind;
         }
     }
 
@@ -421,30 +328,34 @@ public sealed class YuNetFaceDetector : IDisposable
         x = y = w = h = 0f;
         geometryScore = 0f;
 
-        int n = 0;
+        var n = 0;
 
-        if (Decode_XYWH_Abs(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, out var x1, out var y1, out var w1, out var h1, out var lm1))
+        if (Decode_XYWH_Abs(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, out var x1, out var y1, out var w1, out var h1,
+                out var lm1))
             candBuf[n++] = new Candidate(x1, y1, w1, h1, lm1, DecodeKind.XYWH_Abs);
 
-        if (Decode_LTRB_FromCenter(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, out var x2, out var y2, out var w2, out var h2, out var lm2))
+        if (Decode_LTRB_FromCenter(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, out var x2, out var y2, out var w2,
+                out var h2, out var lm2))
             candBuf[n++] = new Candidate(x2, y2, w2, h2, lm2, DecodeKind.LTRB_FromCenter);
 
-        if (Decode_LTRB_FromCenterScaled(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, stride, out var x3, out var y3, out var w3, out var h3, out var lm3))
+        if (Decode_LTRB_FromCenterScaled(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, stride, out var x3, out var y3,
+                out var w3, out var h3, out var lm3))
             candBuf[n++] = new Candidate(x3, y3, w3, h3, lm3, DecodeKind.LTRB_FromCenterScaled);
 
-        if (Decode_DeltaExp(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, stride, out var x4, out var y4, out var w4, out var h4, out var lm4))
+        if (Decode_DeltaExp(gridCx, gridCy, b0, b1, b2, b3, kpsArr, idx, stride, out var x4, out var y4, out var w4,
+                out var h4, out var lm4))
             candBuf[n++] = new Candidate(x4, y4, w4, h4, lm4, DecodeKind.DeltaExp);
 
-        float best = float.NegativeInfinity;
-        int bestIdx = -1;
+        var best = float.NegativeInfinity;
+        var bestIdx = -1;
 
-        for (int i = 0; i < n; i++)
+        for (var i = 0; i < n; i++)
         {
             var c = candBuf[i];
             if (!IsPlausibleBox(c.X, c.Y, c.W, c.H, inputW, inputH))
                 continue;
 
-            float g = FaceGeometryScoreOrderInvariant(c.X, c.Y, c.W, c.H, c.Lm);
+            var g = FaceGeometryScoreOrderInvariant(c.X, c.Y, c.W, c.H, c.Lm);
             if (g > best)
             {
                 best = g;
@@ -488,6 +399,7 @@ public sealed class YuNetFaceDetector : IDisposable
             (lex, rex) = (rex, lex);
             (ley, rey) = (rey, ley);
         }
+
         if (lmx > rmx)
         {
             (lmx, rmx) = (rmx, lmx);
@@ -495,34 +407,35 @@ public sealed class YuNetFaceDetector : IDisposable
         }
 
         // Landmarks mostly inside (tolerant).
-        float tolX = w * 0.25f;
-        float tolY = h * 0.25f;
+        var tolX = w * 0.25f;
+        var tolY = h * 0.25f;
 
-        int inside = 0;
-        for (int i = 0; i < 10; i += 2)
+        var inside = 0;
+        for (var i = 0; i < 10; i += 2)
         {
-            float px = lm[i];
-            float py = lm[i + 1];
+            var px = lm[i];
+            var py = lm[i + 1];
             if (px >= x - tolX && px <= x + w + tolX && py >= y - tolY && py <= y + h + tolY)
                 inside++;
         }
+
         if (inside < 3)
             return 0f;
 
-        float eyeY = (ley + rey) * 0.5f;
-        float mouthY = (lmy + rmy) * 0.5f;
+        var eyeY = (ley + rey) * 0.5f;
+        var mouthY = (lmy + rmy) * 0.5f;
 
         // Nose vertical placement (tolerant).
         if (!(ny > eyeY - h * 0.08f && mouthY > ny - h * 0.08f))
             return 0f;
 
         // Eye tilt.
-        float eyeTilt = MathF.Abs(ley - rey) / MathF.Max(1f, w);
+        var eyeTilt = MathF.Abs(ley - rey) / MathF.Max(1f, w);
         if (eyeTilt > 0.30f)
             return 0f;
 
-        float eyeDist = MathF.Abs(rex - lex);
-        float eyeDistNorm = eyeDist / MathF.Max(1f, w);
+        var eyeDist = MathF.Abs(rex - lex);
+        var eyeDistNorm = eyeDist / MathF.Max(1f, w);
         if (eyeDistNorm < 0.10f || eyeDistNorm > 0.90f)
             return 0f;
 
@@ -530,30 +443,30 @@ public sealed class YuNetFaceDetector : IDisposable
         if (nx < lex - eyeDist * 0.50f || nx > rex + eyeDist * 0.50f)
             return 0f;
 
-        float mouthW = MathF.Abs(rmx - lmx);
-        float mouthRel = mouthW / MathF.Max(1f, eyeDist);
+        var mouthW = MathF.Abs(rmx - lmx);
+        var mouthRel = mouthW / MathF.Max(1f, eyeDist);
         if (mouthRel < 0.20f || mouthRel > 2.40f)
             return 0f;
 
         // Vertical proportions.
-        float eyesPos = (eyeY - y) / MathF.Max(1f, h);
-        float mouthPos = (mouthY - y) / MathF.Max(1f, h);
+        var eyesPos = (eyeY - y) / MathF.Max(1f, h);
+        var mouthPos = (mouthY - y) / MathF.Max(1f, h);
         if (eyesPos < 0.03f || eyesPos > 0.75f)
             return 0f;
         if (mouthPos < 0.20f || mouthPos > 0.99f)
             return 0f;
 
         // Smooth score: prefer centered landmarks.
-        float score = 1f;
+        var score = 1f;
 
-        float cx = x + w * 0.5f;
-        float cy = y + h * 0.5f;
+        var cx = x + w * 0.5f;
+        var cy = y + h * 0.5f;
 
-        float lmCx = (lex + rex + nx + lmx + rmx) / 5f;
-        float lmCy = (ley + rey + ny + lmy + rmy) / 5f;
+        var lmCx = (lex + rex + nx + lmx + rmx) / 5f;
+        var lmCy = (ley + rey + ny + lmy + rmy) / 5f;
 
-        float offX = MathF.Abs(lmCx - cx) / MathF.Max(1f, w);
-        float offY = MathF.Abs(lmCy - cy) / MathF.Max(1f, h);
+        var offX = MathF.Abs(lmCx - cx) / MathF.Max(1f, w);
+        var offY = MathF.Abs(lmCy - cy) / MathF.Max(1f, h);
 
         score *= MathF.Max(0.0f, 1f - (offX * 1.0f + offY * 1.0f));
 
@@ -573,9 +486,9 @@ public sealed class YuNetFaceDetector : IDisposable
 
     private static List<DetectedFace> FilterCandidates(List<RawCandidate> raw, int imageW, int imageH, YuNetTuning t)
     {
-        float shortSide = MathF.Max(1f, MathF.Min(imageW, imageH));
-        float minSizePx = MathF.Max(18f, shortSide * t.MinSizeFrac);
-        float minAreaPx = MathF.Max(18f * 18f, (imageW * (float)imageH) * t.MinAreaFrac);
+        var shortSide = MathF.Max(1f, MathF.Min(imageW, imageH));
+        var minSizePx = MathF.Max(18f, shortSide * t.MinSizeFrac);
+        var minAreaPx = MathF.Max(18f * 18f, imageW * (float)imageH * t.MinAreaFrac);
 
         var list = new List<DetectedFace>(raw.Count);
 
@@ -590,11 +503,11 @@ public sealed class YuNetFaceDetector : IDisposable
             if (c.W < minSizePx || c.H < minSizePx)
                 continue;
 
-            float area = c.W * c.H;
+            var area = c.W * c.H;
             if (area < minAreaPx)
                 continue;
 
-            float ar = c.W / MathF.Max(1f, c.H);
+            var ar = c.W / MathF.Max(1f, c.H);
             if (ar < t.MinAspect || ar > t.MaxAspect)
                 continue;
 
@@ -608,7 +521,8 @@ public sealed class YuNetFaceDetector : IDisposable
     // Model I/O + decoding
     // ---------------------------
 
-    private static MultiStrideHeads CollectMultiStrideHeads(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> output)
+    private static MultiStrideHeads CollectMultiStrideHeads(
+        IDisposableReadOnlyCollection<DisposableNamedOnnxValue> output)
     {
         Tensor<float>? cls8 = null, cls16 = null, cls32 = null;
         Tensor<float>? obj8 = null, obj16 = null, obj32 = null;
@@ -652,10 +566,18 @@ public sealed class YuNetFaceDetector : IDisposable
             Strides = new[] { 8, 16, 32 }
         };
 
-        h.Cls[8] = cls8; h.Cls[16] = cls16; h.Cls[32] = cls32;
-        h.Obj[8] = obj8; h.Obj[16] = obj16; h.Obj[32] = obj32;
-        h.BBox[8] = bb8; h.BBox[16] = bb16; h.BBox[32] = bb32;
-        h.Kps[8] = kp8; h.Kps[16] = kp16; h.Kps[32] = kp32;
+        h.Cls[8] = cls8;
+        h.Cls[16] = cls16;
+        h.Cls[32] = cls32;
+        h.Obj[8] = obj8;
+        h.Obj[16] = obj16;
+        h.Obj[32] = obj32;
+        h.BBox[8] = bb8;
+        h.BBox[16] = bb16;
+        h.BBox[32] = bb32;
+        h.Kps[8] = kp8;
+        h.Kps[16] = kp16;
+        h.Kps[32] = kp32;
 
         return h;
     }
@@ -683,22 +605,22 @@ public sealed class YuNetFaceDetector : IDisposable
         {
             if (dims.Length == 3)
             {
-                int n = Math.Min(count, dims[1]);
-                for (int i = 0; i < n; i++)
+                var n = Math.Min(count, dims[1]);
+                for (var i = 0; i < n; i++)
                     arr[i] = span[i];
                 return arr;
             }
 
             if (dims.Length == 4)
             {
-                int n = Math.Min(count, dims[2] * dims[3]);
-                for (int i = 0; i < n; i++)
+                var n = Math.Min(count, dims[2] * dims[3]);
+                for (var i = 0; i < n; i++)
                     arr[i] = span[i];
                 return arr;
             }
 
-            int m = Math.Min(count, span.Length);
-            for (int i = 0; i < m; i++)
+            var m = Math.Min(count, span.Length);
+            for (var i = 0; i < m; i++)
                 arr[i] = span[i];
 
             return arr;
@@ -720,37 +642,39 @@ public sealed class YuNetFaceDetector : IDisposable
         {
             if (dims.Length == 3)
             {
-                int n = Math.Min(count, dims[1]);
-                int c = Math.Min(cols, dims[2]);
-                for (int i = 0; i < n; i++)
+                var n = Math.Min(count, dims[1]);
+                var c = Math.Min(cols, dims[2]);
+                for (var i = 0; i < n; i++)
                 {
-                    int srcBase = i * dims[2];
-                    int dstBase = i * cols;
-                    for (int j = 0; j < c; j++)
+                    var srcBase = i * dims[2];
+                    var dstBase = i * cols;
+                    for (var j = 0; j < c; j++)
                         arr[dstBase + j] = span[srcBase + j];
                 }
+
                 return arr;
             }
 
             if (dims.Length == 4)
             {
-                int c = dims[1];
-                int h = dims[2];
-                int w = dims[3];
-                int n = Math.Min(count, h * w);
-                int cc = Math.Min(cols, c);
+                var c = dims[1];
+                var h = dims[2];
+                var w = dims[3];
+                var n = Math.Min(count, h * w);
+                var cc = Math.Min(cols, c);
 
-                for (int i = 0; i < n; i++)
+                for (var i = 0; i < n; i++)
                 {
-                    int dstBase = i * cols;
-                    for (int j = 0; j < cc; j++)
-                        arr[dstBase + j] = span[j * (h * w) + i];
+                    var dstBase = i * cols;
+                    for (var j = 0; j < cc; j++)
+                        arr[dstBase + j] = span[j * h * w + i];
                 }
+
                 return arr;
             }
 
-            int m = Math.Min(arr.Length, span.Length);
-            for (int i = 0; i < m; i++)
+            var m = Math.Min(arr.Length, span.Length);
+            for (var i = 0; i < m; i++)
                 arr[i] = span[i];
 
             return arr;
@@ -763,9 +687,9 @@ public sealed class YuNetFaceDetector : IDisposable
 
     private static (int gh, int gw, int count) InferGrid(Tensor<float> cls, int stride, int inputW, int inputH)
     {
-        int gw = Math.Max(1, inputW / stride);
-        int gh = Math.Max(1, inputH / stride);
-        int count = gw * gh;
+        var gw = Math.Max(1, inputW / stride);
+        var gh = Math.Max(1, inputH / stride);
+        var count = gw * gh;
 
         var dims = cls.Dimensions.ToArray();
         if (dims.Length == 3 && dims[1] > 0)
@@ -788,7 +712,7 @@ public sealed class YuNetFaceDetector : IDisposable
         w = b2;
         h = b3;
 
-        for (int k = 0; k < 10; k++)
+        for (var k = 0; k < 10; k++)
             lm[k] = kpsArr[idx * 10 + k];
 
         return true;
@@ -805,20 +729,20 @@ public sealed class YuNetFaceDetector : IDisposable
 
         float l = b0, t = b1, r = b2, b = b3;
 
-        float x1 = gridCx - l;
-        float y1 = gridCy - t;
-        float x2 = gridCx + r;
-        float y2 = gridCy + b;
+        var x1 = gridCx - l;
+        var y1 = gridCy - t;
+        var x2 = gridCx + r;
+        var y2 = gridCy + b;
 
         x = x1;
         y = y1;
         w = x2 - x1;
         h = y2 - y1;
 
-        for (int p = 0; p < 5; p++)
+        for (var p = 0; p < 5; p++)
         {
-            float ox = kpsArr[idx * 10 + p * 2 + 0];
-            float oy = kpsArr[idx * 10 + p * 2 + 1];
+            var ox = kpsArr[idx * 10 + p * 2 + 0];
+            var oy = kpsArr[idx * 10 + p * 2 + 1];
             lm[p * 2 + 0] = gridCx + ox;
             lm[p * 2 + 1] = gridCy + oy;
         }
@@ -836,25 +760,25 @@ public sealed class YuNetFaceDetector : IDisposable
     {
         lm = new float[10];
 
-        float l = b0 * stride;
-        float t = b1 * stride;
-        float r = b2 * stride;
-        float b = b3 * stride;
+        var l = b0 * stride;
+        var t = b1 * stride;
+        var r = b2 * stride;
+        var b = b3 * stride;
 
-        float x1 = gridCx - l;
-        float y1 = gridCy - t;
-        float x2 = gridCx + r;
-        float y2 = gridCy + b;
+        var x1 = gridCx - l;
+        var y1 = gridCy - t;
+        var x2 = gridCx + r;
+        var y2 = gridCy + b;
 
         x = x1;
         y = y1;
         w = x2 - x1;
         h = y2 - y1;
 
-        for (int p = 0; p < 5; p++)
+        for (var p = 0; p < 5; p++)
         {
-            float ox = kpsArr[idx * 10 + p * 2 + 0] * stride;
-            float oy = kpsArr[idx * 10 + p * 2 + 1] * stride;
+            var ox = kpsArr[idx * 10 + p * 2 + 0] * stride;
+            var oy = kpsArr[idx * 10 + p * 2 + 1] * stride;
             lm[p * 2 + 0] = gridCx + ox;
             lm[p * 2 + 1] = gridCy + oy;
         }
@@ -872,25 +796,25 @@ public sealed class YuNetFaceDetector : IDisposable
     {
         lm = new float[10];
 
-        float ddx = b0;
-        float ddy = b1;
-        float dw = b2;
-        float dh = b3;
+        var ddx = b0;
+        var ddy = b1;
+        var dw = b2;
+        var dh = b3;
 
-        float cx = gridCx + ddx * stride;
-        float cy = gridCy + ddy * stride;
-        float bw = MathF.Exp(dw) * stride;
-        float bh = MathF.Exp(dh) * stride;
+        var cx = gridCx + ddx * stride;
+        var cy = gridCy + ddy * stride;
+        var bw = MathF.Exp(dw) * stride;
+        var bh = MathF.Exp(dh) * stride;
 
         x = cx - bw * 0.5f;
         y = cy - bh * 0.5f;
         w = bw;
         h = bh;
 
-        for (int p = 0; p < 5; p++)
+        for (var p = 0; p < 5; p++)
         {
-            float ox = kpsArr[idx * 10 + p * 2 + 0] * stride;
-            float oy = kpsArr[idx * 10 + p * 2 + 1] * stride;
+            var ox = kpsArr[idx * 10 + p * 2 + 0] * stride;
+            var oy = kpsArr[idx * 10 + p * 2 + 1] * stride;
             lm[p * 2 + 0] = cx + ox;
             lm[p * 2 + 1] = cy + oy;
         }
@@ -919,12 +843,12 @@ public sealed class YuNetFaceDetector : IDisposable
     {
         if (x >= 0)
         {
-            float z = MathF.Exp(-x);
+            var z = MathF.Exp(-x);
             return 1f / (1f + z);
         }
         else
         {
-            float z = MathF.Exp(x);
+            var z = MathF.Exp(x);
             return z / (1f + z);
         }
     }
@@ -934,10 +858,10 @@ public sealed class YuNetFaceDetector : IDisposable
         var tensor = new DenseTensor<float>(new[] { 1, 3, h, w });
         image.ProcessPixelRows(accessor =>
         {
-            for (int y = 0; y < h; y++)
+            for (var y = 0; y < h; y++)
             {
                 var row = accessor.GetRowSpan(y);
-                for (int x = 0; x < w; x++)
+                for (var x = 0; x < w; x++)
                 {
                     var p = row[x];
                     tensor[0, 0, y, x] = p.B;
@@ -998,11 +922,9 @@ public sealed class YuNetFaceDetector : IDisposable
             result.Add(best);
             sorted.RemoveAt(0);
 
-            for (int i = sorted.Count - 1; i >= 0; i--)
-            {
+            for (var i = sorted.Count - 1; i >= 0; i--)
                 if (IoU(best, sorted[i]) > iouThreshold)
                     sorted.RemoveAt(i);
-            }
         }
 
         return result;
@@ -1010,28 +932,27 @@ public sealed class YuNetFaceDetector : IDisposable
 
     private static float IoU(DetectedFace a, DetectedFace b)
     {
-        float ax2 = a.X + a.W;
-        float ay2 = a.Y + a.H;
-        float bx2 = b.X + b.W;
-        float by2 = b.Y + b.H;
+        var ax2 = a.X + a.W;
+        var ay2 = a.Y + a.H;
+        var bx2 = b.X + b.W;
+        var by2 = b.Y + b.H;
 
-        float x1 = MathF.Max(a.X, b.X);
-        float y1 = MathF.Max(a.Y, b.Y);
-        float x2 = MathF.Min(ax2, bx2);
-        float y2 = MathF.Min(ay2, by2);
+        var x1 = MathF.Max(a.X, b.X);
+        var y1 = MathF.Max(a.Y, b.Y);
+        var x2 = MathF.Min(ax2, bx2);
+        var y2 = MathF.Min(ay2, by2);
 
-        float iw = MathF.Max(0, x2 - x1);
-        float ih = MathF.Max(0, y2 - y1);
-        float inter = iw * ih;
+        var iw = MathF.Max(0, x2 - x1);
+        var ih = MathF.Max(0, y2 - y1);
+        var inter = iw * ih;
 
-        float union = a.W * a.H + b.W * b.H - inter;
+        var union = a.W * a.H + b.W * b.H - inter;
         return union <= 0 ? 0 : inter / union;
     }
 
     private static void DumpOutputShapes(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> output)
     {
         foreach (var o in output)
-        {
             try
             {
                 if (o.Value is Tensor<float> t)
@@ -1048,7 +969,6 @@ public sealed class YuNetFaceDetector : IDisposable
             {
                 Debug.WriteLine($"[YuNet] OUT {o.Name}: <shape dump failed> {ex.Message}");
             }
-        }
     }
 
     private static void Letterbox(
@@ -1072,12 +992,102 @@ public sealed class YuNetFaceDetector : IDisposable
 
         var resized = source.Clone(ctx => ctx.Resize(newW, newH, KnownResamplers.Bicubic));
         boxed = new Image<Rgba32>(dstW, dstH, Color.Black);
-        boxed.Mutate(ctx =>
-        {
-            ctx.DrawImage(resized, new Point(offsetX, offsetY), 1f);
-        });
+        boxed.Mutate(ctx => { ctx.DrawImage(resized, new Point(offsetX, offsetY), 1f); });
         resized.Dispose();
     }
 
-    private static float Clamp01(float v) => v < 0f ? 0f : (v > 1f ? 1f : v);
+    private static float Clamp01(float v)
+    {
+        return v < 0f ? 0f : v > 1f ? 1f : v;
+    }
+
+    // ---------------------------
+    // Public tuning API
+    // ---------------------------
+
+    public sealed record YuNetTuning(
+        float MinScore,
+        float GeometryThreshold,
+        float MinSizeFrac,
+        float MinAreaFrac,
+        float MinAspect,
+        float MaxAspect,
+        float NmsIou)
+    {
+        public static YuNetTuning Default => new(
+            0.50f,
+            0.45f,
+            0.06f,
+            0.0027f,
+            0.35f,
+            2.5f,
+            0.45f);
+    }
+
+    // ---------------------------
+    // Internals: raw candidates
+    // ---------------------------
+
+    private sealed class MultiStrideHeads
+    {
+        public readonly Dictionary<int, Tensor<float>> BBox = new();
+        public readonly Dictionary<int, Tensor<float>> Cls = new();
+        public readonly Dictionary<int, Tensor<float>> Kps = new();
+        public readonly Dictionary<int, Tensor<float>> Obj = new();
+        public int[] Strides = Array.Empty<int>();
+    }
+
+    private readonly struct RawCandidate
+    {
+        public readonly float X;
+        public readonly float Y;
+        public readonly float W;
+        public readonly float H;
+        public readonly float Score;
+        public readonly float[] Lm;
+        public readonly float Geometry;
+
+        public RawCandidate(float x, float y, float w, float h, float score, float[] lm, float geometry)
+        {
+            X = x;
+            Y = y;
+            W = w;
+            H = h;
+            Score = score;
+            Lm = lm;
+            Geometry = geometry;
+        }
+    }
+
+    // ---------------------------
+    // Candidate decode selection by geometry (order-invariant)
+    // ---------------------------
+
+    private enum DecodeKind
+    {
+        XYWH_Abs,
+        LTRB_FromCenter,
+        LTRB_FromCenterScaled,
+        DeltaExp
+    }
+
+    private readonly struct Candidate
+    {
+        public readonly float X;
+        public readonly float Y;
+        public readonly float W;
+        public readonly float H;
+        public readonly float[] Lm;
+        public readonly DecodeKind Kind;
+
+        public Candidate(float x, float y, float w, float h, float[] lm, DecodeKind kind)
+        {
+            X = x;
+            Y = y;
+            W = w;
+            H = h;
+            Lm = lm;
+            Kind = kind;
+        }
+    }
 }

@@ -4,24 +4,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.Components.MainSearchSortView">
-    <Grid Padding="12"
+    <Grid Padding="16,12"
           ColumnDefinitions="*,Auto"
           BackgroundColor="{DynamicResource AppBg}">
-        <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
-                   Text="{Binding SearchText}"
-                   SearchCommand="{Binding RefreshCommand}"
-                   BackgroundColor="{DynamicResource Surface2}"
-                   TextColor="{DynamicResource OnSurface}"
-                   PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+        <Frame Style="{StaticResource InputFrameStyle}">
+            <SearchBar Placeholder="{x:Static strings:AppResources.SearchPlaceholder}"
+                       Text="{Binding SearchText}"
+                       SearchCommand="{Binding RefreshCommand}"
+                       BackgroundColor="Transparent"
+                       TextColor="{DynamicResource OnSurface}"
+                       PlaceholderColor="{DynamicResource OnSurfaceMuted}" />
+        </Frame>
 
-        <Picker x:Name="SortPicker"
-                Grid.Column="1"
-                ItemsSource="{Binding SortOptions}"
-                ItemDisplayBinding="{Binding Display}"
-                SelectedItem="{Binding SelectedSortOption}"
-                Title="{x:Static strings:AppResources.SortTitle}"
-                TextColor="{DynamicResource OnSurface}"
-                BackgroundColor="{DynamicResource Surface2}"
-                Margin="8,0,0,0" />
+        <Frame Grid.Column="1"
+               Style="{StaticResource InputFrameStyle}"
+               Margin="10,0,0,0">
+            <Picker x:Name="SortPicker"
+                    ItemsSource="{Binding SortOptions}"
+                    ItemDisplayBinding="{Binding Display}"
+                    SelectedItem="{Binding SelectedSortOption}"
+                    Title="{x:Static strings:AppResources.SortTitle}"
+                    TextColor="{DynamicResource OnSurface}"
+                    BackgroundColor="Transparent" />
+        </Frame>
+
     </Grid>
 </ContentView>

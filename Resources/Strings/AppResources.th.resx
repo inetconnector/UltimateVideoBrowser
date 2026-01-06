@@ -1,282 +1,1189 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
+  
+  
   <resheader name="resmimetype">
+    
+    
     <value>text/microsoft-resx</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="version">
+    
+    
     <value>2.0</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="reader">
+    
+    
     <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <resheader name="writer">
+    
+    
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    
+  
   </resheader>
+  
+  
   <data name="AppTitle" xml:space="preserve">
+    
+    
     <value>เบราว์เซอร์วิดีโอขั้นสุดยอด</value>
+    
+  
   </data>
+  
+  
   <data name="MainPageTitle" xml:space="preserve">
+    
+    
     <value>วิดีโอ</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesButton" xml:space="preserve">
+    
+    
     <value>แหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="ReindexButton" xml:space="preserve">
+    
+    
     <value>สร้างดัชนีใหม่</value>
+    
+  
   </data>
+  
+  
   <data name="SearchPlaceholder" xml:space="preserve">
+    
+    
     <value>ค้นหาวิดีโอ...</value>
+    
+  
   </data>
+  
+  
   <data name="SortTitle" xml:space="preserve">
+    
+    
     <value>เรียงลำดับ</value>
+    
+  
   </data>
+  
+  
   <data name="SortName" xml:space="preserve">
+    
+    
     <value>ชื่อ</value>
+    
+  
   </data>
+  
+  
   <data name="SortDate" xml:space="preserve">
+    
+    
     <value>วันที่</value>
+    
+  
   </data>
+  
+  
   <data name="SortDuration" xml:space="preserve">
+    
+    
     <value>ระยะเวลา</value>
+    
+  
   </data>
+  
+  
   <data name="Indexing" xml:space="preserve">
+    
+    
     <value>กำลังจัดทำดัชนี...</value>
+    
+  
   </data>
+  
+  
   <data name="NewItemsFormat" xml:space="preserve">
+    
+    
     <value>รายการใหม่: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageTitle" xml:space="preserve">
+    
+    
     <value>แหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesPageHeader" xml:space="preserve">
+    
+    
     <value>แหล่งที่มา (โฟลเดอร์ในเครื่อง / การแชร์ที่ซิงค์)</value>
+    
+  
   </data>
+  
+  
   <data name="Enabled" xml:space="preserve">
+    
+    
     <value>เปิดใช้งาน</value>
+    
+  
   </data>
+  
+  
   <data name="Disabled" xml:space="preserve">
+    
+    
     <value>ปิดใช้งาน</value>
+    
+  
   </data>
+  
+  
   <data name="AllDeviceVideos" xml:space="preserve">
+    
+    
     <value>วิดีโอทั้งหมดในอุปกรณ์</value>
+    
+  
   </data>
-<data name="HeroEyebrow" xml:space="preserve">
+  
+
+  <data name="HeroEyebrow" xml:space="preserve">
+    
+    
     <value>คลังส่วนตัวของคุณ</value>
+    
+  
   </data>
+  
+  
   <data name="HeroTitle" xml:space="preserve">
+    
+    
     <value>ค้นพบวิดีโอทุกไฟล์ได้ทันที</value>
+    
+  
   </data>
+  
+  
   <data name="HeroSubtitle" xml:space="preserve">
+    
+    
     <value>เรียกดูด้วยภาพย่อที่สวยงาม การค้นหาอัจฉริยะ และการจัดทำดัชนีอย่างรวดเร็วในทุกโฟลเดอร์ของคุณ</value>
+    
+  
   </data>
+  
+  
   <data name="HeroPrimaryAction" xml:space="preserve">
+    
+    
     <value>จัดการแหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterTitle" xml:space="preserve">
+    
+    
     <value>ช่วงวันที่</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterFromLabel" xml:space="preserve">
+    
+    
     <value>จาก</value>
+    
+  
   </data>
+  
+  
   <data name="DateFilterToLabel" xml:space="preserve">
+    
+    
     <value>ถึง</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingStatusFormat" xml:space="preserve">
+    
+    
     <value>กำลังจัดทำดัชนี {0} • {1}/{2}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFolderFormat" xml:space="preserve">
+    
+    
     <value>โฟลเดอร์: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingFileFormat" xml:space="preserve">
+    
+    
     <value>ไฟล์: {0}</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingBackgroundButton" xml:space="preserve">
+    
+    
     <value>ซ่อน</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingCancelButton" xml:space="preserve">
+    
+    
     <value>ยกเลิก</value>
+    
+  
   </data>
+  
+  
   <data name="IndexingShowDetailsButton" xml:space="preserve">
+    
+    
     <value>รายละเอียด</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTitle" xml:space="preserve">
+    
+    
     <value>ไฮไลต์ของคลัง</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsVideosLabel" xml:space="preserve">
+    
+    
     <value>วิดีโอที่จัดทำดัชนีแล้ว</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsSourcesLabel" xml:space="preserve">
+    
+    
     <value>แหล่งที่มาเปิดใช้งาน</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipLabel" xml:space="preserve">
-    <value>เคล็ดลับ</value>
+    
+    
+    <value>เคล็ดลับ Pro</value>
+    
+  
   </data>
+  
+  
   <data name="HighlightsTipText" xml:space="preserve">
+    
+    
     <value>ใช้การค้นหา + ตัวกรอง จากนั้นจัดทำดัชนีใหม่หลังเพิ่มโฟลเดอร์ใหม่เพื่อผลลัพธ์ที่ดีที่สุด</value>
+    
+  
   </data>
+  
+  
   <data name="SourcesSummaryFormat" xml:space="preserve">
+    
+    
     <value>แหล่งที่มาใช้งาน {0} จาก {1}</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionTitle" xml:space="preserve">
+    
+    
     <value>ต้องการการเข้าถึง</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionMessage" xml:space="preserve">
+    
+    
     <value>อนุญาตให้เข้าถึงวิดีโอของคุณเพื่อให้เราจัดทำดัชนีและเล่นได้</value>
+    
+  
   </data>
+  
+  
   <data name="PermissionOk" xml:space="preserve">
+    
+    
     <value>อนุญาตการเข้าถึง</value>
+    
+  
   </data>
+  
+  
   <data name="OkButton" xml:space="preserve">
+    
+    
     <value>ตกลง</value>
+    
+  
   </data>
+  
+  
   <data name="ShareAction" xml:space="preserve">
+    
+    
     <value>แชร์</value>
+    
+  
   </data>
+  
+  
   <data name="ShareTitle" xml:space="preserve">
+    
+    
     <value>แชร์วิดีโอ</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsAction" xml:space="preserve">
+    
+    
     <value>บันทึกเป็น...</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFileTypeLabel" xml:space="preserve">
+    
+    
     <value>วิดีโอ</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedTitle" xml:space="preserve">
+    
+    
     <value>บันทึกล้มเหลว</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsFailedMessage" xml:space="preserve">
+    
+    
     <value>เราไม่สามารถบันทึกวิดีโอนี้ได้ โปรดลองตำแหน่งอื่น</value>
+    
+  
   </data>
+  
+  
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
+    
+    
     <value>ไม่รองรับการบันทึกเป็นบนอุปกรณ์นี้</value>
+    
+  
   </data>
+  
+  
   <data name="BackButton" xml:space="preserve">
+    
+    
     <value>ย้อนกลับ</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsButton" xml:space="preserve">
+    
+    
     <value>การตั้งค่า</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageTitle" xml:space="preserve">
+    
+    
     <value>การตั้งค่า</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsPageHeader" xml:space="preserve">
+    
+    
     <value>การตั้งค่า</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsAppearanceTitle" xml:space="preserve">
+    
+    
     <value>รูปลักษณ์</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsThemeLabel" xml:space="preserve">
+    
+    
     <value>ธีม</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsSortingTitle" xml:space="preserve">
+    
+    
     <value>การจัดเรียง</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDefaultSortLabel" xml:space="preserve">
+    
+    
     <value>ลำดับเริ่มต้น</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsFilterTitle" xml:space="preserve">
+    
+    
     <value>ตัวกรอง</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFilterLabel" xml:space="preserve">
+    
+    
     <value>เปิดใช้งานตัวกรองวันที่</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateFromLabel" xml:space="preserve">
+    
+    
     <value>จาก</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsDateToLabel" xml:space="preserve">
+    
+    
     <value>ถึง</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsIndexingTitle" xml:space="preserve">
+    
+    
     <value>การจัดทำดัชนี</value>
+    
+  
   </data>
+  
+  
   <data name="SettingsReindexLabel" xml:space="preserve">
+    
+    
     <value>จัดทำดัชนีใหม่ในการเปิดครั้งถัดไป</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeLight" xml:space="preserve">
+    
+    
     <value>สว่าง</value>
+    
+  
   </data>
+  
+  
   <data name="ThemeDark" xml:space="preserve">
+    
+    
     <value>มืด</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateTitle" xml:space="preserve">
+    
+    
     <value>ยังไม่มีวิดีโอ</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateMessage" xml:space="preserve">
+    
+    
     <value>เพิ่มแหล่งที่มาหรือรีเฟรชเพื่อเริ่มเรียกดูคลังของคุณ</value>
+    
+  
   </data>
+  
+  
   <data name="EmptyStateAction" xml:space="preserve">
+    
+    
     <value>เพิ่มแหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="AddSourceButton" xml:space="preserve">
+    
+    
     <value>เพิ่มโฟลเดอร์</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceButton" xml:space="preserve">
+    
+    
     <value>ลบ</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceTitle" xml:space="preserve">
+    
+    
     <value>ลบแหล่งที่มา?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceMessage" xml:space="preserve">
+    
+    
     <value>ลบ “{0}” ออกจากแหล่งที่มา?</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveSourceConfirm" xml:space="preserve">
+    
+    
     <value>ลบ</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceTitle" xml:space="preserve">
+    
+    
     <value>เพิ่มแหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourcePrompt" xml:space="preserve">
+    
+    
     <value>ชื่อแหล่งที่มา</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceConfirm" xml:space="preserve">
+    
+    
     <value>เพิ่ม</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceCancel" xml:space="preserve">
+    
+    
     <value>ยกเลิก</value>
+    
+  
   </data>
+  
+  
   <data name="NewSourceDefaultName" xml:space="preserve">
+    
+    
     <value>แหล่งที่มาใหม่</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsTitle" xml:space="preserve">
+    
+    
     <value>เพิ่มแล้ว</value>
+    
+  
   </data>
+  
+  
   <data name="SourceExistsMessage" xml:space="preserve">
+    
+    
     <value>โฟลเดอร์นี้อยู่ในแหล่งที่มาของคุณแล้ว</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathHelper" xml:space="preserve">
+    
+    
     <value>เลือกโฟลเดอร์ภายในเครื่องหรือการแชร์เครือข่าย</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathButton" xml:space="preserve">
+    
+    
     <value>เรียกดูโฟลเดอร์</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathTitle" xml:space="preserve">
+    
+    
     <value>เลือกโฟลเดอร์</value>
+    
+  
   </data>
+  
+  
   <data name="AddPathPrompt" xml:space="preserve">
+    
+    
     <value>เลือกโฟลเดอร์ภายในเครื่องหรือการแชร์เครือข่าย</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderTitle" xml:space="preserve">
+    
+    
     <value>เพิ่มโฟลเดอร์อื่น?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderMessage" xml:space="preserve">
+    
+    
     <value>ต้องการเพิ่มโฟลเดอร์อื่นหรือไม่?</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderConfirm" xml:space="preserve">
+    
+    
     <value>เพิ่มอีก</value>
+    
+  
   </data>
+  
+  
   <data name="AddAnotherFolderCancel" xml:space="preserve">
+    
+    
     <value>เสร็จสิ้น</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidTitle" xml:space="preserve">
+    
+    
     <value>ไม่พบเส้นทาง</value>
+    
+  
   </data>
+  
+  
   <data name="PathInvalidMessage" xml:space="preserve">
+    
+    
     <value>เราไม่พบโฟลเดอร์นั้น โปรดตรวจสอบเส้นทาง</value>
+    
+  
   </data>
+  
+  
   <data name="DeviceLibraryPath" xml:space="preserve">
+    
+    
     <value>คลังสื่อของอุปกรณ์</value>
+    
+  
   </data>
+  
+  
   <data name="RemoveFromPeopleIndexButton" xml:space="preserve">
-    <value>Remove from people index</value>
+    
+    
+    <value>เอาออกจากดัชนีบุคคล</value>
+    
+  
   </data>
-<data name="MergeButton" xml:space="preserve"><value>ผสาน</value></data><data name="MergeIntoTitle" xml:space="preserve"><value>ผสานไปยัง…</value></data><data name="QualityLabel" xml:space="preserve"><value>คุณภาพ</value></data></root>
+  
+
+  <data name="MergeButton" xml:space="preserve">
+    <value>ผสาน</value>
+  </data>
+  <data name="MergeIntoTitle" xml:space="preserve">
+    <value>ผสานไปยัง…</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>คุณภาพ</value>
+  </data>
+    
+  <data name="ErrorLogTitle" xml:space="preserve">
+    
+    
+    <value>บันทึกข้อผิดพลาด</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogHint" xml:space="preserve">
+    
+    
+    <value>แชร์บันทึกนี้หากมีบางอย่างล้มเหลวหรือภาพขนาดย่อว่างเปล่า</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShowButton" xml:space="preserve">
+    
+    
+    <value>แสดงบันทึก</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogShareButton" xml:space="preserve">
+    
+    
+    <value>แชร์บันทึก</value>
+    
+  
+  </data>
+  
+  
+  <data name="ErrorLogClearButton" xml:space="preserve">
+    
+    
+    <value>ล้างบันทึก</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeDocuments" xml:space="preserve">
+    
+    
+    <value>เอกสาร</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeGraphics" xml:space="preserve">
+    
+    
+    <value>กราฟิกและภาพหน้าจอ</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypePhotos" xml:space="preserve">
+    
+    
+    <value>รูปภาพ</value>
+    
+  
+  </data>
+  
+  
+  <data name="MediaTypeVideos" xml:space="preserve">
+    
+    
+    <value>วิดีโอ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetButton" xml:space="preserve">
+    
+    
+    <value>ลบฐานข้อมูล</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDatabaseResetHint" xml:space="preserve">
+    
+    
+    <value>ลบฐานข้อมูลภายในเครื่องและสร้างใหม่โดยสแกนแหล่งที่มาอีกครั้ง</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsHint" xml:space="preserve">
+    
+    
+    <value>แยกนามสกุลด้วยจุลภาค (เช่น .mp4, .mkv)</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsPlaceholder" xml:space="preserve">
+    
+    
+    <value>.mp4, .mkv, .avi</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsExtensionsTitle" xml:space="preserve">
+    
+    
+    <value>นามสกุลไฟล์</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesHint" xml:space="preserve">
+    
+    
+    <value>เปิดใช้งานนี้เพื่อแสดงการดำเนินการที่เปลี่ยนไฟล์บนดิสก์</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesLabel" xml:space="preserve">
+    
+    
+    <value>อนุญาตให้เปลี่ยนชื่อ ย้าย คัดลอก และลบ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsFileChangesTitle" xml:space="preserve">
+    
+    
+    <value>การเปลี่ยนแปลงไฟล์</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsIndexingStatusLabel" xml:space="preserve">
+    
+    
+    <value>สถานะ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsInternalPlayerLabel" xml:space="preserve">
+    
+    
+    <value>ใช้เครื่องเล่นวิดีโอภายในสำหรับวิดีโอ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsDisclaimer" xml:space="preserve">
+    
+    
+    <value>ข้อมูลตำแหน่งจะอยู่บนอุปกรณ์ของคุณ แต่เซิร์ฟเวอร์แผนที่ภายนอกอาจได้รับข้อมูลคำขอ (เช่น ที่อยู่ IP) คุณรับผิดชอบในการแชร์สถานที่ที่ละเอียดอ่อน; บริการของบุคคลที่สามมีข้อกำหนดและนโยบายความเป็นส่วนตัวของตนเอง</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsHint" xml:space="preserve">
+    
+    
+    <value>ดึงเมทาดาทา GPS จากรูปภาพและวิดีโอเพื่อแสดงบนแผนที่โลก ไทล์แผนที่จะโหลดจากเซิร์ฟเวอร์ภายนอก</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>แสดงตำแหน่ง</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>ตำแหน่ง</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesMessage" xml:space="preserve">
+    
+    
+    <value>เลือกประเภทที่จะทำดัชนีในคลังของคุณ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsMediaTypesTitle" xml:space="preserve">
+    
+    
+    <value>ประเภทสื่อ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsDownloadButton" xml:space="preserve">
+    
+    
+    <value>ดาวน์โหลดโมเดลใบหน้า</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleModelsStatusLabel" xml:space="preserve">
+    
+    
+    <value>โมเดลใบหน้า</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingHint" xml:space="preserve">
+    
+    
+    <value>เปิดสิ่งนี้เพื่อแท็กผู้คนในรูปภาพและวิดีโอจากคลัง</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingLabel" xml:space="preserve">
+    
+    
+    <value>เปิดใช้งานการแท็กผู้คน</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPeopleTaggingTitle" xml:space="preserve">
+    
+    
+    <value>การแท็กผู้คน</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsPlaybackTitle" xml:space="preserve">
+    
+    
+    <value>การเล่น</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProFeatureList" xml:space="preserve">
+    
+    
+    <value>• การจดจำใบหน้าแบบไม่จำกัด
+• อัลบั้มผู้คนอัตโนมัติ
+• การจัดเรียงแบบกลุ่ม (1000+ รูป)
+• การส่งออกและสำรองข้อมูลภายในเครื่อง
+• ไม่มีโฆษณา</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProRestoreButton" xml:space="preserve">
+    
+    
+    <value>คืนค่าการซื้อ</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProTitle" xml:space="preserve">
+    
+    
+    <value>อัปเกรด Pro</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsProUnlockButton" xml:space="preserve">
+    
+    
+    <value>ปลดล็อก Pro</value>
+    
+  
+  </data>
+  
+
+  <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
+    <value>คัดลอกไปยังคลิปบอร์ดไม่สำเร็จ โปรดลองอีกครั้งหรือใช้ "ดูบันทึก" เพื่อคัดลอกด้วยตนเอง</value>
+  </data>
+  <data name="UpgradeNowButton" xml:space="preserve">
+    <value>อัปเกรดตอนนี้</value>
+  </data>
+  <data name="PeopleTagsTrialTitle" xml:space="preserve">
+    <value>แท็กบุคคล (ทดลอง)</value>
+  </data>
+  <data name="PeopleTagsTrialHint" xml:space="preserve">
+    <value>แท็กบุคคลเปิดใช้งานได้ 14 วันในเวอร์ชันฟรี อัปเกรดเป็น Pro เพื่อใช้แท็กบุคคลได้ถาวร</value>
+  </data>
+  <data name="ReindexTitle" xml:space="preserve">
+    <value>ทำดัชนีไลบรารีใหม่</value>
+  </data>
+  <data name="ReindexPrompt" xml:space="preserve">
+    <value>ต้องการทำดัชนีใหม่ทั้งหมดตอนนี้หรือไม่? อาจใช้เวลาสักครู่ขึ้นอยู่กับขนาดไลบรารีของคุณ</value>
+  </data>
+<data name="BackupSectionTitle" xml:space="preserve"><value>สำรองฐานข้อมูล</value></data><data name="BackupSectionHint" xml:space="preserve"><value>ส่งออกหรือนำเข้าฐานข้อมูลในเครื่อง รวมถึงการตั้งค่าและภาพย่อ</value></data><data name="BackupExportButton" xml:space="preserve"><value>ส่งออกไฟล์สำรอง</value></data><data name="BackupImportButton" xml:space="preserve"><value>นำเข้าไฟล์สำรอง</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>ส่งออกไฟล์สำรองแล้ว</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>ส่งออกไฟล์สำรองสำเร็จ</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>ส่งออกไม่สำเร็จ</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>ไม่สามารถสร้างหรือบันทึกไฟล์สำรองได้</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>เลือกไฟล์ ZIP สำรอง</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>กู้คืนไฟล์สำรอง?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>การดำเนินการนี้จะเขียนทับฐานข้อมูล การตั้งค่า และภาพย่อปัจจุบัน ต้องการทำต่อหรือไม่?</value></data><data name="RestoreButton" xml:space="preserve"><value>กู้คืน</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>กำลังสร้างดัชนี</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>หยุดการสร้างดัชนีก่อนกู้คืนไฟล์สำรอง</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>กู้คืนไม่สำเร็จ</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>ไม่สามารถกู้คืนไฟล์สำรองได้</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>ไฟล์สำรองนี้ไม่มีไฟล์ฐานข้อมูล</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>กู้คืนเสร็จสิ้น</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>กู้คืนไฟล์สำรองแล้ว อาจต้องเปิดแอปใหม่เพื่อให้เห็นการเปลี่ยนแปลงทั้งหมด</value></data></root>

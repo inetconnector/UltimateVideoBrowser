@@ -149,8 +149,13 @@ public sealed class PeopleDataService
                 p.IsIgnored))
             .ToList();
 
-        // Create synthetic person entries for manual tags.
+        var faceNameSet = new HashSet<string>(
+            facePeople.Select(p => p.Name),
+            StringComparer.OrdinalIgnoreCase);
+
+        // Create synthetic person entries for manual tags (skip ones already represented by face profiles).
         var tagPeople = tagCountMap
+            .Where(kvp => !faceNameSet.Contains(kvp.Key))
             .Select(kvp => new PersonOverview(
                 $"tag:{kvp.Key}",
                 kvp.Key,
@@ -404,24 +409,24 @@ public sealed class PeopleDataService
 
     private sealed class MediaTagRow
     {
-        public string Path { get; set; } = string.Empty;
-        public string PeopleTagsSummary { get; set; } = string.Empty;
+        public string Path { get; } = string.Empty;
+        public string PeopleTagsSummary { get; } = string.Empty;
     }
 
     private sealed class PersonCountRow
     {
-        public string PersonId { get; set; } = string.Empty;
+        public string PersonId { get; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class TagCountRow
     {
-        public string PersonName { get; set; } = string.Empty;
+        public string PersonName { get; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class MediaPathRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
     }
 }

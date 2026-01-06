@@ -7,15 +7,20 @@ namespace UltimateVideoBrowser.Views;
 
 public partial class PersonPage : ContentPage
 {
+    private const double SpanWidthTolerance = 1;
+    private readonly DeviceModeService deviceMode;
     private readonly IServiceProvider serviceProvider;
     private readonly PersonViewModel vm;
+    private double lastSpanWidth = -1;
 
-    public PersonPage(IServiceProvider serviceProvider, PersonViewModel vm)
+    public PersonPage(IServiceProvider serviceProvider, DeviceModeService deviceMode, PersonViewModel vm)
     {
         InitializeComponent();
         this.serviceProvider = serviceProvider;
+        this.deviceMode = deviceMode;
         this.vm = vm;
         BindingContext = vm;
+        SizeChanged += OnSizeChanged;
     }
 
     public void Initialize(string personId, string initialName)
@@ -27,6 +32,7 @@ public partial class PersonPage : ContentPage
     {
         base.OnAppearing();
         _ = vm.LoadAsync();
+        UpdateGridSpan();
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
@@ -64,7 +70,7 @@ public partial class PersonPage : ContentPage
             var candidates = await peopleData.ListMergeCandidatesAsync(vm.PersonId, cts.Token).ConfigureAwait(false);
             if (candidates.Count == 0)
             {
-                await DisplayAlert("Merge", "No merge targets available.", "OK");
+                await DisplayAlertAsync("Merge", "No merge targets available.", "OK");
                 return;
             }
 
@@ -76,7 +82,7 @@ public partial class PersonPage : ContentPage
                 .ToArray();
 
             var choice = await MainThread.InvokeOnMainThreadAsync(() =>
-                DisplayActionSheet(
+                DisplayActionSheetAsync(
                     AppResources.MergeIntoTitle,
                     AppResources.CancelButton,
                     null,
@@ -94,7 +100,7 @@ public partial class PersonPage : ContentPage
                 return;
 
             var confirm = await MainThread.InvokeOnMainThreadAsync(() =>
-                DisplayAlert(
+                DisplayAlertAsync(
                     AppResources.MergeButton,
                     $"{vm.Name} → {target.Name}",
                     AppResources.OkButton,
@@ -151,5 +157,43 @@ public partial class PersonPage : ContentPage
         var page = ActivatorUtilities.CreateInstance<PhotoPeopleEditorPage>(serviceProvider);
         page.Initialize(item);
         await Navigation.PushAsync(page);
+    }
+
+    private void OnSizeChanged(object? sender, EventArgs e)
+    {
+        UpdateGridSpan();
+    }
+
+    private void UpdateGridSpan()
+    {
+        if (PersonGridLayout == null)
+            return;
+
+        var mode = deviceMode.GetUiMode();
+        if (mode == UiMode.Phone)
+        {
+            PersonGridLayout.Span = 1;
+            return;
+        }
+
+        var width = PersonMediaItemsView?.Width ?? Width;
+        if (width <= 0)
+            width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+
+        if (Math.Abs(width - lastSpanWidth) < SpanWidthTolerance)
+            return;
+
+        lastSpanWidth = width;
+
+        var minTileWidth = 240;
+        var tilePadding = 20;
+        var targetTile = minTileWidth + tilePadding;
+        if (mode == UiMode.Tv)
+            targetTile = 340;
+        else if (mode == UiMode.Tablet)
+            targetTile = 300;
+
+        var span = Math.Max(2, (int)(width / targetTile));
+        PersonGridLayout.Span = Math.Min(8, span);
     }
 }
