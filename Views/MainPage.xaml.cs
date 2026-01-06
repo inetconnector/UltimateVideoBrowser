@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Storage;
 using UltimateVideoBrowser.Collections;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
@@ -288,6 +289,10 @@ public partial class MainPage : ContentPage
         private bool isTimelinePreviewVisible;
         private string timelinePreviewLabel = "";
         private bool isPreviewDockExpanded = true;
+        private bool isBottomControlsExpanded = true;
+
+        private const string PrefKeyPreviewDockExpanded = "main.previewDockExpanded";
+        private const string PrefKeyBottomControlsExpanded = "main.bottomControlsExpanded";
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
@@ -299,6 +304,10 @@ public partial class MainPage : ContentPage
             this.peopleData = peopleData;
             this.proUpgradeService = proUpgradeService;
 			this.dialogService = serviceProvider.GetService<IDialogService>() ?? new DialogService();
+
+            // Persisted UI state (docking-like panels).
+            isPreviewDockExpanded = Preferences.Default.Get(PrefKeyPreviewDockExpanded, true);
+            isBottomControlsExpanded = Preferences.Default.Get(PrefKeyBottomControlsExpanded, true);
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             RequestReindexCommand = new AsyncRelayCommand(RequestReindexAsync);
@@ -312,6 +321,9 @@ public partial class MainPage : ContentPage
             RunIndexCommand = vm.RunIndexCommand;
             CancelIndexCommand = vm.CancelIndexCommand;
             PlayCommand = vm.PlayCommand;
+            RotatePhotoLeftCommand = vm.RotatePhotoLeftCommand;
+            RotatePhotoRightCommand = vm.RotatePhotoRightCommand;
+            TogglePhotoMirrorCommand = vm.TogglePhotoMirrorCommand;
             TogglePlayerFullscreenCommand = vm.TogglePlayerFullscreenCommand;
             ToggleMediaTypeFilterCommand = vm.ToggleMediaTypeFilterCommand;
             ToggleSearchScopeCommand = vm.ToggleSearchScopeCommand;
@@ -335,6 +347,7 @@ public partial class MainPage : ContentPage
             DeleteItemCommand = vm.DeleteItemCommand;
             OpenItemMenuCommand = vm.OpenItemMenuCommand;
             TogglePreviewDockExpandedCommand = new RelayCommand(() => IsPreviewDockExpanded = !IsPreviewDockExpanded);
+            ToggleBottomControlsExpandedCommand = new RelayCommand(() => IsBottomControlsExpanded = !IsBottomControlsExpanded);
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
@@ -417,6 +430,10 @@ public partial class MainPage : ContentPage
                     case nameof(MainViewModel.EnabledSourceCount):
                         OnPropertyChanged(nameof(EnabledSourceCount));
                         break;
+                    case nameof(MainViewModel.IsDateFilterEnabled):
+                        OnPropertyChanged(nameof(IsDateFilterEnabled));
+                        OnPropertyChanged(nameof(IsDateFilterHeaderVisible));
+                        break;
                     case nameof(MainViewModel.SourcesSummary):
                         OnPropertyChanged(nameof(SourcesSummary));
                         break;
@@ -450,9 +467,6 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.SelectedSearchScope):
                         OnPropertyChanged(nameof(SelectedSearchScope));
-                        break;
-                    case nameof(MainViewModel.IsDateFilterEnabled):
-                        OnPropertyChanged(nameof(IsDateFilterEnabled));
                         break;
                     case nameof(MainViewModel.DateFilterFrom):
                         OnPropertyChanged(nameof(DateFilterFrom));
@@ -562,7 +576,11 @@ public partial class MainPage : ContentPage
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand TogglePreviewDockExpandedCommand { get; }
+        public IRelayCommand ToggleBottomControlsExpandedCommand { get; }
         public IRelayCommand PlayCommand { get; }
+        public IRelayCommand RotatePhotoLeftCommand { get; }
+        public IRelayCommand RotatePhotoRightCommand { get; }
+        public IRelayCommand TogglePhotoMirrorCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
         public IRelayCommand ToggleSearchScopeCommand { get; }
@@ -735,6 +753,10 @@ public partial class MainPage : ContentPage
         public bool HasMarked => vm.HasMarked;
         public bool ShowBottomDock => vm.ShowBottomDock;
 
+        public bool IsPhoneUi => deviceMode.GetUiMode() == UiMode.Phone;
+
+        public bool IsDateFilterHeaderVisible => vm.IsDateFilterEnabled && !IsPhoneUi;
+
         public bool IsPreviewDockExpanded
         {
             get => isPreviewDockExpanded;
@@ -744,6 +766,21 @@ public partial class MainPage : ContentPage
                     return;
 
                 isPreviewDockExpanded = value;
+                Preferences.Default.Set(PrefKeyPreviewDockExpanded, isPreviewDockExpanded);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsBottomControlsExpanded
+        {
+            get => isBottomControlsExpanded;
+            set
+            {
+                if (isBottomControlsExpanded == value)
+                    return;
+
+                isBottomControlsExpanded = value;
+                Preferences.Default.Set(PrefKeyBottomControlsExpanded, isBottomControlsExpanded);
                 OnPropertyChanged();
             }
         }

@@ -154,6 +154,8 @@
                                                               IsVisible="{Binding ShowVideoPlayer}" />
                                         <Image Source="{Binding CurrentMediaSource}"
                                                Aspect="AspectFit"
+                                               Rotation="{Binding PhotoPreviewRotation}"
+                                               ScaleX="{Binding PhotoPreviewScaleX}"
                                                IsVisible="{Binding ShowPhotoPreview}" />
                                         <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
                                                              HorizontalOptions="Center"
@@ -189,14 +191,16 @@
                         <components:MainPermissionNoticeView Grid.Row="4" />
 
                         <!-- Search + Sort -->
-                        <components:MainSearchSortView x:Name="SearchSortView" Grid.Row="5" />
+                        <components:MainSearchSortView x:Name="SearchSortView" Grid.Row="5"
+                                                       IsVisible="{Binding IsPhoneUi, Converter={StaticResource InverseBoolConverter}}" />
 
                         <!-- Media type filter -->
-                        <components:MainMediaTypeFilterView Grid.Row="6" />
+                        <components:MainMediaTypeFilterView Grid.Row="6"
+                                                            IsVisible="{Binding IsPhoneUi, Converter={StaticResource InverseBoolConverter}}" />
 
                         <!-- Date filter -->
                         <components:MainDateFilterView Grid.Row="7"
-                                                       IsVisible="{Binding IsDateFilterEnabled}" />
+                                                       IsVisible="{Binding IsDateFilterHeaderVisible}" />
 
                         <!-- Source tabs -->
                         <components:MainSourcesTabsView Grid.Row="8"
@@ -277,6 +281,10 @@
                                               Margin="0,10,0,0">
                                             <CheckBox IsChecked="{Binding IsMarked}"
                                                       Color="{DynamicResource Accent}"
+                                                      WidthRequest="22"
+                                                      HeightRequest="22"
+                                                      MinimumWidthRequest="22"
+                                                      HorizontalOptions="Start"
                                                       VerticalOptions="Start"
                                                       Margin="0"
                                                       Grid.RowSpan="2" />
@@ -472,6 +480,10 @@
                                                   Margin="0,10,0,0">
                                                 <CheckBox IsChecked="{Binding IsMarked}"
                                                           Color="{DynamicResource Accent}"
+                                                          WidthRequest="22"
+                                                          HeightRequest="22"
+                                                          MinimumWidthRequest="22"
+                                                          HorizontalOptions="Start"
                                                           VerticalOptions="Start"
                                                           Margin="0"
                                                           Grid.RowSpan="2" />
@@ -829,6 +841,24 @@
             </Grid>
         </Grid>
 
+        <!-- Phone-friendly Floating Action Button for quick access to settings/menu -->
+        <Button Grid.RowSpan="2"
+                Text="⚙"
+                FontSize="20"
+                CornerRadius="28"
+                WidthRequest="56"
+                HeightRequest="56"
+                Padding="0"
+                BackgroundColor="{DynamicResource Accent}"
+                TextColor="{DynamicResource OnAccent}"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="16"
+                ZIndex="4"
+                IsVisible="{Binding IsPhoneUi}"
+                Command="{Binding OpenSettingsCommand}"
+                AutomationProperties.Name="Open menu" />
+
         <Grid Grid.RowSpan="2"
               BackgroundColor="#CC000000"
               IsVisible="{Binding IsPlayerFullscreen}">
@@ -868,14 +898,45 @@
                        BorderColor="{DynamicResource BorderSubtle}"
                        IsVisible="{Binding IsInternalPlayerEnabled}">
                     <Grid RowDefinitions="Auto,*" RowSpacing="8">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                             <Label Text="{x:Static strings:AppResources.PreviewTitle}"
                                    FontAttributes="Bold"
                                    TextColor="{DynamicResource OnSurface}"
                                    VerticalOptions="Center" />
 
+                            <!-- Photo quick edits: rotate / mirror (non-destructive) -->
+                            <HorizontalStackLayout Grid.Column="1"
+                                                   Spacing="6"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding ShowPhotoPreview}">
+                                <ImageButton Source="icon_rotate_left.svg"
+                                             HeightRequest="32"
+                                             WidthRequest="32"
+                                             Padding="6"
+                                             BackgroundColor="{DynamicResource Surface2}"
+                                             CornerRadius="12"
+                                             Command="{Binding RotatePhotoLeftCommand}"
+                                             AutomationProperties.Name="Rotate left" />
+                                <ImageButton Source="icon_rotate_right.svg"
+                                             HeightRequest="32"
+                                             WidthRequest="32"
+                                             Padding="6"
+                                             BackgroundColor="{DynamicResource Surface2}"
+                                             CornerRadius="12"
+                                             Command="{Binding RotatePhotoRightCommand}"
+                                             AutomationProperties.Name="Rotate right" />
+                                <ImageButton Source="icon_mirror.svg"
+                                             HeightRequest="32"
+                                             WidthRequest="32"
+                                             Padding="6"
+                                             BackgroundColor="{DynamicResource Surface2}"
+                                             CornerRadius="12"
+                                             Command="{Binding TogglePhotoMirrorCommand}"
+                                             AutomationProperties.Name="Mirror" />
+                            </HorizontalStackLayout>
+
                             <!-- Collapse / expand controls (docking-like) -->
-                            <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                            <Grid Grid.Column="2" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
                                 <Button Text="▼"
                                         WidthRequest="40"
                                         HeightRequest="32"
@@ -908,6 +969,8 @@
                                                   IsVisible="{Binding ShowVideoPlayer}" />
                             <Image Source="{Binding CurrentMediaSource}"
                                    Aspect="AspectFit"
+                                   Rotation="{Binding PhotoPreviewRotation}"
+                                   ScaleX="{Binding PhotoPreviewScaleX}"
                                    IsVisible="{Binding ShowPhotoPreview}" />
                             <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
                                                  HorizontalOptions="Center"
@@ -935,6 +998,52 @@
                                    TextColor="{DynamicResource OnSurfaceMuted}"
                                    LineBreakMode="TailTruncation"
                                    IsVisible="{Binding ShowPreview}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Bottom controls dock (phone): search / sort / media-type checkboxes / date filter -->
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="16"
+                       Padding="12"
+                       BorderColor="{DynamicResource BorderSubtle}"
+                       IsVisible="{Binding IsPhoneUi}">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Label Text="{x:Static strings:AppResources.SettingsFilterTitle}"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource OnSurface}"
+                                   VerticalOptions="Center" />
+
+                            <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Button Text="▼"
+                                        WidthRequest="40"
+                                        HeightRequest="32"
+                                        Padding="0"
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource OverlayButtonStyle}"
+                                        IsVisible="{Binding IsBottomControlsExpanded}"
+                                        Command="{Binding ToggleBottomControlsExpandedCommand}"
+                                        AutomationProperties.Name="Collapse filters" />
+                                <Button Text="▲"
+                                        Grid.Column="1"
+                                        WidthRequest="40"
+                                        HeightRequest="32"
+                                        Padding="0"
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource OverlayButtonStyle}"
+                                        IsVisible="{Binding IsBottomControlsExpanded, Converter={StaticResource InverseBoolConverter}}"
+                                        Command="{Binding ToggleBottomControlsExpandedCommand}"
+                                        AutomationProperties.Name="Expand filters" />
+                            </Grid>
+                        </Grid>
+
+                        <VerticalStackLayout Grid.Row="1"
+                                             Spacing="0"
+                                             IsVisible="{Binding IsBottomControlsExpanded}">
+                            <components:MainSearchSortView />
+                            <components:MainMediaTypeFilterView />
+                            <components:MainDateFilterView IsVisible="{Binding IsDateFilterEnabled}" />
                         </VerticalStackLayout>
                     </Grid>
                 </Frame>
