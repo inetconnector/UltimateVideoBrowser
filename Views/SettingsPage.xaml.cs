@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;

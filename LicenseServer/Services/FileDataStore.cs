@@ -6,6 +6,7 @@ namespace UltimateVideoBrowser.LicenseServer.Services;
 public sealed class FileDataStore
 {
     private readonly string basePath;
+
     private readonly JsonSerializerOptions jsonOptions = new(JsonSerializerDefaults.Web)
     {
         WriteIndented = true
@@ -15,7 +16,8 @@ public sealed class FileDataStore
     {
         var options = configuration.GetSection("DataStorage").Get<DataStorageOptions>() ?? new DataStorageOptions();
         var configuredPath = options.BasePath;
-        if (string.IsNullOrWhiteSpace(configuredPath) || string.Equals(configuredPath, "Data", StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(configuredPath) ||
+            string.Equals(configuredPath, "Data", StringComparison.OrdinalIgnoreCase))
             configuredPath = new DataStorageOptions().BasePath;
 
         basePath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(configuredPath));
@@ -55,6 +57,13 @@ public sealed class FileDataStore
         }, ct);
     }
 
-    private string GetPurchasesPath() => Path.Combine(basePath, "purchases");
-    private string GetLicensesPath() => Path.Combine(basePath, "licenses");
+    private string GetPurchasesPath()
+    {
+        return Path.Combine(basePath, "purchases");
+    }
+
+    private string GetLicensesPath()
+    {
+        return Path.Combine(basePath, "licenses");
+    }
 }

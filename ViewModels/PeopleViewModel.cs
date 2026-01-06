@@ -41,11 +41,9 @@ public sealed partial class PeopleViewModel : ObservableObject
                 ct.ThrowIfCancellationRequested();
                 string? coverPath = null;
                 if (p.CoverFace != null)
-                {
                     coverPath = await faceThumbnails
                         .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
                         .ConfigureAwait(false);
-                }
 
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
                     p.IsIgnored));

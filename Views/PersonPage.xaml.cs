@@ -8,8 +8,8 @@ namespace UltimateVideoBrowser.Views;
 public partial class PersonPage : ContentPage
 {
     private const double SpanWidthTolerance = 1;
-    private readonly IServiceProvider serviceProvider;
     private readonly DeviceModeService deviceMode;
+    private readonly IServiceProvider serviceProvider;
     private readonly PersonViewModel vm;
     private double lastSpanWidth = -1;
 

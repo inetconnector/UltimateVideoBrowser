@@ -17,10 +17,7 @@ app.MapGet("/", (HttpRequest request, HtmlPageService htmlPageService) =>
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
-app.MapGet("/api/pricing", (LicenseService licenseService) =>
-{
-    return Results.Ok(licenseService.GetPricing());
-});
+app.MapGet("/api/pricing", (LicenseService licenseService) => { return Results.Ok(licenseService.GetPricing()); });
 
 app.MapPost("/api/checkout", (HttpRequest request, LicenseService licenseService) =>
 {

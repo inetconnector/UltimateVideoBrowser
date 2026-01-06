@@ -153,11 +153,9 @@ public sealed class PeopleRecognitionService
 
                 var useMatch = match.PersonId != null && match.Similarity >= DefaultMatchThreshold;
                 if (!useMatch && match.PersonId != null && peopleMap.TryGetValue(match.PersonId, out var candidate))
-                {
                     useMatch = IsUnknownName(candidate.Name) &&
                                face.FaceQuality >= RelaxedUnknownMinQuality &&
                                match.Similarity >= RelaxedUnknownMatchThreshold;
-                }
 
                 if (!useMatch)
                 {
@@ -646,7 +644,9 @@ public sealed class PeopleRecognitionService
     }
 
     private static bool IsUnknownName(string name)
-        => name.StartsWith("Unknown ", StringComparison.OrdinalIgnoreCase);
+    {
+        return name.StartsWith("Unknown ", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static byte[] FloatsToBytes(float[] values)
     {

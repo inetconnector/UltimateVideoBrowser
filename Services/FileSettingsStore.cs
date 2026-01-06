@@ -7,19 +7,18 @@ namespace UltimateVideoBrowser.Services;
 public sealed class FileSettingsStore
 {
     private readonly object gate = new();
-    private readonly string settingsPath;
-    private Dictionary<string, string> values = new(StringComparer.OrdinalIgnoreCase);
     private bool loaded;
+    private Dictionary<string, string> values = new(StringComparer.OrdinalIgnoreCase);
 
     public FileSettingsStore(string? settingsPath = null)
     {
-        this.settingsPath = settingsPath ?? Path.Combine(AppDataPaths.Root, "settings.json");
-        var directory = Path.GetDirectoryName(this.settingsPath);
+        this.SettingsPath = settingsPath ?? Path.Combine(AppDataPaths.Root, "settings.json");
+        var directory = Path.GetDirectoryName(this.SettingsPath);
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
     }
 
-    public string SettingsPath => settingsPath;
+    public string SettingsPath { get; }
 
     public void ReloadFromDisk()
     {
@@ -38,11 +37,11 @@ public sealed class FileSettingsStore
 
         lock (gate)
         {
-            var directory = Path.GetDirectoryName(settingsPath);
+            var directory = Path.GetDirectoryName(SettingsPath);
             if (!string.IsNullOrWhiteSpace(directory))
                 Directory.CreateDirectory(directory);
 
-            File.Copy(sourceSettingsPath, settingsPath, true);
+            File.Copy(sourceSettingsPath, SettingsPath, true);
             loaded = false;
             values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             EnsureLoaded();
@@ -147,11 +146,10 @@ public sealed class FileSettingsStore
         if (loaded)
             return;
 
-        if (File.Exists(settingsPath))
-        {
+        if (File.Exists(SettingsPath))
             try
             {
-                var json = File.ReadAllText(settingsPath);
+                var json = File.ReadAllText(SettingsPath);
                 var parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
                 if (parsed != null)
                     values = new Dictionary<string, string>(parsed, StringComparer.OrdinalIgnoreCase);
@@ -160,16 +158,15 @@ public sealed class FileSettingsStore
             {
                 values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
-        }
 
         loaded = true;
     }
 
     private void Persist()
     {
-        var tempPath = $"{settingsPath}.tmp";
+        var tempPath = $"{SettingsPath}.tmp";
         var json = JsonSerializer.Serialize(values, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(tempPath, json);
-        File.Move(tempPath, settingsPath, true);
+        File.Move(tempPath, SettingsPath, true);
     }
 }

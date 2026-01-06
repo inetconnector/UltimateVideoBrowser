@@ -1,134 +1,171 @@
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UltimateVideoBrowser Pro</title>
-  <link rel="preconnect" href="https://images.unsplash.com" />
-  <link rel="stylesheet" href="/css/site.css" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>UltimateVideoBrowser Pro</title>
+    <link rel="preconnect" href="https://images.unsplash.com"/>
+    <link rel="stylesheet" href="/css/site.css"/>
 </head>
 <body class="landing-page">
-<select class="lang-select" id="langSelect" aria-label="Language"><option value="de">Deutsch</option>
-<option value="en">English</option>
-<option value="fr">Français</option>
-<option value="es">Español</option>
-<option value="it">Italiano</option>
-<option value="pt">Português</option>
-<option value="nl">Nederlands</option>
-<option value="pl">Polski</option>
-<option value="tr">Türkçe</option>
-<option value="ru">Русский</option>
-<option value="zh">中文</option>
-<option value="ja">日本語</option>
-<option value="ko">한국어</option>
-<option value="ar">العربية</option></select>
+<select class="lang-select" id="langSelect" aria-label="Language">
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+    <option value="it">Italiano</option>
+    <option value="pt">Português</option>
+    <option value="nl">Nederlands</option>
+    <option value="pl">Polski</option>
+    <option value="tr">Türkçe</option>
+    <option value="ru">Русский</option>
+    <option value="zh">中文</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+    <option value="ar">العربية</option>
+</select>
 <header>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand"><img src="/assets/appicon.svg" alt="UltimateVideoBrowser" /><span>UltimateVideoBrowser Pro</span></div>
-      <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Pricing &amp; License</a>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/appicon.svg" alt="UltimateVideoBrowser"/><span>UltimateVideoBrowser Pro</span>
+            </div>
+            <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Pricing &amp; License</a>
+        </div>
+        <div class="hero">
+            <div>
+                <span class="pill" data-i18n="pill">Premium media control</span>
+                <h1 data-i18n="hero_title">The professional media hub for people who accept no compromises.</h1>
+                <p data-i18n="hero_subtitle">Search, index, and enjoy your videos, photos, and documents in seconds — with an interface that feels like magic.</p>
+                <div class="cta">
+                    <form action="/api/checkout" method="post" class="inline-form">
+                        <button class="btn primary" type="submit" data-i18n="cta_primary">Unlock Pro now</button>
+                    </form>
+                    <a class="btn secondary" href="#features" data-i18n="cta_secondary">Explore features</a>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">faster discovery</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_two_value">1 click</strong><span data-i18n="stat_two_label">to the perfect view</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">focus on your data</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-media">
+                <div class="floating-glow"></div>
+                <div class="hero-card">
+                    <img src="/assets/hero_video.svg" alt="App preview"/>
+                    <p data-i18n="hero_image_caption" class="muted-text mt-12">App visualization with original assets</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="hero">
-      <div>
-        <span class="pill" data-i18n="pill">Premium media control</span>
-        <h1 data-i18n="hero_title">The professional media hub for people who accept no compromises.</h1>
-        <p data-i18n="hero_subtitle">Search, index, and enjoy your videos, photos, and documents in seconds — with an interface that feels like magic.</p>
-        <div class="cta">
-          <form action="/api/checkout" method="post" class="inline-form">
-            <button class="btn primary" type="submit" data-i18n="cta_primary">Unlock Pro now</button>
-          </form>
-          <a class="btn secondary" href="#features" data-i18n="cta_secondary">Explore features</a>
-        </div>
-        <div class="stats">
-          <div class="stat"><strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">faster discovery</span></div>
-          <div class="stat"><strong data-i18n="stat_two_value">1 click</strong><span data-i18n="stat_two_label">to the perfect view</span></div>
-          <div class="stat"><strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">focus on your data</span></div>
-        </div>
-      </div>
-      <div class="hero-media">
-        <div class="floating-glow"></div>
-        <div class="hero-card">
-          <img src="/assets/hero_video.svg" alt="App preview" />
-          <p data-i18n="hero_image_caption" class="muted-text mt-12">App visualization with original assets</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </header>
 <section class="section" id="features">
-  <div class="container">
-    <h2 class="section-title" data-i18n="features_title">An experience that takes your media to the next level</h2>
-    <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro combines speed, intelligence, and design into a media platform that never keeps you waiting.</p>
-    <div class="grid">
-      <div class="card"><img src="/assets/icon_sources.svg" alt="Sources" /><h3 data-i18n="feature_one_title">Smart source manager</h3><p data-i18n="feature_one_desc">Connect folders, drives, and cloud backups — automatically organized, always ready.</p></div>
-      <div class="card"><img src="/assets/icon_play.svg" alt="Playback" /><h3 data-i18n="feature_two_title">Instant preview</h3><p data-i18n="feature_two_desc">See key moments right away — no waiting, no interruptions.</p></div>
-      <div class="card"><img src="/assets/icon_people.svg" alt="People" /><h3 data-i18n="feature_three_title">Intelligent recognition</h3><p data-i18n="feature_three_desc">Find content by faces, places, or tags. Your library responds before you ask.</p></div>
-      <div class="card"><img src="/assets/chip_spark.svg" alt="AI" /><h3 data-i18n="feature_four_title">Turbo indexing</h3><p data-i18n="feature_four_desc">A new level of performance ensures even massive collections are searchable immediately.</p></div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="features_title">An experience that takes your media to the next level</h2>
+        <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro combines speed, intelligence, and design into a media platform that never keeps you waiting.</p>
+        <div class="grid">
+            <div class="card">
+                <img src="/assets/icon_sources.svg" alt="Sources"/>
+                <h3 data-i18n="feature_one_title">Smart source manager</h3>
+                <p data-i18n="feature_one_desc">Connect folders, drives, and cloud backups — automatically organized, always ready.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_play.svg" alt="Playback"/>
+                <h3 data-i18n="feature_two_title">Instant preview</h3>
+                <p data-i18n="feature_two_desc">See key moments right away — no waiting, no interruptions.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_people.svg" alt="People"/>
+                <h3 data-i18n="feature_three_title">Intelligent recognition</h3>
+                <p data-i18n="feature_three_desc">Find content by faces, places, or tags. Your library responds before you ask.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/chip_spark.svg" alt="AI"/>
+                <h3 data-i18n="feature_four_title">Turbo indexing</h3>
+                <p data-i18n="feature_four_desc">A new level of performance ensures even massive collections are searchable immediately.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <section class="section section--alt">
-  <div class="container">
-    <h2 class="section-title" data-i18n="gallery_title">Design that builds trust</h2>
-    <p class="section-sub" data-i18n="gallery_sub">Professional graphics and real app assets give you the premium impression your media deserve.</p>
-    <div class="showcase">
-      <div>
-        <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Cinematic visuals" />
-        <p data-i18n="gallery_caption_one" class="muted-text mt-12">Cinematic look for your library — inspired by free Unsplash visuals.</p>
-      </div>
-      <div>
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Technology" />
-        <p data-i18n="gallery_caption_two" class="muted-text mt-12">A technology aesthetic that radiates professionalism.</p>
-      </div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="gallery_title">Design that builds trust</h2>
+        <p class="section-sub" data-i18n="gallery_sub">Professional graphics and real app assets give you the premium impression your media deserve.</p>
+        <div class="showcase">
+            <div>
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Cinematic visuals"/>
+                <p data-i18n="gallery_caption_one" class="muted-text mt-12">Cinematic look for your library — inspired by free Unsplash visuals.</p>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Technology"/>
+                <p data-i18n="gallery_caption_two" class="muted-text mt-12">A technology aesthetic that radiates professionalism.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <section class="section" id="pricing">
-  <div class="container">
-    <div class="pricing">
-      <div>
-        <h2 class="section-title" data-i18n="pricing_title">Pay once. Enjoy forever.</h2>
-        <p class="section-sub" data-i18n="pricing_sub">No subscriptions, no hidden fees. Unlock once and use all Pro features for good.</p>
-        <div class="legal-links">
-          <a href="/agb" data-i18n="link_terms">Terms</a>
-          <a href="/datenschutz" data-i18n="link_privacy">Privacy</a>
-          <a href="/impressum" data-i18n="link_imprint">Imprint</a>
-          <a href="/widerruf" data-i18n="link_withdrawal">Withdrawal</a>
+    <div class="container">
+        <div class="pricing">
+            <div>
+                <h2 class="section-title" data-i18n="pricing_title">Pay once. Enjoy forever.</h2>
+                <p class="section-sub" data-i18n="pricing_sub">No subscriptions, no hidden fees. Unlock once and use all Pro features for good.</p>
+                <div class="legal-links">
+                    <a href="/agb" data-i18n="link_terms">Terms</a>
+                    <a href="/datenschutz" data-i18n="link_privacy">Privacy</a>
+                    <a href="/impressum" data-i18n="link_imprint">Imprint</a>
+                    <a href="/widerruf" data-i18n="link_withdrawal">Withdrawal</a>
+                </div>
+            </div>
+            <div>
+                <div class="price" data-i18n="pricing_value">€3.99</div>
+                <p data-i18n="pricing_note">incl. updates for the current major version</p>
+                <form action="/api/checkout" method="post" class="inline-form">
+                    <button class="btn primary" type="submit" data-i18n="pricing_cta">Get Pro now</button>
+                </form>
+            </div>
         </div>
-      </div>
-      <div>
-        <div class="price" data-i18n="pricing_value">€3.99</div>
-        <p data-i18n="pricing_note">incl. updates for the current major version</p>
-        <form action="/api/checkout" method="post" class="inline-form">
-          <button class="btn primary" type="submit" data-i18n="pricing_cta">Get Pro now</button>
-        </form>
-      </div>
     </div>
-  </div>
 </section>
 <section class="section section--compact">
-  <div class="container">
-    <h2 class="section-title" data-i18n="trust_title">Built for pros, loved by enthusiasts</h2>
-    <p class="section-sub" data-i18n="trust_sub">From hobby filmmakers to studio teams: UltimateVideoBrowser Pro delivers order, speed, and wow moments.</p>
-    <div class="grid">
-      <div class="card"><h3 data-i18n="trust_one_title">Cross-platform</h3><p data-i18n="trust_one_desc">Use your license flexibly on Windows and Android — with the same premium experience.</p></div>
-      <div class="card"><h3 data-i18n="trust_two_title">Offline ready</h3><p data-i18n="trust_two_desc">Even without internet, your media library stays available — thanks to secure offline activation.</p></div>
-      <div class="card"><h3 data-i18n="trust_three_title">Privacy included</h3><p data-i18n="trust_three_desc">Your content stays yours. No cloud requirement, no data exploitation.</p></div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="trust_title">Built for pros, loved by enthusiasts</h2>
+        <p class="section-sub" data-i18n="trust_sub">From hobby filmmakers to studio teams: UltimateVideoBrowser Pro delivers order, speed, and wow moments.</p>
+        <div class="grid">
+            <div class="card">
+                <h3 data-i18n="trust_one_title">Cross-platform</h3>
+                <p data-i18n="trust_one_desc">Use your license flexibly on Windows and Android — with the same premium experience.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_two_title">Offline ready</h3>
+                <p data-i18n="trust_two_desc">Even without internet, your media library stays available — thanks to secure offline activation.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_three_title">Privacy included</h3>
+                <p data-i18n="trust_three_desc">Your content stays yours. No cloud requirement, no data exploitation.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <footer>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand"><img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo" /><span data-i18n="footer_brand">Media that feels like the future.</span></div>
-      <div class="legal-links">
-        <a href="/agb" data-i18n="link_terms">Terms</a>
-        <a href="/datenschutz" data-i18n="link_privacy">Privacy</a>
-        <a href="/impressum" data-i18n="link_imprint">Imprint</a>
-      </div>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo"/><span data-i18n="footer_brand">Media that feels like the future.</span>
+            </div>
+            <div class="legal-links">
+                <a href="/agb" data-i18n="link_terms">Terms</a>
+                <a href="/datenschutz" data-i18n="link_privacy">Privacy</a>
+                <a href="/impressum" data-i18n="link_imprint">Imprint</a>
+            </div>
+        </div>
+        <p class="mt-20" data-i18n="footer_note">UltimateVideoBrowser Pro — the new standard for demanding media management.</p>
     </div>
-    <p class="mt-20" data-i18n="footer_note">UltimateVideoBrowser Pro — the new standard for demanding media management.</p>
-  </div>
 </footer>
 <script>
 const currentLang = "en";
@@ -143,4 +180,5 @@ if (langSelect) {
   });
 }
 </script>
-</body></html>
+</body>
+</html>

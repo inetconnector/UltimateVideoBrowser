@@ -1,5 +1,3 @@
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
 using UltimateVideoBrowser.Views;
 
 namespace UltimateVideoBrowser.Services;

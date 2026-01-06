@@ -21,10 +21,6 @@ public partial class MainPage : ContentPage
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
 
-    // Implemented per-platform (Windows only) to add reliable keyboard navigation.
-    partial void TryHookPlatformKeyboard();
-    partial void UnhookPlatformKeyboard();
-
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
     private string? pendingScrollToMediaPath;
@@ -50,6 +46,10 @@ public partial class MainPage : ContentPage
                 binding.OpenProUpgradeCommand.Execute(null);
         };
     }
+
+    // Implemented per-platform (Windows only) to add reliable keyboard navigation.
+    partial void TryHookPlatformKeyboard();
+    partial void UnhookPlatformKeyboard();
 
     internal void RememberScrollTarget(MediaItem item)
     {
@@ -286,7 +286,7 @@ public partial class MainPage : ContentPage
     private sealed class MainPageBinding : BindableObject
     {
         private readonly DeviceModeService deviceMode;
-		private readonly IDialogService dialogService;
+        private readonly IDialogService dialogService;
         private readonly MainPage page;
         private readonly PeopleDataService peopleData;
         private readonly IProUpgradeService proUpgradeService;
@@ -296,15 +296,15 @@ public partial class MainPage : ContentPage
         private int gridSpan = 3;
         private double headerHeight;
         private Window? indexingWindow;
+        private bool isFiltersDockExpanded = true;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
-        private bool isTimelinePreviewVisible;
-        private string timelinePreviewLabel = "";
         private bool isPreviewDockExpanded = true;
-        private bool isFiltersDockExpanded = true;
+        private bool isTimelinePreviewVisible;
 
         private long lastLiveRefreshMs;
         private CancellationTokenSource? liveRefreshCts;
+        private string timelinePreviewLabel = "";
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
@@ -315,7 +315,7 @@ public partial class MainPage : ContentPage
             this.serviceProvider = serviceProvider;
             this.peopleData = peopleData;
             this.proUpgradeService = proUpgradeService;
-			this.dialogService = serviceProvider.GetService<IDialogService>() ?? new DialogService();
+            dialogService = serviceProvider.GetService<IDialogService>() ?? new DialogService();
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             RequestReindexCommand = new AsyncRelayCommand(RequestReindexAsync);
@@ -564,7 +564,6 @@ public partial class MainPage : ContentPage
         }
 
 
-
         public double HeaderHeight
         {
             get => headerHeight;
@@ -784,6 +783,7 @@ public partial class MainPage : ContentPage
                 {
                     // Best-effort only.
                 }
+
                 OnPropertyChanged();
             }
         }
@@ -805,6 +805,7 @@ public partial class MainPage : ContentPage
                 {
                     // Best-effort only.
                 }
+
                 OnPropertyChanged();
             }
         }
@@ -819,6 +820,7 @@ public partial class MainPage : ContentPage
             && vm.EnabledSourceCount == 0
             && vm.IndexedMediaCount == 0
             && vm.MediaItems.Count == 0;
+
         public IReadOnlyList<SortOption> SortOptions => vm.SortOptions;
         public IReadOnlyList<MainViewModel.MediaTypeFilterOption> MediaTypeFilters => vm.MediaTypeFilters;
         public IReadOnlyList<MainViewModel.SearchScopeFilterOption> SearchScopeFilters => vm.SearchScopeFilters;
@@ -855,6 +857,7 @@ public partial class MainPage : ContentPage
         public bool ShowPhotoPreview => vm.ShowPhotoPreview;
         public bool ShowDocumentPreview => vm.ShowDocumentPreview;
         public bool ShowPreview => vm.ShowPreview;
+
         public bool IsTimelinePreviewVisible
         {
             get => isTimelinePreviewVisible;
@@ -880,6 +883,7 @@ public partial class MainPage : ContentPage
                 OnPropertyChanged();
             }
         }
+
         public MediaType SelectedMediaTypes => vm.SelectedMediaTypes;
         public bool AllowFileChanges => vm.AllowFileChanges;
         public bool IsPeopleTaggingEnabled => vm.IsPeopleTaggingEnabled;
@@ -907,19 +911,19 @@ public partial class MainPage : ContentPage
             await MainThread.InvokeOnMainThreadAsync(() => page.Navigation.PushAsync(target));
         }
 
-		private async Task RequestReindexAsync()
-		{
-			var confirm = await dialogService.DisplayAlertAsync(
-				AppResources.ReindexTitle,
-				AppResources.ReindexPrompt,
-				AppResources.OkButton,
-				AppResources.CancelButton).ConfigureAwait(false);
+        private async Task RequestReindexAsync()
+        {
+            var confirm = await dialogService.DisplayAlertAsync(
+                AppResources.ReindexTitle,
+                AppResources.ReindexPrompt,
+                AppResources.OkButton,
+                AppResources.CancelButton).ConfigureAwait(false);
 
-			if (!confirm)
-				return;
+            if (!confirm)
+                return;
 
-			await vm.RunIndexAsync().ConfigureAwait(false);
-		}
+            await vm.RunIndexAsync().ConfigureAwait(false);
+        }
 
         private async Task OpenAlbumsAsync()
         {
@@ -1012,7 +1016,19 @@ public partial class MainPage : ContentPage
         private void EnsureIndexingWindow()
         {
             if (indexingWindow != null)
+            {
+                // If the window already exists, bring it to front instead of doing nothing.
+                try
+                {
+                    WindowFocusHelper.TryBringToFront(indexingWindow);
+                }
+                catch
+                {
+                    // Best-effort only.
+                }
+
                 return;
+            }
 
             var indexingPage = new IndexingProgressPage(this)
             {
@@ -1090,7 +1106,7 @@ public partial class MainPage : ContentPage
                 return;
 
             var now = Environment.TickCount64;
-            if ((now - lastLiveRefreshMs) < 900)
+            if (now - lastLiveRefreshMs < 900)
                 return;
 
             lastLiveRefreshMs = now;

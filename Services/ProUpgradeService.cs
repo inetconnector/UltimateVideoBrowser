@@ -1,15 +1,12 @@
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Devices;
 using UltimateVideoBrowser.Resources.Strings;
 
 namespace UltimateVideoBrowser.Services;
 
 public sealed class ProUpgradeService : ProUpgradeServiceBase
 {
-    private readonly LicenseServerClient licenseServerClient;
     private readonly IDeviceFingerprintService deviceFingerprintService;
     private readonly IDialogService dialogService;
+    private readonly LicenseServerClient licenseServerClient;
 
     public ProUpgradeService(
         AppSettingsService settingsService,

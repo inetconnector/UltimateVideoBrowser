@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Threading.Channels;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 
 namespace UltimateVideoBrowser.Services;
@@ -31,16 +32,55 @@ public sealed class IndexService
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         await indexGate.WaitAsync(ct).ConfigureAwait(false);
+
         Channel<MediaItem>? locationQueue = null;
         List<Task>? locationWorkers = null;
+
+        Channel<MediaItem>? thumbnailQueue = null;
+        List<Task>? thumbnailWorkers = null;
+
         try
         {
+            var sourceList = (sources ?? Enumerable.Empty<MediaSource>())
+                .Where(s => s != null)
+                .ToList();
+
             var inserted = 0;
             var processedOverall = 0;
-            var totalOverall = 0;
+            var totalOverall = await CountAllAsync(sourceList, indexedTypes, ct).ConfigureAwait(false);
+
             var locationsEnabled = locationMetadataService.IsEnabled;
 
-            const int BatchSize = 64;
+            // Bigger batches drastically reduce DB overhead.
+            const int BatchSize = 256;
+
+            if (locationsEnabled)
+            {
+                locationQueue = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(256)
+                {
+                    SingleReader = false,
+                    SingleWriter = true,
+                    FullMode = BoundedChannelFullMode.Wait
+                });
+
+                var workerCount = Math.Clamp(Environment.ProcessorCount / 2, 1, 4);
+                locationWorkers = Enumerable.Range(0, workerCount)
+                    .Select(_ => Task.Run(() => ProcessLocationQueueAsync(locationQueue.Reader, ct), ct))
+                    .ToList();
+            }
+
+            // Generate thumbnails in the background while indexing.
+            thumbnailQueue = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(256)
+            {
+                SingleReader = false,
+                SingleWriter = true,
+                FullMode = BoundedChannelFullMode.DropOldest
+            });
+
+            var thumbWorkerCount = Math.Clamp(Environment.ProcessorCount / 2, 1, 4);
+            thumbnailWorkers = Enumerable.Range(0, thumbWorkerCount)
+                .Select(_ => Task.Run(() => ProcessThumbnailQueueAsync(thumbnailQueue.Reader, ct), ct))
+                .ToList();
 
             async Task<int> UpsertBatchAsync(List<MediaItem> items)
             {
@@ -67,7 +107,6 @@ public sealed class IndexService
                             item.SourceId);
 
                         if (rows == 0)
-                        {
                             // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
                             conn.Execute(
                                 "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = ?, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
@@ -77,115 +116,163 @@ public sealed class IndexService
                                 item.DateAddedSeconds,
                                 item.SourceId,
                                 item.Path);
-                        }
 
                         insertedRows += rows;
                     }
                 }).ConfigureAwait(false);
 
                 if (locationsEnabled && locationQueue != null)
-                {
-                    // Keep location enrichment functional. We allow duplicates; the worker de-duplicates by DB update.
                     foreach (var item in items)
-                    {
-                        if (item?.MediaType is MediaType.Photos or MediaType.Videos && !string.IsNullOrWhiteSpace(item.Path))
+                        if (item?.MediaType is MediaType.Photos or MediaType.Videos &&
+                            !string.IsNullOrWhiteSpace(item.Path))
                             await QueueLocationLookupAsync(locationQueue, item.Path, item.MediaType, ct)
                                 .ConfigureAwait(false);
-                    }
-                }
+
+                if (thumbnailQueue != null)
+                    foreach (var item in items)
+                        if (item?.MediaType is MediaType.Photos or MediaType.Videos or MediaType.Graphics &&
+                            !string.IsNullOrWhiteSpace(item.Path))
+                            await QueueThumbnailAsync(thumbnailQueue, item.Path, item.MediaType, ct)
+                                .ConfigureAwait(false);
 
                 return insertedRows;
             }
 
-            if (locationsEnabled)
-            {
-                locationQueue = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(128)
-                {
-                    SingleReader = false,
-                    SingleWriter = true,
-                    FullMode = BoundedChannelFullMode.Wait
-                });
-
-                var workerCount = Math.Clamp(Environment.ProcessorCount / 2, 1, 4);
-                locationWorkers = Enumerable.Range(0, workerCount)
-                    .Select(_ => Task.Run(() => ProcessLocationQueueAsync(locationQueue.Reader, ct), ct))
-                    .ToList();
-            }
-
             var scheduler = new ProgressScheduler(progress, 150);
+            scheduler.Report(new IndexProgress(0, totalOverall, 0, "", ""), true);
 
-            foreach (var source in sources)
+            // Producers: scan sources in parallel. Consumer: single DB writer.
+            var itemQueue = Channel.CreateBounded<(string SourceName, MediaItem Item)>(new BoundedChannelOptions(2048)
             {
-                ct.ThrowIfCancellationRequested();
+                SingleReader = true,
+                SingleWriter = false,
+                FullMode = BoundedChannelFullMode.Wait
+            });
 
+            var consumer = Task.Run(async () =>
+            {
                 var batch = new List<MediaItem>(BatchSize);
+                var lastSourceName = string.Empty;
+                var lastPath = string.Empty;
 
-                try
+                await foreach (var payload in itemQueue.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                 {
-                    totalOverall += await scanner.CountSourceAsync(source, indexedTypes, ct).ConfigureAwait(false);
+                    lastSourceName = payload.SourceName ?? string.Empty;
+                    var item = payload.Item;
+                    if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                        continue;
+
+                    lastPath = item.Path;
+                    batch.Add(item);
+
+                    if (batch.Count >= BatchSize)
+                    {
+                        var delta = await UpsertBatchAsync(batch).ConfigureAwait(false);
+                        if (delta != 0)
+                            Interlocked.Add(ref inserted, delta);
+                        batch.Clear();
+
+                        scheduler.Report(new IndexProgress(
+                            Volatile.Read(ref processedOverall),
+                            totalOverall,
+                            Volatile.Read(ref inserted),
+                            lastSourceName,
+                            lastPath));
+                    }
                 }
-                catch (Exception ex)
+
+                if (batch.Count > 0)
                 {
-                    Debug.WriteLine($"Indexing count failed for source '{source.DisplayName}': {ex}");
+                    var delta = await UpsertBatchAsync(batch).ConfigureAwait(false);
+                    if (delta != 0)
+                        Interlocked.Add(ref inserted, delta);
+                    batch.Clear();
                 }
 
                 scheduler.Report(new IndexProgress(
-                        processedOverall,
-                        totalOverall,
-                        inserted,
-                        source.DisplayName ?? "",
-                        ""),
-                    true);
+                    Volatile.Read(ref processedOverall),
+                    totalOverall,
+                    Volatile.Read(ref inserted),
+                    lastSourceName,
+                    lastPath), true);
+            }, ct);
 
+            var maxProducers = Math.Clamp(Environment.ProcessorCount, 1, 4);
+            var producerGate = new SemaphoreSlim(maxProducers, maxProducers);
+            var producers = sourceList.Select(async source =>
+            {
+                await producerGate.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
+                    var sourceName = source.DisplayName ?? string.Empty;
                     await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, ct).ConfigureAwait(false))
                     {
                         ct.ThrowIfCancellationRequested();
 
-                        // Collect into a batch. We intentionally keep the per-item code minimal.
-                        if (!string.IsNullOrWhiteSpace(v.Path))
-                        {
-                            batch.Add(v);
-                            if (batch.Count >= BatchSize)
-                            {
-                                inserted += await UpsertBatchAsync(batch).ConfigureAwait(false);
-                                batch.Clear();
-                            }
-                        }
+                        if (v == null || string.IsNullOrWhiteSpace(v.Path))
+                            continue;
 
-                        processedOverall++;
+                        await itemQueue.Writer.WriteAsync((sourceName, v), ct).ConfigureAwait(false);
 
-                        // Throttle progress updates to protect UI thread
+                        var p = Interlocked.Increment(ref processedOverall);
                         scheduler.Report(new IndexProgress(
-                            processedOverall,
+                            p,
                             totalOverall,
-                            inserted,
-                            source.DisplayName ?? "",
-                            v.Path ?? ""));
-                    }
-
-                    // Flush remaining items for this source.
-                    if (batch.Count > 0)
-                    {
-                        inserted += await UpsertBatchAsync(batch).ConfigureAwait(false);
-                        batch.Clear();
+                            Volatile.Read(ref inserted),
+                            sourceName,
+                            v.Path ?? string.Empty));
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Indexing failed for source '{source.DisplayName}': {ex}");
+                    ErrorLog.LogException(ex, "IndexService.IndexSourcesAsync", $"Source={source.DisplayName}");
                 }
+                finally
+                {
+                    producerGate.Release();
+                }
+            }).ToList();
+
+            await Task.WhenAll(producers).ConfigureAwait(false);
+            itemQueue.Writer.TryComplete();
+
+            try
+            {
+                await consumer.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // Ignore cancellation.
             }
 
-            // One last report at the end (not throttled)
-            scheduler.Report(new IndexProgress(processedOverall, totalOverall, inserted, "", ""), true);
+            // Final report at the end (not throttled)
+            scheduler.Report(new IndexProgress(
+                Volatile.Read(ref processedOverall),
+                totalOverall,
+                Volatile.Read(ref inserted),
+                "",
+                ""), true);
             scheduler.Flush();
 
             return inserted;
         }
         finally
         {
+            if (thumbnailQueue != null)
+            {
+                thumbnailQueue.Writer.TryComplete();
+                if (thumbnailWorkers != null)
+                    try
+                    {
+                        await Task.WhenAll(thumbnailWorkers).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Ignore cancellation.
+                    }
+            }
+
             if (locationQueue != null)
             {
                 locationQueue.Writer.TryComplete();
@@ -203,6 +290,69 @@ public sealed class IndexService
             indexGate.Release();
         }
     }
+
+    private async Task<int> CountAllAsync(List<MediaSource> sources, MediaType indexedTypes, CancellationToken ct)
+    {
+        if (sources.Count == 0)
+            return 0;
+
+        var total = 0;
+        var max = Math.Clamp(Environment.ProcessorCount, 1, 4);
+        var gate = new SemaphoreSlim(max, max);
+
+        var tasks = sources.Select(async source =>
+        {
+            await gate.WaitAsync(ct).ConfigureAwait(false);
+            try
+            {
+                return await scanner.CountSourceAsync(source, indexedTypes, ct).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Indexing count failed for source '{source.DisplayName}': {ex}");
+                ErrorLog.LogException(ex, "IndexService.CountAllAsync", $"Source={source.DisplayName}");
+                return 0;
+            }
+            finally
+            {
+                gate.Release();
+            }
+        }).ToList();
+
+        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+        foreach (var r in results)
+            total += r;
+        return total;
+    }
+
+    private async Task ProcessThumbnailQueueAsync(ChannelReader<MediaItem> reader, CancellationToken ct)
+    {
+        await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
+            try
+            {
+                if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                    continue;
+
+                // Best-effort: generate and cache thumbnail file, UI will pick it up on next refresh.
+                await thumbnailService.EnsureThumbnailAsync(item.Path, item.MediaType, ct).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Thumbnail generation failed for '{item.Path}': {ex}");
+                ErrorLog.LogException(ex, "IndexService.ProcessThumbnailQueueAsync", $"Path={item.Path}");
+            }
+    }
+
+    private static ValueTask QueueThumbnailAsync(Channel<MediaItem> thumbnailQueue, string path, MediaType mediaType,
+        CancellationToken ct)
+    {
+        return thumbnailQueue.Writer.WriteAsync(new MediaItem
+        {
+            Path = path,
+            MediaType = mediaType
+        }, ct);
+    }
+
 
     private async Task ProcessLocationQueueAsync(ChannelReader<MediaItem> reader, CancellationToken ct)
     {

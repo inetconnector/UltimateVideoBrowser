@@ -212,7 +212,6 @@ public sealed class FaceThumbnailService
 
         const int maxAttempts = 3;
         for (var attempt = 0; attempt < maxAttempts; attempt++)
-        {
             try
             {
                 if (!File.Exists(path))
@@ -233,7 +232,6 @@ public sealed class FaceThumbnailService
                 ErrorLog.LogException(ex, "FaceThumbnailService.TryDeleteFile", $"Path={path}");
                 return;
             }
-        }
     }
 
     private static bool IsFileInUse(IOException ex)

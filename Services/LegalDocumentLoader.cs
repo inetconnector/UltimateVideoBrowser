@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace UltimateVideoBrowser.Services;
 
 public static class LegalDocumentLoader

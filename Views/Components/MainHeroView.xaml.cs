@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Input;
 using UltimateVideoBrowser.Resources.Strings;
 
@@ -44,29 +43,19 @@ public partial class MainHeroView : ContentView
             return options;
 
         if (TryGetCommand("OpenSourcesCommand", out var openSources))
-        {
             options.Add(new ActionOption(AppResources.SourcesButton, openSources));
-        }
 
         if (TryGetCommand("OpenAlbumsCommand", out var openAlbums))
-        {
             options.Add(new ActionOption(AppResources.AlbumsButton, openAlbums));
-        }
 
         if (TryGetCommand("OpenSettingsCommand", out var openSettings))
-        {
             options.Add(new ActionOption(AppResources.SettingsButton, openSettings));
-        }
 
         if (!IsProUnlocked() && TryGetCommand("OpenProUpgradeCommand", out var openProUpgrade))
-        {
             options.Add(new ActionOption(AppResources.SettingsProTitle, openProUpgrade));
-        }
 
         if (TryGetCommand("RunIndexCommand", out var runIndex))
-        {
             options.Add(new ActionOption(AppResources.ReindexButton, runIndex));
-        }
 
         return options;
     }

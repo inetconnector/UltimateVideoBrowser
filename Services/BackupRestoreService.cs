@@ -1,6 +1,5 @@
 using System.IO.Compression;
 using UltimateVideoBrowser.Resources.Strings;
-
 #if WINDOWS
 using Windows.Storage.Pickers;
 using WinRT.Interop;
@@ -289,7 +288,9 @@ public sealed class BackupRestoreService : IBackupRestoreService
     {
         return new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
-            { DevicePlatform.Android, new[] { "application/zip", "application/x-zip", "application/x-zip-compressed" } },
+            {
+                DevicePlatform.Android, new[] { "application/zip", "application/x-zip", "application/x-zip-compressed" }
+            },
             { DevicePlatform.WinUI, new[] { ".zip" } },
             { DevicePlatform.MacCatalyst, new[] { "public.zip-archive" } },
             { DevicePlatform.iOS, new[] { "public.zip-archive" } }

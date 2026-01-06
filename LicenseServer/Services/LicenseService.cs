@@ -36,10 +36,12 @@ public sealed class LicenseService
         var business = Uri.EscapeDataString(payPalOptions.BusinessEmail);
         var amount = Uri.EscapeDataString(licenseOptions.Price.Value);
         var currency = Uri.EscapeDataString(licenseOptions.Price.Currency);
-        return $"{payPalOptions.CheckoutBaseUrl}?cmd=_xclick&business={business}&item_name={itemName}&currency_code={currency}&amount={amount}";
+        return
+            $"{payPalOptions.CheckoutBaseUrl}?cmd=_xclick&business={business}&item_name={itemName}&currency_code={currency}&amount={amount}";
     }
 
-    public SignedLicense IssueLicense(string platform, string deviceFingerprint, DateTimeOffset issuedAt, DateTimeOffset? expiresAt)
+    public SignedLicense IssueLicense(string platform, string deviceFingerprint, DateTimeOffset issuedAt,
+        DateTimeOffset? expiresAt)
     {
         var payload = new LicenseKeyPayload
         {
@@ -76,10 +78,12 @@ public sealed class LicenseService
         }
 
         var expectedSignature = Sign(json);
-        if (!CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expectedSignature), Encoding.UTF8.GetBytes(parts[1])))
+        if (!CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expectedSignature),
+                Encoding.UTF8.GetBytes(parts[1])))
             return false;
 
-        payload = JsonSerializer.Deserialize<LicenseKeyPayload>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        payload = JsonSerializer.Deserialize<LicenseKeyPayload>(json,
+            new JsonSerializerOptions(JsonSerializerDefaults.Web));
         return payload != null;
     }
 

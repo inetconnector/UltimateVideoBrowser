@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace UltimateVideoBrowser.LicenseServer.Models;
 
 public sealed class LicenseOptions
@@ -41,7 +38,10 @@ public sealed class LegalOptions
     public string Address { get; init; } = "Daniel Frede\nBismarckstrasse 6\n97209 Veitshöchheim\nDeutschland";
     public string Email { get; init; } = "sales@digitaxo.com";
     public string VatId { get; init; } = "DE234497343";
-    public string ResponsiblePerson { get; init; } = "Daniel Frede\nBismarckstrasse 6\n97209 Veitshöchheim\nDeutschland";
+
+    public string ResponsiblePerson { get; init; } =
+        "Daniel Frede\nBismarckstrasse 6\n97209 Veitshöchheim\nDeutschland";
+
     public string SupportEmail { get; init; } = "sales@digitaxo.com";
 }
 

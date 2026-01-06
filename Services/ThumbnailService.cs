@@ -32,7 +32,6 @@ public sealed class ThumbnailService
     private const int ThumbQuality = 82;
     private const long DefaultCacheSizeLimitBytes = 512L * 1024 * 1024;
 
-    private readonly string cacheDir;
     private readonly ISourceService sourceService;
     private readonly SemaphoreSlim cacheTrimGate = new(1, 1);
 
@@ -48,16 +47,16 @@ public sealed class ThumbnailService
     public ThumbnailService(ISourceService sourceService)
     {
         this.sourceService = sourceService;
-        cacheDir = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
-        Directory.CreateDirectory(cacheDir);
+        ThumbnailsDirectoryPath = IOPath.Combine(FileSystem.CacheDirectory, "thumbs");
+        Directory.CreateDirectory(ThumbnailsDirectoryPath);
     }
 
-    public string ThumbnailsDirectoryPath => cacheDir;
+    public string ThumbnailsDirectoryPath { get; }
 
     public string GetThumbnailPath(MediaItem item)
     {
         var safe = MakeSafeFileName(item.Path ?? string.Empty);
-        return IOPath.Combine(cacheDir, safe + ".jpg");
+        return IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
     }
 
     public void DeleteThumbnailForPath(string? mediaPath)
@@ -66,8 +65,23 @@ public sealed class ThumbnailService
             return;
 
         var safe = MakeSafeFileName(mediaPath);
-        var path = IOPath.Combine(cacheDir, safe + ".jpg");
+        var path = IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
         TryDeleteFile(path);
+    }
+
+    public Task<string?> EnsureThumbnailAsync(string path, MediaType mediaType, CancellationToken ct)
+    {
+        // Keep behavior consistent with the MediaItem-based API.
+        if (string.IsNullOrWhiteSpace(path))
+            return Task.FromResult<string?>(null);
+
+        var item = new MediaItem
+        {
+            Path = path,
+            MediaType = mediaType
+        };
+
+        return EnsureThumbnailAsync(item, ct);
     }
 
     public async Task<string?> EnsureThumbnailAsync(MediaItem item, CancellationToken ct)
@@ -123,7 +137,7 @@ public sealed class ThumbnailService
                     if (bmp == null)
                         return null;
 
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? cacheDir);
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                     using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         var format = Bitmap.CompressFormat.Jpeg;
@@ -289,11 +303,11 @@ public sealed class ThumbnailService
 
         try
         {
-            if (!Directory.Exists(cacheDir))
+            if (!Directory.Exists(ThumbnailsDirectoryPath))
                 return;
 
             var files = Directory
-                .EnumerateFiles(cacheDir, "*.jpg", SearchOption.TopDirectoryOnly)
+                .EnumerateFiles(ThumbnailsDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly)
                 .Select(path => new FileInfo(path))
                 .Where(fi => fi.Exists)
                 .OrderBy(fi => fi.LastWriteTimeUtc)
@@ -321,7 +335,7 @@ public sealed class ThumbnailService
         }
         catch (Exception ex)
         {
-            ErrorLog.LogException(ex, "ThumbnailService.TrimCacheAsync", $"CacheDir={cacheDir}");
+            ErrorLog.LogException(ex, "ThumbnailService.TrimCacheAsync", $"CacheDir={ThumbnailsDirectoryPath}");
         }
         finally
         {
@@ -689,7 +703,6 @@ public sealed class ThumbnailService
 
         const int maxAttempts = 3;
         for (var attempt = 0; attempt < maxAttempts; attempt++)
-        {
             try
             {
                 if (!File.Exists(path))
@@ -710,7 +723,6 @@ public sealed class ThumbnailService
                 ErrorLog.LogException(ex, "ThumbnailService.TryDeleteFile", $"Path={path}");
                 return;
             }
-        }
     }
 
     private static bool IsFileInUse(IOException ex)

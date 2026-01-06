@@ -24,7 +24,7 @@ public sealed class LicenseServerClient
         if (!response.IsSuccessStatusCode)
             return null;
 
-        return await response.Content.ReadFromJsonAsync<CheckoutResponse>(cancellationToken: ct).ConfigureAwait(false);
+        return await response.Content.ReadFromJsonAsync<CheckoutResponse>(ct).ConfigureAwait(false);
     }
 
     public async Task<ActivationResponse?> ActivateAsync(ActivateRequest request, CancellationToken ct)
@@ -34,7 +34,7 @@ public sealed class LicenseServerClient
         if (!response.IsSuccessStatusCode)
             return null;
 
-        return await response.Content.ReadFromJsonAsync<ActivationResponse>(cancellationToken: ct).ConfigureAwait(false);
+        return await response.Content.ReadFromJsonAsync<ActivationResponse>(ct).ConfigureAwait(false);
     }
 
     private Uri BuildUri(string path)
@@ -52,4 +52,8 @@ public sealed record CheckoutResponse(string CheckoutUrl, PricingInfo Price);
 
 public sealed record ActivateRequest(string LicenseKey, string DeviceFingerprint, string Platform);
 
-public sealed record ActivationResponse(string Status, string? ActivationToken, DateTimeOffset? ValidUntil, string[]? Features);
+public sealed record ActivationResponse(
+    string Status,
+    string? ActivationToken,
+    DateTimeOffset? ValidUntil,
+    string[]? Features);

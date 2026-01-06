@@ -31,7 +31,7 @@ public partial class LegalConsentPage : ContentPage
 
     private async void OnConfirmClicked(object sender, EventArgs e)
     {
-        if (WithdrawalConsentCheckBox.IsChecked != true)
+        if (!WithdrawalConsentCheckBox.IsChecked)
         {
             await DisplayAlertAsync(
                 AppResources.LegalConsentMissingTitle,

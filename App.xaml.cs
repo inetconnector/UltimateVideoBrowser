@@ -14,6 +14,9 @@ public partial class App : Application
     {
         InitializeComponent();
 
+        // Log all SQLite exceptions (including first-chance) to error.log for diagnostics.
+        SqliteDiagnostics.Initialize();
+
         _serviceProvider = serviceProvider;
         _settingsService = serviceProvider.GetRequiredService<AppSettingsService>();
 

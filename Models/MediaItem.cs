@@ -49,8 +49,7 @@ public class MediaItem : INotifyPropertyChanged
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
 
-    [Ignore]
-    public bool HasDateAdded => DateAddedSeconds > 0;
+    [Ignore] public bool HasDateAdded => DateAddedSeconds > 0;
 
     [Ignore]
     public DateTime DateAddedLocal
@@ -100,9 +99,9 @@ public class MediaItem : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Image source for grid tiles. Uses the generated thumbnail when available.
-    /// Falls back to the original file path for photos/graphics so users always
-    /// see images even while the thumbnail pipeline is still running.
+    ///     Image source for grid tiles. Uses the generated thumbnail when available.
+    ///     Falls back to the original file path for photos/graphics so users always
+    ///     see images even while the thumbnail pipeline is still running.
     /// </summary>
     [Ignore]
     public string TilePreviewPath

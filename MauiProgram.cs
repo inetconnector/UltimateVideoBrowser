@@ -1,17 +1,17 @@
-using CommunityToolkit.Maui;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using UltimateVideoBrowser.Services;
-using UltimateVideoBrowser.Services.Faces;
-using UltimateVideoBrowser.ViewModels;
-using UltimateVideoBrowser.Views;
 #if WINDOWS
 using Microsoft.Maui.LifecycleEvents;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
 #endif
+using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using UltimateVideoBrowser.Services;
+using UltimateVideoBrowser.Services.Faces;
+using UltimateVideoBrowser.ViewModels;
+using UltimateVideoBrowser.Views;
 #if ANDROID
 using UltimateVideoBrowser.Platforms.Android;
+
 #elif WINDOWS
 using UltimateVideoBrowser.Platforms.Windows;
 #endif
@@ -69,7 +69,7 @@ public static class MauiProgram
 #endif
 
 #if WINDOWS
-        SvgImageSourceFix.Configure(); 
+        SvgImageSourceFix.Configure();
 #endif
 
 #if DEBUG

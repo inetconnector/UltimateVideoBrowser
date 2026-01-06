@@ -50,34 +50,6 @@ public sealed class AppSettingsService
         EnsureDefaults();
     }
 
-    public void ReloadFromDisk()
-    {
-        store.ReloadFromDisk();
-        EnsureDefaults();
-
-        // Best-effort: notify listeners so view models can refresh their bound state.
-        NeedsReindexChanged?.Invoke(this, NeedsReindex);
-        IsIndexingChanged?.Invoke(this, IsIndexing);
-    }
-
-    private void EnsureDefaults()
-    {
-        // Requested defaults:
-        // - People tagging ON by default
-        // - Trial starts on first run (unless Pro)
-        if (!store.ContainsKey(PeopleTaggingEnabledKey))
-            store.SetBool(PeopleTaggingEnabledKey, true);
-
-        if (!store.ContainsKey(PeopleTaggingTrialStartedUtcKey))
-            store.SetLong(PeopleTaggingTrialStartedUtcKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-        if (!store.ContainsKey(PreviewDockExpandedKey))
-            store.SetBool(PreviewDockExpandedKey, true);
-
-        if (!store.ContainsKey(FiltersDockExpandedKey))
-            store.SetBool(FiltersDockExpandedKey, true);
-    }
-
     public bool PreviewDockExpanded
     {
         get => store.GetBool(PreviewDockExpandedKey, true);
@@ -286,10 +258,7 @@ public sealed class AppSettingsService
             var seconds = store.GetLong(ProActivationValidUntilKey, 0L);
             return seconds == 0 ? null : DateTimeOffset.FromUnixTimeSeconds(seconds);
         }
-        set
-        {
-            store.SetLong(ProActivationValidUntilKey, value?.ToUnixTimeSeconds() ?? 0L);
-        }
+        set => store.SetLong(ProActivationValidUntilKey, value?.ToUnixTimeSeconds() ?? 0L);
     }
 
     public string LicenseServerBaseUrl
@@ -309,6 +278,34 @@ public sealed class AppSettingsService
             isIndexing = value;
             IsIndexingChanged?.Invoke(this, value);
         }
+    }
+
+    public void ReloadFromDisk()
+    {
+        store.ReloadFromDisk();
+        EnsureDefaults();
+
+        // Best-effort: notify listeners so view models can refresh their bound state.
+        NeedsReindexChanged?.Invoke(this, NeedsReindex);
+        IsIndexingChanged?.Invoke(this, IsIndexing);
+    }
+
+    private void EnsureDefaults()
+    {
+        // Requested defaults:
+        // - People tagging ON by default
+        // - Trial starts on first run (unless Pro)
+        if (!store.ContainsKey(PeopleTaggingEnabledKey))
+            store.SetBool(PeopleTaggingEnabledKey, true);
+
+        if (!store.ContainsKey(PeopleTaggingTrialStartedUtcKey))
+            store.SetLong(PeopleTaggingTrialStartedUtcKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+        if (!store.ContainsKey(PreviewDockExpandedKey))
+            store.SetBool(PreviewDockExpandedKey, true);
+
+        if (!store.ContainsKey(FiltersDockExpandedKey))
+            store.SetBool(FiltersDockExpandedKey, true);
     }
 
     public event EventHandler<bool>? NeedsReindexChanged;

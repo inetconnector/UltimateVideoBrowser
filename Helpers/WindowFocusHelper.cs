@@ -1,15 +1,15 @@
-using System;
-using System.Runtime.InteropServices;
+using Android.Views;
+using Window = Microsoft.Maui.Controls.Window;
 
 namespace UltimateVideoBrowser.Helpers;
 
 /// <summary>
-/// Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window"/> to the foreground.
-/// This is intentionally resilient: failures must never crash the app.
+///     Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window" /> to the foreground.
+///     This is intentionally resilient: failures must never crash the app.
 /// </summary>
 internal static class WindowFocusHelper
 {
-    public static void TryBringToFront(Microsoft.Maui.Controls.Window window)
+    public static void TryBringToFront(Window window)
     {
         if (window?.Handler?.PlatformView == null)
             return;
@@ -103,11 +103,8 @@ internal static class WindowFocusHelper
         // This is best-effort: if the Activity exists, we just request attention.
         try
         {
-            var activity = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
-            activity?.RunOnUiThread(() =>
-            {
-                activity.Window?.AddFlags(Android.Views.WindowManagerFlags.TurnScreenOn);
-            });
+            var activity = Platform.CurrentActivity;
+            activity?.RunOnUiThread(() => { activity.Window?.AddFlags(WindowManagerFlags.TurnScreenOn); });
         }
         catch
         {

@@ -1,9 +1,5 @@
 using System.Globalization;
-using Uri = System.Uri;
 #if ANDROID && !WINDOWS
-using Android.Content;
-using Android.Net;
-using Microsoft.Maui.ApplicationModel;
 #endif
 
 namespace UltimateVideoBrowser.Converters;
@@ -13,7 +9,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var raw = value as string;
-        var fallback = (parameter as string) ?? "video_placeholder.svg";
+        var fallback = parameter as string ?? "video_placeholder.svg";
 
         if (string.IsNullOrWhiteSpace(raw))
             return fallback;

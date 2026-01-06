@@ -17,33 +17,63 @@ public static class AppResources
     public static string MergeButton => GetString(nameof(MergeButton), "Merge");
     public static string SettingsButton => GetString(nameof(SettingsButton), "Settings");
     public static string ReindexButton => GetString(nameof(ReindexButton), "Reindex");
-	public static string ReindexTitle => GetString(nameof(ReindexTitle), "Reindex library");
-	public static string ReindexPrompt => GetString(nameof(ReindexPrompt), "Do you want to reindex everything now? This may take a while depending on your library size.");
+    public static string ReindexTitle => GetString(nameof(ReindexTitle), "Reindex library");
 
-	public static string PeopleTagsTrialTitle => GetString(nameof(PeopleTagsTrialTitle), "People tagging trial");
-	public static string PeopleTagsTrialHint => GetString(nameof(PeopleTagsTrialHint), "People tags are enabled for 14 days. Upgrade to Pro to keep them always available.");
-	public static string UpgradeNowButton => GetString(nameof(UpgradeNowButton), "Upgrade now");
+    public static string ReindexPrompt => GetString(nameof(ReindexPrompt),
+        "Do you want to reindex everything now? This may take a while depending on your library size.");
+
+    public static string PeopleTagsTrialTitle => GetString(nameof(PeopleTagsTrialTitle), "People tagging trial");
+
+    public static string PeopleTagsTrialHint => GetString(nameof(PeopleTagsTrialHint),
+        "People tags are enabled for 14 days. Upgrade to Pro to keep them always available.");
+
+    public static string UpgradeNowButton => GetString(nameof(UpgradeNowButton), "Upgrade now");
 
     // Database backup / restore
     public static string BackupSectionTitle => GetString(nameof(BackupSectionTitle), "Database backup");
-    public static string BackupSectionHint => GetString(nameof(BackupSectionHint), "Export or import the local database including settings and thumbnails.");
+
+    public static string BackupSectionHint => GetString(nameof(BackupSectionHint),
+        "Export or import the local database including settings and thumbnails.");
+
     public static string BackupExportButton => GetString(nameof(BackupExportButton), "Export backup");
     public static string BackupImportButton => GetString(nameof(BackupImportButton), "Import backup");
     public static string BackupImportPickerTitle => GetString(nameof(BackupImportPickerTitle), "Select a backup ZIP");
     public static string BackupExportSuccessTitle => GetString(nameof(BackupExportSuccessTitle), "Backup exported");
-    public static string BackupExportSuccessMessage => GetString(nameof(BackupExportSuccessMessage), "Your backup was exported successfully.");
+
+    public static string BackupExportSuccessMessage =>
+        GetString(nameof(BackupExportSuccessMessage), "Your backup was exported successfully.");
+
     public static string BackupExportFailedTitle => GetString(nameof(BackupExportFailedTitle), "Backup export failed");
-    public static string BackupExportFailedMessage => GetString(nameof(BackupExportFailedMessage), "The backup could not be created or saved.");
-    public static string BackupImportNotAllowedTitle => GetString(nameof(BackupImportNotAllowedTitle), "Indexing in progress");
-    public static string BackupImportNotAllowedMessage => GetString(nameof(BackupImportNotAllowedMessage), "Stop indexing before restoring a backup.");
+
+    public static string BackupExportFailedMessage =>
+        GetString(nameof(BackupExportFailedMessage), "The backup could not be created or saved.");
+
+    public static string BackupImportNotAllowedTitle =>
+        GetString(nameof(BackupImportNotAllowedTitle), "Indexing in progress");
+
+    public static string BackupImportNotAllowedMessage => GetString(nameof(BackupImportNotAllowedMessage),
+        "Stop indexing before restoring a backup.");
+
     public static string BackupImportConfirmTitle => GetString(nameof(BackupImportConfirmTitle), "Restore backup?");
-    public static string BackupImportConfirmMessage => GetString(nameof(BackupImportConfirmMessage), "This will overwrite your current database, settings and thumbnails. Continue?");
+
+    public static string BackupImportConfirmMessage => GetString(nameof(BackupImportConfirmMessage),
+        "This will overwrite your current database, settings and thumbnails. Continue?");
+
     public static string RestoreButton => GetString(nameof(RestoreButton), "Restore");
-    public static string BackupImportMissingDbMessage => GetString(nameof(BackupImportMissingDbMessage), "This backup does not contain a database file.");
+
+    public static string BackupImportMissingDbMessage => GetString(nameof(BackupImportMissingDbMessage),
+        "This backup does not contain a database file.");
+
     public static string BackupImportSuccessTitle => GetString(nameof(BackupImportSuccessTitle), "Restore completed");
-    public static string BackupImportSuccessMessage => GetString(nameof(BackupImportSuccessMessage), "Backup restored. You may need to reopen the app to see all changes.");
+
+    public static string BackupImportSuccessMessage => GetString(nameof(BackupImportSuccessMessage),
+        "Backup restored. You may need to reopen the app to see all changes.");
+
     public static string BackupImportFailedTitle => GetString(nameof(BackupImportFailedTitle), "Restore failed");
-    public static string BackupImportFailedMessage => GetString(nameof(BackupImportFailedMessage), "The backup could not be restored.");
+
+    public static string BackupImportFailedMessage =>
+        GetString(nameof(BackupImportFailedMessage), "The backup could not be restored.");
+
     public static string ActionsButton => GetString(nameof(ActionsButton), "Actions");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
     public static string SearchScopeTitle => GetString(nameof(SearchScopeTitle), "Search in");
@@ -158,6 +188,7 @@ public static class AppResources
         GetString(nameof(SaveAsNotSupportedMessage), "Save as isn't supported on this device.");
 
     public static string ErrorLogTitle => GetString(nameof(ErrorLogTitle), "Error log");
+
     public static string ErrorLogHint =>
         GetString(nameof(ErrorLogHint), "Share this log if something fails or a thumbnail is blank.");
 
@@ -168,7 +199,9 @@ public static class AppResources
     public static string ErrorLogEmptyMessage => GetString(nameof(ErrorLogEmptyMessage), "No errors logged yet.");
     public static string ErrorLogShareTitle => GetString(nameof(ErrorLogShareTitle), "Share error log");
     public static string ErrorLogCopiedMessage => GetString(nameof(ErrorLogCopiedMessage), "Error log copied.");
-	public static string ErrorLogCopyFailedMessage => GetString(nameof(ErrorLogCopyFailedMessage), "Could not copy the error log to the clipboard. Please try again.");
+
+    public static string ErrorLogCopyFailedMessage => GetString(nameof(ErrorLogCopyFailedMessage),
+        "Could not copy the error log to the clipboard. Please try again.");
 
     public static string ErrorLogClearedMessage =>
         GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");
@@ -414,9 +447,15 @@ public static class AppResources
         GetString(nameof(SettingsProNotSupportedMessage), "Purchases are handled via the licensing server.");
 
     public static string HelpSectionTitle => GetString(nameof(HelpSectionTitle), "Help");
-    public static string HelpSectionHint => GetString(nameof(HelpSectionHint), "About the app and license information.");
+
+    public static string HelpSectionHint =>
+        GetString(nameof(HelpSectionHint), "About the app and license information.");
+
     public static string AboutTitle => GetString(nameof(AboutTitle), "About");
-    public static string AboutDescription => GetString(nameof(AboutDescription), "Version details and license information.");
+
+    public static string AboutDescription =>
+        GetString(nameof(AboutDescription), "Version details and license information.");
+
     public static string AboutLicenseStatusFormat => GetString(nameof(AboutLicenseStatusFormat), "License: {0}");
     public static string AboutVersionFormat => GetString(nameof(AboutVersionFormat), "Version {0}");
     public static string AboutLicensesButton => GetString(nameof(AboutLicensesButton), "License information");
@@ -647,12 +686,16 @@ public static class AppResources
     public static string LegalConsentPriceFormat => GetString(nameof(LegalConsentPriceFormat), "{0}");
     public static string LegalConsentPaymentHint => GetString(nameof(LegalConsentPaymentHint), string.Empty);
     public static string LegalConsentWithdrawalTitle => GetString(nameof(LegalConsentWithdrawalTitle), string.Empty);
-    public static string LegalConsentWithdrawalCheckbox => GetString(nameof(LegalConsentWithdrawalCheckbox), string.Empty);
+
+    public static string LegalConsentWithdrawalCheckbox =>
+        GetString(nameof(LegalConsentWithdrawalCheckbox), string.Empty);
+
     public static string LegalConsentWithdrawalHint => GetString(nameof(LegalConsentWithdrawalHint), string.Empty);
     public static string LegalConsentDocumentsTitle => GetString(nameof(LegalConsentDocumentsTitle), string.Empty);
     public static string LegalConsentDocumentsHint => GetString(nameof(LegalConsentDocumentsHint), string.Empty);
     public static string LegalConsentConfirmButton => GetString(nameof(LegalConsentConfirmButton), "Confirm");
     public static string LegalConsentMissingTitle => GetString(nameof(LegalConsentMissingTitle), "Consent required");
+
     public static string LegalConsentMissingMessage =>
         GetString(nameof(LegalConsentMissingMessage), "Please confirm before continuing.");
 

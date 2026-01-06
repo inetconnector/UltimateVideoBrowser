@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Text;
 using SQLite;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
@@ -8,17 +10,16 @@ public sealed class AppDb
 {
     private readonly SemaphoreSlim initLock = new(1, 1);
     private bool isInitialized;
-    private readonly string dbPath;
 
     public AppDb()
     {
-        dbPath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
-        Db = new SQLiteAsyncConnection(dbPath);
+        DatabasePath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
+        Db = new SQLiteAsyncConnection(DatabasePath);
     }
 
     public SQLiteAsyncConnection Db { get; private set; }
 
-    public string DatabasePath => dbPath;
+    public string DatabasePath { get; }
 
     public async Task EnsureInitializedAsync()
     {
@@ -31,6 +32,9 @@ public sealed class AppDb
             if (isInitialized)
                 return;
 
+            await TryConfigurePragmasAsync().ConfigureAwait(false);
+
+            // Base tables
             await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
             await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
             await Db.CreateTableAsync<Album>().ConfigureAwait(false);
@@ -40,33 +44,13 @@ public sealed class AppDb
             await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
             await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
             await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_album ON AlbumItem(AlbumId);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_media ON AlbumItem(MediaPath);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_name ON PersonTag(PersonName);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);")
-                .ConfigureAwait(false);
-            await Db.ExecuteAsync(
-                    "CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);")
-                .ConfigureAwait(false);
-            await TryAddMediaSourceAccessTokenAsync().ConfigureAwait(false);
-            await TryAddMediaItemLocationColumnsAsync().ConfigureAwait(false);
-            await TryAddFaceEmbeddingBoxColumnsAsync().ConfigureAwait(false);
-            await TryAddPeopleModelKeyColumnsAsync().ConfigureAwait(false);
-            await TryAddPersonProfileMergeColumnsAsync().ConfigureAwait(false);
-            await TryAddMediaItemPeopleTagsSummaryColumnAsync().ConfigureAwait(false);
+
+            // Schema migrations (idempotent, column-existence checked to avoid exception spam)
+            await EnsureSchemaAsync().ConfigureAwait(false);
+
+            // Indexes (best-effort: app must remain usable even if an index fails)
+            await EnsureIndexesAsync().ConfigureAwait(false);
+
             isInitialized = true;
         }
         finally
@@ -113,13 +97,13 @@ public sealed class AppDb
             await TryCloseConnectionAsync().ConfigureAwait(false);
 
             // Copy main DB and related WAL/SHM sidecar files if present.
-            File.Copy(sourceDbPath, dbPath, true);
+            File.Copy(sourceDbPath, DatabasePath, true);
 
-            CopySidecarIfExists(sourceDbPath + "-wal", dbPath + "-wal");
-            CopySidecarIfExists(sourceDbPath + "-shm", dbPath + "-shm");
+            CopySidecarIfExists(sourceDbPath + "-wal", DatabasePath + "-wal");
+            CopySidecarIfExists(sourceDbPath + "-shm", DatabasePath + "-shm");
 
             // Reopen connection so services pick up the new DB.
-            Db = new SQLiteAsyncConnection(dbPath);
+            Db = new SQLiteAsyncConnection(DatabasePath);
             isInitialized = false;
         }
         finally
@@ -165,6 +149,7 @@ public sealed class AppDb
         }
         catch
         {
+            // Best-effort only.
         }
 
         try
@@ -174,6 +159,7 @@ public sealed class AppDb
         }
         catch
         {
+            // Best-effort only.
         }
 
         try
@@ -185,219 +171,357 @@ public sealed class AppDb
         }
         catch
         {
+            // Best-effort only.
         }
     }
 
-    // NOTE: ReplaceDatabaseAsync() and TryCloseConnectionAsync() are intentionally implemented only once.
-    // Duplicate definitions caused CS0111/CS0121 on multi-target builds.
-
-    private async Task TryAddMediaSourceAccessTokenAsync()
+    private async Task TryConfigurePragmasAsync()
     {
         try
         {
-            await Db.ExecuteAsync("ALTER TABLE MediaSource ADD COLUMN AccessToken TEXT;").ConfigureAwait(false);
+            // Improve concurrent read/write behavior while indexing.
+            await Db.ExecuteAsync("PRAGMA journal_mode=WAL;").ConfigureAwait(false);
+            await Db.ExecuteAsync("PRAGMA synchronous=NORMAL;").ConfigureAwait(false);
+            await Db.ExecuteAsync("PRAGMA temp_store=MEMORY;").ConfigureAwait(false);
+            await Db.ExecuteAsync("PRAGMA busy_timeout=5000;").ConfigureAwait(false);
         }
-        catch
+        catch (Exception ex)
         {
-            // Column exists or migration not needed.
+            ErrorLog.LogException(ex, "AppDb.TryConfigurePragmasAsync");
         }
     }
 
-    private async Task TryAddMediaItemLocationColumnsAsync()
+    private async Task EnsureSchemaAsync()
+    {
+        // MediaSource
+        await EnsureColumnAsync("MediaSource", "AccessToken", "TEXT").ConfigureAwait(false);
+
+        // MediaItem (core)
+        await EnsureColumnAsync("MediaItem", "Name", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "MediaType", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "DurationMs", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "DateAddedSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "SourceId", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "Latitude", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "Longitude", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "ThumbnailPath", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "PeopleTagsSummary", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "FaceScanModelKey", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "FaceScanAtSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+
+        // FaceEmbedding (People feature)
+        await EnsureColumnAsync("FaceEmbedding", "X", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "Y", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "W", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "H", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "ImageWidth", "INTEGER").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "ImageHeight", "INTEGER").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "DetectionModelKey", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "EmbeddingModelKey", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "FaceQuality", "REAL").ConfigureAwait(false);
+
+        // PersonProfile
+        await EnsureColumnAsync("PersonProfile", "MergedIntoPersonId", "TEXT").ConfigureAwait(false);
+        await EnsureColumnAsync("PersonProfile", "PrimaryFaceEmbeddingId", "INTEGER").ConfigureAwait(false);
+        await EnsureColumnAsync("PersonProfile", "QualityScore", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("PersonProfile", "IsIgnored", "INTEGER").ConfigureAwait(false);
+
+        // FaceScanJob (queue)
+        await EnsureColumnAsync("FaceScanJob", "EnqueuedAtSeconds", "INTEGER NOT NULL DEFAULT 0")
+            .ConfigureAwait(false);
+        await EnsureColumnAsync("FaceScanJob", "LastAttemptSeconds", "INTEGER NOT NULL DEFAULT 0")
+            .ConfigureAwait(false);
+        await EnsureColumnAsync("FaceScanJob", "AttemptCount", "INTEGER NOT NULL DEFAULT 0")
+            .ConfigureAwait(false);
+    }
+
+    private async Task EnsureIndexesAsync()
+    {
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_location ON MediaItem(Latitude, Longitude);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_album ON AlbumItem(AlbumId);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_media ON AlbumItem(MediaPath);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_name ON PersonTag(PersonName);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+
+        await TryExecuteAsync(
+                "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+    }
+
+    private async Task<HashSet<string>> GetExistingColumnsAsync(string tableName)
     {
         try
         {
-            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN Latitude REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN Longitude REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync(
-                    "CREATE INDEX IF NOT EXISTS idx_media_location ON MediaItem(Latitude, Longitude);")
+            var rows = await Db.QueryAsync<PragmaTableInfo>($"PRAGMA table_info('{tableName}');")
                 .ConfigureAwait(false);
+            return rows
+                .Where(r => !string.IsNullOrWhiteSpace(r.name))
+                .Select(r => r.name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLog.LogException(ex, "AppDb.GetExistingColumnsAsync", $"Table={tableName}");
+            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
     }
 
-    private async Task TryAddFaceEmbeddingBoxColumnsAsync()
+    private async Task EnsureColumnAsync(string tableName, string columnName, string sqlType)
     {
-        // These columns were added later to support the People UI (face crops / boxes).
-        // Each ALTER is idempotent via try/catch to keep startup resilient.
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN X REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
+        var cols = await GetExistingColumnsAsync(tableName).ConfigureAwait(false);
+        if (cols.Contains(columnName))
+            return;
 
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN Y REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
+        var sql = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {sqlType};";
+        await TryExecuteAsync(sql, "AppDb.EnsureColumnAsync", $"Table={tableName}; Column={columnName}")
+            .ConfigureAwait(false);
+    }
 
+    private async Task<bool> TryExecuteAsync(string sql, string context, string? details = null, params object[] args)
+    {
         try
         {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN W REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
+            if (args is { Length: > 0 })
+                await Db.ExecuteAsync(sql, args).ConfigureAwait(false);
+            else
+                await Db.ExecuteAsync(sql).ConfigureAwait(false);
 
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN H REAL;").ConfigureAwait(false);
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageWidth INTEGER;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN ImageHeight INTEGER;").ConfigureAwait(false);
-        }
-        catch
-        {
+            var msg = BuildSqlErrorMessage(sql, details, args);
+            ErrorLog.LogException(ex, context, msg);
+            return false;
         }
     }
 
-    private async Task TryAddPeopleModelKeyColumnsAsync()
+    private static string BuildSqlErrorMessage(string sql, string? details, object[]? args)
     {
-        // Adds model-key bookkeeping columns used to skip face re-scan when models haven't changed.
-        // Each ALTER is idempotent via try/catch to keep app startup resilient.
-        try
+        // Keep logs readable and safe-ish (avoid giant log entries)
+        const int maxSqlLen = 4000;
+        const int maxDetailsLen = 2000;
+        const int maxArgStringLen = 500;
+        const int maxCollectionItems = 50;
+
+        static string Clip(string? s, int max)
         {
-            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN FaceScanModelKey TEXT;").ConfigureAwait(false);
-        }
-        catch
-        {
+            if (string.IsNullOrEmpty(s))
+                return string.Empty;
+
+            if (s.Length <= max)
+                return s;
+
+            return s.Substring(0, max) + " …(truncated)";
         }
 
-        try
+        static string SafeToString(object? value)
         {
-            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN FaceScanAtSeconds INTEGER;").ConfigureAwait(false);
-        }
-        catch
-        {
+            if (value is null)
+                return "null";
+
+            try
+            {
+                return value.ToString() ?? "<null tostring>";
+            }
+            catch (Exception tex)
+            {
+                return $"<ToString() threw {tex.GetType().Name}: {tex.Message}>";
+            }
         }
 
-        try
+        static bool LooksBinaryString(string s)
         {
-            await Db.ExecuteAsync(
-                    "CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);")
-                .ConfigureAwait(false);
-        }
-        catch
-        {
+            // Basic heuristic to avoid logging large/binary-looking strings
+            if (s.Length < 64) return false;
+
+            var control = 0;
+            for (var i = 0; i < s.Length && i < 256; i++)
+            {
+                var c = s[i];
+                if (char.IsControl(c) && c != '\r' && c != '\n' && c != '\t')
+                    control++;
+            }
+
+            return control > 5;
         }
 
-        try
+        static string QuoteAndClipString(string s)
         {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN DetectionModelKey TEXT;").ConfigureAwait(false);
-        }
-        catch
-        {
+            // Escape newlines to keep logs single-line per arg if needed
+            var normalized = s.Replace("\r", "\\r").Replace("\n", "\\n");
+            if (LooksBinaryString(normalized))
+                return $"\"{Clip(normalized, 128)}\" <binary-ish>";
+
+            return $"\"{Clip(normalized, maxArgStringLen)}\"";
         }
 
-        try
+        static string FormatArg(object? a)
         {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN EmbeddingModelKey TEXT;").ConfigureAwait(false);
-        }
-        catch
-        {
+            if (a is null) return "null";
+
+            switch (a)
+            {
+                case string s:
+                    return QuoteAndClipString(s);
+
+                case char ch:
+                    return $"'{ch}'";
+
+                case bool b:
+                    return b ? "true" : "false";
+
+                case DateTime dt:
+                    return dt.ToString("O");
+
+                case DateTimeOffset dto:
+                    return dto.ToString("O");
+
+                case TimeSpan ts:
+                    return ts.ToString("c");
+
+                case Guid g:
+                    return g.ToString("D");
+
+                case byte[] bytes:
+                    // Do not dump bytes content into logs
+                    return $"byte[{bytes.Length}]";
+
+                case Stream stream:
+                    // Do not dump stream content into logs
+                    try
+                    {
+                        return
+                            $"stream(canRead={stream.CanRead}, canSeek={stream.CanSeek}, length={(stream.CanSeek ? stream.Length.ToString() : "<n/a>")})";
+                    }
+                    catch
+                    {
+                        return "stream(<unavailable>)";
+                    }
+
+                case IDictionary dict:
+                {
+                    // Avoid huge logs from dictionaries; keep it bounded
+                    var count = 0;
+                    var sb = new StringBuilder();
+                    sb.Append("dict{");
+
+                    foreach (DictionaryEntry de in dict)
+                    {
+                        if (count >= maxCollectionItems)
+                        {
+                            sb.Append("…");
+                            break;
+                        }
+
+                        if (count > 0) sb.Append(", ");
+                        sb.Append(SafeToString(de.Key)).Append(": ").Append(SafeToString(de.Value));
+                        count++;
+                    }
+
+                    sb.Append("}");
+                    return Clip(sb.ToString(), maxArgStringLen);
+                }
+
+                case IEnumerable enumerable when a is not string:
+                {
+                    // Avoid huge logs from enumerables; keep it bounded
+                    var count = 0;
+                    var sb = new StringBuilder();
+                    sb.Append("[");
+
+                    foreach (var item in enumerable)
+                    {
+                        if (count >= maxCollectionItems)
+                        {
+                            sb.Append("…");
+                            break;
+                        }
+
+                        if (count > 0) sb.Append(", ");
+                        sb.Append(SafeToString(item));
+                        count++;
+                    }
+
+                    sb.Append("]");
+                    return Clip(sb.ToString(), maxArgStringLen);
+                }
+
+                default:
+                {
+                    // Fallback: include type info + ToString
+                    var s = SafeToString(a);
+                    s = Clip(s, maxArgStringLen);
+                    return $"{a.GetType().FullName}: {s}";
+                }
+            }
         }
 
-        try
+        var sbMsg = new StringBuilder(1024);
+
+        var d = Clip(details, maxDetailsLen).Trim();
+        if (!string.IsNullOrEmpty(d))
+            sbMsg.AppendLine(d);
+
+        sbMsg.Append("SQL=").AppendLine(Clip(sql, maxSqlLen));
+
+        if (args is { Length: > 0 })
         {
-            await Db.ExecuteAsync("ALTER TABLE FaceEmbedding ADD COLUMN FaceQuality REAL;").ConfigureAwait(false);
+            sbMsg.AppendLine("ARGS=");
+            for (var i = 0; i < args.Length; i++)
+                sbMsg.Append("  [")
+                    .Append(i)
+                    .Append("] ")
+                    .AppendLine(FormatArg(args[i]));
         }
-        catch
+        else
         {
+            sbMsg.AppendLine("ARGS=<none>");
         }
+
+        return sbMsg.ToString().TrimEnd();
     }
 
-    private async Task TryAddPersonProfileMergeColumnsAsync()
+    private sealed class PragmaTableInfo
     {
-        // Adds merge + quality + cover columns for PersonProfile.
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN MergedIntoPersonId TEXT;")
-                .ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN PrimaryFaceEmbeddingId INTEGER;")
-                .ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN QualityScore REAL;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE PersonProfile ADD COLUMN IsIgnored INTEGER;").ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            await Db.ExecuteAsync(
-                    "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);")
-                .ConfigureAwait(false);
-        }
-        catch
-        {
-        }
-    }
-
-    private async Task TryAddMediaItemPeopleTagsSummaryColumnAsync()
-    {
-        // Store a denormalized summary for fallback queries and UI resilience.
-        try
-        {
-            await Db.ExecuteAsync("ALTER TABLE MediaItem ADD COLUMN PeopleTagsSummary TEXT;")
-                .ConfigureAwait(false);
-        }
-        catch
-        {
-        }
+        // Property name must match PRAGMA output column name.
+        // ReSharper disable once InconsistentNaming
+        public string name { get; } = string.Empty;
     }
 }

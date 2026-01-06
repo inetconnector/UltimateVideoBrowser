@@ -10,7 +10,11 @@ public sealed record PricingResponse(PricingInfo Price, string ProductId, string
 
 public sealed record ActivateRequest(string LicenseKey, string DeviceFingerprint, string Platform);
 
-public sealed record ActivationResponse(string Status, string? ActivationToken, DateTimeOffset? ValidUntil, string[]? Features);
+public sealed record ActivationResponse(
+    string Status,
+    string? ActivationToken,
+    DateTimeOffset? ValidUntil,
+    string[]? Features);
 
 public sealed record PayPalWebhookRequest(
     string OrderId,
@@ -65,36 +69,28 @@ public sealed record SignedLicense
 
 public sealed record LicenseKeyPayload
 {
-    [JsonPropertyName("licenseId")]
-    public required string LicenseId { get; init; }
+    [JsonPropertyName("licenseId")] public required string LicenseId { get; init; }
 
-    [JsonPropertyName("product")]
-    public required string Product { get; init; }
+    [JsonPropertyName("product")] public required string Product { get; init; }
 
-    [JsonPropertyName("platform")]
-    public required string Platform { get; init; }
+    [JsonPropertyName("platform")] public required string Platform { get; init; }
 
     [JsonPropertyName("deviceFingerprint")]
     public required string DeviceFingerprint { get; init; }
 
-    [JsonPropertyName("issuedAt")]
-    public required long IssuedAt { get; init; }
+    [JsonPropertyName("issuedAt")] public required long IssuedAt { get; init; }
 
-    [JsonPropertyName("expiresAt")]
-    public long? ExpiresAt { get; init; }
+    [JsonPropertyName("expiresAt")] public long? ExpiresAt { get; init; }
 }
 
 public sealed record ActivationTokenPayload
 {
-    [JsonPropertyName("licenseId")]
-    public required string LicenseId { get; init; }
+    [JsonPropertyName("licenseId")] public required string LicenseId { get; init; }
 
     [JsonPropertyName("deviceFingerprint")]
     public required string DeviceFingerprint { get; init; }
 
-    [JsonPropertyName("issuedAt")]
-    public required long IssuedAt { get; init; }
+    [JsonPropertyName("issuedAt")] public required long IssuedAt { get; init; }
 
-    [JsonPropertyName("expiresAt")]
-    public required long ExpiresAt { get; init; }
+    [JsonPropertyName("expiresAt")] public required long ExpiresAt { get; init; }
 }

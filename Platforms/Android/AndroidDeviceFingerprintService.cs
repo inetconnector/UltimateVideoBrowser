@@ -1,5 +1,5 @@
 using Android.Provider;
-using Microsoft.Maui.Storage;
+using Application = Android.App.Application;
 
 namespace UltimateVideoBrowser.Services;
 
@@ -10,7 +10,7 @@ public sealed class AndroidDeviceFingerprintService : IDeviceFingerprintService
     public Task<string> GetFingerprintAsync(CancellationToken ct)
     {
         var androidId = Settings.Secure.GetString(
-            Android.App.Application.Context.ContentResolver,
+            Application.Context.ContentResolver,
             Settings.Secure.AndroidId) ?? string.Empty;
         var installationId = Preferences.Default.Get(InstallationIdKey, string.Empty);
         if (string.IsNullOrWhiteSpace(installationId))

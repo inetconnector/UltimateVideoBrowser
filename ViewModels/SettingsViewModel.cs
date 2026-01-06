@@ -10,9 +10,9 @@ namespace UltimateVideoBrowser.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    private readonly IBackupRestoreService backupRestoreService;
     private readonly AppDb db;
     private readonly IDialogService dialogService;
-    private readonly IBackupRestoreService backupRestoreService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly AppSettingsService settingsService;
@@ -26,6 +26,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string indexStatusTitle = string.Empty;
     private bool isApplyingLocationToggle;
     private bool isApplyingNeedsReindex;
+    private bool isApplyingSearchScope;
     [ObservableProperty] private bool isDatabaseResetting;
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
@@ -36,7 +37,6 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isPeopleModelsDownloading;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPhotosIndexed;
-    private bool isApplyingSearchScope;
     [ObservableProperty] private bool isSearchAlbumsEnabled;
     [ObservableProperty] private bool isSearchNameEnabled;
     [ObservableProperty] private bool isSearchPeopleEnabled;
@@ -129,7 +129,6 @@ public partial class SettingsViewModel : ObservableObject
                 isApplyingNeedsReindex = false;
                 UpdateIndexStatusState();
             });
-
     }
 
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }

@@ -1,134 +1,171 @@
 <!doctype html>
 <html lang="ru" dir="ltr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UltimateVideoBrowser Pro</title>
-  <link rel="preconnect" href="https://images.unsplash.com" />
-  <link rel="stylesheet" href="/css/site.css" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>UltimateVideoBrowser Pro</title>
+    <link rel="preconnect" href="https://images.unsplash.com"/>
+    <link rel="stylesheet" href="/css/site.css"/>
 </head>
 <body class="landing-page">
-<select class="lang-select" id="langSelect" aria-label="Language"><option value="de">Deutsch</option>
-<option value="en">English</option>
-<option value="fr">Français</option>
-<option value="es">Español</option>
-<option value="it">Italiano</option>
-<option value="pt">Português</option>
-<option value="nl">Nederlands</option>
-<option value="pl">Polski</option>
-<option value="tr">Türkçe</option>
-<option value="ru">Русский</option>
-<option value="zh">中文</option>
-<option value="ja">日本語</option>
-<option value="ko">한국어</option>
-<option value="ar">العربية</option></select>
+<select class="lang-select" id="langSelect" aria-label="Language">
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+    <option value="it">Italiano</option>
+    <option value="pt">Português</option>
+    <option value="nl">Nederlands</option>
+    <option value="pl">Polski</option>
+    <option value="tr">Türkçe</option>
+    <option value="ru">Русский</option>
+    <option value="zh">中文</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+    <option value="ar">العربية</option>
+</select>
 <header>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand"><img src="/assets/appicon.svg" alt="UltimateVideoBrowser" /><span>UltimateVideoBrowser Pro</span></div>
-      <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Цена и лицензия</a>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/appicon.svg" alt="UltimateVideoBrowser"/><span>UltimateVideoBrowser Pro</span>
+            </div>
+            <a class="btn secondary" href="#pricing" data-i18n="nav_pricing">Цена и лицензия</a>
+        </div>
+        <div class="hero">
+            <div>
+                <span class="pill" data-i18n="pill">Премиум-контроль медиа</span>
+                <h1 data-i18n="hero_title">Профессиональный медиа-центр для тех, кто не приемлет компромиссов.</h1>
+                <p data-i18n="hero_subtitle">Ищите, индексируйте и наслаждайтесь вашими видео, фото и документами за секунды — с интерфейсом, который ощущается как магия.</p>
+                <div class="cta">
+                    <form action="/api/checkout" method="post" class="inline-form">
+                        <button class="btn primary" type="submit" data-i18n="cta_primary">Разблокировать Pro сейчас</button>
+                    </form>
+                    <a class="btn secondary" href="#features" data-i18n="cta_secondary">Узнать о функциях</a>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">поиск быстрее</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_two_value">1 клик</strong><span data-i18n="stat_two_label">до идеального вида</span>
+                    </div>
+                    <div class="stat">
+                        <strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">фокус на ваших данных</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-media">
+                <div class="floating-glow"></div>
+                <div class="hero-card">
+                    <img src="/assets/hero_video.svg" alt="Превью приложения"/>
+                    <p data-i18n="hero_image_caption" class="muted-text mt-12">Визуализация приложения с оригинальными ресурсами</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="hero">
-      <div>
-        <span class="pill" data-i18n="pill">Премиум-контроль медиа</span>
-        <h1 data-i18n="hero_title">Профессиональный медиа-центр для тех, кто не приемлет компромиссов.</h1>
-        <p data-i18n="hero_subtitle">Ищите, индексируйте и наслаждайтесь вашими видео, фото и документами за секунды — с интерфейсом, который ощущается как магия.</p>
-        <div class="cta">
-          <form action="/api/checkout" method="post" class="inline-form">
-            <button class="btn primary" type="submit" data-i18n="cta_primary">Разблокировать Pro сейчас</button>
-          </form>
-          <a class="btn secondary" href="#features" data-i18n="cta_secondary">Узнать о функциях</a>
-        </div>
-        <div class="stats">
-          <div class="stat"><strong data-i18n="stat_one_value">3×</strong><span data-i18n="stat_one_label">поиск быстрее</span></div>
-          <div class="stat"><strong data-i18n="stat_two_value">1 клик</strong><span data-i18n="stat_two_label">до идеального вида</span></div>
-          <div class="stat"><strong data-i18n="stat_three_value">100%</strong><span data-i18n="stat_three_label">фокус на ваших данных</span></div>
-        </div>
-      </div>
-      <div class="hero-media">
-        <div class="floating-glow"></div>
-        <div class="hero-card">
-          <img src="/assets/hero_video.svg" alt="Превью приложения" />
-          <p data-i18n="hero_image_caption" class="muted-text mt-12">Визуализация приложения с оригинальными ресурсами</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </header>
 <section class="section" id="features">
-  <div class="container">
-    <h2 class="section-title" data-i18n="features_title">Опыт, который выводит ваши медиа на новый уровень</h2>
-    <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro сочетает скорость, интеллект и дизайн в медиа-платформе, которая никогда не заставляет ждать.</p>
-    <div class="grid">
-      <div class="card"><img src="/assets/icon_sources.svg" alt="Источники" /><h3 data-i18n="feature_one_title">Умный менеджер источников</h3><p data-i18n="feature_one_desc">Подключайте папки, диски и облачные бэкапы — автоматически организовано, всегда готово.</p></div>
-      <div class="card"><img src="/assets/icon_play.svg" alt="Воспроизведение" /><h3 data-i18n="feature_two_title">Мгновенный предпросмотр</h3><p data-i18n="feature_two_desc">Смотрите ключевые моменты сразу — без ожиданий и перерывов.</p></div>
-      <div class="card"><img src="/assets/icon_people.svg" alt="Люди" /><h3 data-i18n="feature_three_title">Интеллектуальное распознавание</h3><p data-i18n="feature_three_desc">Находите контент по лицам, местам или тегам. Библиотека реагирует раньше, чем вы спросите.</p></div>
-      <div class="card"><img src="/assets/chip_spark.svg" alt="ИИ" /><h3 data-i18n="feature_four_title">Турбо-индексация</h3><p data-i18n="feature_four_desc">Новый уровень производительности обеспечивает мгновенный поиск даже в огромных коллекциях.</p></div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="features_title">Опыт, который выводит ваши медиа на новый уровень</h2>
+        <p class="section-sub" data-i18n="features_sub">UltimateVideoBrowser Pro сочетает скорость, интеллект и дизайн в медиа-платформе, которая никогда не заставляет ждать.</p>
+        <div class="grid">
+            <div class="card">
+                <img src="/assets/icon_sources.svg" alt="Источники"/>
+                <h3 data-i18n="feature_one_title">Умный менеджер источников</h3>
+                <p data-i18n="feature_one_desc">Подключайте папки, диски и облачные бэкапы — автоматически организовано, всегда готово.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_play.svg" alt="Воспроизведение"/>
+                <h3 data-i18n="feature_two_title">Мгновенный предпросмотр</h3>
+                <p data-i18n="feature_two_desc">Смотрите ключевые моменты сразу — без ожиданий и перерывов.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/icon_people.svg" alt="Люди"/>
+                <h3 data-i18n="feature_three_title">Интеллектуальное распознавание</h3>
+                <p data-i18n="feature_three_desc">Находите контент по лицам, местам или тегам. Библиотека реагирует раньше, чем вы спросите.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/chip_spark.svg" alt="ИИ"/>
+                <h3 data-i18n="feature_four_title">Турбо-индексация</h3>
+                <p data-i18n="feature_four_desc">Новый уровень производительности обеспечивает мгновенный поиск даже в огромных коллекциях.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <section class="section section--alt">
-  <div class="container">
-    <h2 class="section-title" data-i18n="gallery_title">Дизайн, который вызывает доверие</h2>
-    <p class="section-sub" data-i18n="gallery_sub">Профессиональная графика и реальные ассеты приложения создают премиальное впечатление, которое заслуживают ваши медиа.</p>
-    <div class="showcase">
-      <div>
-        <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Кинематографичные визуалы" />
-        <p data-i18n="gallery_caption_one" class="muted-text mt-12">Кинематографичный вид для вашей библиотеки — вдохновлено бесплатными визуалами Unsplash.</p>
-      </div>
-      <div>
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Технологии" />
-        <p data-i18n="gallery_caption_two" class="muted-text mt-12">Технологическая эстетика, излучающая профессионализм.</p>
-      </div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="gallery_title">Дизайн, который вызывает доверие</h2>
+        <p class="section-sub" data-i18n="gallery_sub">Профессиональная графика и реальные ассеты приложения создают премиальное впечатление, которое заслуживают ваши медиа.</p>
+        <div class="showcase">
+            <div>
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80" alt="Кинематографичные визуалы"/>
+                <p data-i18n="gallery_caption_one" class="muted-text mt-12">Кинематографичный вид для вашей библиотеки — вдохновлено бесплатными визуалами Unsplash.</p>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Технологии"/>
+                <p data-i18n="gallery_caption_two" class="muted-text mt-12">Технологическая эстетика, излучающая профессионализм.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <section class="section" id="pricing">
-  <div class="container">
-    <div class="pricing">
-      <div>
-        <h2 class="section-title" data-i18n="pricing_title">Заплатите один раз. Пользуйтесь вечно.</h2>
-        <p class="section-sub" data-i18n="pricing_sub">Без подписок и скрытых платежей. Разблокируйте один раз и пользуйтесь всеми Pro-функциями постоянно.</p>
-        <div class="legal-links">
-          <a href="/agb" data-i18n="link_terms">Условия</a>
-          <a href="/datenschutz" data-i18n="link_privacy">Конфиденциальность</a>
-          <a href="/impressum" data-i18n="link_imprint">Реквизиты</a>
-          <a href="/widerruf" data-i18n="link_withdrawal">Отказ</a>
+    <div class="container">
+        <div class="pricing">
+            <div>
+                <h2 class="section-title" data-i18n="pricing_title">Заплатите один раз. Пользуйтесь вечно.</h2>
+                <p class="section-sub" data-i18n="pricing_sub">Без подписок и скрытых платежей. Разблокируйте один раз и пользуйтесь всеми Pro-функциями постоянно.</p>
+                <div class="legal-links">
+                    <a href="/agb" data-i18n="link_terms">Условия</a>
+                    <a href="/datenschutz" data-i18n="link_privacy">Конфиденциальность</a>
+                    <a href="/impressum" data-i18n="link_imprint">Реквизиты</a>
+                    <a href="/widerruf" data-i18n="link_withdrawal">Отказ</a>
+                </div>
+            </div>
+            <div>
+                <div class="price" data-i18n="pricing_value">€3,99</div>
+                <p data-i18n="pricing_note">включая обновления для текущей основной версии</p>
+                <form action="/api/checkout" method="post" class="inline-form">
+                    <button class="btn primary" type="submit" data-i18n="pricing_cta">Получить Pro сейчас</button>
+                </form>
+            </div>
         </div>
-      </div>
-      <div>
-        <div class="price" data-i18n="pricing_value">€3,99</div>
-        <p data-i18n="pricing_note">включая обновления для текущей основной версии</p>
-        <form action="/api/checkout" method="post" class="inline-form">
-          <button class="btn primary" type="submit" data-i18n="pricing_cta">Получить Pro сейчас</button>
-        </form>
-      </div>
     </div>
-  </div>
 </section>
 <section class="section section--compact">
-  <div class="container">
-    <h2 class="section-title" data-i18n="trust_title">Создано для профессионалов, любимо энтузиастами</h2>
-    <p class="section-sub" data-i18n="trust_sub">От любителей до студийных команд: UltimateVideoBrowser Pro приносит порядок, скорость и вау-моменты.</p>
-    <div class="grid">
-      <div class="card"><h3 data-i18n="trust_one_title">Кроссплатформенно</h3><p data-i18n="trust_one_desc">Используйте лицензию на Windows и Android — с тем же премиальным опытом.</p></div>
-      <div class="card"><h3 data-i18n="trust_two_title">Готово офлайн</h3><p data-i18n="trust_two_desc">Даже без интернета библиотека доступна — благодаря безопасной офлайн-активации.</p></div>
-      <div class="card"><h3 data-i18n="trust_three_title">Конфиденциальность включена</h3><p data-i18n="trust_three_desc">Ваш контент остается вашим. Никакой обязательной облачной зависимости, никакой эксплуатации данных.</p></div>
+    <div class="container">
+        <h2 class="section-title" data-i18n="trust_title">Создано для профессионалов, любимо энтузиастами</h2>
+        <p class="section-sub" data-i18n="trust_sub">От любителей до студийных команд: UltimateVideoBrowser Pro приносит порядок, скорость и вау-моменты.</p>
+        <div class="grid">
+            <div class="card">
+                <h3 data-i18n="trust_one_title">Кроссплатформенно</h3>
+                <p data-i18n="trust_one_desc">Используйте лицензию на Windows и Android — с тем же премиальным опытом.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_two_title">Готово офлайн</h3>
+                <p data-i18n="trust_two_desc">Даже без интернета библиотека доступна — благодаря безопасной офлайн-активации.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="trust_three_title">Конфиденциальность включена</h3>
+                <p data-i18n="trust_three_desc">Ваш контент остается вашим. Никакой обязательной облачной зависимости, никакой эксплуатации данных.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 <footer>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand"><img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo" /><span data-i18n="footer_brand">Медиа, которые ощущаются как будущее.</span></div>
-      <div class="legal-links">
-        <a href="/agb" data-i18n="link_terms">Условия</a>
-        <a href="/datenschutz" data-i18n="link_privacy">Конфиденциальность</a>
-        <a href="/impressum" data-i18n="link_imprint">Реквизиты</a>
-      </div>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <img src="/assets/app_logo.svg" alt="UltimateVideoBrowser Logo"/><span data-i18n="footer_brand">Медиа, которые ощущаются как будущее.</span>
+            </div>
+            <div class="legal-links">
+                <a href="/agb" data-i18n="link_terms">Условия</a>
+                <a href="/datenschutz" data-i18n="link_privacy">Конфиденциальность</a>
+                <a href="/impressum" data-i18n="link_imprint">Реквизиты</a>
+            </div>
+        </div>
+        <p class="mt-20" data-i18n="footer_note">UltimateVideoBrowser Pro — новый стандарт для требовательного управления медиа.</p>
     </div>
-    <p class="mt-20" data-i18n="footer_note">UltimateVideoBrowser Pro — новый стандарт для требовательного управления медиа.</p>
-  </div>
 </footer>
 <script>
 const currentLang = "ru";
@@ -143,4 +180,5 @@ if (langSelect) {
   });
 }
 </script>
-</body></html>
+</body>
+</html>

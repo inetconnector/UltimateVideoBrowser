@@ -932,34 +932,34 @@
                         <VerticalStackLayout Grid.Row="1" Spacing="8" IsVisible="{Binding IsPreviewDockExpanded}">
                             <Grid HeightRequest="220"
                                   BackgroundColor="{DynamicResource Surface2}">
-                            <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
-                                                  ShouldAutoPlay="True"
-                                                  ShowsPlaybackControls="True"
-                                                  Aspect="AspectFit"
-                                                  IsVisible="{Binding ShowVideoPlayer}" />
-                            <Image Source="{Binding CurrentMediaSource}"
-                                   Aspect="AspectFit"
-                                   IsVisible="{Binding ShowPhotoPreview}" />
-                            <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
-                                                 HorizontalOptions="Center"
-                                                 VerticalOptions="Center"
-                                                 Spacing="6">
-                                <Image Source="chip_collection.svg"
-                                       HeightRequest="48"
-                                       WidthRequest="48" />
-                                <Label Text="{Binding CurrentMediaName}"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource OnSurface}" />
-                            </VerticalStackLayout>
-                            <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"
-                                   IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                      Command="{Binding TogglePlayerFullscreenCommand}" />
-                            </Grid.GestureRecognizers>
+                                <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
+                                                      ShouldAutoPlay="True"
+                                                      ShowsPlaybackControls="True"
+                                                      Aspect="AspectFit"
+                                                      IsVisible="{Binding ShowVideoPlayer}" />
+                                <Image Source="{Binding CurrentMediaSource}"
+                                       Aspect="AspectFit"
+                                       IsVisible="{Binding ShowPhotoPreview}" />
+                                <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center"
+                                                     Spacing="6">
+                                    <Image Source="chip_collection.svg"
+                                           HeightRequest="48"
+                                           WidthRequest="48" />
+                                    <Label Text="{Binding CurrentMediaName}"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource OnSurface}" />
+                                </VerticalStackLayout>
+                                <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
+                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                          Command="{Binding TogglePlayerFullscreenCommand}" />
+                                </Grid.GestureRecognizers>
                             </Grid>
                             <Label Text="{Binding CurrentMediaName}"
                                    FontSize="12"

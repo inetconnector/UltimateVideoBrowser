@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Input;
 using UltimateVideoBrowser.Resources.Strings;
 
@@ -44,14 +43,10 @@ public partial class MainAlbumsTabsView : ContentView
             return options;
 
         if (TryGetCommand("OpenAlbumsCommand", out var openAlbums))
-        {
             options.Add(new ActionOption(AppResources.ManageAlbumsButton, openAlbums));
-        }
 
         if (IsLocationEnabled() && TryGetCommand("OpenMapCommand", out var openMap))
-        {
             options.Add(new ActionOption(AppResources.MapButton, openMap));
-        }
 
         return options;
     }
