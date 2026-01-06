@@ -131,7 +131,7 @@ public partial class MainViewModel : ObservableObject
     {
         this.sourceService = sourceService;
         this.indexService = indexService;
-        this.SettingsService = settingsService;
+        SettingsService = settingsService;
         this.thumbnailService = thumbnailService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;

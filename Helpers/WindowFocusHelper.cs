@@ -1,9 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
-
 #if ANDROID
 using Android.Views;
-using Microsoft.Maui.ApplicationModel;
 #endif
 
 #if MACCATALYST

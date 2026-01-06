@@ -12,8 +12,8 @@ public sealed class FileSettingsStore
 
     public FileSettingsStore(string? settingsPath = null)
     {
-        this.SettingsPath = settingsPath ?? Path.Combine(AppDataPaths.Root, "settings.json");
-        var directory = Path.GetDirectoryName(this.SettingsPath);
+        SettingsPath = settingsPath ?? Path.Combine(AppDataPaths.Root, "settings.json");
+        var directory = Path.GetDirectoryName(SettingsPath);
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
     }

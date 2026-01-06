@@ -1,4 +1,5 @@
 using System.Globalization;
+using Uri = Android.Net.Uri;
 #if ANDROID && !WINDOWS
 #endif
 
@@ -25,7 +26,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
                 var ctx = Platform.AppContext;
                 if (ctx != null)
                 {
-                    var uri = Android.Net.Uri.Parse(text);
+                    var uri = Uri.Parse(text);
                     return ImageSource.FromStream(() => ctx.ContentResolver?.OpenInputStream(uri) ?? Stream.Null);
                 }
             }
@@ -39,7 +40,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
 #endif
 
         // 2) file:// URIs -> local file path (works across platforms).
-        if (Uri.TryCreate(text, UriKind.Absolute, out var u) && u.IsFile)
+        if (System.Uri.TryCreate(text, UriKind.Absolute, out var u) && u.IsFile)
         {
             var local = u.LocalPath;
             if (!string.IsNullOrWhiteSpace(local))
