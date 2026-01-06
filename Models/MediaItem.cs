@@ -26,6 +26,7 @@ public class MediaItem : INotifyPropertyChanged
 
             path = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TilePreviewPath));
         }
     }
 
@@ -94,6 +95,28 @@ public class MediaItem : INotifyPropertyChanged
 
             thumbnailPath = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TilePreviewPath));
+        }
+    }
+
+    /// <summary>
+    /// Image source for grid tiles. Uses the generated thumbnail when available.
+    /// Falls back to the original file path for photos/graphics so users always
+    /// see images even while the thumbnail pipeline is still running.
+    /// </summary>
+    [Ignore]
+    public string TilePreviewPath
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(ThumbnailPath))
+                return ThumbnailPath!;
+
+            // Only fallback to the original file for still images.
+            if (MediaType is MediaType.Photos or MediaType.Graphics)
+                return Path;
+
+            return string.Empty;
         }
     }
 

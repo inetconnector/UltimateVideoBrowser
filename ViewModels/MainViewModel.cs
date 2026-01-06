@@ -197,7 +197,7 @@ public partial class MainViewModel : ObservableObject
     public IReadOnlyList<MediaTypeFilterOption> MediaTypeFilters { get; }
     public IReadOnlyList<SearchScopeFilterOption> SearchScopeFilters { get; }
     public bool HasAlbums => AlbumTabs.Any(tab => !tab.IsAll);
-    public bool HasMultipleSources => Sources.Count > 1;
+    public bool HasMultipleSources => EnabledSourceCount > 1;
 
     public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
@@ -259,9 +259,7 @@ public partial class MainViewModel : ObservableObject
             var enabledSources = sources.Where(s => s.IsEnabled).ToList();
             var hasPermission = await permissionService.CheckMediaReadAsync().ConfigureAwait(false);
 
-            var total = hasPermission
-                ? 0
-                : await indexService.CountAsync(selectedMediaTypes).ConfigureAwait(false);
+            var total = await indexService.CountAsync(selectedMediaTypes).ConfigureAwait(false);
 
             return (sources, enabledSources, normalizedSourceId, hasPermission, total);
         }).ConfigureAwait(false);
@@ -269,7 +267,7 @@ public partial class MainViewModel : ObservableObject
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             ActiveSourceId = initResult.normalizedSourceId;
-            Sources = initResult.enabledSources;
+            Sources = BuildSourceTabs(initResult.enabledSources);
             _ = UpdateSourceStatsAsync(initResult.sources);
             HasMediaPermission = initResult.hasPermission;
         });
@@ -409,7 +407,7 @@ public partial class MainViewModel : ObservableObject
 
                 ActiveSourceId = result.normalizedSourceId;
                 ActiveAlbumId = result.normalizedAlbumId;
-                Sources = result.enabledSources;
+                Sources = BuildSourceTabs(result.enabledSources);
                 AlbumTabs = result.albumTabs;
                 _ = UpdateSourceStatsAsync(result.sources);
                 MediaItems.ReplaceRange(result.items);
@@ -1617,14 +1615,38 @@ public partial class MainViewModel : ObservableObject
     {
         var enabledSources = sources.Where(s => s.IsEnabled).ToList();
         if (enabledSources.Count == 0)
-            return "";
+            return string.Empty;
 
+        // Empty source id means "all sources" (no filtering).
         if (string.IsNullOrWhiteSpace(activeSourceId))
-            return enabledSources[0].Id;
+            return string.Empty;
 
         var exists = enabledSources.Any(s => s.Id == activeSourceId);
-        return exists ? activeSourceId : enabledSources[0].Id;
+        return exists ? activeSourceId : string.Empty;
     }
+
+    private static List<MediaSource> BuildSourceTabs(List<MediaSource> enabledSources)
+    {
+        // Provide a stable "All media" choice (Id = "") at the top so users can view items
+        // that were indexed before SourceId existed or when multiple sources are enabled.
+        var tabs = new List<MediaSource>
+        {
+            new()
+            {
+                Id = string.Empty,
+                DisplayName = AppResources.AllAlbumsTab,
+                LocalFolderPath = string.Empty,
+                IsEnabled = true
+            }
+        };
+
+        if (enabledSources != null && enabledSources.Count > 0)
+            tabs.AddRange(enabledSources);
+
+        return tabs;
+    }
+
+
 
     private static string NormalizeActiveAlbumId(List<AlbumListItem> albums, string activeAlbumId)
     {

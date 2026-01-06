@@ -11,7 +11,7 @@
           HeightRequest="{Binding Source={x:Reference PreviewRoot}, Path=HeightRequest}"
           MinimumHeightRequest="{Binding Source={x:Reference PreviewRoot}, Path=HeightRequest}">
         <Image
-            Source="{Binding ThumbnailPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
+            Source="{Binding TilePreviewPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
             Aspect="AspectFit"
             helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
         <Frame BackgroundColor="#CC0E0F14"
