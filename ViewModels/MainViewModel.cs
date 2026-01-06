@@ -42,7 +42,15 @@ public partial class MainViewModel : ObservableObject
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
 
+    internal AppSettingsService SettingsService => settingsService;
+
     public event EventHandler? ProUpgradeRequested;
+
+    /// <summary>
+    /// Raised (throttled) during indexing when new items were inserted so the UI can refresh in the background.
+    /// The view is responsible for preserving the current scroll position and selection.
+    /// </summary>
+    public event EventHandler? IndexLiveRefreshSuggested;
     [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private List<AlbumListItem> albumTabs = new();
@@ -63,6 +71,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int indexedCount;
     [ObservableProperty] private int indexedMediaCount;
     private int indexLastInserted;
+    private long indexLastLiveRefreshMs;
+    private int indexLastLiveRefreshInserted;
     [ObservableProperty] private int indexProcessed;
     [ObservableProperty] private double indexRatio;
     private int indexStartingCount;
@@ -2051,10 +2061,24 @@ public partial class MainViewModel : ObservableObject
         IndexedMediaCount = indexStartingCount + progress.Inserted;
 
         // IMPORTANT: Do not refresh the visible media list while indexing.
-        // Refreshing resets the CollectionView/ScrollView state and causes the UI to jump/scroll.
-        // A full refresh is executed once at the end of RunIndexAsync().
+        // Refreshing without preserving scroll state resets the CollectionView and causes jumpy UI.
+        // We still need a background refresh so newly indexed items become visible.
+        // Therefore we only suggest refreshes (throttled) and the view preserves scroll position.
         if (progress.Inserted > indexLastInserted)
+        {
             indexLastInserted = progress.Inserted;
+
+            var now = Environment.TickCount64;
+            var insertedDelta = indexLastInserted - indexLastLiveRefreshInserted;
+
+            // Throttle UI refresh suggestions to avoid excessive DB queries.
+            if (insertedDelta >= 6 && (now - indexLastLiveRefreshMs) >= 1200)
+            {
+                indexLastLiveRefreshMs = now;
+                indexLastLiveRefreshInserted = indexLastInserted;
+                IndexLiveRefreshSuggested?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 
     private async Task UpdateIndexedMediaCountAsync()

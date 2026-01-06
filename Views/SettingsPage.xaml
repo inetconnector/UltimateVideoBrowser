@@ -48,33 +48,6 @@
                 <Frame BackgroundColor="{DynamicResource Surface}"
                        CornerRadius="14"
                        Padding="14">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="{x:Static strings:AppResources.BackupSectionTitle}"
-                               FontAttributes="Bold"
-                               TextColor="{DynamicResource OnSurface}" />
-                        <Label Text="{x:Static strings:AppResources.BackupSectionHint}"
-                               FontSize="12"
-                               TextColor="{DynamicResource OnSurfaceMuted}" />
-                        <HorizontalStackLayout Spacing="12">
-                            <Button Text="{x:Static strings:AppResources.BackupExportButton}"
-                                    Command="{Binding ExportBackupCommand}"
-                                    Style="{StaticResource OverlayButtonStyle}"
-                                    CornerRadius="6"
-                                    HorizontalOptions="Start"
-                                    Padding="12,6" />
-                            <Button Text="{x:Static strings:AppResources.BackupImportButton}"
-                                    Command="{Binding ImportBackupCommand}"
-                                    Style="{StaticResource OverlayButtonStyle}"
-                                    CornerRadius="6"
-                                    HorizontalOptions="Start"
-                                    Padding="12,6" />
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
-                </Frame>
-
-                <Frame BackgroundColor="{DynamicResource Surface}"
-                       CornerRadius="14"
-                       Padding="14">
                     <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.SettingsSortingTitle}"
                                FontAttributes="Bold"
@@ -408,6 +381,33 @@
                                 CornerRadius="6"
                                 HorizontalOptions="Start"
                                 Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{x:Static strings:AppResources.BackupSectionTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.BackupSectionHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <HorizontalStackLayout Spacing="12">
+                            <Button Text="{x:Static strings:AppResources.BackupExportButton}"
+                                    Command="{Binding ExportBackupCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.BackupImportButton}"
+                                    Command="{Binding ImportBackupCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Frame>
 

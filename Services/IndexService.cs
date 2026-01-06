@@ -40,6 +40,63 @@ public sealed class IndexService
             var totalOverall = 0;
             var locationsEnabled = locationMetadataService.IsEnabled;
 
+            const int BatchSize = 64;
+
+            async Task<int> UpsertBatchAsync(List<MediaItem> items)
+            {
+                if (items.Count == 0)
+                    return 0;
+
+                var insertedRows = 0;
+
+                // Batch DB operations in a single transaction to dramatically reduce async overhead.
+                await db.Db.RunInTransactionAsync(conn =>
+                {
+                    foreach (var item in items)
+                    {
+                        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                            continue;
+
+                        var rows = conn.Execute(
+                            "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                            item.Path,
+                            item.Name,
+                            (int)item.MediaType,
+                            item.DurationMs,
+                            item.DateAddedSeconds,
+                            item.SourceId);
+
+                        if (rows == 0)
+                        {
+                            // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
+                            conn.Execute(
+                                "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = ?, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                item.Name,
+                                (int)item.MediaType,
+                                item.DurationMs,
+                                item.DateAddedSeconds,
+                                item.SourceId,
+                                item.Path);
+                        }
+
+                        insertedRows += rows;
+                    }
+                }).ConfigureAwait(false);
+
+                if (locationsEnabled && locationQueue != null)
+                {
+                    // Keep location enrichment functional. We allow duplicates; the worker de-duplicates by DB update.
+                    foreach (var item in items)
+                    {
+                        if (item?.MediaType is MediaType.Photos or MediaType.Videos && !string.IsNullOrWhiteSpace(item.Path))
+                            await QueueLocationLookupAsync(locationQueue, item.Path, item.MediaType, ct)
+                                .ConfigureAwait(false);
+                    }
+                }
+
+                return insertedRows;
+            }
+
             if (locationsEnabled)
             {
                 locationQueue = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(128)
@@ -60,6 +117,8 @@ public sealed class IndexService
             foreach (var source in sources)
             {
                 ct.ThrowIfCancellationRequested();
+
+                var batch = new List<MediaItem>(BatchSize);
 
                 try
                 {
@@ -84,7 +143,18 @@ public sealed class IndexService
                     {
                         ct.ThrowIfCancellationRequested();
 
-                        totalOverall++;
+                        // Collect into a batch. We intentionally keep the per-item code minimal.
+                        if (!string.IsNullOrWhiteSpace(v.Path))
+                        {
+                            batch.Add(v);
+                            if (batch.Count >= BatchSize)
+                            {
+                                inserted += await UpsertBatchAsync(batch).ConfigureAwait(false);
+                                batch.Clear();
+                            }
+                        }
+
+                        processedOverall++;
 
                         // Throttle progress updates to protect UI thread
                         scheduler.Report(new IndexProgress(
@@ -93,66 +163,13 @@ public sealed class IndexService
                             inserted,
                             source.DisplayName ?? "",
                             v.Path ?? ""));
+                    }
 
-                        try
-                        {
-                            // If v.Path can be null/empty, skip early
-                            if (string.IsNullOrWhiteSpace(v.Path))
-                                continue;
-
-                            var exists = await db.Db.FindAsync<MediaItem>(v.Path).ConfigureAwait(false);
-                            if (exists == null)
-                            {
-                                await db.Db.InsertAsync(v).ConfigureAwait(false);
-                                inserted++;
-
-                                if (locationsEnabled && v.MediaType is MediaType.Photos or MediaType.Videos)
-                                    await QueueLocationLookupAsync(locationQueue, v.Path, v.MediaType, ct)
-                                        .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                if ((!exists.Latitude.HasValue || !exists.Longitude.HasValue) &&
-                                    (v.MediaType == MediaType.Photos || v.MediaType == MediaType.Videos))
-                                    if (locationsEnabled)
-                                        await QueueLocationLookupAsync(locationQueue, v.Path, v.MediaType, ct)
-                                            .ConfigureAwait(false);
-
-                                if (exists.Name != v.Name ||
-                                    exists.DurationMs != v.DurationMs ||
-                                    exists.MediaType != v.MediaType ||
-                                    exists.SourceId != v.SourceId ||
-                                    exists.DateAddedSeconds != v.DateAddedSeconds ||
-                                    exists.Latitude != v.Latitude ||
-                                    exists.Longitude != v.Longitude)
-                                {
-                                    exists.Name = v.Name;
-                                    exists.DurationMs = v.DurationMs;
-                                    exists.MediaType = v.MediaType;
-                                    exists.SourceId = v.SourceId;
-                                    exists.DateAddedSeconds = v.DateAddedSeconds;
-                                    if (v.Latitude.HasValue)
-                                        exists.Latitude = v.Latitude;
-                                    if (v.Longitude.HasValue)
-                                        exists.Longitude = v.Longitude;
-                                    await db.Db.UpdateAsync(exists).ConfigureAwait(false);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Indexing skipped item '{v?.Path}': {ex}");
-                        }
-
-                        processedOverall++;
-
-                        // Final per-item report can also be throttled; keep it safe
-                        scheduler.Report(new IndexProgress(
-                            processedOverall,
-                            totalOverall,
-                            inserted,
-                            source.DisplayName ?? "",
-                            v.Path ?? ""));
+                    // Flush remaining items for this source.
+                    if (batch.Count > 0)
+                    {
+                        inserted += await UpsertBatchAsync(batch).ConfigureAwait(false);
+                        batch.Clear();
                     }
                 }
                 catch (Exception ex)

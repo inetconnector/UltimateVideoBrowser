@@ -188,23 +188,54 @@
                         <!-- Permission notice -->
                         <components:MainPermissionNoticeView Grid.Row="4" />
 
-                        <!-- Search + Sort -->
-                        <components:MainSearchSortView x:Name="SearchSortView" Grid.Row="5" />
+                        <!-- Search + filters dock (collapsible, state persisted) -->
+                        <Frame Grid.Row="5"
+                               Grid.RowSpan="5"
+                               BackgroundColor="{DynamicResource Surface}"
+                               CornerRadius="16"
+                               Padding="12"
+                               BorderColor="{DynamicResource BorderSubtle}">
+                            <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="{x:Static strings:AppResources.SettingsFilterTitle}"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource OnSurface}"
+                                           VerticalOptions="Center" />
 
-                        <!-- Media type filter -->
-                        <components:MainMediaTypeFilterView Grid.Row="6" />
+                                    <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                        <Button Text="▼"
+                                                WidthRequest="40"
+                                                HeightRequest="32"
+                                                Padding="0"
+                                                FontAttributes="Bold"
+                                                Style="{StaticResource OverlayButtonStyle}"
+                                                IsVisible="{Binding IsFiltersDockExpanded}"
+                                                Command="{Binding ToggleFiltersDockExpandedCommand}"
+                                                AutomationProperties.Name="Collapse filters" />
+                                        <Button Text="◀"
+                                                Grid.Column="1"
+                                                WidthRequest="40"
+                                                HeightRequest="32"
+                                                Padding="0"
+                                                FontAttributes="Bold"
+                                                Style="{StaticResource OverlayButtonStyle}"
+                                                IsVisible="{Binding IsFiltersDockExpanded, Converter={StaticResource InverseBoolConverter}}"
+                                                Command="{Binding ToggleFiltersDockExpandedCommand}"
+                                                AutomationProperties.Name="Expand filters" />
+                                    </Grid>
+                                </Grid>
 
-                        <!-- Date filter -->
-                        <components:MainDateFilterView Grid.Row="7"
-                                                       IsVisible="{Binding IsDateFilterEnabled}" />
-
-                        <!-- Source tabs -->
-                        <components:MainSourcesTabsView Grid.Row="8"
-                                                        IsVisible="{Binding HasMultipleSources}" />
-
-                        <!-- Album tabs -->
-                        <components:MainAlbumsTabsView Grid.Row="9"
-                                                       IsVisible="{Binding HasAlbums}" />
+                                <VerticalStackLayout Grid.Row="1"
+                                                     Spacing="12"
+                                                     IsVisible="{Binding IsFiltersDockExpanded}">
+                                    <components:MainSearchSortView x:Name="SearchSortView" />
+                                    <components:MainMediaTypeFilterView />
+                                    <components:MainDateFilterView IsVisible="{Binding IsDateFilterEnabled}" />
+                                    <components:MainSourcesTabsView IsVisible="{Binding HasMultipleSources}" />
+                                    <components:MainAlbumsTabsView IsVisible="{Binding HasAlbums}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
 
                         <!-- Indexing banner -->
                         <components:MainIndexingBannerView Grid.Row="10" />

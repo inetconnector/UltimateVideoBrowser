@@ -1,6 +1,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Collections;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
@@ -261,8 +262,20 @@ public partial class MainPage : ContentPage
             return;
 
         // Height is 0 until the first layout pass.
-        if (HeaderContainer.Height > 0)
-            binding.HeaderHeight = HeaderContainer.Height;
+        var newHeight = HeaderContainer.Height;
+        if (newHeight <= 0)
+            return;
+
+        // Prevent list jumps while indexing: small header re-measurements (e.g. counters changing)
+        // must not constantly adjust the spacer and therefore the scroll offset.
+        var delta = Math.Abs(binding.HeaderHeight - newHeight);
+        if (vm.IsIndexing && lastFirstVisibleIndex > 0 && delta < 60)
+            return;
+
+        if (delta < 2)
+            return;
+
+        binding.HeaderHeight = newHeight;
     }
 
     private void OnSortChipTapped(object sender, TappedEventArgs e)
@@ -288,6 +301,10 @@ public partial class MainPage : ContentPage
         private bool isTimelinePreviewVisible;
         private string timelinePreviewLabel = "";
         private bool isPreviewDockExpanded = true;
+        private bool isFiltersDockExpanded = true;
+
+        private long lastLiveRefreshMs;
+        private CancellationTokenSource? liveRefreshCts;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
@@ -334,7 +351,19 @@ public partial class MainPage : ContentPage
             CopyItemCommand = vm.CopyItemCommand;
             DeleteItemCommand = vm.DeleteItemCommand;
             OpenItemMenuCommand = vm.OpenItemMenuCommand;
+            // Restore UI states from persisted settings.
+            try
+            {
+                isPreviewDockExpanded = vm.SettingsService.PreviewDockExpanded;
+                isFiltersDockExpanded = vm.SettingsService.FiltersDockExpanded;
+            }
+            catch
+            {
+                // Best-effort only.
+            }
+
             TogglePreviewDockExpandedCommand = new RelayCommand(() => IsPreviewDockExpanded = !IsPreviewDockExpanded);
+            ToggleFiltersDockExpandedCommand = new RelayCommand(() => IsFiltersDockExpanded = !IsFiltersDockExpanded);
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
             ShowIndexOverlayCommand = new RelayCommand(() =>
             {
@@ -342,11 +371,13 @@ public partial class MainPage : ContentPage
                 IsIndexingOverlayVisible = true;
             });
 
-            TogglePreviewDockExpandedCommand = new RelayCommand(() =>
-                IsPreviewDockExpanded = !IsPreviewDockExpanded);
 
             proUpgradeService.ProStatusChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(IsProUnlocked)));
+
+            // While indexing we want newly inserted items to appear in the list.
+            // We refresh in the background and then restore scroll position.
+            vm.IndexLiveRefreshSuggested += (_, _) => MainThread.BeginInvokeOnMainThread(ScheduleLiveRefresh);
 
             vm.PropertyChanged += (_, args) =>
             {
@@ -562,6 +593,7 @@ public partial class MainPage : ContentPage
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
         public IRelayCommand TogglePreviewDockExpandedCommand { get; }
+        public IRelayCommand ToggleFiltersDockExpandedCommand { get; }
         public IRelayCommand PlayCommand { get; }
         public IRelayCommand TogglePlayerFullscreenCommand { get; }
         public IRelayCommand ToggleMediaTypeFilterCommand { get; }
@@ -744,6 +776,35 @@ public partial class MainPage : ContentPage
                     return;
 
                 isPreviewDockExpanded = value;
+                try
+                {
+                    vm.SettingsService.PreviewDockExpanded = value;
+                }
+                catch
+                {
+                    // Best-effort only.
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsFiltersDockExpanded
+        {
+            get => isFiltersDockExpanded;
+            set
+            {
+                if (isFiltersDockExpanded == value)
+                    return;
+
+                isFiltersDockExpanded = value;
+                try
+                {
+                    vm.SettingsService.FiltersDockExpanded = value;
+                }
+                catch
+                {
+                    // Best-effort only.
+                }
                 OnPropertyChanged();
             }
         }
@@ -965,6 +1026,24 @@ public partial class MainPage : ContentPage
                 Height = 360
             };
 
+            try
+            {
+                var display = DeviceDisplay.MainDisplayInfo;
+                var density = display.Density <= 0 ? 1 : display.Density;
+                var screenWidth = display.Width / density;
+                var screenHeight = display.Height / density;
+
+                var x = (screenWidth - window.Width) / 2.0;
+                var y = (screenHeight - window.Height) / 2.0;
+
+                window.X = Math.Max(0, x);
+                window.Y = Math.Max(0, y);
+            }
+            catch
+            {
+                // Best-effort only.
+            }
+
             window.Destroying += (_, _) =>
             {
                 MainThread.BeginInvokeOnMainThread(() =>
@@ -980,6 +1059,19 @@ public partial class MainPage : ContentPage
 
             indexingWindow = window;
             Application.Current?.OpenWindow(window);
+
+            // Bring to foreground (best-effort).
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    WindowFocusHelper.TryBringToFront(window);
+                }
+                catch
+                {
+                    // Best-effort only.
+                }
+            });
         }
 
         private void CloseIndexingWindow()
@@ -990,6 +1082,75 @@ public partial class MainPage : ContentPage
             var window = indexingWindow;
             indexingWindow = null;
             Application.Current?.CloseWindow(window);
+        }
+
+        private void ScheduleLiveRefresh()
+        {
+            if (!vm.IsIndexing)
+                return;
+
+            var now = Environment.TickCount64;
+            if ((now - lastLiveRefreshMs) < 900)
+                return;
+
+            lastLiveRefreshMs = now;
+
+            liveRefreshCts?.Cancel();
+            liveRefreshCts?.Dispose();
+            liveRefreshCts = new CancellationTokenSource();
+            var ct = liveRefreshCts.Token;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    // Capture current visual anchor so we can restore scroll after refresh.
+                    var anchorPath = GetFirstVisibleMediaPath();
+
+                    await vm.RefreshAsync().ConfigureAwait(false);
+
+                    if (ct.IsCancellationRequested || string.IsNullOrWhiteSpace(anchorPath))
+                        return;
+
+                    var target = await vm.EnsureMediaItemLoadedAsync(anchorPath, ct).ConfigureAwait(false);
+                    if (target == null || ct.IsCancellationRequested)
+                        return;
+
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        try
+                        {
+                            page.MediaItemsView?.ScrollTo(target, position: ScrollToPosition.Start, animate: false);
+                        }
+                        catch
+                        {
+                            // Ignore
+                        }
+                    });
+                }
+                catch
+                {
+                    // Keep UI resilient.
+                }
+            }, ct);
+        }
+
+        private string? GetFirstVisibleMediaPath()
+        {
+            try
+            {
+                var count = vm.MediaItems.Count;
+                if (count <= 0)
+                    return null;
+
+                var idx = Math.Clamp(page.lastFirstVisibleIndex, 0, count - 1);
+                var item = vm.MediaItems[idx];
+                return item?.Path;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public Task ApplyGridSpanAsync()

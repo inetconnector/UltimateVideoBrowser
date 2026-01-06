@@ -20,6 +20,10 @@ namespace UltimateVideoBrowser;
 
 public static class MauiProgram
 {
+#if WINDOWS
+    private static bool _mainWindowMaximized;
+#endif
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -38,16 +42,22 @@ public static class MauiProgram
                 {
                     try
                     {
+	                    // Only maximize the FIRST window (main window). Auxiliary windows (e.g. indexing progress)
+	                    // must stay as sized popup windows.
+	                    if (_mainWindowMaximized)
+	                        return;
+
 	                    // In MAUI's Windows lifecycle events, the window parameter is a WinUI window.
 	                    // Avoid MAUI handler APIs here to keep this compiling across target frameworks.
 	                    var hwnd = WindowNative.GetWindowHandle(window);
 	                    var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
 	                    var appWindow = AppWindow.GetFromWindowId(windowId);
 
-	                    // Start maximized (requested).
 	                    appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
 	                    if (appWindow.Presenter is OverlappedPresenter presenter)
 	                        presenter.Maximize();
+
+	                    _mainWindowMaximized = true;
                     }
                     catch
                     {

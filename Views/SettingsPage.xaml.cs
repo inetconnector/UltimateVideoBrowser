@@ -23,8 +23,27 @@ public partial class SettingsPage : ContentPage
         BackButton.IsEnabled = false;
         await Task.Yield();
 
-        if (Navigation.NavigationStack.Count > 1)
-            await Navigation.PopAsync(false);
+        try
+        {
+            if (Navigation.NavigationStack.Count > 1)
+            {
+                await Navigation.PopAsync(false);
+                return;
+            }
+
+            if (Navigation.ModalStack.Count > 0)
+            {
+                await Navigation.PopModalAsync(false);
+                return;
+            }
+
+            if (Shell.Current != null)
+                await Shell.Current.GoToAsync("..", false);
+        }
+        finally
+        {
+            BackButton.IsEnabled = true;
+        }
     }
 
     private Task NavigateToDocumentAsync(string title, string body)

@@ -30,6 +30,9 @@ public sealed class AppSettingsService
     private const string ProActivationValidUntilKey = "pro_activation_valid_until";
     private const string LicenseServerBaseUrlKey = "license_server_base_url";
 
+    private const string PreviewDockExpandedKey = "ui_preview_dock_expanded";
+    private const string FiltersDockExpandedKey = "ui_filters_dock_expanded";
+
     private static readonly string[] DefaultVideoExtensions = { ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".m4v" };
 
     private static readonly string[] DefaultPhotoExtensions =
@@ -67,6 +70,24 @@ public sealed class AppSettingsService
 
         if (!store.ContainsKey(PeopleTaggingTrialStartedUtcKey))
             store.SetLong(PeopleTaggingTrialStartedUtcKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+        if (!store.ContainsKey(PreviewDockExpandedKey))
+            store.SetBool(PreviewDockExpandedKey, true);
+
+        if (!store.ContainsKey(FiltersDockExpandedKey))
+            store.SetBool(FiltersDockExpandedKey, true);
+    }
+
+    public bool PreviewDockExpanded
+    {
+        get => store.GetBool(PreviewDockExpandedKey, true);
+        set => store.SetBool(PreviewDockExpandedKey, value);
+    }
+
+    public bool FiltersDockExpanded
+    {
+        get => store.GetBool(FiltersDockExpandedKey, true);
+        set => store.SetBool(FiltersDockExpandedKey, value);
     }
 
     public string ActiveSourceId
