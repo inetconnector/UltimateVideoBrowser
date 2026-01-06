@@ -40,6 +40,7 @@ public partial class MainViewModel : ObservableObject
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
+    private readonly ImageEditService imageEditService;
     [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private List<AlbumListItem> albumTabs = new();
@@ -133,6 +134,7 @@ public partial class MainViewModel : ObservableObject
         this.indexService = indexService;
         SettingsService = settingsService;
         this.thumbnailService = thumbnailService;
+        this.imageEditService = imageEditService;
         this.playbackService = playbackService;
         this.permissionService = permissionService;
         this.fileExportService = fileExportService;
@@ -2154,4 +2156,49 @@ public partial class MainViewModel : ObservableObject
         public SearchScope Scope { get; }
         public string Label { get; }
     }
+    [RelayCommand]
+    public async Task RotateLeftAsync(MediaItem item)
+        => await ApplyImageEditAsync(item, ImageEditOperation.RotateLeft).ConfigureAwait(false);
+
+    [RelayCommand]
+    public async Task RotateRightAsync(MediaItem item)
+        => await ApplyImageEditAsync(item, ImageEditOperation.RotateRight).ConfigureAwait(false);
+
+    [RelayCommand]
+    public async Task MirrorAsync(MediaItem item)
+        => await ApplyImageEditAsync(item, ImageEditOperation.MirrorHorizontal).ConfigureAwait(false);
+
+    private async Task ApplyImageEditAsync(MediaItem item, ImageEditOperation operation)
+    {
+        if (!AllowFileChanges)
+            return;
+
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
+            return;
+
+        try
+        {
+            IsRefreshing = true;
+
+            var ok = await imageEditService.TryApplyAsync(item.Path, operation, CancellationToken.None).ConfigureAwait(false);
+            if (!ok)
+                return;
+
+            // Force thumbnail refresh and update the UI binding immediately.
+            thumbnailService.DeleteThumbnailForPath(item.Path);
+            item.ThumbnailPath = null;
+
+            var thumb = await thumbnailService.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(thumb))
+                item.ThumbnailPath = thumb;
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
 }

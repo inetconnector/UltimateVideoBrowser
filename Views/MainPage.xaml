@@ -274,6 +274,29 @@
                                         <Grid>
                                             <Grid>
                                                 <components:MediaItemPreviewView HeightRequest="170" />
+                                                <HorizontalStackLayout
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Start"
+                                                    Margin="8"
+                                                    Spacing="6"
+                                                    ZIndex="10"
+                                                    IsVisible="{Binding MediaType, Converter={StaticResource MediaTypeIsStillImageConverter}}">
+                                                    <ImageButton Source="icon_rotate_left.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateLeftCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_rotate_right.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateRightCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_mirror.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MirrorCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                </HorizontalStackLayout>
                                                 <Button Text="{x:Static strings:AppResources.OpenLocationAction}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenLocationCommand}"
                                                         CommandParameter="{Binding .}"
@@ -482,6 +505,29 @@
                                         <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                             <Grid>
                                                 <components:MediaItemPreviewView HeightRequest="170" />
+                                                <HorizontalStackLayout
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Start"
+                                                    Margin="8"
+                                                    Spacing="6"
+                                                    ZIndex="10"
+                                                    IsVisible="{Binding MediaType, Converter={StaticResource MediaTypeIsStillImageConverter}}">
+                                                    <ImageButton Source="icon_rotate_left.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateLeftCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_rotate_right.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateRightCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_mirror.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MirrorCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                </HorizontalStackLayout>
                                                 <Button Text="{x:Static strings:AppResources.OpenLocationAction}"
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenLocationCommand}"
                                                         CommandParameter="{Binding .}"
@@ -675,6 +721,29 @@
                                         </Frame.Triggers>
                                         <Grid RowDefinitions="170,Auto,Auto,Auto" Padding="10">
                                             <components:MediaItemPreviewView HeightRequest="170" />
+                                                <HorizontalStackLayout
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Start"
+                                                    Margin="8"
+                                                    Spacing="6"
+                                                    ZIndex="10"
+                                                    IsVisible="{Binding MediaType, Converter={StaticResource MediaTypeIsStillImageConverter}}">
+                                                    <ImageButton Source="icon_rotate_left.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateLeftCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_rotate_right.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RotateRightCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                    <ImageButton Source="icon_mirror.svg"
+                                                                 Style="{StaticResource OverlayIconButtonStyle}"
+                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MirrorCommand}"
+                                                                 CommandParameter="{Binding .}"
+                                                                 IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AllowFileChanges}" />
+                                                </HorizontalStackLayout>
 
                                             <Grid Grid.Row="1"
                                                   RowDefinitions="Auto,Auto"

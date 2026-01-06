@@ -190,6 +190,20 @@
         </Setter>
     </Style>
 
+    <Style x:Key="OverlayIconButtonStyle"
+           TargetType="ImageButton">
+        <Setter Property="WidthRequest" Value="34" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface3}" />
+        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Aspect" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Shadow" Value="{x:Null}" />
+    </Style>
+
     <!-- CONTROL VISIBILITY FIXES -->
     <Style TargetType="Switch">
         <Setter Property="OnColor" Value="{DynamicResource Accent}" />

@@ -16,6 +16,7 @@
             <converters:SearchScopeSelectedConverter x:Key="SearchScopeSelectedConverter" />
             <converters:MediaTypeLabelConverter x:Key="MediaTypeLabelConverter" />
             <converters:TagNavigationContextConverter x:Key="TagNavigationContextConverter" />
+            <converters:MediaTypeIsStillImageConverter x:Key="MediaTypeIsStillImageConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <styles:ColorsLight />
                 <ResourceDictionary Source="Resources/Styles/Theme.xaml" />
