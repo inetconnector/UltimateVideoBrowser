@@ -52,6 +52,8 @@ public sealed class ThumbnailService
         Directory.CreateDirectory(cacheDir);
     }
 
+    public string ThumbnailsDirectoryPath => cacheDir;
+
     public string GetThumbnailPath(MediaItem item)
     {
         var safe = MakeSafeFileName(item.Path ?? string.Empty);

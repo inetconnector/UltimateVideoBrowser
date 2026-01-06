@@ -19,6 +19,36 @@ public sealed class FileSettingsStore
             Directory.CreateDirectory(directory);
     }
 
+    public string SettingsPath => settingsPath;
+
+    public void ReloadFromDisk()
+    {
+        lock (gate)
+        {
+            loaded = false;
+            values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            EnsureLoaded();
+        }
+    }
+
+    public void ReplaceFromFile(string sourceSettingsPath)
+    {
+        if (string.IsNullOrWhiteSpace(sourceSettingsPath) || !File.Exists(sourceSettingsPath))
+            throw new FileNotFoundException("Source settings file not found.", sourceSettingsPath);
+
+        lock (gate)
+        {
+            var directory = Path.GetDirectoryName(settingsPath);
+            if (!string.IsNullOrWhiteSpace(directory))
+                Directory.CreateDirectory(directory);
+
+            File.Copy(sourceSettingsPath, settingsPath, true);
+            loaded = false;
+            values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            EnsureLoaded();
+        }
+    }
+
     public string GetString(string key, string fallback)
     {
         lock (gate)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -446,7 +446,7 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     
     
-    <value>&quot;שמור בשם&quot; אינו נתמך במכשיר זה.</value>
+    <value>"שמור בשם" אינו נתמך במכשיר זה.</value>
     
   
   </data>
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>ההעתקה ללוח נכשלה. נסה שוב או השתמש ב-&quot;הצג יומן&quot; כדי להעתיק ידנית.</value>
+    <value>ההעתקה ללוח נכשלה. נסה שוב או השתמש ב-"הצג יומן" כדי להעתיק ידנית.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>שדרג עכשיו</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>האם ברצונך ליצור אינדקס מחדש לכל מה שיש כעת? זה עשוי לקחת זמן בהתאם לגודל הספרייה שלך.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>גיבוי מסד נתונים</value></data><data name="BackupSectionHint" xml:space="preserve"><value>ייצוא או ייבוא של מסד הנתונים המקומי כולל הגדרות ותמונות ממוזערות.</value></data><data name="BackupExportButton" xml:space="preserve"><value>ייצוא גיבוי</value></data><data name="BackupImportButton" xml:space="preserve"><value>ייבוא גיבוי</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>הגיבוי יוצא</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>הגיבוי יוצא בהצלחה.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>ייצוא הגיבוי נכשל</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>לא ניתן ליצור או לשמור את הגיבוי.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>בחר קובץ ZIP של גיבוי</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>לשחזר גיבוי?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>הפעולה תדרוס את מסד הנתונים, ההגדרות והתמונות הממוזערות הנוכחיים. להמשיך?</value></data><data name="RestoreButton" xml:space="preserve"><value>שחזור</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>הוספה לאינדקס מתבצעת</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>עצור את ההוספה לאינדקס לפני שחזור גיבוי.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>השחזור נכשל</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>לא ניתן לשחזר את הגיבוי.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>הגיבוי הזה לא מכיל קובץ מסד נתונים.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>השחזור הושלם</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>הגיבוי שוחזר. ייתכן שתצטרך לפתוח מחדש את האפליקציה כדי לראות את כל השינויים.</value></data></root>

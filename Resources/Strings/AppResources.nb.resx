@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Kopiering til utklippstavlen mislyktes. Prøv igjen eller bruk &quot;Vis logg&quot; for å kopiere manuelt.</value>
+    <value>Kopiering til utklippstavlen mislyktes. Prøv igjen eller bruk "Vis logg" for å kopiere manuelt.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Oppgrader nå</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Vil du reindeksere alt nå? Dette kan ta litt tid avhengig av størrelsen på biblioteket.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Databasebackup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Eksporter eller importer den lokale databasen inkl. innstillinger og miniatyrer.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Eksporter sikkerhetskopi</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importer sikkerhetskopi</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Sikkerhetskopi eksportert</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Sikkerhetskopien ble eksportert.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Eksport mislyktes</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Kunne ikke opprette eller lagre sikkerhetskopien.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Velg en backup-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Gjenopprette backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dette overskriver gjeldende database, innstillinger og miniatyrer. Fortsette?</value></data><data name="RestoreButton" xml:space="preserve"><value>Gjenopprett</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indeksering pågår</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stopp indeksering før du gjenoppretter en backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Gjenoppretting mislyktes</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Kunne ikke gjenopprette sikkerhetskopien.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Denne backupen inneholder ingen databasefil.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Gjenoppretting fullført</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup gjenopprettet. Du må kanskje åpne appen på nytt for å se alle endringer.</value></data></root>

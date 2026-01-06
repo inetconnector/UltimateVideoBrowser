@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Falha ao copiar para a área de transferência. Tenta novamente ou usa &quot;Ver registo&quot; para copiar manualmente.</value>
+    <value>Falha ao copiar para a área de transferência. Tenta novamente ou usa "Ver registo" para copiar manualmente.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Atualizar agora</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Queres reindexar tudo agora? Isto pode demorar algum tempo, dependendo do tamanho da tua biblioteca.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Backup do banco de dados</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exporte ou importe o banco local incluindo configurações e miniaturas.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Exportar backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importar backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup exportado</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Seu backup foi exportado com sucesso.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Falha ao exportar</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Não foi possível criar ou salvar o backup.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Selecione um ZIP de backup</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Restaurar backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Isso substituirá o banco, configurações e miniaturas atuais. Continuar?</value></data><data name="RestoreButton" xml:space="preserve"><value>Restaurar</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexação em andamento</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Pare a indexação antes de restaurar um backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Falha na restauração</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Não foi possível restaurar o backup.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Este backup não contém o arquivo do banco de dados.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Restauração concluída</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup restaurado. Talvez seja necessário reabrir o app para ver todas as alterações.</value></data></root>

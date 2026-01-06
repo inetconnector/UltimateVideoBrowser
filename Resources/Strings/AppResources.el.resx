@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -446,7 +446,7 @@
   <data name="SaveAsNotSupportedMessage" xml:space="preserve">
     
     
-    <value>Η &quot;Αποθήκευση ως&quot; δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
+    <value>Η "Αποθήκευση ως" δεν υποστηρίζεται σε αυτή τη συσκευή.</value>
     
   
   </data>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Θέλεις να επαναδημιουργηθεί το ευρετήριο για όλα τώρα; Αυτό μπορεί να πάρει λίγο χρόνο ανάλογα με το μέγεθος της βιβλιοθήκης σου.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Αντίγραφο ασφαλείας βάσης</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Εξαγωγή ή εισαγωγή της τοπικής βάσης μαζί με ρυθμίσεις και μικρογραφίες.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Εξαγωγή αντιγράφου</value></data><data name="BackupImportButton" xml:space="preserve"><value>Εισαγωγή αντιγράφου</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Εξαγωγή ολοκληρώθηκε</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Το αντίγραφο ασφαλείας εξήχθη με επιτυχία.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Αποτυχία εξαγωγής</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Δεν ήταν δυνατή η δημιουργία ή αποθήκευση του αντιγράφου.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Επιλέξτε ZIP αντιγράφου</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Επαναφορά αντιγράφου;</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Θα αντικαταστήσει την τρέχουσα βάση, ρυθμίσεις και μικρογραφίες. Συνέχεια;</value></data><data name="RestoreButton" xml:space="preserve"><value>Επαναφορά</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Σε εξέλιξη η ευρετηρίαση</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Σταματήστε την ευρετηρίαση πριν την επαναφορά.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Αποτυχία επαναφοράς</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Δεν ήταν δυνατή η επαναφορά του αντιγράφου.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Το αντίγραφο δεν περιέχει αρχείο βάσης δεδομένων.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Η επαναφορά ολοκληρώθηκε</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Το αντίγραφο επαναφέρθηκε. Ίσως χρειαστεί να ανοίξετε ξανά την εφαρμογή.</value></data></root>

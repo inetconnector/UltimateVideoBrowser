@@ -79,11 +79,6 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isLocationEnabled;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
-
-    // Photo preview transforms (non-destructive) so Rotate/Mirror work for every image.
-    [ObservableProperty] private double photoPreviewRotation;
-    [ObservableProperty] private double photoPreviewScaleX = 1;
-
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
     [ObservableProperty] private int markedCount;
@@ -655,50 +650,10 @@ public partial class MainViewModel : ObservableObject
         CurrentMediaType = item.MediaType;
         IsPlayerFullscreen = false;
 
-        // Reset non-destructive transforms when switching to another item.
-        PhotoPreviewRotation = 0;
-        PhotoPreviewScaleX = 1;
-
         if (item.MediaType == MediaType.Videos && settingsService.InternalPlayerEnabled)
             return;
 
         playbackService.Open(item);
-    }
-
-    [RelayCommand]
-    public void RotatePhotoLeft()
-    {
-        if (!ShowPhotoPreview)
-            return;
-
-        PhotoPreviewRotation = NormalizeAngle(PhotoPreviewRotation - 90);
-    }
-
-    [RelayCommand]
-    public void RotatePhotoRight()
-    {
-        if (!ShowPhotoPreview)
-            return;
-
-        PhotoPreviewRotation = NormalizeAngle(PhotoPreviewRotation + 90);
-    }
-
-    [RelayCommand]
-    public void TogglePhotoMirror()
-    {
-        if (!ShowPhotoPreview)
-            return;
-
-        PhotoPreviewScaleX = PhotoPreviewScaleX >= 0 ? -1 : 1;
-    }
-
-    private static double NormalizeAngle(double angle)
-    {
-        // Keep values in a stable range for bindings/animations.
-        var a = angle % 360;
-        if (a < 0)
-            a += 360;
-        return a;
     }
 
     [RelayCommand]
@@ -2095,11 +2050,11 @@ public partial class MainViewModel : ObservableObject
         IndexedCount = progress.Inserted;
         IndexedMediaCount = indexStartingCount + progress.Inserted;
 
+        // IMPORTANT: Do not refresh the visible media list while indexing.
+        // Refreshing resets the CollectionView/ScrollView state and causes the UI to jump/scroll.
+        // A full refresh is executed once at the end of RunIndexAsync().
         if (progress.Inserted > indexLastInserted)
-        {
             indexLastInserted = progress.Inserted;
-            _ = RefreshAsync();
-        }
     }
 
     private async Task UpdateIndexedMediaCountAsync()

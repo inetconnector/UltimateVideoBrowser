@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Kopiering til udklipsholder mislykkedes. Prøv igen eller brug &quot;Vis log&quot; for at kopiere manuelt.</value>
+    <value>Kopiering til udklipsholder mislykkedes. Prøv igen eller brug "Vis log" for at kopiere manuelt.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Opgrader nu</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Vil du genindeksere alt nu? Det kan tage et stykke tid afhængigt af bibliotekets størrelse.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Databasebackup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Eksportér eller importér den lokale database inkl. indstillinger og miniaturer.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Eksportér backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importér backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup eksporteret</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Din backup blev eksporteret.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Eksport mislykkedes</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Backup kunne ikke oprettes eller gemmes.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Vælg en backup-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Gendan backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dette overskriver din nuværende database, indstillinger og miniaturer. Fortsæt?</value></data><data name="RestoreButton" xml:space="preserve"><value>Gendan</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indeksering i gang</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stop indeksering før du gendanner en backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Gendannelse mislykkedes</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Backup kunne ikke gendannes.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Denne backup indeholder ingen databasefil.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Gendannelse fuldført</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup gendannet. Det kan være nødvendigt at genåbne appen for at se alle ændringer.</value></data></root>

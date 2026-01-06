@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>คัดลอกไปยังคลิปบอร์ดไม่สำเร็จ โปรดลองอีกครั้งหรือใช้ &quot;ดูบันทึก&quot; เพื่อคัดลอกด้วยตนเอง</value>
+    <value>คัดลอกไปยังคลิปบอร์ดไม่สำเร็จ โปรดลองอีกครั้งหรือใช้ "ดูบันทึก" เพื่อคัดลอกด้วยตนเอง</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>อัปเกรดตอนนี้</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>ต้องการทำดัชนีใหม่ทั้งหมดตอนนี้หรือไม่? อาจใช้เวลาสักครู่ขึ้นอยู่กับขนาดไลบรารีของคุณ</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>สำรองฐานข้อมูล</value></data><data name="BackupSectionHint" xml:space="preserve"><value>ส่งออกหรือนำเข้าฐานข้อมูลในเครื่อง รวมถึงการตั้งค่าและภาพย่อ</value></data><data name="BackupExportButton" xml:space="preserve"><value>ส่งออกไฟล์สำรอง</value></data><data name="BackupImportButton" xml:space="preserve"><value>นำเข้าไฟล์สำรอง</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>ส่งออกไฟล์สำรองแล้ว</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>ส่งออกไฟล์สำรองสำเร็จ</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>ส่งออกไม่สำเร็จ</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>ไม่สามารถสร้างหรือบันทึกไฟล์สำรองได้</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>เลือกไฟล์ ZIP สำรอง</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>กู้คืนไฟล์สำรอง?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>การดำเนินการนี้จะเขียนทับฐานข้อมูล การตั้งค่า และภาพย่อปัจจุบัน ต้องการทำต่อหรือไม่?</value></data><data name="RestoreButton" xml:space="preserve"><value>กู้คืน</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>กำลังสร้างดัชนี</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>หยุดการสร้างดัชนีก่อนกู้คืนไฟล์สำรอง</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>กู้คืนไม่สำเร็จ</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>ไม่สามารถกู้คืนไฟล์สำรองได้</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>ไฟล์สำรองนี้ไม่มีไฟล์ฐานข้อมูล</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>กู้คืนเสร็จสิ้น</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>กู้คืนไฟล์สำรองแล้ว อาจต้องเปิดแอปใหม่เพื่อให้เห็นการเปลี่ยนแปลงทั้งหมด</value></data></root>

@@ -12,6 +12,7 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly AppDb db;
     private readonly IDialogService dialogService;
+    private readonly IBackupRestoreService backupRestoreService;
     private readonly ModelFileService modelFileService;
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly AppSettingsService settingsService;
@@ -52,13 +53,14 @@ public partial class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(AppSettingsService settingsService, ModelFileService modelFileService,
         PeopleRecognitionService peopleRecognitionService, AppDb db, ISourceService sourceService,
-        IDialogService dialogService)
+        IBackupRestoreService backupRestoreService, IDialogService dialogService)
     {
         this.settingsService = settingsService;
         this.modelFileService = modelFileService;
         this.peopleRecognitionService = peopleRecognitionService;
         this.db = db;
         this.sourceService = sourceService;
+        this.backupRestoreService = backupRestoreService;
         this.dialogService = dialogService;
         ThemeOptions = new[]
         {
@@ -443,6 +445,68 @@ public partial class SettingsViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(() => IsDatabaseResetting = false);
         }
+    }
+
+    [RelayCommand]
+    private Task ExportBackupAsync(CancellationToken ct)
+    {
+        return backupRestoreService.ExportBackupAsync(ct);
+    }
+
+    [RelayCommand]
+    private async Task ImportBackupAsync(CancellationToken ct)
+    {
+        await backupRestoreService.ImportBackupAsync(ct).ConfigureAwait(false);
+        await MainThread.InvokeOnMainThreadAsync(ReloadFromSettingsService);
+    }
+
+    private void ReloadFromSettingsService()
+    {
+        // Refresh the most relevant UI-bound values after a restore.
+        SelectedTheme = ThemeOptions.FirstOrDefault(option => option.Key == settingsService.ThemePreference)
+                        ?? ThemeOptions.First();
+
+        SelectedSortOption = SortOptions.FirstOrDefault(option => option.Key == settingsService.SelectedSortOptionKey)
+                             ?? SortOptions.First();
+
+        IsDateFilterEnabled = settingsService.DateFilterEnabled;
+        DateFilterFrom = settingsService.DateFilterFrom;
+        DateFilterTo = settingsService.DateFilterTo;
+
+        isApplyingNeedsReindex = true;
+        NeedsReindex = settingsService.NeedsReindex;
+        isApplyingNeedsReindex = false;
+
+        IsIndexing = settingsService.IsIndexing;
+        IsInternalPlayerEnabled = settingsService.InternalPlayerEnabled;
+
+        var indexed = settingsService.IndexedMediaTypes;
+        IsVideosIndexed = indexed.HasFlag(MediaType.Videos);
+        IsPhotosIndexed = indexed.HasFlag(MediaType.Photos);
+        IsGraphicsIndexed = indexed.HasFlag(MediaType.Graphics);
+        IsDocumentsIndexed = indexed.HasFlag(MediaType.Documents);
+
+        VideoExtensionsText = settingsService.VideoExtensions;
+        PhotoExtensionsText = settingsService.PhotoExtensions;
+        DocumentExtensionsText = settingsService.DocumentExtensions;
+        AllowFileChanges = settingsService.AllowFileChanges;
+        IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
+
+        var searchScope = settingsService.SearchScope == SearchScope.None
+            ? SearchScope.All
+            : settingsService.SearchScope;
+        isApplyingSearchScope = true;
+        IsSearchNameEnabled = searchScope.HasFlag(SearchScope.Name);
+        IsSearchPeopleEnabled = searchScope.HasFlag(SearchScope.People);
+        IsSearchAlbumsEnabled = searchScope.HasFlag(SearchScope.Albums);
+        isApplyingSearchScope = false;
+
+        isApplyingLocationToggle = true;
+        IsLocationEnabled = settingsService.LocationsEnabled;
+        isApplyingLocationToggle = false;
+
+        RefreshPeopleModelsStatus();
+        UpdateIndexStatusState();
     }
 
     private void RefreshPeopleModelsStatus()

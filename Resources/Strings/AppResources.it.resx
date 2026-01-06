@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Copia negli appunti non riuscita. Riprova oppure usa &quot;Visualizza registro&quot; per copiare manualmente.</value>
+    <value>Copia negli appunti non riuscita. Riprova oppure usa "Visualizza registro" per copiare manualmente.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Passa a Pro</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Vuoi reindicizzare tutto adesso? Potrebbe richiedere del tempo a seconda delle dimensioni della libreria.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Backup del database</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Esporta o importa il database locale incluse impostazioni e miniature.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Esporta backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importa backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup esportato</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Il backup è stato esportato correttamente.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Esportazione non riuscita</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Impossibile creare o salvare il backup.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Seleziona un ZIP di backup</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Ripristinare il backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Questo sovrascriverà database, impostazioni e miniature attuali. Continuare?</value></data><data name="RestoreButton" xml:space="preserve"><value>Ripristina</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indicizzazione in corso</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Interrompi l’indicizzazione prima di ripristinare un backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Ripristino non riuscito</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Impossibile ripristinare il backup.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Questo backup non contiene un file di database.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Ripristino completato</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup ripristinato. Potrebbe essere necessario riaprire l’app per vedere tutte le modifiche.</value></data></root>

@@ -23,6 +23,27 @@ public static class AppResources
 	public static string PeopleTagsTrialTitle => GetString(nameof(PeopleTagsTrialTitle), "People tagging trial");
 	public static string PeopleTagsTrialHint => GetString(nameof(PeopleTagsTrialHint), "People tags are enabled for 14 days. Upgrade to Pro to keep them always available.");
 	public static string UpgradeNowButton => GetString(nameof(UpgradeNowButton), "Upgrade now");
+
+    // Database backup / restore
+    public static string BackupSectionTitle => GetString(nameof(BackupSectionTitle), "Database backup");
+    public static string BackupSectionHint => GetString(nameof(BackupSectionHint), "Export or import the local database including settings and thumbnails.");
+    public static string BackupExportButton => GetString(nameof(BackupExportButton), "Export backup");
+    public static string BackupImportButton => GetString(nameof(BackupImportButton), "Import backup");
+    public static string BackupImportPickerTitle => GetString(nameof(BackupImportPickerTitle), "Select a backup ZIP");
+    public static string BackupExportSuccessTitle => GetString(nameof(BackupExportSuccessTitle), "Backup exported");
+    public static string BackupExportSuccessMessage => GetString(nameof(BackupExportSuccessMessage), "Your backup was exported successfully.");
+    public static string BackupExportFailedTitle => GetString(nameof(BackupExportFailedTitle), "Backup export failed");
+    public static string BackupExportFailedMessage => GetString(nameof(BackupExportFailedMessage), "The backup could not be created or saved.");
+    public static string BackupImportNotAllowedTitle => GetString(nameof(BackupImportNotAllowedTitle), "Indexing in progress");
+    public static string BackupImportNotAllowedMessage => GetString(nameof(BackupImportNotAllowedMessage), "Stop indexing before restoring a backup.");
+    public static string BackupImportConfirmTitle => GetString(nameof(BackupImportConfirmTitle), "Restore backup?");
+    public static string BackupImportConfirmMessage => GetString(nameof(BackupImportConfirmMessage), "This will overwrite your current database, settings and thumbnails. Continue?");
+    public static string RestoreButton => GetString(nameof(RestoreButton), "Restore");
+    public static string BackupImportMissingDbMessage => GetString(nameof(BackupImportMissingDbMessage), "This backup does not contain a database file.");
+    public static string BackupImportSuccessTitle => GetString(nameof(BackupImportSuccessTitle), "Restore completed");
+    public static string BackupImportSuccessMessage => GetString(nameof(BackupImportSuccessMessage), "Backup restored. You may need to reopen the app to see all changes.");
+    public static string BackupImportFailedTitle => GetString(nameof(BackupImportFailedTitle), "Restore failed");
+    public static string BackupImportFailedMessage => GetString(nameof(BackupImportFailedMessage), "The backup could not be restored.");
     public static string ActionsButton => GetString(nameof(ActionsButton), "Actions");
     public static string SearchPlaceholder => GetString(nameof(SearchPlaceholder), "Search media...");
     public static string SearchScopeTitle => GetString(nameof(SearchScopeTitle), "Search in");

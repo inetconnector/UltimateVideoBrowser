@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Gagal menyalin ke clipboard. Coba lagi atau gunakan &quot;Lihat log&quot; untuk menyalin secara manual.</value>
+    <value>Gagal menyalin ke clipboard. Coba lagi atau gunakan "Lihat log" untuk menyalin secara manual.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Upgrade sekarang</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Apakah Anda ingin mengindeks ulang semuanya sekarang? Ini bisa memakan waktu tergantung ukuran pustaka Anda.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Cadangan basis data</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Ekspor atau impor basis data lokal termasuk pengaturan dan thumbnail.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Ekspor cadangan</value></data><data name="BackupImportButton" xml:space="preserve"><value>Impor cadangan</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Cadangan diekspor</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Cadangan berhasil diekspor.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Ekspor cadangan gagal</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Cadangan tidak dapat dibuat atau disimpan.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Pilih ZIP cadangan</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Pulihkan cadangan?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Ini akan menimpa basis data, pengaturan, dan thumbnail saat ini. Lanjutkan?</value></data><data name="RestoreButton" xml:space="preserve"><value>Pulihkan</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Pengindeksan sedang berjalan</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Hentikan pengindeksan sebelum memulihkan cadangan.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Pemulihan gagal</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Cadangan tidak dapat dipulihkan.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Cadangan ini tidak berisi file basis data.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Pemulihan selesai</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Cadangan dipulihkan. Anda mungkin perlu membuka ulang aplikasi untuk melihat semua perubahan.</value></data></root>

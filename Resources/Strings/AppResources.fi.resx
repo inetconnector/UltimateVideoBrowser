@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Kopiointi leikepöydälle epäonnistui. Yritä uudelleen tai käytä &quot;Näytä loki&quot; kopioidaksesi käsin.</value>
+    <value>Kopiointi leikepöydälle epäonnistui. Yritä uudelleen tai käytä "Näytä loki" kopioidaksesi käsin.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Päivitä nyt</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Haluatko indeksoida kaiken uudelleen nyt? Se voi kestää jonkin aikaa kirjaston koosta riippuen.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Tietokantavarmuuskopio</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Vie tai tuo paikallinen tietokanta, mukaan lukien asetukset ja pikkukuvat.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Vie varmuuskopio</value></data><data name="BackupImportButton" xml:space="preserve"><value>Tuo varmuuskopio</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Varmuuskopio viety</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Varmuuskopio vietiin onnistuneesti.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Vienti epäonnistui</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Varmuuskopiota ei voitu luoda tai tallentaa.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Valitse varmuuskopio-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Palautetaanko varmuuskopio?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Tämä korvaa nykyisen tietokannan, asetukset ja pikkukuvat. Jatketaanko?</value></data><data name="RestoreButton" xml:space="preserve"><value>Palauta</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indeksointi käynnissä</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Pysäytä indeksointi ennen varmuuskopion palautusta.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Palautus epäonnistui</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Varmuuskopiota ei voitu palauttaa.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Varmuuskopio ei sisällä tietokantatiedostoa.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Palautus valmis</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Varmuuskopio palautettu. Saatat joutua käynnistämään sovelluksen uudelleen.</value></data></root>

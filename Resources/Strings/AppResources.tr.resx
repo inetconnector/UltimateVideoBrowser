@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Panoya kopyalama başarısız oldu. Lütfen yeniden deneyin veya elle kopyalamak için &quot;Günlüğü görüntüle&quot; seçeneğini kullanın.</value>
+    <value>Panoya kopyalama başarısız oldu. Lütfen yeniden deneyin veya elle kopyalamak için "Günlüğü görüntüle" seçeneğini kullanın.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Şimdi yükselt</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Her şeyi şimdi yeniden dizinlemek istiyor musunuz? Bu, kitaplık boyutunuza bağlı olarak biraz zaman alabilir.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Veritabanı yedeği</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Ayarlar ve küçük resimler dahil yerel veritabanını dışa/içe aktarın.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Yedeği dışa aktar</value></data><data name="BackupImportButton" xml:space="preserve"><value>Yedeği içe aktar</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Yedek dışa aktarıldı</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Yedek başarıyla dışa aktarıldı.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Dışa aktarma başarısız</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Yedek oluşturulamadı veya kaydedilemedi.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Yedek ZIP seç</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Yedek geri yüklensin mi?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Mevcut veritabanı, ayarlar ve küçük resimler üzerine yazılacak. Devam edilsin mi?</value></data><data name="RestoreButton" xml:space="preserve"><value>Geri yükle</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Dizinleme sürüyor</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Yedeği geri yüklemeden önce dizinlemeyi durdurun.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Geri yükleme başarısız</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Yedek geri yüklenemedi.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Bu yedek bir veritabanı dosyası içermiyor.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Geri yükleme tamamlandı</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Yedek geri yüklendi. Tüm değişiklikleri görmek için uygulamayı yeniden açmanız gerekebilir.</value></data></root>

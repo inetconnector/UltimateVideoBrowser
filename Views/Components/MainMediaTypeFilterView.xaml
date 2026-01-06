@@ -26,9 +26,7 @@
                                       Color="{DynamicResource Accent}"
                                       WidthRequest="18"
                                       HeightRequest="18"
-                                      MinimumWidthRequest="18"
                                       Margin="0"
-                                      HorizontalOptions="Start"
                                       VerticalOptions="Center" />
                             <Label Text="{Binding Label}"
                                    FontSize="12"

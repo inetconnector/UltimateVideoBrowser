@@ -90,6 +90,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ILegalConsentService, LegalConsentService>();
         builder.Services.AddSingleton<PlaybackService>();
         builder.Services.AddSingleton<IFileExportService, FileExportService>();
+        builder.Services.AddSingleton<IBackupRestoreService, BackupRestoreService>();
         builder.Services.AddSingleton(new HttpClient());
         builder.Services.AddSingleton<LicenseServerClient>();
         builder.Services.AddSingleton<IProUpgradeService, ProUpgradeService>();

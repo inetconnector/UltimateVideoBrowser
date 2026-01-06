@@ -8,14 +8,17 @@ public sealed class AppDb
 {
     private readonly SemaphoreSlim initLock = new(1, 1);
     private bool isInitialized;
+    private readonly string dbPath;
 
     public AppDb()
     {
-        var dbPath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
+        dbPath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
         Db = new SQLiteAsyncConnection(dbPath);
     }
 
-    public SQLiteAsyncConnection Db { get; }
+    public SQLiteAsyncConnection Db { get; private set; }
+
+    public string DatabasePath => dbPath;
 
     public async Task EnsureInitializedAsync()
     {
@@ -98,6 +101,95 @@ public sealed class AppDb
 
         await EnsureInitializedAsync().ConfigureAwait(false);
     }
+
+    public async Task ReplaceDatabaseAsync(string sourceDbPath)
+    {
+        if (string.IsNullOrWhiteSpace(sourceDbPath) || !File.Exists(sourceDbPath))
+            throw new FileNotFoundException("Source database file not found.", sourceDbPath);
+
+        await initLock.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            await TryCloseConnectionAsync().ConfigureAwait(false);
+
+            // Copy main DB and related WAL/SHM sidecar files if present.
+            File.Copy(sourceDbPath, dbPath, true);
+
+            CopySidecarIfExists(sourceDbPath + "-wal", dbPath + "-wal");
+            CopySidecarIfExists(sourceDbPath + "-shm", dbPath + "-shm");
+
+            // Reopen connection so services pick up the new DB.
+            Db = new SQLiteAsyncConnection(dbPath);
+            isInitialized = false;
+        }
+        finally
+        {
+            initLock.Release();
+        }
+
+        await EnsureInitializedAsync().ConfigureAwait(false);
+    }
+
+    private static void CopySidecarIfExists(string source, string target)
+    {
+        try
+        {
+            if (File.Exists(source))
+            {
+                File.Copy(source, target, true);
+            }
+            else
+            {
+                if (File.Exists(target))
+                    File.Delete(target);
+            }
+        }
+        catch
+        {
+            // Ignore sidecar copy failures to keep restore resilient.
+        }
+    }
+
+    private async Task TryCloseConnectionAsync()
+    {
+        // sqlite-net-pcl APIs differ by version. Use reflection to avoid hard dependency.
+        try
+        {
+            var closeAsync = Db.GetType().GetMethod("CloseAsync", Type.EmptyTypes);
+            if (closeAsync != null)
+            {
+                var t = closeAsync.Invoke(Db, null) as Task;
+                if (t != null)
+                    await t.ConfigureAwait(false);
+            }
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            var close = Db.GetType().GetMethod("Close", Type.EmptyTypes);
+            close?.Invoke(Db, null);
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            var getConnection = Db.GetType().GetMethod("GetConnection", Type.EmptyTypes);
+            var conn = getConnection?.Invoke(Db, null);
+            var connClose = conn?.GetType().GetMethod("Close", Type.EmptyTypes);
+            connClose?.Invoke(conn, null);
+        }
+        catch
+        {
+        }
+    }
+
+    // NOTE: ReplaceDatabaseAsync() and TryCloseConnectionAsync() are intentionally implemented only once.
+    // Duplicate definitions caused CS0111/CS0121 on multi-target builds.
 
     private async Task TryAddMediaSourceAccessTokenAsync()
     {

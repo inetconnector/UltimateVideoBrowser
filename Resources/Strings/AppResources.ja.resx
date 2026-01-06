@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>今すぐすべてを再インデックスしますか？ライブラリのサイズによっては時間がかかる場合があります。</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>データベースのバックアップ</value></data><data name="BackupSectionHint" xml:space="preserve"><value>設定とサムネイルを含むローカルデータベースをエクスポート/インポートします。</value></data><data name="BackupExportButton" xml:space="preserve"><value>バックアップをエクスポート</value></data><data name="BackupImportButton" xml:space="preserve"><value>バックアップをインポート</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>バックアップをエクスポートしました</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>バックアップのエクスポートが完了しました。</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>エクスポートに失敗しました</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>バックアップを作成または保存できませんでした。</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>バックアップZIPを選択</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>バックアップを復元しますか？</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>現在のデータベース/設定/サムネイルを上書きします。続行しますか？</value></data><data name="RestoreButton" xml:space="preserve"><value>復元</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>インデックス作成中</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>復元前にインデックス作成を停止してください。</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>復元に失敗しました</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>バックアップを復元できませんでした。</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>このバックアップにはデータベースファイルが含まれていません。</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>復元が完了しました</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>バックアップを復元しました。変更を反映するにはアプリの再起動が必要な場合があります。</value></data></root>

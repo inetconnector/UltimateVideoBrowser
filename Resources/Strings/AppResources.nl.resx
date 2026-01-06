@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -1169,7 +1169,7 @@
   
 
   <data name="ErrorLogCopyFailedMessage" xml:space="preserve">
-    <value>Kopiëren naar het klembord mislukt. Probeer het opnieuw of gebruik &quot;Logboek bekijken&quot; om handmatig te kopiëren.</value>
+    <value>Kopiëren naar het klembord mislukt. Probeer het opnieuw of gebruik "Logboek bekijken" om handmatig te kopiëren.</value>
   </data>
   <data name="UpgradeNowButton" xml:space="preserve">
     <value>Nu upgraden</value>
@@ -1186,4 +1186,4 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Wil je alles nu opnieuw indexeren? Dit kan even duren, afhankelijk van de grootte van je bibliotheek.</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Databaseback-up</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exporteer of importeer de lokale database inclusief instellingen en miniaturen.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Back-up exporteren</value></data><data name="BackupImportButton" xml:space="preserve"><value>Back-up importeren</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Back-up geëxporteerd</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Je back-up is succesvol geëxporteerd.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Export mislukt</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>De back-up kon niet worden gemaakt of opgeslagen.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Kies een back-up-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Back-up herstellen?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dit overschrijft je huidige database, instellingen en miniaturen. Doorgaan?</value></data><data name="RestoreButton" xml:space="preserve"><value>Herstellen</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexeren bezig</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stop met indexeren voordat je een back-up herstelt.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Herstellen mislukt</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>De back-up kon niet worden hersteld.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Deze back-up bevat geen databasebestand.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Herstel voltooid</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Back-up hersteld. Mogelijk moet je de app opnieuw openen om alles te zien.</value></data></root>

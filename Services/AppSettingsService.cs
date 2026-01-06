@@ -47,6 +47,16 @@ public sealed class AppSettingsService
         EnsureDefaults();
     }
 
+    public void ReloadFromDisk()
+    {
+        store.ReloadFromDisk();
+        EnsureDefaults();
+
+        // Best-effort: notify listeners so view models can refresh their bound state.
+        NeedsReindexChanged?.Invoke(this, NeedsReindex);
+        IsIndexingChanged?.Invoke(this, IsIndexing);
+    }
+
     private void EnsureDefaults()
     {
         // Requested defaults:

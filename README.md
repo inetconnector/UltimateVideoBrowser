@@ -41,6 +41,7 @@ UltimateVideoBrowser is a **.NET MAUI** app that indexes local media into a **SQ
 - **People tagging** (optional): on-device face detection + embeddings
 - **Map view** (optional) for media with GPS metadata
 - **Thumbnail cache** for responsive grids/lists
+- **Database backup/restore** (export/import ZIP including settings and thumbnails)
 - **Internal preview** (video player + image/doc preview)
 - **Share / Save As / Copy / Move / Delete** (platform-dependent)
 
@@ -115,6 +116,8 @@ Common options you will see in the UI:
 - **Custom extension lists** for photos/videos/documents
 - **Allow file changes** (controls whether the app is allowed to copy/move/delete)
 
+The Settings page also includes **Backup/Restore** (export/import ZIP containing the database, settings, and thumbnail cache).
+
 Tip: If you change settings that affect indexing, the app may set a “needs reindex” flag.
 
 ---
@@ -157,6 +160,15 @@ The People UI supports:
 - **Auto-generated people** from face recognition
 - **Manual name edits** and **ignore** toggles
 - **Manual tags** in the photo editor (stored in `PersonTag`)
+
+### Free vs Pro
+
+People tagging has a free trial and a free limit:
+
+- **Free trial:** in non-Pro mode, people tagging is available for **14 days** and then auto-disables.
+- **Free limit:** in non-Pro mode, the app can create up to **20** people profiles; beyond that, it will prompt to upgrade.
+
+In **Pro** mode, people tagging stays enabled and the people limit is removed.
 
 ### Model downloads
 

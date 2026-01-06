@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   
   
@@ -2126,7 +2126,7 @@ Fehlend:
   <data name="RenameConfirmMessage" xml:space="preserve">
     
     
-    <value>&quot;{0}&quot; in &quot;{1}&quot; umbenennen?</value>
+    <value>"{0}" in "{1}" umbenennen?</value>
     
   
   </data>
@@ -3014,4 +3014,4 @@ Zur Ausübung des Widerrufs kontaktiere: [support@example.com].</value>
   <data name="OpenAction" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-</root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Datenbank-Backup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exportiere oder importiere die lokale Datenbank inkl. Einstellungen und Thumbnails.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Backup exportieren</value></data><data name="BackupImportButton" xml:space="preserve"><value>Backup importieren</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup exportiert</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Dein Backup wurde erfolgreich exportiert.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Backup-Export fehlgeschlagen</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht erstellt oder gespeichert werden.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Backup-ZIP auswählen</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Backup wiederherstellen?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dadurch werden aktuelle Datenbank, Einstellungen und Thumbnails überschrieben. Fortfahren?</value></data><data name="RestoreButton" xml:space="preserve"><value>Wiederherstellen</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indizierung läuft</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stoppe die Indizierung, bevor du ein Backup wiederherstellst.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Wiederherstellung fehlgeschlagen</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht wiederhergestellt werden.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Dieses Backup enthält keine Datenbankdatei.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Wiederherstellung abgeschlossen</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup wiederhergestellt. Öffne die App ggf. neu, um alle Änderungen zu sehen.</value></data></root>
