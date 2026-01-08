@@ -296,12 +296,8 @@ public static class WindowsMarqueeSelection
                 var elements = VisualTreeHelper.FindElementsInHostCoordinates(point, listView);
                 foreach (var el in elements)
                 {
-                    if (el is DependencyObject dep)
-                    {
-                        var container = ItemsControl.ContainerFromElement(listView, dep);
-                        if (container is ListViewItem)
-                            return true;
-                    }
+                    if (el is DependencyObject dep && FindAncestor<ListViewItem>(dep) != null)
+                        return true;
                 }
             }
             catch
@@ -314,15 +310,16 @@ public static class WindowsMarqueeSelection
 
         private IEnumerable<object> HitTest(Windows.Foundation.Rect rect)
         {
+            var results = new List<object>();
             if (listView == null)
-                yield break;
+                return results;
 
             try
             {
                 // ItemsPanelRoot contains the realized (visible) containers.
                 var panel = listView.ItemsPanelRoot as Panel;
                 if (panel == null)
-                    yield break;
+                    return results;
 
                 foreach (var child in panel.Children)
                 {
@@ -337,18 +334,20 @@ public static class WindowsMarqueeSelection
                     if (b.Width <= 1 || b.Height <= 1)
                         continue;
 
-                    if (!b.IntersectsWith(rect))
+                    if (!RectsIntersect(b, rect))
                         continue;
 
                     var dc = fe.DataContext;
                     if (dc != null)
-                        yield return dc;
+                        results.Add(dc);
                 }
             }
             catch
             {
                 // Ignore
             }
+
+            return results;
         }
 
         private void ApplySelectionIfChanged(HashSet<object> target)
@@ -435,6 +434,30 @@ public static class WindowsMarqueeSelection
             var x2 = Math.Max(a.X, b.X);
             var y2 = Math.Max(a.Y, b.Y);
             return new Windows.Foundation.Rect(x1, y1, Math.Max(0, x2 - x1), Math.Max(0, y2 - y1));
+        }
+
+        private static bool RectsIntersect(Windows.Foundation.Rect a, Windows.Foundation.Rect b)
+        {
+            if (a.Width <= 0 || a.Height <= 0 || b.Width <= 0 || b.Height <= 0)
+                return false;
+
+            return a.X < b.X + b.Width &&
+                   a.X + a.Width > b.X &&
+                   a.Y < b.Y + b.Height &&
+                   a.Y + a.Height > b.Y;
+        }
+
+        private static T? FindAncestor<T>(DependencyObject? current) where T : DependencyObject
+        {
+            while (current != null)
+            {
+                if (current is T match)
+                    return match;
+
+                current = VisualTreeHelper.GetParent(current);
+            }
+
+            return null;
         }
     }
 }
