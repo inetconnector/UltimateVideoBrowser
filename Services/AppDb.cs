@@ -185,9 +185,41 @@ public sealed class AppDb
             await Db.ExecuteAsync("PRAGMA temp_store=MEMORY;").ConfigureAwait(false);
             await Db.ExecuteAsync("PRAGMA busy_timeout=5000;").ConfigureAwait(false);
         }
+        catch (SQLiteException ex) when (ex.Message.Contains("not an error", StringComparison.OrdinalIgnoreCase))
+        {
+            // Some sqlite-net builds throw "not an error" for PRAGMA writes; ignore to keep startup clean.
+        }
         catch (Exception ex)
         {
             ErrorLog.LogException(ex, "AppDb.TryConfigurePragmasAsync");
+        }
+    }
+
+    public async Task<bool> TryCreateSnapshotAsync(string targetPath)
+    {
+        if (string.IsNullOrWhiteSpace(targetPath))
+            return false;
+
+        try
+        {
+            await EnsureInitializedAsync().ConfigureAwait(false);
+            await Db.ExecuteAsync("PRAGMA wal_checkpoint(TRUNCATE);").ConfigureAwait(false);
+        }
+        catch
+        {
+            // Best-effort only.
+        }
+
+        try
+        {
+            var escaped = targetPath.Replace("'", "''");
+            await Db.ExecuteAsync($"VACUUM INTO '{escaped}';").ConfigureAwait(false);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "AppDb.TryCreateSnapshotAsync", $"Target={targetPath}");
+            return false;
         }
     }
 
@@ -348,7 +380,8 @@ public sealed class AppDb
             if (s.Length <= max)
                 return s;
 
-            return s.Substring(0, max) + " …(truncated)";
+            return s.Substring(0, max) + " â€¦(truncated)";
+(truncated)";
         }
 
         static string SafeToString(object? value)
@@ -420,8 +453,8 @@ public sealed class AppDb
                     return g.ToString("D");
 
                 case byte[] bytes:
-                    // Do not dump bytes content into logs
-                    return $"byte[{bytes.Length}]";
+                            sb.Append("â€¦");
+                            sb.Append("â€¦");
 
                 case Stream stream:
                     // Do not dump stream content into logs
@@ -446,7 +479,7 @@ public sealed class AppDb
                     {
                         if (count >= maxCollectionItems)
                         {
-                            sb.Append("…");
+                            sb.Append("Â…");
                             break;
                         }
 
@@ -470,7 +503,7 @@ public sealed class AppDb
                     {
                         if (count >= maxCollectionItems)
                         {
-                            sb.Append("…");
+                            sb.Append("Â…");
                             break;
                         }
 
@@ -495,8 +528,8 @@ public sealed class AppDb
 
         var sbMsg = new StringBuilder(1024);
 
-        var d = Clip(details, maxDetailsLen).Trim();
-        if (!string.IsNullOrEmpty(d))
+        public string name { get; set; } = string.Empty;
+}
             sbMsg.AppendLine(d);
 
         sbMsg.Append("SQL=").AppendLine(Clip(sql, maxSqlLen));

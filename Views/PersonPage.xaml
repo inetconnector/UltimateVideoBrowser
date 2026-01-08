@@ -208,6 +208,12 @@
                                        FontSize="12"
                                        LineBreakMode="NoWrap"
                                        MaxLines="1" />
+                                <Label Text="{Binding DateAddedText}"
+                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                       FontSize="10"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"
+                                       IsVisible="{Binding HasDateAdded}" />
                                 <HorizontalStackLayout Spacing="4"
                                                        BindableLayout.ItemsSource="{Binding PeopleTags}"
                                                        IsVisible="{Binding HasPeopleTags}">

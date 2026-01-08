@@ -294,13 +294,21 @@
                     </Frame>
                 </Grid>
 
-                <Label Grid.Row="1"
-                       Text="{Binding Name}"
-                       TextColor="{DynamicResource OnSurface}"
-                       FontSize="12"
-                       LineBreakMode="TailTruncation"
-                       MaxLines="1"
-                       Margin="0,8,0,0" />
+                <VerticalStackLayout Grid.Row="1"
+                                     Spacing="2"
+                                     Margin="0,8,0,0">
+                    <Label Text="{Binding Name}"
+                           TextColor="{DynamicResource OnSurface}"
+                           FontSize="12"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="1" />
+                    <Label Text="{Binding DateAddedText}"
+                           TextColor="{DynamicResource OnSurfaceMuted}"
+                           FontSize="10"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="1"
+                           IsVisible="{Binding HasDateAdded}" />
+                </VerticalStackLayout>
             </Grid>
 
             <Frame.GestureRecognizers>
@@ -366,13 +374,21 @@
                         </Frame>
                     </Grid>
 
-                    <Label Grid.Row="1"
-                           Text="{Binding Name}"
-                           TextColor="{DynamicResource OnSurface}"
-                           FontSize="12"
-                           LineBreakMode="TailTruncation"
-                           MaxLines="1"
-                           Margin="0,8,0,0" />
+                    <VerticalStackLayout Grid.Row="1"
+                                         Spacing="2"
+                                         Margin="0,8,0,0">
+                        <Label Text="{Binding Name}"
+                               TextColor="{DynamicResource OnSurface}"
+                               FontSize="12"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="1" />
+                        <Label Text="{Binding DateAddedText}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="10"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="1"
+                               IsVisible="{Binding HasDateAdded}" />
+                    </VerticalStackLayout>
                 </Grid>
 
                 <Frame.GestureRecognizers>
@@ -438,13 +454,21 @@
                         </Frame>
                     </Grid>
 
-                    <Label Grid.Row="1"
-                           Text="{Binding Name}"
-                           TextColor="{DynamicResource OnSurface}"
-                           FontSize="12"
-                           LineBreakMode="TailTruncation"
-                           MaxLines="1"
-                           Margin="0,8,0,0" />
+                    <VerticalStackLayout Grid.Row="1"
+                                         Spacing="2"
+                                         Margin="0,8,0,0">
+                        <Label Text="{Binding Name}"
+                               TextColor="{DynamicResource OnSurface}"
+                               FontSize="12"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="1" />
+                        <Label Text="{Binding DateAddedText}"
+                               TextColor="{DynamicResource OnSurfaceMuted}"
+                               FontSize="10"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="1"
+                               IsVisible="{Binding HasDateAdded}" />
+                    </VerticalStackLayout>
                 </Grid>
 
                 <!-- WinUI: single click selects (CollectionView selection); double click opens. -->
