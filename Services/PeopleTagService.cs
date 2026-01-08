@@ -179,7 +179,7 @@ public sealed class PeopleTagService
 
     private sealed class FaceCountRow
     {
-        public string MediaPath { get; } = string.Empty;
+        public string MediaPath { get; set; } = string.Empty;
         public int Count { get; set; }
     }
 }

@@ -45,7 +45,36 @@ public sealed class BackupRestoreService : IBackupRestoreService
             if (File.Exists(tempPath))
                 File.Delete(tempPath);
 
-            CreateBackupZip(tempPath);
+            var snapshotPath = Path.Combine(FileSystem.CacheDirectory,
+                $"uvb-db-snapshot-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.db");
+            string? dbSnapshot = null;
+
+            try
+            {
+                if (await db.TryCreateSnapshotAsync(snapshotPath).ConfigureAwait(false))
+                    dbSnapshot = snapshotPath;
+                else if (File.Exists(snapshotPath))
+                    File.Delete(snapshotPath);
+            }
+            catch
+            {
+                if (File.Exists(snapshotPath))
+                    File.Delete(snapshotPath);
+            }
+
+            CreateBackupZip(tempPath, dbSnapshot);
+
+            if (!string.IsNullOrWhiteSpace(dbSnapshot))
+            {
+                try
+                {
+                    File.Delete(dbSnapshot);
+                }
+                catch
+                {
+                    // Ignore snapshot cleanup failures.
+                }
+            }
 
 #if WINDOWS
             var destination = await PickSaveLocationAsync().ConfigureAwait(false);
@@ -154,14 +183,21 @@ public sealed class BackupRestoreService : IBackupRestoreService
         }
     }
 
-    private void CreateBackupZip(string targetZipPath)
+    private void CreateBackupZip(string targetZipPath, string? snapshotDbPath)
     {
         using var zip = ZipFile.Open(targetZipPath, ZipArchiveMode.Create);
 
         // DB
-        AddFileIfExists(zip, db.DatabasePath, BackupDbFileName);
-        AddFileIfExists(zip, db.DatabasePath + "-wal", BackupDbFileName + "-wal");
-        AddFileIfExists(zip, db.DatabasePath + "-shm", BackupDbFileName + "-shm");
+        if (!string.IsNullOrWhiteSpace(snapshotDbPath) && File.Exists(snapshotDbPath))
+        {
+            AddFileIfExists(zip, snapshotDbPath, BackupDbFileName);
+        }
+        else
+        {
+            AddFileIfExists(zip, db.DatabasePath, BackupDbFileName);
+            AddFileIfExists(zip, db.DatabasePath + "-wal", BackupDbFileName + "-wal");
+            AddFileIfExists(zip, db.DatabasePath + "-shm", BackupDbFileName + "-shm");
+        }
 
         // Settings
         AddFileIfExists(zip, settingsStore.SettingsPath, BackupSettingsFileName);
