@@ -203,7 +203,7 @@ public sealed class AppDb
         try
         {
             await EnsureInitializedAsync().ConfigureAwait(false);
-            await Db.ExecuteAsync("PRAGMA wal_checkpoint(TRUNCATE);").ConfigureAwait(false);
+            await TryCheckpointAsync().ConfigureAwait(false);
         }
         catch
         {
@@ -220,6 +220,18 @@ public sealed class AppDb
         {
             ErrorLog.LogException(ex, "AppDb.TryCreateSnapshotAsync", $"Target={targetPath}");
             return false;
+        }
+    }
+
+    private async Task TryCheckpointAsync()
+    {
+        try
+        {
+            await Db.QueryAsync<WalCheckpointResult>("PRAGMA wal_checkpoint(TRUNCATE);").ConfigureAwait(false);
+        }
+        catch (SQLiteException ex) when (ex.Message.Contains("not an error", StringComparison.OrdinalIgnoreCase))
+        {
+            // Some sqlite-net builds throw "not an error" for PRAGMA writes; ignore to keep snapshot resilient.
         }
     }
 
@@ -551,5 +563,16 @@ public sealed class AppDb
         // Property name must match PRAGMA output column name.
         // ReSharper disable once InconsistentNaming
         public string name { get; set; } = string.Empty;
+    }
+
+    private sealed class WalCheckpointResult
+    {
+        // Property names must match PRAGMA output column names.
+        // ReSharper disable once InconsistentNaming
+        public int busy { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public int log { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public int checkpointed { get; set; }
     }
 }
