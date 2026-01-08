@@ -7,15 +7,32 @@ using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpRectangle = SixLabors.ImageSharp.Rectangle;
 using ImageSharpSize = SixLabors.ImageSharp.Size;
 using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
+#if WINDOWS
+using Windows.Storage;
+using Windows.Storage.AccessCache;
+#endif
 
 namespace UltimateVideoBrowser.Services;
 
 public sealed class FaceThumbnailService
 {
     private readonly string cacheDir;
+#if WINDOWS
+    private readonly ISourceService sourceService;
+    private readonly SemaphoreSlim sourcesGate = new(1, 1);
+    private IReadOnlyList<MediaSource> cachedSources = Array.Empty<MediaSource>();
+    private DateTimeOffset cachedSourcesAt = DateTimeOffset.MinValue;
+#endif
 
-    public FaceThumbnailService()
+    public FaceThumbnailService(
+#if WINDOWS
+        ISourceService sourceService
+#endif
+    )
     {
+#if WINDOWS
+        this.sourceService = sourceService;
+#endif
         cacheDir = Path.Combine(FileSystem.CacheDirectory, "faces");
         Directory.CreateDirectory(cacheDir);
     }
@@ -39,7 +56,8 @@ public sealed class FaceThumbnailService
         if (File.Exists(path))
             return path;
 
-        if (!File.Exists(mediaPath))
+        var stream = await TryOpenImageStreamAsync(mediaPath, ct).ConfigureAwait(false);
+        if (stream == null)
             return null;
 
         var tmpPath = GetTempPath(path);
@@ -47,6 +65,7 @@ public sealed class FaceThumbnailService
         {
             return await Task.Run(() =>
             {
+                using var input = stream;
                 ct.ThrowIfCancellationRequested();
 
                 // Ensure target folder exists
@@ -54,7 +73,7 @@ public sealed class FaceThumbnailService
                 if (!string.IsNullOrWhiteSpace(dir))
                     Directory.CreateDirectory(dir);
 
-                using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
+                using var image = ImageSharpImage.Load<Rgba32>(input);
                 image.Mutate(ctx => ctx.AutoOrient());
 
                 var crop = BuildCropRect(image.Width, image.Height, embedding);
@@ -94,6 +113,114 @@ public sealed class FaceThumbnailService
         {
             TryDeleteFile(tmpPath);
         }
+    }
+
+#if WINDOWS
+    private async Task<IReadOnlyList<MediaSource>> GetSourcesAsync()
+    {
+        if (cachedSources.Count > 0 && DateTimeOffset.UtcNow - cachedSourcesAt < TimeSpan.FromMinutes(2))
+            return cachedSources;
+
+        await sourcesGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            if (cachedSources.Count > 0 && DateTimeOffset.UtcNow - cachedSourcesAt < TimeSpan.FromMinutes(2))
+                return cachedSources;
+
+            cachedSources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+            cachedSourcesAt = DateTimeOffset.UtcNow;
+            return cachedSources;
+        }
+        finally
+        {
+            sourcesGate.Release();
+        }
+    }
+
+    private async Task<StorageFile?> GetStorageFileAsync(string mediaPath)
+    {
+        try
+        {
+            return await StorageFile.GetFileFromPathAsync(mediaPath);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "FaceThumbnailService.GetStorageFileAsync", $"Path={mediaPath}");
+        }
+
+        var sources = await GetSourcesAsync().ConfigureAwait(false);
+        var best = sources
+            .Where(src => !string.IsNullOrWhiteSpace(src.AccessToken))
+            .Where(src => !string.IsNullOrWhiteSpace(src.LocalFolderPath))
+            .OrderByDescending(src => src.LocalFolderPath.Length)
+            .FirstOrDefault(src =>
+                mediaPath.StartsWith(src.LocalFolderPath, StringComparison.OrdinalIgnoreCase));
+
+        if (best == null || string.IsNullOrWhiteSpace(best.AccessToken))
+            return null;
+
+        try
+        {
+            var folder = await StorageApplicationPermissions
+                .FutureAccessList
+                .GetFolderAsync(best.AccessToken);
+
+            if (string.IsNullOrWhiteSpace(folder.Path))
+                return null;
+
+            var relativePath = GetRelativePath(mediaPath, folder.Path);
+            if (string.IsNullOrWhiteSpace(relativePath))
+                return null;
+
+            return await GetFileFromFolderAsync(folder, relativePath).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "FaceThumbnailService.GetStorageFileAsync(Fallback)", $"Path={mediaPath}");
+            return null;
+        }
+    }
+
+    private static string? GetRelativePath(string mediaPath, string rootPath)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath) || string.IsNullOrWhiteSpace(rootPath))
+            return null;
+
+        if (!mediaPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return mediaPath[rootPath.Length..]
+            .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+    }
+
+    private static async Task<StorageFile> GetFileFromFolderAsync(StorageFolder root, string relativePath)
+    {
+        var segments = relativePath
+            .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
+
+        var current = root;
+        for (var i = 0; i < segments.Length - 1; i++)
+            current = await current.GetFolderAsync(segments[i]);
+
+        return await current.GetFileAsync(segments[^1]);
+    }
+#endif
+
+    private async Task<Stream?> TryOpenImageStreamAsync(string mediaPath, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        if (File.Exists(mediaPath))
+            return new FileStream(mediaPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+#if WINDOWS
+        var file = await GetStorageFileAsync(mediaPath).ConfigureAwait(false);
+        if (file != null)
+            return await file.OpenStreamForReadAsync().ConfigureAwait(false);
+#endif
+
+        return null;
     }
 
     private static ImageSharpRectangle BuildCropRect(int imageWidth, int imageHeight, FaceEmbedding embedding)
