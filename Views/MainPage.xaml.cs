@@ -6,7 +6,9 @@ using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
+#if WINDOWS
 using UltimateVideoBrowser.Behaviors;
+#endif
 
 namespace UltimateVideoBrowser.Views;
 
