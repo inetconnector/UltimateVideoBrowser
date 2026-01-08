@@ -4,14 +4,15 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using Windows.System;
+using MauiControls = Microsoft.Maui.Controls;
+using WinUIControls = Microsoft.UI.Xaml.Controls;
+using WinUIPrimitives = Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace UltimateVideoBrowser.Behaviors;
 
@@ -20,44 +21,48 @@ namespace UltimateVideoBrowser.Behaviors;
 ///     Keeps the tile UI clean (no per-tile buttons/checkboxes) and routes actions
 ///     through the existing commands on the page binding context.
 /// </summary>
-public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
+public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiControls.Frame>
 {
-    public static readonly BindableProperty HostCollectionViewProperty = BindableProperty.Create(
+    public static readonly MauiControls.BindableProperty HostCollectionViewProperty =
+        MauiControls.BindableProperty.Create(
         nameof(HostCollectionView),
-        typeof(CollectionView),
+        typeof(MauiControls.CollectionView),
         typeof(MediaItemContextMenuBehavior),
-        default(CollectionView));
+        default(MauiControls.CollectionView));
 
+    private MauiControls.Frame? attachedFrame;
     private FrameworkElement? nativeElement;
 
-    public CollectionView? HostCollectionView
+    public MauiControls.CollectionView? HostCollectionView
     {
-        get => (CollectionView?)GetValue(HostCollectionViewProperty);
+        get => (MauiControls.CollectionView?)GetValue(HostCollectionViewProperty);
         set => SetValue(HostCollectionViewProperty, value);
     }
 
-    protected override void OnAttachedTo(Frame bindable)
+    protected override void OnAttachedTo(MauiControls.Frame bindable)
     {
         base.OnAttachedTo(bindable);
+        attachedFrame = bindable;
         bindable.HandlerChanged += OnHandlerChanged;
         TryHookNative(bindable);
     }
 
-    protected override void OnDetachingFrom(Frame bindable)
+    protected override void OnDetachingFrom(MauiControls.Frame bindable)
     {
         UnhookNative();
         bindable.HandlerChanged -= OnHandlerChanged;
+        attachedFrame = null;
         base.OnDetachingFrom(bindable);
     }
 
     private void OnHandlerChanged(object? sender, EventArgs e)
     {
         UnhookNative();
-        if (sender is Frame frame)
+        if (sender is MauiControls.Frame frame)
             TryHookNative(frame);
     }
 
-    private void TryHookNative(Frame frame)
+    private void TryHookNative(MauiControls.Frame frame)
     {
         try
         {
@@ -95,7 +100,7 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
     {
         try
         {
-            if (AssociatedObject?.BindingContext is not MediaItem item)
+            if (attachedFrame?.BindingContext is not MediaItem item)
                 return;
 
             var host = HostCollectionView;
@@ -114,7 +119,7 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
             if (sender is FrameworkElement fe)
             {
                 var position = e.GetPosition(fe);
-                flyout.ShowAt(fe, new FlyoutShowOptions { Position = position });
+                flyout.ShowAt(fe, new WinUIPrimitives.FlyoutShowOptions { Position = position });
             }
             else
             {
@@ -129,7 +134,7 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         }
     }
 
-    private static void EnsureExplorerLikeSelection(CollectionView? host, MediaItem item)
+    private static void EnsureExplorerLikeSelection(MauiControls.CollectionView? host, MediaItem item)
     {
         if (host == null)
             return;
@@ -156,7 +161,7 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         }
     }
 
-    private static System.Collections.Generic.List<MediaItem> GetSelectedItems(CollectionView? host)
+    private static System.Collections.Generic.List<MediaItem> GetSelectedItems(MauiControls.CollectionView? host)
     {
         try
         {
@@ -182,10 +187,10 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         }
     }
 
-    private static MenuFlyout BuildFlyout(object binding, MediaItem primaryItem,
+    private static WinUIControls.MenuFlyout BuildFlyout(object binding, MediaItem primaryItem,
         System.Collections.Generic.IReadOnlyList<MediaItem> selection)
     {
-        var flyout = new MenuFlyout();
+        var flyout = new WinUIControls.MenuFlyout();
 
         var allowFileChanges = GetBool(binding, "AllowFileChanges", defaultValue: true);
         var isMulti = selection.Count > 1;
@@ -194,7 +199,7 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         AddCommandItem(flyout, AppResources.OpenAction, binding, "PlayCommand", primaryItem);
         AddCommandItem(flyout, AppResources.ShareAction, binding, "ShareCommand", primaryItem);
 
-        flyout.Items.Add(new MenuFlyoutSeparator());
+        flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
 
         if (isMulti)
         {
@@ -216,13 +221,13 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         AddCommandItem(flyout, AppResources.SaveAsAction, binding, "SaveAsCommand", primaryItem);
         AddCommandItem(flyout, AppResources.CopyMarkedAction, binding, "CopyItemCommand", primaryItem);
 
-        flyout.Items.Add(new MenuFlyoutSeparator());
+        flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
 
         AddCommandItem(flyout, AppResources.OpenFolderAction, binding, "OpenFolderCommand", primaryItem);
         if (primaryItem.HasLocation)
             AddCommandItem(flyout, AppResources.OpenLocationAction, binding, "OpenLocationCommand", primaryItem);
 
-        flyout.Items.Add(new MenuFlyoutSeparator());
+        flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
 
         // Tag people is meaningful for photos/graphics.
         if (primaryItem.MediaType is MediaType.Photos or MediaType.Graphics)
@@ -234,13 +239,13 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
 
             if (primaryItem.MediaType is MediaType.Photos or MediaType.Graphics)
             {
-                flyout.Items.Add(new MenuFlyoutSeparator());
+                flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
                 AddCommandItem(flyout, AppResources.RotateLeftAction, binding, "RotateLeftCommand", primaryItem);
                 AddCommandItem(flyout, AppResources.RotateRightAction, binding, "RotateRightCommand", primaryItem);
                 AddCommandItem(flyout, AppResources.MirrorAction, binding, "MirrorCommand", primaryItem);
             }
 
-            flyout.Items.Add(new MenuFlyoutSeparator());
+            flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
             AddCommandItem(flyout, AppResources.DeleteMarkedAction, binding, "DeleteItemCommand", primaryItem);
         }
 
@@ -264,10 +269,10 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         return defaultValue;
     }
 
-    private static void AddCommandItem(MenuFlyout flyout, string text, object binding, string commandProperty,
-        object? parameter)
+    private static void AddCommandItem(WinUIControls.MenuFlyout flyout, string text, object binding,
+        string commandProperty, object? parameter)
     {
-        var item = new MenuFlyoutItem { Text = text };
+        var item = new WinUIControls.MenuFlyoutItem { Text = text };
         item.Click += (_, _) => TryExecute(binding, commandProperty, parameter);
         flyout.Items.Add(item);
     }

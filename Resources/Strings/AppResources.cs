@@ -240,6 +240,10 @@ public static class AppResources
     public static string OpenLocationNotSupportedMessage =>
         GetString(nameof(OpenLocationNotSupportedMessage), "Opening locations isn't supported on this device.");
 
+    public static string RotateLeftAction => GetString(nameof(RotateLeftAction), "Rotate left");
+    public static string RotateRightAction => GetString(nameof(RotateRightAction), "Rotate right");
+    public static string MirrorAction => GetString(nameof(MirrorAction), "Mirror horizontally");
+
     public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
     public static string MoveMarkedAction => GetString(nameof(MoveMarkedAction), "Move");
