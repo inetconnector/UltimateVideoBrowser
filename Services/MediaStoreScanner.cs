@@ -221,17 +221,25 @@ public sealed class MediaStoreScanner
 
     private static ModelMediaType ResolveImageMediaType(string path, ModelMediaType indexedTypes, long? sizeBytes)
     {
-        if (!indexedTypes.HasFlag(ModelMediaType.Photos) && !indexedTypes.HasFlag(ModelMediaType.Graphics))
+        var wantsPhotos = indexedTypes.HasFlag(ModelMediaType.Photos);
+        var wantsGraphics = indexedTypes.HasFlag(ModelMediaType.Graphics);
+        if (!wantsPhotos && !wantsGraphics)
             return ModelMediaType.None;
 
         var contentSize = sizeBytes ?? TryGetFileSizeBytes(path);
         if (contentSize.HasValue && contentSize.Value <= 0)
             return ModelMediaType.None;
 
-        if (HasCameraExif(path))
-            return indexedTypes.HasFlag(ModelMediaType.Photos) ? ModelMediaType.Photos : ModelMediaType.None;
+        if (wantsPhotos && !wantsGraphics)
+            return ModelMediaType.Photos;
 
-        return indexedTypes.HasFlag(ModelMediaType.Graphics) ? ModelMediaType.Graphics : ModelMediaType.None;
+        if (!wantsPhotos && wantsGraphics)
+            return ModelMediaType.Graphics;
+
+        if (HasCameraExif(path))
+            return ModelMediaType.Photos;
+
+        return ModelMediaType.Graphics;
     }
 
     private static ModelMediaType GetMediaTypeFromMimeType(string? mimeType)

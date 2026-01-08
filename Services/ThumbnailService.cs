@@ -171,19 +171,34 @@ public sealed class ThumbnailService
             var tmpPath = GetTempPath(thumbPath);
             try
             {
+                var isPhoto = item.MediaType is MediaType.Photos or MediaType.Graphics;
                 var file = await GetStorageFileAsync(item).ConfigureAwait(false);
+
+                if (isPhoto)
+                {
+                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
+                    if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
+                    {
+                        File.Move(tmpPath, thumbPath, true);
+                        await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
+                        return thumbPath;
+                    }
+
+                    if (file != null)
+                    {
+                        await using var stream = await file.OpenStreamForReadAsync().ConfigureAwait(false);
+                        if (await TryWritePhotoThumbnailStreamAsync(stream, tmpPath, ct).ConfigureAwait(false))
+                        {
+                            File.Move(tmpPath, thumbPath, true);
+                            await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
+                            return thumbPath;
+                        }
+                    }
+                }
+
                 if (file == null)
                 {
-                    if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
-                        return null;
-
-                    Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
-                    if (!await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
-                        return null;
-
-                    File.Move(tmpPath, thumbPath, true);
-                    await FinalizeNewThumbnailAsync(thumbPath, ct).ConfigureAwait(false);
-                    return thumbPath;
+                    return null;
                 }
 
                 using var thumb =
@@ -191,16 +206,6 @@ public sealed class ThumbnailService
                         ThumbnailOptions.UseCurrentScale);
                 if (thumb == null || thumb.Size == 0)
                 {
-                    if (item.MediaType is MediaType.Photos or MediaType.Graphics)
-                    {
-                        Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
-                        if (await TryWritePhotoThumbnailAsync(item.Path, tmpPath, ct).ConfigureAwait(false))
-                        {
-                            File.Move(tmpPath, thumbPath, true);
-                            return thumbPath;
-                        }
-                    }
-
                     using var fallbackThumb = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, ThumbMaxSize);
                     if (fallbackThumb == null || fallbackThumb.Size == 0)
                         return null;
@@ -419,7 +424,28 @@ public sealed class ThumbnailService
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
                 return false;
 
-            using var image = await ImageSharpImage.LoadAsync(sourcePath, ct).ConfigureAwait(false);
+            await using var input = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return await TryWritePhotoThumbnailStreamAsync(input, tmpPath, ct).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
+            return false;
+        }
+    }
+
+    private static async Task<bool> TryWritePhotoThumbnailStreamAsync(Stream input, string tmpPath, CancellationToken ct)
+    {
+        try
+        {
+            if (input.CanSeek)
+                input.Position = 0;
+
+            using var image = await ImageSharpImage.LoadAsync(input, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
             {
                 ctx.AutoOrient();
@@ -442,7 +468,7 @@ public sealed class ThumbnailService
         }
         catch (Exception ex)
         {
-            ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailAsync", $"Path={sourcePath}");
+            ErrorLog.LogException(ex, "ThumbnailService.TryWritePhotoThumbnailStreamAsync");
             return false;
         }
     }
