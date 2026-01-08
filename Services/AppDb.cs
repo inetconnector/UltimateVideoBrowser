@@ -259,60 +259,43 @@ public sealed class AppDb
         await EnsureColumnAsync("PersonProfile", "IsIgnored", "INTEGER").ConfigureAwait(false);
 
         // FaceScanJob (queue)
-        await EnsureColumnAsync("FaceScanJob", "EnqueuedAtSeconds", "INTEGER NOT NULL DEFAULT 0")
-            .ConfigureAwait(false);
-        await EnsureColumnAsync("FaceScanJob", "LastAttemptSeconds", "INTEGER NOT NULL DEFAULT 0")
-            .ConfigureAwait(false);
-        await EnsureColumnAsync("FaceScanJob", "AttemptCount", "INTEGER NOT NULL DEFAULT 0")
-            .ConfigureAwait(false);
+        await EnsureColumnAsync("FaceScanJob", "EnqueuedAtSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceScanJob", "LastAttemptSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceScanJob", "AttemptCount", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
     }
 
     private async Task EnsureIndexesAsync()
     {
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_name ON MediaItem(Name);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_source ON MediaItem(SourceId);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_type ON MediaItem(MediaType);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_location ON MediaItem(Latitude, Longitude);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_location ON MediaItem(Latitude, Longitude);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_album ON AlbumItem(AlbumId);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_album ON AlbumItem(AlbumId);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_media ON AlbumItem(MediaPath);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_album_item_media ON AlbumItem(MediaPath);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_media ON PersonTag(MediaPath);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_name ON PersonTag(PersonName);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_tag_name ON PersonTag(PersonName);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_media ON FaceEmbedding(MediaPath);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_embedding_person ON FaceEmbedding(PersonId);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 
-        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_face_scan_queue_time ON FaceScanJob(EnqueuedAtSeconds);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 
-        await TryExecuteAsync(
-                "CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);",
-                "AppDb.EnsureIndexesAsync")
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_person_profile_merged_into ON PersonProfile(MergedIntoPersonId);", "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
     }
 
@@ -320,8 +303,7 @@ public sealed class AppDb
     {
         try
         {
-            var rows = await Db.QueryAsync<PragmaTableInfo>($"PRAGMA table_info('{tableName}');")
-                .ConfigureAwait(false);
+            var rows = await Db.QueryAsync<PragmaTableInfo>($"PRAGMA table_info('{tableName}');").ConfigureAwait(false);
             return rows
                 .Where(r => !string.IsNullOrWhiteSpace(r.name))
                 .Select(r => r.name)
@@ -381,7 +363,6 @@ public sealed class AppDb
                 return s;
 
             return s.Substring(0, max) + " …(truncated)";
-(truncated)";
         }
 
         static string SafeToString(object? value)
@@ -453,15 +434,26 @@ public sealed class AppDb
                     return g.ToString("D");
 
                 case byte[] bytes:
-                            sb.Append("…");
-                            sb.Append("…");
+                    {
+                        // Do not dump binary to logs; include length + first bytes as hex (bounded)
+                        var take = Math.Min(bytes.Length, 32);
+                        var sb = new StringBuilder();
+                        sb.Append("bytes[len=").Append(bytes.Length).Append(", head=");
+                        for (var i = 0; i < take; i++)
+                        {
+                            if (i > 0) sb.Append(' ');
+                            sb.Append(bytes[i].ToString("X2"));
+                        }
+                        if (bytes.Length > take) sb.Append(" …");
+                        sb.Append(']');
+                        return sb.ToString();
+                    }
 
                 case Stream stream:
                     // Do not dump stream content into logs
                     try
                     {
-                        return
-                            $"stream(canRead={stream.CanRead}, canSeek={stream.CanSeek}, length={(stream.CanSeek ? stream.Length.ToString() : "<n/a>")})";
+                        return $"stream(canRead={stream.CanRead}, canSeek={stream.CanSeek}, length={(stream.CanSeek ? stream.Length.ToString() : "<n/a>")})";
                     }
                     catch
                     {
@@ -469,68 +461,69 @@ public sealed class AppDb
                     }
 
                 case IDictionary dict:
-                {
-                    // Avoid huge logs from dictionaries; keep it bounded
-                    var count = 0;
-                    var sb = new StringBuilder();
-                    sb.Append("dict{");
-
-                    foreach (DictionaryEntry de in dict)
                     {
-                        if (count >= maxCollectionItems)
+                        // Avoid huge logs from dictionaries; keep it bounded
+                        var count = 0;
+                        var sb = new StringBuilder();
+                        sb.Append("dict{");
+
+                        foreach (DictionaryEntry de in dict)
                         {
-                            sb.Append("");
-                            break;
+                            if (count >= maxCollectionItems)
+                            {
+                                sb.Append(" …(truncated)");
+                                break;
+                            }
+
+                            if (count > 0) sb.Append(", ");
+                            sb.Append(SafeToString(de.Key)).Append(": ").Append(SafeToString(de.Value));
+                            count++;
                         }
 
-                        if (count > 0) sb.Append(", ");
-                        sb.Append(SafeToString(de.Key)).Append(": ").Append(SafeToString(de.Value));
-                        count++;
+                        sb.Append('}');
+                        return Clip(sb.ToString(), maxArgStringLen);
                     }
-
-                    sb.Append("}");
-                    return Clip(sb.ToString(), maxArgStringLen);
-                }
 
                 case IEnumerable enumerable when a is not string:
-                {
-                    // Avoid huge logs from enumerables; keep it bounded
-                    var count = 0;
-                    var sb = new StringBuilder();
-                    sb.Append("[");
-
-                    foreach (var item in enumerable)
                     {
-                        if (count >= maxCollectionItems)
+                        // Avoid huge logs from enumerables; keep it bounded
+                        var count = 0;
+                        var sb = new StringBuilder();
+                        sb.Append('[');
+
+                        foreach (var item in enumerable)
                         {
-                            sb.Append("");
-                            break;
+                            if (count >= maxCollectionItems)
+                            {
+                                sb.Append(" …(truncated)");
+                                break;
+                            }
+
+                            if (count > 0) sb.Append(", ");
+                            sb.Append(SafeToString(item));
+                            count++;
                         }
 
-                        if (count > 0) sb.Append(", ");
-                        sb.Append(SafeToString(item));
-                        count++;
+                        sb.Append(']');
+                        return Clip(sb.ToString(), maxArgStringLen);
                     }
 
-                    sb.Append("]");
-                    return Clip(sb.ToString(), maxArgStringLen);
-                }
-
                 default:
-                {
-                    // Fallback: include type info + ToString
-                    var s = SafeToString(a);
-                    s = Clip(s, maxArgStringLen);
-                    return $"{a.GetType().FullName}: {s}";
-                }
+                    {
+                        // Fallback: include type info + ToString
+                        var s = Clip(SafeToString(a), maxArgStringLen);
+                        return $"{a.GetType().FullName}: {s}";
+                    }
             }
         }
 
         var sbMsg = new StringBuilder(1024);
 
-        public string name { get; set; } = string.Empty;
-}
-            sbMsg.AppendLine(d);
+        if (!string.IsNullOrWhiteSpace(details))
+        {
+            var d = Clip(details, maxDetailsLen);
+            sbMsg.Append("DETAILS=").AppendLine(d);
+        }
 
         sbMsg.Append("SQL=").AppendLine(Clip(sql, maxSqlLen));
 
@@ -538,10 +531,12 @@ public sealed class AppDb
         {
             sbMsg.AppendLine("ARGS=");
             for (var i = 0; i < args.Length; i++)
+            {
                 sbMsg.Append("  [")
                     .Append(i)
                     .Append("] ")
                     .AppendLine(FormatArg(args[i]));
+            }
         }
         else
         {
@@ -555,6 +550,6 @@ public sealed class AppDb
     {
         // Property name must match PRAGMA output column name.
         // ReSharper disable once InconsistentNaming
-        public string name { get; } = string.Empty;
+        public string name { get; set; } = string.Empty;
     }
 }
