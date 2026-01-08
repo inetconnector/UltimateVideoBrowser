@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,6 +40,9 @@ public partial class MainViewModel : ObservableObject
     private readonly ISourceService sourceService;
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
+    private readonly ConcurrentQueue<(MediaItem Item, string Path)> pendingThumbUiUpdates = new();
+    private int pendingThumbUiFlushScheduled;
+    private const int ThumbUiFlushBatchSize = 160;
     private readonly ThumbnailService thumbnailService;
     private readonly ImageEditService imageEditService;
     [ObservableProperty] private string activeAlbumId = "";
@@ -66,6 +70,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private double indexRatio;
     private int indexStartingCount;
     [ObservableProperty] private string indexStatus = "";
+    [ObservableProperty] private string indexWorkStatus = "";
     [ObservableProperty] private int indexTotal;
     private bool isApplyingIndexProgress;
     private bool isApplyingSavedSettings;
@@ -115,11 +120,19 @@ public partial class MainViewModel : ObservableObject
     private int visibleFirstIndex;
     private int visibleLastIndex;
 
+    public bool HasIndexWorkStatus => !string.IsNullOrWhiteSpace(IndexWorkStatus);
+
+    partial void OnIndexWorkStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(HasIndexWorkStatus));
+    }
+
     public MainViewModel(
         ISourceService sourceService,
         IndexService indexService,
         AppSettingsService settingsService,
         ThumbnailService thumbnailService,
+        ImageEditService imageEditService,
         PlaybackService playbackService,
         PermissionService permissionService,
         IFileExportService fileExportService,
@@ -486,6 +499,7 @@ public partial class MainViewModel : ObservableObject
         IndexTotal = 0;
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
+        IndexWorkStatus = "";
         IndexCurrentFolder = "";
         IndexCurrentFile = "";
 
@@ -530,6 +544,7 @@ public partial class MainViewModel : ObservableObject
         IndexTotal = 0;
         IndexRatio = 0;
         IndexStatus = AppResources.Indexing;
+        IndexWorkStatus = "";
         IndexCurrentFolder = "";
         IndexCurrentFile = "";
 
@@ -652,6 +667,20 @@ public partial class MainViewModel : ObservableObject
     public void CancelIndex()
     {
         indexCts?.Cancel();
+    }
+
+    [RelayCommand]
+    public void Select(MediaItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        CurrentMediaSource = item.Path;
+        CurrentMediaName = string.IsNullOrWhiteSpace(item.Name)
+            ? Path.GetFileName(item.Path)
+            : item.Name;
+        CurrentMediaType = item.MediaType;
+        IsPlayerFullscreen = false;
     }
 
     [RelayCommand]
@@ -1350,6 +1379,62 @@ public partial class MainViewModel : ObservableObject
             await RunIndexAsync();
     }
 
+
+
+    private void EnqueueThumbnailUiUpdate(MediaItem item, string path)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(path))
+            return;
+
+        pendingThumbUiUpdates.Enqueue((item, path));
+        ScheduleThumbnailUiFlush();
+    }
+
+    private void ScheduleThumbnailUiFlush()
+    {
+        // Ensure at most one flush is scheduled at a time. Batching avoids UI-thread churn
+        // when many thumbnails complete quickly (large libraries, fast SSDs).
+        if (Interlocked.CompareExchange(ref pendingThumbUiFlushScheduled, 1, 0) != 0)
+            return;
+
+        MainThread.BeginInvokeOnMainThread(FlushThumbnailUiUpdates);
+    }
+
+    private void FlushThumbnailUiUpdates()
+    {
+        try
+        {
+            Interlocked.Exchange(ref pendingThumbUiFlushScheduled, 0);
+
+            var processed = 0;
+            while (processed < ThumbUiFlushBatchSize && pendingThumbUiUpdates.TryDequeue(out var update))
+            {
+                var item = update.Item;
+                var p = update.Path;
+
+                // Force refresh even if the same file path gets assigned again.
+                if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
+                    item.ThumbnailPath = string.Empty;
+
+                item.ThumbnailPath = p;
+                processed++;
+            }
+
+            if (!pendingThumbUiUpdates.IsEmpty)
+            {
+                // Defer the next batch slightly so scrolling and input remain responsive.
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(33).ConfigureAwait(false);
+                    ScheduleThumbnailUiFlush();
+                });
+            }
+        }
+        catch
+        {
+            // Best-effort: never crash UI because of thumbnail updates.
+        }
+    }
     private void StartThumbnailPipeline()
     {
         int currentVersion;
@@ -1427,14 +1512,7 @@ public partial class MainViewModel : ObservableObject
                     if (string.IsNullOrWhiteSpace(p))
                         return;
 
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        // Force refresh even if the same file path gets assigned again.
-                        if (string.Equals(item.ThumbnailPath, p, StringComparison.OrdinalIgnoreCase))
-                            item.ThumbnailPath = string.Empty;
-
-                        item.ThumbnailPath = p;
-                    });
+                    EnqueueThumbnailUiUpdate(item, p);
                 });
             }
             catch (OperationCanceledException)
@@ -2086,6 +2164,16 @@ public partial class MainViewModel : ObservableObject
         IndexRatio = progress.Ratio;
         IndexStatus = string.Format(AppResources.IndexingStatusFormat, progress.SourceName, progress.Processed,
             progress.Total);
+
+        var parts = new List<string>(3);
+        if (progress.ThumbsQueued > 0)
+            parts.Add($"🖼 {progress.ThumbsDone:N0}/{progress.ThumbsQueued:N0}");
+        if (progress.LocationsQueued > 0)
+            parts.Add($"📍 {progress.LocationsDone:N0}/{progress.LocationsQueued:N0}");
+        if (progress.DurationsQueued > 0)
+            parts.Add($"⏱ {progress.DurationsDone:N0}/{progress.DurationsQueued:N0}");
+        IndexWorkStatus = parts.Count == 0 ? "" : string.Join("  •  ", parts);
+
         UpdateIndexLocation(progress.SourceName, progress.CurrentPath);
         IndexedCount = progress.Inserted;
         IndexedMediaCount = indexStartingCount + progress.Inserted;

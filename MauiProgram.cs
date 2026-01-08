@@ -84,6 +84,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<PermissionService>();
         builder.Services.AddSingleton<MediaStoreScanner>();
         builder.Services.AddSingleton<ThumbnailService>();
+        builder.Services.AddSingleton<VideoDurationService>();
         builder.Services.AddSingleton<ImageEditService>();
         builder.Services.AddSingleton<LocationMetadataService>();
         builder.Services.AddSingleton<IndexService>();

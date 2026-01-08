@@ -6,6 +6,7 @@ using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.ViewModels;
+using UltimateVideoBrowser.Behaviors;
 
 namespace UltimateVideoBrowser.Views;
 
@@ -20,6 +21,11 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
+
+#if WINDOWS
+    private IDisposable? marqueeSelection;
+    private MarqueeOverlayDrawable? marqueeDrawable;
+#endif
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
@@ -109,6 +115,10 @@ public partial class MainPage : ContentPage
 
         TryHookHeaderSize();
         TryHookPlatformKeyboard();
+
+#if WINDOWS
+        TryHookMarqueeSelection();
+#endif
     }
 
     protected override void OnDisappearing()
@@ -119,6 +129,19 @@ public partial class MainPage : ContentPage
         appearingCts = null;
         SizeChanged -= OnPageSizeChanged;
         UnhookPlatformKeyboard();
+
+#if WINDOWS
+        try
+        {
+            marqueeSelection?.Dispose();
+        }
+        catch
+        {
+            // Ignore
+        }
+
+        marqueeSelection = null;
+#endif
 
         if (isHeaderSizeHooked)
         {
@@ -134,6 +157,24 @@ public partial class MainPage : ContentPage
             isHeaderSizeHooked = false;
         }
     }
+
+#if WINDOWS
+    private void TryHookMarqueeSelection()
+    {
+        if (marqueeSelection != null)
+            return;
+
+        if (MarqueeOverlay == null)
+            return;
+
+        marqueeDrawable ??= new MarqueeOverlayDrawable();
+        MarqueeOverlay.Drawable = marqueeDrawable;
+
+        // Attach pointer handling to the native WinUI ListView used by CollectionView.
+        // The overlay remains InputTransparent and is only used for drawing.
+        marqueeSelection = WindowsMarqueeSelection.Attach(MediaItemsView, MarqueeOverlay, marqueeDrawable);
+    }
+#endif
 
     private void OnPageSizeChanged(object? sender, EventArgs e)
     {
@@ -184,6 +225,31 @@ public partial class MainPage : ContentPage
 
         if (BindingContext is MainPageBinding binding)
             binding.SetTimelinePreview(entry);
+    }
+
+    private void OnMediaItemsSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+#if WINDOWS
+        // Keep the existing "marked" workflow fully intact. On Windows, selection behaves like
+        // File Explorer (Ctrl / Shift multi-select), but all batch actions still operate on IsMarked.
+        try
+        {
+            foreach (var removed in e.PreviousSelection.OfType<MediaItem>())
+                removed.IsMarked = false;
+
+            foreach (var added in e.CurrentSelection.OfType<MediaItem>())
+                added.IsMarked = true;
+
+            // Update preview without launching external playback. Double-click still opens.
+            var last = e.CurrentSelection.OfType<MediaItem>().LastOrDefault();
+            if (last != null)
+                vm.Select(last);
+        }
+        catch
+        {
+            // Best-effort: never crash the UI due to selection edge cases.
+        }
+#endif
     }
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
@@ -350,6 +416,9 @@ public partial class MainPage : ContentPage
             SaveAsCommand = vm.SaveAsCommand;
             CopyItemCommand = vm.CopyItemCommand;
             DeleteItemCommand = vm.DeleteItemCommand;
+            RotateLeftCommand = vm.RotateLeftCommand;
+            RotateRightCommand = vm.RotateRightCommand;
+            MirrorCommand = vm.MirrorCommand;
             OpenItemMenuCommand = vm.OpenItemMenuCommand;
             // Restore UI states from persisted settings.
             try
@@ -615,6 +684,9 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand SaveAsCommand { get; }
         public IAsyncRelayCommand CopyItemCommand { get; }
         public IAsyncRelayCommand DeleteItemCommand { get; }
+        public IAsyncRelayCommand RotateLeftCommand { get; }
+        public IAsyncRelayCommand RotateRightCommand { get; }
+        public IAsyncRelayCommand MirrorCommand { get; }
         public IAsyncRelayCommand OpenItemMenuCommand { get; }
 
         public int GridSpan

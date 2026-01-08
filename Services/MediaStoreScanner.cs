@@ -618,16 +618,10 @@ public sealed class MediaStoreScanner
                     continue;
 
                 var durationMs = 0L;
-                if (mediaType == ModelMediaType.Videos)
-                    try
-                    {
-                        var props = await file.Properties.GetVideoPropertiesAsync();
-                        durationMs = (long)props.Duration.TotalMilliseconds;
-                    }
-                    catch
-                    {
-                        durationMs = 0;
-                    }
+
+// IMPORTANT: Retrieving video duration is expensive on Windows and significantly slows down indexing.
+// We defer duration probing to a background metadata step so scanning stays fast.
+
 
                 yield return new MediaItem
                 {

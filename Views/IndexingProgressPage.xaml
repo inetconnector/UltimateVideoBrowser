@@ -45,6 +45,11 @@
                         CornerRadius="12" />
             </Grid>
 
+            <Label Text="{Binding IndexWorkStatus}"
+                   TextColor="{DynamicResource OnSurfaceMuted}"
+                   FontSize="12"
+                   IsVisible="{Binding HasIndexWorkStatus}" />
+
             <Button Text="{x:Static strings:AppResources.IndexingCancelButton}"
                     Command="{Binding CancelIndexCommand}"
                     Style="{StaticResource OverlayButtonStyle}"

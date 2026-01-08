@@ -1,6 +1,17 @@
 namespace UltimateVideoBrowser.Services;
 
-public sealed record IndexProgress(int Processed, int Total, int Inserted, string SourceName, string? CurrentPath)
+public sealed record IndexProgress(
+    int Processed,
+    int Total,
+    int Inserted,
+    string SourceName,
+    string? CurrentPath,
+    int ThumbsQueued,
+    int ThumbsDone,
+    int LocationsQueued,
+    int LocationsDone,
+    int DurationsQueued,
+    int DurationsDone)
 {
     public double Ratio
     {
