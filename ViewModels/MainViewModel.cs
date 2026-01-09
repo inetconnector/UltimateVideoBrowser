@@ -91,6 +91,7 @@ public partial class MainViewModel : ObservableObject
     // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
     private CancellationTokenSource? mediaDerivedCts;
     private int mediaItemsOffset;
+    private int mediaItemsFilteredCount;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
     [ObservableProperty] private bool needsReindex;
@@ -385,6 +386,7 @@ public partial class MainViewModel : ObservableObject
             var refreshVersion = Interlocked.Increment(ref mediaQueryVersion);
             try
             {
+                const int initialLoadTarget = PageSize * 3;
                 var result = await Task.Run(async () =>
                 {
                     var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
@@ -409,12 +411,48 @@ public partial class MainViewModel : ObservableObject
                         : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
                                 querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
                             .ConfigureAwait(false);
+                    var filteredCount = string.IsNullOrWhiteSpace(normalizedAlbumId)
+                        ? await indexService
+                            .CountQueryAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
+                                SelectedMediaTypes)
+                            .ConfigureAwait(false)
+                        : await albumService
+                            .CountAlbumItemsAsync(normalizedAlbumId, SearchText, SelectedSearchScope, querySourceId,
+                                dateFrom, dateTo, SelectedMediaTypes)
+                            .ConfigureAwait(false);
+
+                    if (items.Count < filteredCount && items.Count < initialLoadTarget)
+                    {
+                        var expanded = new List<MediaItem>(items);
+                        var offset = expanded.Count;
+                        while (offset < filteredCount && expanded.Count < initialLoadTarget)
+                        {
+                            var nextItems = string.IsNullOrWhiteSpace(normalizedAlbumId)
+                                ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId,
+                                        sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize)
+                                    .ConfigureAwait(false)
+                                : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText,
+                                        SelectedSearchScope, querySourceId, sortKey, dateFrom, dateTo,
+                                        SelectedMediaTypes, offset, PageSize)
+                                    .ConfigureAwait(false);
+
+                            if (nextItems.Count == 0)
+                                break;
+
+                            expanded.AddRange(nextItems);
+                            offset += nextItems.Count;
+                            if (nextItems.Count < PageSize)
+                                break;
+                        }
+
+                        items = expanded;
+                    }
+
                     var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                     var enabledSources = sources.Where(s => s.IsEnabled).ToList();
 
-                    return (sources, enabledSources, items, totalCount, normalizedSourceId, normalizedAlbumId,
-                        albumTabs,
-                        refreshVersion);
+                    return (sources, enabledSources, items, totalCount, filteredCount, normalizedSourceId,
+                        normalizedAlbumId, albumTabs, refreshVersion);
                 });
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -430,7 +468,8 @@ public partial class MainViewModel : ObservableObject
                     MediaItems.ReplaceRange(result.items);
                     IndexedMediaCount = result.totalCount;
                     mediaItemsOffset = result.items.Count;
-                    hasMoreMediaItems = result.items.Count == PageSize;
+                    mediaItemsFilteredCount = result.filteredCount;
+                    hasMoreMediaItems = result.items.Count < result.filteredCount;
                     isLoadingMoreMediaItems = false;
                 });
             }
@@ -479,7 +518,7 @@ public partial class MainViewModel : ObservableObject
 
                 MediaItems.AddRange(nextItems);
                 mediaItemsOffset += nextItems.Count;
-                hasMoreMediaItems = nextItems.Count == PageSize;
+                hasMoreMediaItems = mediaItemsOffset < mediaItemsFilteredCount;
             });
         }
         finally

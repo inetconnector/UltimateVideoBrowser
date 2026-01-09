@@ -182,6 +182,8 @@ public sealed class MediaStoreScanner
         ".thumbnails"
     };
 
+    private const long PhotoSizeThresholdBytes = 256 * 1024;
+
     private static bool IsThumbnailPath(string? path, string? name)
     {
         var candidate = path ?? name ?? string.Empty;
@@ -235,6 +237,9 @@ public sealed class MediaStoreScanner
 
         if (!wantsPhotos && wantsGraphics)
             return ModelMediaType.Graphics;
+
+        if (contentSize.HasValue && contentSize.Value >= PhotoSizeThresholdBytes)
+            return ModelMediaType.Photos;
 
         if (HasCameraExif(path))
             return ModelMediaType.Photos;
