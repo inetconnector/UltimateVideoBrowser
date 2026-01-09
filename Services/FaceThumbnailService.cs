@@ -302,7 +302,7 @@ public sealed class FaceThumbnailService
                 return false;
             }
 
-            using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
             var b1 = fs.ReadByte();
             var b2 = fs.ReadByte();
             if (b1 != 0xFF || b2 != 0xD8)
@@ -324,6 +324,10 @@ public sealed class FaceThumbnailService
             }
 
             return true;
+        }
+        catch (IOException ex) when (IsFileInUse(ex))
+        {
+            return false;
         }
         catch (Exception ex)
         {
