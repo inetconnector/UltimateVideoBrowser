@@ -439,6 +439,13 @@ public sealed class MediaStoreScanner
         if (string.IsNullOrWhiteSpace(root))
             yield break;
 
+        if (Directory.Exists(root))
+        {
+            await foreach (var item in ScanWindowsFileSystemAsync(root, sourceId, indexedTypes, extensions, ct))
+                yield return item;
+            yield break;
+        }
+
         StorageFolder? folder = null;
         try
         {
@@ -453,14 +460,7 @@ public sealed class MediaStoreScanner
         {
             await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, indexedTypes, extensions, ct))
                 yield return item;
-            yield break;
         }
-
-        if (!Directory.Exists(root))
-            yield break;
-
-        await foreach (var item in ScanWindowsFileSystemAsync(root, sourceId, indexedTypes, extensions, ct))
-            yield return item;
     }
 
     private static async Task<int> CountWindowsAsync(string? rootPath, string? accessToken,
@@ -469,6 +469,16 @@ public sealed class MediaStoreScanner
         var root = rootPath;
         if (string.IsNullOrWhiteSpace(root))
             return 0;
+
+        if (Directory.Exists(root))
+        {
+            var total = 0;
+            foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
+                if (ResolveMediaTypeFromPath(path, null, indexedTypes, extensions) != ModelMediaType.None)
+                    total++;
+
+            return total;
+        }
 
         StorageFolder? folder = null;
         try
@@ -483,15 +493,7 @@ public sealed class MediaStoreScanner
         if (folder != null)
             return await CountWindowsFolderAsync(folder, indexedTypes, extensions, ct).ConfigureAwait(false);
 
-        if (!Directory.Exists(root))
-            return 0;
-
-        var total = 0;
-        foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
-            if (ResolveMediaTypeFromPath(path, null, indexedTypes, extensions) != ModelMediaType.None)
-                total++;
-
-        return total;
+        return 0;
     }
 
     private const uint StorageQueryPageSize = 256;
@@ -515,7 +517,8 @@ public sealed class MediaStoreScanner
                     continue;
 
                 var path = file.Path;
-                if (string.IsNullOrWhiteSpace(path))
+                if (string.IsNullOrWhiteSpace(path) ||
+                    !string.Equals(IOPath.GetFileName(path), file.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     var folderPath = folder.Path;
                     if (!string.IsNullOrWhiteSpace(folderPath))
@@ -630,7 +633,8 @@ public sealed class MediaStoreScanner
                     continue;
 
                 var path = file.Path;
-                if (string.IsNullOrWhiteSpace(path))
+                if (string.IsNullOrWhiteSpace(path) ||
+                    !string.Equals(IOPath.GetFileName(path), file.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     var folderPath = folder.Path;
                     if (!string.IsNullOrWhiteSpace(folderPath))
