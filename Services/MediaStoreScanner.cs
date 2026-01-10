@@ -554,11 +554,16 @@ public sealed class MediaStoreScanner
             IEnumerable<string> files;
             try
             {
-                files = Directory.EnumerateFiles(dir, "*.*", SearchOption.TopDirectoryOnly);
+                files = Directory.EnumerateFiles(dir, "*.*", new EnumerationOptions
+                {
+                    RecurseSubdirectories = false,
+                    IgnoreInaccessible = true,
+                    AttributesToSkip = FileAttributes.ReparsePoint
+                });
             }
             catch
             {
-                continue;
+                files = Enumerable.Empty<string>();
             }
 
             foreach (var file in files)
@@ -576,7 +581,12 @@ public sealed class MediaStoreScanner
             IEnumerable<string> subdirs;
             try
             {
-                subdirs = Directory.EnumerateDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+                subdirs = Directory.EnumerateDirectories(dir, "*", new EnumerationOptions
+                {
+                    RecurseSubdirectories = false,
+                    IgnoreInaccessible = true,
+                    AttributesToSkip = FileAttributes.ReparsePoint
+                });
             }
             catch
             {
