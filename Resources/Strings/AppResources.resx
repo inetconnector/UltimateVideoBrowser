@@ -195,6 +195,39 @@
   <data name="ErrorLogClearedMessage" xml:space="preserve">
     <value>The error log has been cleared.</value>
   </data>
+  <data name="ScanLogTitle" xml:space="preserve">
+    <value>Scan log</value>
+  </data>
+  <data name="ScanLogHint" xml:space="preserve">
+    <value>Share this log if your library isn't indexing as expected.</value>
+  </data>
+  <data name="ScanLogShowButton" xml:space="preserve">
+    <value>Show log</value>
+  </data>
+  <data name="ScanLogCopyButton" xml:space="preserve">
+    <value>Copy log</value>
+  </data>
+  <data name="ScanLogShareButton" xml:space="preserve">
+    <value>Share log</value>
+  </data>
+  <data name="ScanLogClearButton" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="ScanLogEmptyMessage" xml:space="preserve">
+    <value>No scan entries yet.</value>
+  </data>
+  <data name="ScanLogShareTitle" xml:space="preserve">
+    <value>Share scan log</value>
+  </data>
+  <data name="ScanLogCopiedMessage" xml:space="preserve">
+    <value>Scan log copied.</value>
+  </data>
+  <data name="ScanLogCopyFailedMessage" xml:space="preserve">
+    <value>Could not copy the scan log to the clipboard. Please try again.</value>
+  </data>
+  <data name="ScanLogClearedMessage" xml:space="preserve">
+    <value>The scan log has been cleared.</value>
+  </data>
   <data name="RenameAction" xml:space="preserve">
     <value>Rename</value>
   </data>

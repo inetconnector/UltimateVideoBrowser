@@ -457,6 +457,48 @@
                        CornerRadius="14"
                        Padding="14">
                     <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.ScanLogTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}" />
+                        <Label Text="{x:Static strings:AppResources.ScanLogHint}"
+                               FontSize="12"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <Label Text="{Binding ScanLogPath}"
+                               FontSize="11"
+                               TextColor="{DynamicResource OnSurfaceMuted}" />
+                        <HorizontalStackLayout Spacing="12">
+                            <Button Text="{x:Static strings:AppResources.ScanLogShowButton}"
+                                    Command="{Binding ShowScanLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.ScanLogCopyButton}"
+                                    Command="{Binding CopyScanLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.ScanLogShareButton}"
+                                    Command="{Binding ShareScanLogCommand}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                        </HorizontalStackLayout>
+                        <Button Text="{x:Static strings:AppResources.ScanLogClearButton}"
+                                Command="{Binding ClearScanLogCommand}"
+                                Style="{StaticResource OverlayButtonStyle}"
+                                CornerRadius="6"
+                                HorizontalOptions="Start"
+                                Padding="12,6" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.HelpSectionTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />

@@ -134,6 +134,7 @@ public partial class SettingsViewModel : ObservableObject
     public IReadOnlyList<ThemeOption> ThemeOptions { get; }
     public IReadOnlyList<SortOption> SortOptions { get; }
     public string ErrorLogPath => ErrorLog.LogPath;
+    public string ScanLogPath => ScanLog.LogPath;
 
     partial void OnSelectedThemeChanged(ThemeOption? value)
     {
@@ -601,6 +602,95 @@ public partial class SettingsViewModel : ObservableObject
             dialogService.DisplayAlertAsync(
                 AppResources.ErrorLogTitle,
                 AppResources.ErrorLogClearedMessage,
+                AppResources.OkButton));
+    }
+
+    [RelayCommand]
+    private async Task ShowScanLogAsync()
+    {
+        var log = await ScanLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ScanLogTitle,
+                    AppResources.ScanLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ScanLogTitle,
+                log,
+                AppResources.OkButton));
+    }
+
+    [RelayCommand]
+    private async Task ShareScanLogAsync()
+    {
+        var log = await ScanLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ScanLogTitle,
+                    AppResources.ScanLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            Share.RequestAsync(new ShareTextRequest
+            {
+                Title = AppResources.ScanLogShareTitle,
+                Text = log
+            }));
+    }
+
+    [RelayCommand]
+    private async Task CopyScanLogAsync()
+    {
+        var log = await ScanLog.ReadLogAsync().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(log))
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ScanLogTitle,
+                    AppResources.ScanLogEmptyMessage,
+                    AppResources.OkButton));
+            return;
+        }
+
+        try
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () => { await Clipboard.Default.SetTextAsync(log); });
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ScanLogTitle,
+                    AppResources.ScanLogCopiedMessage,
+                    AppResources.OkButton));
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "CopyScanLogAsync");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                dialogService.DisplayAlertAsync(
+                    AppResources.ScanLogTitle,
+                    AppResources.ScanLogCopyFailedMessage,
+                    AppResources.OkButton));
+        }
+    }
+
+    [RelayCommand]
+    private async Task ClearScanLogAsync()
+    {
+        await ScanLog.ClearLogAsync().ConfigureAwait(false);
+        await MainThread.InvokeOnMainThreadAsync(() =>
+            dialogService.DisplayAlertAsync(
+                AppResources.ScanLogTitle,
+                AppResources.ScanLogClearedMessage,
                 AppResources.OkButton));
     }
 
