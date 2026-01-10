@@ -206,6 +206,25 @@ public static class AppResources
     public static string ErrorLogClearedMessage =>
         GetString(nameof(ErrorLogClearedMessage), "The error log has been cleared.");
 
+    public static string ScanLogTitle => GetString(nameof(ScanLogTitle), "Scan log");
+
+    public static string ScanLogHint =>
+        GetString(nameof(ScanLogHint), "Share this log if your library isn't indexing as expected.");
+
+    public static string ScanLogShowButton => GetString(nameof(ScanLogShowButton), "Show log");
+    public static string ScanLogCopyButton => GetString(nameof(ScanLogCopyButton), "Copy log");
+    public static string ScanLogShareButton => GetString(nameof(ScanLogShareButton), "Share log");
+    public static string ScanLogClearButton => GetString(nameof(ScanLogClearButton), "Clear log");
+    public static string ScanLogEmptyMessage => GetString(nameof(ScanLogEmptyMessage), "No scan entries yet.");
+    public static string ScanLogShareTitle => GetString(nameof(ScanLogShareTitle), "Share scan log");
+    public static string ScanLogCopiedMessage => GetString(nameof(ScanLogCopiedMessage), "Scan log copied.");
+
+    public static string ScanLogCopyFailedMessage => GetString(nameof(ScanLogCopyFailedMessage),
+        "Could not copy the scan log to the clipboard. Please try again.");
+
+    public static string ScanLogClearedMessage =>
+        GetString(nameof(ScanLogClearedMessage), "The scan log has been cleared.");
+
     public static string RenameAction => GetString(nameof(RenameAction), "Rename");
     public static string RenameTitle => GetString(nameof(RenameTitle), "Rename file");
     public static string RenameMessage => GetString(nameof(RenameMessage), "Enter a new name for this file.");
