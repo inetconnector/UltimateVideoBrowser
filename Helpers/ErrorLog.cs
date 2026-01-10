@@ -98,13 +98,36 @@ public static class ErrorLog
 
     private static string BuildExceptionEntry(Exception exception, string context, string? details)
     {
+        var appVersion = "unknown";
+        var platform = "unknown";
+        var device = "unknown";
+        try
+        {
+            appVersion = $"{AppInfo.VersionString} ({AppInfo.BuildString})";
+        }
+        catch
+        {
+            appVersion = "unknown";
+        }
+
+        try
+        {
+            platform = $"{DeviceInfo.Platform} {DeviceInfo.VersionString}";
+            device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model}";
+        }
+        catch
+        {
+            platform = "unknown";
+            device = "unknown";
+        }
+
         var builder = new StringBuilder();
         builder.AppendLine("-----");
         builder.AppendLine($"Timestamp: {DateTimeOffset.Now:O}");
         builder.AppendLine($"Context: {context}");
-        builder.AppendLine($"AppVersion: {AppInfo.VersionString} ({AppInfo.BuildString})");
-        builder.AppendLine($"Platform: {DeviceInfo.Platform} {DeviceInfo.VersionString}");
-        builder.AppendLine($"Device: {DeviceInfo.Manufacturer} {DeviceInfo.Model}");
+        builder.AppendLine($"AppVersion: {appVersion}");
+        builder.AppendLine($"Platform: {platform}");
+        builder.AppendLine($"Device: {device}");
         if (!string.IsNullOrWhiteSpace(details))
             builder.AppendLine($"Details: {details}");
 
@@ -115,12 +138,32 @@ public static class ErrorLog
 
     private static string BuildMessageEntry(string message, string context)
     {
+        var appVersion = "unknown";
+        var platform = "unknown";
+        try
+        {
+            appVersion = $"{AppInfo.VersionString} ({AppInfo.BuildString})";
+        }
+        catch
+        {
+            appVersion = "unknown";
+        }
+
+        try
+        {
+            platform = $"{DeviceInfo.Platform} {DeviceInfo.VersionString}";
+        }
+        catch
+        {
+            platform = "unknown";
+        }
+
         var builder = new StringBuilder();
         builder.AppendLine("-----");
         builder.AppendLine($"Timestamp: {DateTimeOffset.Now:O}");
         builder.AppendLine($"Context: {context}");
-        builder.AppendLine($"AppVersion: {AppInfo.VersionString} ({AppInfo.BuildString})");
-        builder.AppendLine($"Platform: {DeviceInfo.Platform} {DeviceInfo.VersionString}");
+        builder.AppendLine($"AppVersion: {appVersion}");
+        builder.AppendLine($"Platform: {platform}");
         builder.AppendLine($"Message: {message}");
         builder.AppendLine();
         return builder.ToString();
