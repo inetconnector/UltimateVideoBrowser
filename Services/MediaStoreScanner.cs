@@ -816,36 +816,14 @@ public sealed class MediaStoreScanner
         ModelMediaType indexedTypes, ExtensionLookup extensions,
         [EnumeratorCancellation] CancellationToken ct)
     {
-        var fileChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(512)
-        {
-            FullMode = BoundedChannelFullMode.Wait,
-            SingleWriter = true,
-            SingleReader = false
-        });
-        var itemChannel = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(512)
-        {
-            FullMode = BoundedChannelFullMode.Wait,
-            SingleWriter = false,
-            SingleReader = true
-        });
+        var filesDiscovered = 0;
+        var itemsBuilt = 0;
+        var itemsYielded = 0;
+        var errors = 0;
 
-        var producer = Task.Run(async () =>
+        try
         {
-            try
-            {
-                foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await fileChannel.Writer.WriteAsync(path, ct).ConfigureAwait(false);
-                }
-
-                fileChannel.Writer.TryComplete();
-            }
-            catch (OperationCanceledException)
-            {
-                fileChannel.Writer.TryComplete();
-            }
-            catch (Exception ex)
+            foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
             {
                 ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
                 ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
@@ -856,9 +834,7 @@ public sealed class MediaStoreScanner
         var workerCount = Math.Clamp(Environment.ProcessorCount, 2, 6);
         var workers = new Task[workerCount];
 
-        for (var i = 0; i < workerCount; i++)
-            workers[i] = Task.Run(async () =>
-            {
+                MediaItem? item;
                 try
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
@@ -883,9 +859,14 @@ public sealed class MediaStoreScanner
                 }
                 catch (OperationCanceledException)
                 {
-                    // Cancellation is expected; let completion happen below.
+                    throw;
                 }
-            }, ct);
+                catch (Exception ex)
+                {
+                    Interlocked.Increment(ref errors);
+                    ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
+                    continue;
+                }
 
         var completion = Task.WhenAll(workers).ContinueWith(task =>
         {
@@ -900,30 +881,29 @@ public sealed class MediaStoreScanner
             itemChannel.Writer.TryComplete();
         }, TaskScheduler.Default);
 
-        try
-        {
-            await foreach (var item in itemChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
+                Interlocked.Increment(ref itemsBuilt);
+                Interlocked.Increment(ref itemsYielded);
                 yield return item;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Interlocked.Increment(ref errors);
+            ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
+            ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
         }
         finally
         {
-            try
-            {
-                await producer.ConfigureAwait(false);
-            }
-            catch
-            {
-                // Exceptions are propagated through the channel completion.
-            }
-
-            try
-            {
-                await completion.ConfigureAwait(false);
-            }
-            catch
-            {
-                // Exceptions are propagated through the channel completion.
-            }
+            ScanLog.LogScan(
+                root,
+                null,
+                "Windows.FileSystem",
+                $"Summary: files={filesDiscovered}, itemsBuilt={itemsBuilt}, itemsYielded={itemsYielded}, errors={errors}",
+                ModelMediaType.None);
         }
     }
 
@@ -962,12 +942,22 @@ public sealed class MediaStoreScanner
                 durationMs = 0;
             }
 
+        var createdUtc = DateTimeOffset.UtcNow;
+        try
+        {
+            createdUtc = new DateTimeOffset(info.CreationTimeUtc);
+        }
+        catch
+        {
+            createdUtc = DateTimeOffset.UtcNow;
+        }
+
         var item = new MediaItem
         {
             Path = path,
             Name = Path.GetFileName(path),
             DurationMs = durationMs,
-            DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
+            DateAddedSeconds = createdUtc.ToUnixTimeSeconds(),
             SourceId = sourceId,
             MediaType = mediaType
         };
