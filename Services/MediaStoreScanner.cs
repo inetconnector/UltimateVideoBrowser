@@ -897,8 +897,19 @@ public sealed class MediaStoreScanner
                 }
             }, ct);
 
-        var completion = Task.WhenAll(workers).ContinueWith(task => { itemChannel.Writer.TryComplete(task.Exception); },
-            TaskScheduler.Default);
+        var completion = Task.WhenAll(workers).ContinueWith(task =>
+        {
+            if (task.Exception != null)
+            {
+                Interlocked.Increment(ref errors);
+                ErrorLog.LogException(task.Exception, "MediaStoreScanner.ScanWindowsFileSystemAsync",
+                    $"Root={root}; Stage=Workers");
+                ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {task.Exception.Message}",
+                    ModelMediaType.None);
+            }
+
+            itemChannel.Writer.TryComplete();
+        }, TaskScheduler.Default);
 
         try
         {
