@@ -515,7 +515,8 @@ public sealed class MediaStoreScanner
                     continue;
 
                 var path = file.Path;
-                if (string.IsNullOrWhiteSpace(path))
+                if (string.IsNullOrWhiteSpace(path) ||
+                    !string.Equals(IOPath.GetFileName(path), file.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     var folderPath = folder.Path;
                     if (!string.IsNullOrWhiteSpace(folderPath))
@@ -630,7 +631,8 @@ public sealed class MediaStoreScanner
                     continue;
 
                 var path = file.Path;
-                if (string.IsNullOrWhiteSpace(path))
+                if (string.IsNullOrWhiteSpace(path) ||
+                    !string.Equals(IOPath.GetFileName(path), file.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     var folderPath = folder.Path;
                     if (!string.IsNullOrWhiteSpace(folderPath))
