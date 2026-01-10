@@ -195,6 +195,17 @@ public sealed class MediaStoreScanner
         ScanLog.LogScan(path, name, source, result, (MediaType)mediaType);
     }
 
+    private static ModelMediaType GuessMediaType(string? path, string? name, ExtensionLookup extensions)
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+            return extensions.GetMediaTypeFromName(name);
+
+        if (!string.IsNullOrWhiteSpace(path))
+            return extensions.GetMediaTypeFromPath(path);
+
+        return ModelMediaType.None;
+    }
+
     private static bool IsThumbnailPath(string? path, string? name)
     {
         var candidate = path ?? name ?? string.Empty;
@@ -601,7 +612,8 @@ public sealed class MediaStoreScanner
                     continue;
                 }
 
-                LogScanEntry(file, null, "Windows.FileSystem", "Candidate", ModelMediaType.None);
+                var candidateType = GuessMediaType(file, null, extensions);
+                LogScanEntry(file, null, "Windows.FileSystem", "Candidate", candidateType);
                 yield return file;
             }
 
@@ -1661,7 +1673,8 @@ public sealed class MediaStoreScanner
 
                 if (SafeIsMediaFile(file, indexedTypes))
                 {
-                    LogScanEntry(file, null, "Android.FileSystem", "Candidate", ModelMediaType.None);
+                    var candidateType = GuessMediaType(file, null, extensions);
+                    LogScanEntry(file, null, "Android.FileSystem", "Candidate", candidateType);
                     yield return file;
                 }
             }
