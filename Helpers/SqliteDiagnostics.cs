@@ -28,6 +28,9 @@ public static class SqliteDiagnostics
 
         try
         {
+            if (ex.Message?.Contains("not an error", StringComparison.OrdinalIgnoreCase) == true)
+                return;
+
             var key = ex.Message ?? ex.GetType().FullName ?? "SQLiteException";
             var now = Environment.TickCount64;
             var last = LastSeen.GetOrAdd(key, 0);
