@@ -12,6 +12,7 @@ using Windows.Storage.Search;
 #endif
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
@@ -185,6 +186,15 @@ public sealed class MediaStoreScanner
 
     private const long PhotoSizeThresholdBytes = 256 * 1024;
 
+    private static void LogScanEntry(string? path, string? name, string source, string result,
+        ModelMediaType mediaType)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        ScanLog.LogScan(path, name, source, result, (MediaType)mediaType);
+    }
+
     private static bool IsThumbnailPath(string? path, string? name)
     {
         var candidate = path ?? name ?? string.Empty;
@@ -231,7 +241,12 @@ public sealed class MediaStoreScanner
 
         var contentSize = sizeBytes ?? TryGetFileSizeBytes(path);
         if (contentSize.HasValue && contentSize.Value <= 0)
-            return ModelMediaType.None;
+        {
+            if (path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+                contentSize = null;
+            else
+                return ModelMediaType.None;
+        }
 
         if (wantsPhotos && !wantsGraphics)
             return ModelMediaType.Photos;
@@ -515,7 +530,11 @@ public sealed class MediaStoreScanner
             {
                 ct.ThrowIfCancellationRequested();
                 if (!extensions.IsCandidateName(file.Name, indexedTypes))
+                {
+                    LogScanEntry(file.Path, file.Name, "Windows.StorageFolder", "Skipped: extension filtered",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 var path = file.Path;
                 if (string.IsNullOrWhiteSpace(path) ||
@@ -570,11 +589,19 @@ public sealed class MediaStoreScanner
             {
                 ct.ThrowIfCancellationRequested();
                 if (!extensions.IsCandidatePath(file, indexedTypes))
+                {
+                    LogScanEntry(file, null, "Windows.FileSystem", "Skipped: extension filtered",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 if (IsThumbnailPath(file, null))
+                {
+                    LogScanEntry(file, null, "Windows.FileSystem", "Skipped: thumbnail path", ModelMediaType.None);
                     continue;
+                }
 
+                LogScanEntry(file, null, "Windows.FileSystem", "Candidate", ModelMediaType.None);
                 yield return file;
             }
 
@@ -651,11 +678,19 @@ public sealed class MediaStoreScanner
                 }
 
                 if (string.IsNullOrWhiteSpace(path))
+                {
+                    LogScanEntry(path, file.Name, "Windows.StorageFolder", "Skipped: empty path",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 var mediaType = ResolveMediaTypeFromPath(path, file.Name, indexedTypes, extensions);
                 if (mediaType == ModelMediaType.None)
+                {
+                    LogScanEntry(path, file.Name, "Windows.StorageFolder", "Skipped: media type filtered",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 var durationMs = 0L;
 
@@ -663,7 +698,7 @@ public sealed class MediaStoreScanner
 // We defer duration probing to a background metadata step so scanning stays fast.
 
 
-                yield return new MediaItem
+                var item = new MediaItem
                 {
                     Path = path,
                     Name = file.Name,
@@ -672,6 +707,8 @@ public sealed class MediaStoreScanner
                     SourceId = sourceId,
                     MediaType = mediaType
                 };
+                LogScanEntry(path, file.Name, "Windows.StorageFolder", "Indexed", mediaType);
+                yield return item;
             }
 
             await foreach (var subfolder in EnumerateStorageFoldersAsync(folder, ct))
@@ -872,7 +909,10 @@ public sealed class MediaStoreScanner
 
         var mediaType = ResolveMediaTypeFromPath(path, info.Name, indexedTypes, extensions);
         if (mediaType == ModelMediaType.None)
+        {
+            LogScanEntry(path, info.Name, "Windows.FileSystem", "Skipped: media type filtered", ModelMediaType.None);
             return null;
+        }
 
         var durationMs = 0L;
         if (mediaType == ModelMediaType.Videos)
@@ -887,7 +927,7 @@ public sealed class MediaStoreScanner
                 durationMs = 0;
             }
 
-        return new MediaItem
+        var item = new MediaItem
         {
             Path = path,
             Name = Path.GetFileName(path),
@@ -896,6 +936,8 @@ public sealed class MediaStoreScanner
             SourceId = sourceId,
             MediaType = mediaType
         };
+        LogScanEntry(path, info.Name, "Windows.FileSystem", "Indexed", mediaType);
+        return item;
     }
 #endif
 
@@ -1055,9 +1097,13 @@ public sealed class MediaStoreScanner
                     name = $"video_{id}";
 
                 if (IsThumbnailPath(path, name))
+                {
+                    LogScanEntry(path, name, "Android.MediaStore.Video", "Skipped: thumbnail path",
+                        ModelMediaType.None);
                     continue;
+                }
 
-                yield return new MediaItem
+                var item = new MediaItem
                 {
                     Path = path, // content://media/external/video/media/<id>
                     Name = name,
@@ -1066,6 +1112,8 @@ public sealed class MediaStoreScanner
                     SourceId = sourceId,
                     MediaType = ModelMediaType.Videos
                 };
+                LogScanEntry(path, name, "Android.MediaStore.Video", "Indexed", ModelMediaType.Videos);
+                yield return item;
             }
         }
     }
@@ -1178,7 +1226,11 @@ public sealed class MediaStoreScanner
                     name = $"photo_{id}";
 
                 if (IsThumbnailPath(path, name))
+                {
+                    LogScanEntry(path, name, "Android.MediaStore.Image", "Skipped: thumbnail path",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 string? mimeType = null;
                 if (mimeCol >= 0 && !cursor.IsNull(mimeCol))
@@ -1204,9 +1256,13 @@ public sealed class MediaStoreScanner
 
                 var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions, mimeType, sizeBytes);
                 if (mediaType == ModelMediaType.None)
+                {
+                    LogScanEntry(path, name, "Android.MediaStore.Image", "Skipped: media type filtered",
+                        ModelMediaType.None);
                     continue;
+                }
 
-                yield return new MediaItem
+                var item = new MediaItem
                 {
                     Path = path,
                     Name = name,
@@ -1215,6 +1271,8 @@ public sealed class MediaStoreScanner
                     SourceId = sourceId,
                     MediaType = mediaType
                 };
+                LogScanEntry(path, name, "Android.MediaStore.Image", "Indexed", mediaType);
+                yield return item;
             }
         }
     }
@@ -1319,12 +1377,20 @@ public sealed class MediaStoreScanner
 
                 var isDocument = GetMediaTypeFromMimeType(mimeType) == ModelMediaType.Documents;
                 if (!isDocument && !extensions.IsDocumentName(name))
+                {
+                    LogScanEntry(name, name, "Android.MediaStore.Document", "Skipped: extension filtered",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 var itemUri = ContentUris.WithAppendedId(externalUri, id);
                 var path = itemUri?.ToString() ?? "";
                 if (string.IsNullOrWhiteSpace(path))
+                {
+                    LogScanEntry(path, name, "Android.MediaStore.Document", "Skipped: empty path",
+                        ModelMediaType.None);
                     continue;
+                }
 
                 long addedSeconds = 0;
                 if (addCol >= 0 && !cursor.IsNull(addCol))
@@ -1341,9 +1407,13 @@ public sealed class MediaStoreScanner
                     name = $"document_{id}";
 
                 if (IsThumbnailPath(path, name))
+                {
+                    LogScanEntry(path, name, "Android.MediaStore.Document", "Skipped: thumbnail path",
+                        ModelMediaType.None);
                     continue;
+                }
 
-                yield return new MediaItem
+                var item = new MediaItem
                 {
                     Path = path,
                     Name = name,
@@ -1352,6 +1422,8 @@ public sealed class MediaStoreScanner
                     SourceId = sourceId,
                     MediaType = ModelMediaType.Documents
                 };
+                LogScanEntry(path, name, "Android.MediaStore.Document", "Indexed", ModelMediaType.Documents);
+                yield return item;
             }
         }
     }
@@ -1447,7 +1519,10 @@ public sealed class MediaStoreScanner
                 }
 
                 if (!extensions.IsCandidateName(name, indexedTypes))
+                {
+                    LogScanEntry(name, name, "Android.SAF", "Skipped: extension filtered", ModelMediaType.None);
                     continue;
+                }
 
                 string? mimeType = null;
                 try
@@ -1494,13 +1569,19 @@ public sealed class MediaStoreScanner
                 }
 
                 if (string.IsNullOrWhiteSpace(path))
+                {
+                    LogScanEntry(path, name, "Android.SAF", "Skipped: empty path", ModelMediaType.None);
                     continue;
+                }
 
                 var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions, mimeType, sizeBytes);
                 if (mediaType == ModelMediaType.None)
+                {
+                    LogScanEntry(path, name, "Android.SAF", "Skipped: media type filtered", ModelMediaType.None);
                     continue;
+                }
 
-                yield return new MediaItem
+                var item = new MediaItem
                 {
                     Path = path,
                     Name = name,
@@ -1509,6 +1590,8 @@ public sealed class MediaStoreScanner
                     SourceId = sourceId,
                     MediaType = mediaType
                 };
+                LogScanEntry(path, name, "Android.SAF", "Indexed", mediaType);
+                yield return item;
             }
         }
     }
@@ -1524,13 +1607,19 @@ public sealed class MediaStoreScanner
             ct.ThrowIfCancellationRequested();
 
             if (string.IsNullOrWhiteSpace(path))
+            {
+                LogScanEntry(path, null, "Android.FileSystem", "Skipped: empty path", ModelMediaType.None);
                 continue;
+            }
 
             var mediaType = ResolveMediaTypeFromPath(path, null, indexedTypes, extensions);
             if (mediaType == ModelMediaType.None)
+            {
+                LogScanEntry(path, null, "Android.FileSystem", "Skipped: media type filtered", ModelMediaType.None);
                 continue;
+            }
 
-            yield return new MediaItem
+            var item = new MediaItem
             {
                 Path = path,
                 Name = IOPath.GetFileName(path),
@@ -1539,6 +1628,8 @@ public sealed class MediaStoreScanner
                 SourceId = sourceId,
                 MediaType = mediaType
             };
+            LogScanEntry(path, IOPath.GetFileName(path), "Android.FileSystem", "Indexed", mediaType);
+            yield return item;
         }
     }
 
@@ -1569,7 +1660,10 @@ public sealed class MediaStoreScanner
                 ct.ThrowIfCancellationRequested();
 
                 if (SafeIsMediaFile(file, indexedTypes))
+                {
+                    LogScanEntry(file, null, "Android.FileSystem", "Candidate", ModelMediaType.None);
                     yield return file;
+                }
             }
 
             bool SafeIsMediaFile(string file, ModelMediaType indexedTypes)
@@ -1577,10 +1671,18 @@ public sealed class MediaStoreScanner
                 try
                 {
                     if (!extensions.IsCandidatePath(file, indexedTypes))
+                    {
+                        LogScanEntry(file, null, "Android.FileSystem", "Skipped: extension filtered",
+                            ModelMediaType.None);
                         return false;
+                    }
 
                     if (IsThumbnailPath(file, null))
+                    {
+                        LogScanEntry(file, null, "Android.FileSystem", "Skipped: thumbnail path",
+                            ModelMediaType.None);
                         return false;
+                    }
 
                     return true;
                 }
