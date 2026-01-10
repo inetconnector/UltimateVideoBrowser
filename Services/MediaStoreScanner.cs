@@ -816,6 +816,10 @@ public sealed class MediaStoreScanner
         ModelMediaType indexedTypes, ExtensionLookup extensions,
         [EnumeratorCancellation] CancellationToken ct)
     {
+        var filesDiscovered = 0;
+        var itemsBuilt = 0;
+        var itemsYielded = 0;
+        var errors = 0;
         var fileChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(512)
         {
             FullMode = BoundedChannelFullMode.Wait,
@@ -836,6 +840,7 @@ public sealed class MediaStoreScanner
                 foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
                 {
                     ct.ThrowIfCancellationRequested();
+                    Interlocked.Increment(ref filesDiscovered);
                     await fileChannel.Writer.WriteAsync(path, ct).ConfigureAwait(false);
                 }
 
@@ -847,6 +852,7 @@ public sealed class MediaStoreScanner
             }
             catch (Exception ex)
             {
+                Interlocked.Increment(ref errors);
                 ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
                 ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
                 fileChannel.Writer.TryComplete(ex);
@@ -869,7 +875,10 @@ public sealed class MediaStoreScanner
                                 await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
                                     .ConfigureAwait(false);
                             if (item != null)
+                            {
+                                Interlocked.Increment(ref itemsBuilt);
                                 await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -877,6 +886,7 @@ public sealed class MediaStoreScanner
                         }
                         catch (Exception ex)
                         {
+                            Interlocked.Increment(ref errors);
                             ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
                         }
                     }
@@ -893,7 +903,10 @@ public sealed class MediaStoreScanner
         try
         {
             await foreach (var item in itemChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
+            {
+                Interlocked.Increment(ref itemsYielded);
                 yield return item;
+            }
         }
         finally
         {
@@ -914,6 +927,13 @@ public sealed class MediaStoreScanner
             {
                 // Exceptions are propagated through the channel completion.
             }
+
+            ScanLog.LogScan(
+                root,
+                null,
+                "Windows.FileSystem",
+                $"Summary: files={filesDiscovered}, itemsBuilt={itemsBuilt}, itemsYielded={itemsYielded}, errors={errors}",
+                ModelMediaType.None);
         }
     }
 
