@@ -124,36 +124,83 @@ public sealed class IndexService
 
                 var insertedRows = 0;
 
-                // Batch DB operations in a single transaction to dramatically reduce async overhead.
-                await db.Db.RunInTransactionAsync(conn =>
+                try
                 {
-                    // Reuse prepared commands inside the transaction to reduce per-row overhead.
-                    // This significantly speeds up large indexing runs.
-                    var insertCmd = conn.CreateCommand(
-                        "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);");
-                    var updateCmd = conn.CreateCommand(
-                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;");
+                    // Batch DB operations in a single transaction to dramatically reduce async overhead.
+                    await db.Db.RunInTransactionAsync(conn =>
+                    {
+                        // Reuse prepared commands inside the transaction to reduce per-row overhead.
+                        // This significantly speeds up large indexing runs.
+                        var insertCmd = conn.CreateCommand(
+                            "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);");
+                        var updateCmd = conn.CreateCommand(
+                            "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;");
+
+                        foreach (var item in items)
+                        {
+                            if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                                continue;
+
+                            insertCmd.Bind(item.Path, item.Name, (int)item.MediaType, item.DurationMs,
+                                item.DateAddedSeconds, item.SourceId);
+                            var rows = insertCmd.ExecuteNonQuery();
+
+                            if (rows == 0)
+                            {
+                                // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
+                                updateCmd.Bind(item.Name, (int)item.MediaType, item.DurationMs, item.DurationMs,
+                                    item.DateAddedSeconds, item.SourceId, item.Path);
+                                updateCmd.ExecuteNonQuery();
+                            }
+
+                            insertedRows += rows;
+                        }
+                    }).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    ErrorLog.LogException(ex, "IndexService.UpsertBatchAsync", "BatchUpsert");
 
                     foreach (var item in items)
                     {
                         if (item == null || string.IsNullOrWhiteSpace(item.Path))
                             continue;
 
-                        insertCmd.Bind(item.Path, item.Name, (int)item.MediaType, item.DurationMs, item.DateAddedSeconds,
-                            item.SourceId);
-                        var rows = insertCmd.ExecuteNonQuery();
-
-                        if (rows == 0)
+                        try
                         {
-                            // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
-                            updateCmd.Bind(item.Name, (int)item.MediaType, item.DurationMs, item.DurationMs,
-                                item.DateAddedSeconds, item.SourceId, item.Path);
-                            updateCmd.ExecuteNonQuery();
-                        }
+                            var rows = await db.Db.ExecuteAsync(
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    item.Path,
+                                    item.Name,
+                                    (int)item.MediaType,
+                                    item.DurationMs,
+                                    item.DateAddedSeconds,
+                                    item.SourceId)
+                                .ConfigureAwait(false);
 
-                        insertedRows += rows;
+                            if (rows == 0)
+                            {
+                                // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
+                                await db.Db.ExecuteAsync(
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        item.Name,
+                                        (int)item.MediaType,
+                                        item.DurationMs,
+                                        item.DurationMs,
+                                        item.DateAddedSeconds,
+                                        item.SourceId,
+                                        item.Path)
+                                    .ConfigureAwait(false);
+                            }
+
+                            insertedRows += rows;
+                        }
+                        catch (Exception itemEx)
+                        {
+                            ErrorLog.LogException(itemEx, "IndexService.UpsertBatchAsync", $"Path={item.Path}");
+                        }
                     }
-                }).ConfigureAwait(false);
+                }
 
                 if (locationsEnabled && locationQueue != null)
                     foreach (var item in items)
