@@ -7,6 +7,9 @@ using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpRectangle = SixLabors.ImageSharp.Rectangle;
 using ImageSharpSize = SixLabors.ImageSharp.Size;
 using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
+#if ANDROID && !WINDOWS
+using Uri = Android.Net.Uri;
+#endif
 #if WINDOWS
 using Windows.Storage;
 using Windows.Storage.AccessCache;
@@ -213,6 +216,25 @@ public sealed class FaceThumbnailService
 
         if (File.Exists(mediaPath))
             return new FileStream(mediaPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+#if ANDROID && !WINDOWS
+        if (mediaPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var resolver = Platform.AppContext?.ContentResolver;
+                if (resolver == null)
+                    return null;
+
+                var uri = Uri.Parse(mediaPath);
+                return resolver.OpenInputStream(uri);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+#endif
 
 #if WINDOWS
         var file = await GetStorageFileAsync(mediaPath).ConfigureAwait(false);
