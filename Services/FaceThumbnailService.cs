@@ -261,8 +261,8 @@ public sealed class FaceThumbnailService
             return new ImageSharpRectangle(cx, cy, size, size);
         }
 
-        // Add a bit of padding around the face for a nicer Picasa-like crop.
-        var pad = 0.28f * MathF.Max(w, h);
+        // Keep the crop tight to the head/face.
+        var pad = 0.12f * MathF.Max(w, h);
         var px = MathF.Max(0, x - pad);
         var py = MathF.Max(0, y - pad);
         var pr = MathF.Min(imageWidth, x + w + pad);
@@ -274,7 +274,7 @@ public sealed class FaceThumbnailService
         // Prefer a square crop for avatar-style thumbnails.
         var side = MathF.Max(cw, ch);
         var centerX = px + cw / 2f;
-        var centerY = py + ch / 2f;
+        var centerY = py + ch / 2f - (0.1f * h);
 
         var left = MathF.Max(0, centerX - side / 2f);
         var top = MathF.Max(0, centerY - side / 2f);
