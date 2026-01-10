@@ -861,11 +861,22 @@ public sealed class MediaStoreScanner
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                     {
-                        var item =
-                            await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
-                                .ConfigureAwait(false);
-                        if (item != null)
-                            await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                        try
+                        {
+                            var item =
+                                await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
+                                    .ConfigureAwait(false);
+                            if (item != null)
+                                await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
+                        }
                     }
                 }
                 catch (OperationCanceledException)
@@ -939,12 +950,22 @@ public sealed class MediaStoreScanner
                 durationMs = 0;
             }
 
+        var createdUtc = DateTimeOffset.UtcNow;
+        try
+        {
+            createdUtc = new DateTimeOffset(info.CreationTimeUtc);
+        }
+        catch
+        {
+            createdUtc = DateTimeOffset.UtcNow;
+        }
+
         var item = new MediaItem
         {
             Path = path,
             Name = Path.GetFileName(path),
             DurationMs = durationMs,
-            DateAddedSeconds = new DateTimeOffset(info.CreationTimeUtc).ToUnixTimeSeconds(),
+            DateAddedSeconds = createdUtc.ToUnixTimeSeconds(),
             SourceId = sourceId,
             MediaType = mediaType
         };
