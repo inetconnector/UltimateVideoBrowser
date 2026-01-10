@@ -847,7 +847,9 @@ public sealed class MediaStoreScanner
             }
             catch (Exception ex)
             {
-                fileChannel.Writer.TryComplete(ex);
+                ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
+                ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
+                fileChannel.Writer.TryComplete();
             }
         }, ct);
 
@@ -861,11 +863,22 @@ public sealed class MediaStoreScanner
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                     {
-                        var item =
-                            await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
-                                .ConfigureAwait(false);
-                        if (item != null)
-                            await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                        try
+                        {
+                            var item =
+                                await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, ct)
+                                    .ConfigureAwait(false);
+                            if (item != null)
+                                await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
+                        }
                     }
                 }
                 catch (OperationCanceledException)
@@ -874,8 +887,18 @@ public sealed class MediaStoreScanner
                 }
             }, ct);
 
-        var completion = Task.WhenAll(workers).ContinueWith(task => { itemChannel.Writer.TryComplete(task.Exception); },
-            TaskScheduler.Default);
+        var completion = Task.WhenAll(workers).ContinueWith(task =>
+        {
+            if (task.Exception != null)
+            {
+                ErrorLog.LogException(task.Exception, "MediaStoreScanner.ScanWindowsFileSystemAsync",
+                    $"Root={root}; Stage=Workers");
+                ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {task.Exception.Message}",
+                    ModelMediaType.None);
+            }
+
+            itemChannel.Writer.TryComplete();
+        }, TaskScheduler.Default);
 
         try
         {
