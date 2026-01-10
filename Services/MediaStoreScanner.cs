@@ -847,6 +847,8 @@ public sealed class MediaStoreScanner
             }
             catch (Exception ex)
             {
+                ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
+                ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
                 fileChannel.Writer.TryComplete(ex);
             }
         }, ct);
