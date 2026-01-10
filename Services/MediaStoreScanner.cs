@@ -56,9 +56,9 @@ public sealed class MediaStoreScanner
 #elif WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
             foreach (var defaultRoot in GetWindowsDefaultRoots(indexedTypes))
-            await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
-                               extensions, ct))
-                yield return item;
+                await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
+                                   extensions, ct))
+                    yield return item;
         else
             await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, indexedTypes,
                                extensions, ct))
@@ -192,7 +192,7 @@ public sealed class MediaStoreScanner
         if (string.IsNullOrWhiteSpace(path))
             return;
 
-        ScanLog.LogScan(path, name, source, result, (MediaType)mediaType);
+        ScanLog.LogScan(path, name, source, result, (ModelMediaType)mediaType);
     }
 
     private static ModelMediaType GuessMediaType(string? path, string? name, ExtensionLookup extensions)
@@ -706,8 +706,8 @@ public sealed class MediaStoreScanner
 
                 var durationMs = 0L;
 
-// IMPORTANT: Retrieving video duration is expensive on Windows and significantly slows down indexing.
-// We defer duration probing to a background metadata step so scanning stays fast.
+                // IMPORTANT: Retrieving video duration is expensive on Windows and significantly slows down indexing.
+                // We defer duration probing to a background metadata step so scanning stays fast.
 
 
                 var item = new MediaItem
@@ -816,25 +816,49 @@ public sealed class MediaStoreScanner
         ModelMediaType indexedTypes, ExtensionLookup extensions,
         [EnumeratorCancellation] CancellationToken ct)
     {
-        var filesDiscovered = 0;
-        var itemsBuilt = 0;
-        var itemsYielded = 0;
-        var errors = 0;
-
-        try
+        var fileChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(512)
         {
-            foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleWriter = true,
+            SingleReader = false
+        });
+        var itemChannel = Channel.CreateBounded<MediaItem>(new BoundedChannelOptions(512)
+        {
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleWriter = false,
+            SingleReader = true
+        });
+
+        var producer = Task.Run(async () =>
+        {
+            try
+            {
+                foreach (var path in EnumerateMediaFilesStreamingWindows(root, indexedTypes, extensions, ct))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await fileChannel.Writer.WriteAsync(path, ct).ConfigureAwait(false);
+                }
+
+                fileChannel.Writer.TryComplete();
+            }
+            catch (OperationCanceledException)
+            {
+                fileChannel.Writer.TryComplete();
+            }
+            catch (Exception ex)
             {
                 ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
                 ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
-                fileChannel.Writer.TryComplete();
+                fileChannel.Writer.TryComplete(ex);
             }
         }, ct);
 
         var workerCount = Math.Clamp(Environment.ProcessorCount, 2, 6);
         var workers = new Task[workerCount];
 
-                MediaItem? item;
+        for (var i = 0; i < workerCount; i++)
+            workers[i] = Task.Run(async () =>
+            {
                 try
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
@@ -859,51 +883,37 @@ public sealed class MediaStoreScanner
                 }
                 catch (OperationCanceledException)
                 {
-                    throw;
+                    // Cancellation is expected; let completion happen below.
                 }
-                catch (Exception ex)
-                {
-                    Interlocked.Increment(ref errors);
-                    ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
-                    continue;
-                }
+            }, ct);
 
-        var completion = Task.WhenAll(workers).ContinueWith(task =>
+        var completion = Task.WhenAll(workers).ContinueWith(task => { itemChannel.Writer.TryComplete(task.Exception); },
+            TaskScheduler.Default);
+
+        try
         {
-            if (task.Exception != null)
-            {
-                ErrorLog.LogException(task.Exception, "MediaStoreScanner.ScanWindowsFileSystemAsync",
-                    $"Root={root}; Stage=Workers");
-                ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {task.Exception.Message}",
-                    ModelMediaType.None);
-            }
-
-            itemChannel.Writer.TryComplete();
-        }, TaskScheduler.Default);
-
-                Interlocked.Increment(ref itemsBuilt);
-                Interlocked.Increment(ref itemsYielded);
+            await foreach (var item in itemChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
                 yield return item;
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            Interlocked.Increment(ref errors);
-            ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Root={root}");
-            ScanLog.LogScan(root, null, "Windows.FileSystem", $"Error: {ex.Message}", ModelMediaType.None);
         }
         finally
         {
-            ScanLog.LogScan(
-                root,
-                null,
-                "Windows.FileSystem",
-                $"Summary: files={filesDiscovered}, itemsBuilt={itemsBuilt}, itemsYielded={itemsYielded}, errors={errors}",
-                ModelMediaType.None);
+            try
+            {
+                await producer.ConfigureAwait(false);
+            }
+            catch
+            {
+                // Exceptions are propagated through the channel completion.
+            }
+
+            try
+            {
+                await completion.ConfigureAwait(false);
+            }
+            catch
+            {
+                // Exceptions are propagated through the channel completion.
+            }
         }
     }
 
