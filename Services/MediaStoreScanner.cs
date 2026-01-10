@@ -558,8 +558,7 @@ public sealed class MediaStoreScanner
                 files = Directory.EnumerateFiles(dir, "*.*", new EnumerationOptions
                 {
                     RecurseSubdirectories = false,
-                    IgnoreInaccessible = true,
-                    AttributesToSkip = FileAttributes.ReparsePoint
+                    IgnoreInaccessible = true
                 });
             }
             catch
@@ -585,8 +584,7 @@ public sealed class MediaStoreScanner
                 subdirs = Directory.EnumerateDirectories(dir, "*", new EnumerationOptions
                 {
                     RecurseSubdirectories = false,
-                    IgnoreInaccessible = true,
-                    AttributesToSkip = FileAttributes.ReparsePoint
+                    IgnoreInaccessible = true
                 });
             }
             catch
