@@ -13,6 +13,7 @@ using Windows.Storage.Search;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Models;
+using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 #if !ANDROID || WINDOWS
 using SixLabors.ImageSharp;
