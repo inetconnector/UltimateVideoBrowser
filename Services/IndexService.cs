@@ -36,6 +36,12 @@ public sealed class IndexService
         public int DurationsDone;
     }
 
+    private sealed class MediaItemSignatureRow
+    {
+        public string? Path { get; set; }
+        public long? SizeBytes { get; set; }
+    }
+
     public async Task<int> IndexSourcesAsync(
         IEnumerable<MediaSource> sources,
         MediaType indexedTypes,
@@ -59,6 +65,8 @@ public sealed class IndexService
             var sourceList = (sources ?? Enumerable.Empty<MediaSource>())
                 .Where(s => s != null)
                 .ToList();
+
+            var knownFiles = await LoadKnownFileSignaturesAsync(ct).ConfigureAwait(false);
 
             var inserted = 0;
             // Number of items consumed by the DB writer (used for progress).
@@ -142,24 +150,28 @@ public sealed class IndexService
                             try
                             {
                                 var rows = conn.Execute(
-                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SizeBytes, SourceId) VALUES(?, ?, ?, ?, ?, ?, ?);",
                                     item.Path,
                                     item.Name,
                                     (int)item.MediaType,
                                     item.DurationMs,
                                     item.DateAddedSeconds,
+                                    item.SizeBytes,
                                     item.SourceId);
 
                                 if (rows == 0)
                                 {
                                     // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
                                     conn.Execute(
-                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SizeBytes = CASE WHEN ? IS NOT NULL AND ? > 0 THEN ? ELSE SizeBytes END, SourceId = ? WHERE Path = ?;",
                                         item.Name,
                                         (int)item.MediaType,
                                         item.DurationMs,
                                         item.DurationMs,
                                         item.DateAddedSeconds,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
                                         item.SourceId,
                                         item.Path);
                                 }
@@ -190,12 +202,13 @@ public sealed class IndexService
                         try
                         {
                             var rows = await db.Db.ExecuteAsync(
-                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SizeBytes, SourceId) VALUES(?, ?, ?, ?, ?, ?, ?);",
                                     item.Path,
                                     item.Name,
                                     (int)item.MediaType,
                                     item.DurationMs,
                                     item.DateAddedSeconds,
+                                    item.SizeBytes,
                                     item.SourceId)
                                 .ConfigureAwait(false);
 
@@ -203,12 +216,15 @@ public sealed class IndexService
                             {
                                 // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
                                 await db.Db.ExecuteAsync(
-                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SizeBytes = CASE WHEN ? IS NOT NULL AND ? > 0 THEN ? ELSE SizeBytes END, SourceId = ? WHERE Path = ?;",
                                         item.Name,
                                         (int)item.MediaType,
                                         item.DurationMs,
                                         item.DurationMs,
                                         item.DateAddedSeconds,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
                                         item.SourceId,
                                         item.Path)
                                     .ConfigureAwait(false);
@@ -349,7 +365,7 @@ public sealed class IndexService
                 try
                 {
                     var sourceName = source.DisplayName ?? string.Empty;
-                    await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, ct).ConfigureAwait(false))
+                    await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, knownFiles, ct).ConfigureAwait(false))
                     {
                         ct.ThrowIfCancellationRequested();
 
@@ -460,6 +476,40 @@ public sealed class IndexService
 
             indexGate.Release();
         }
+    }
+
+    private async Task<IReadOnlySet<IndexedFileSignature>> LoadKnownFileSignaturesAsync(CancellationToken ct)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        List<MediaItemSignatureRow> rows;
+        try
+        {
+            rows = await db.Db
+                .QueryAsync<MediaItemSignatureRow>("SELECT Path, SizeBytes FROM MediaItem;")
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "IndexService.LoadKnownFileSignaturesAsync");
+            return new HashSet<IndexedFileSignature>();
+        }
+
+        var known = new HashSet<IndexedFileSignature>();
+        foreach (var row in rows)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            if (string.IsNullOrWhiteSpace(row.Path))
+                continue;
+
+            if (!row.SizeBytes.HasValue || row.SizeBytes.Value <= 0)
+                continue;
+
+            known.Add(new IndexedFileSignature(row.Path, row.SizeBytes.Value));
+        }
+
+        return known;
     }
 
     private async Task<int> CountAllAsync(List<MediaSource> sources, MediaType indexedTypes, CancellationToken ct)
