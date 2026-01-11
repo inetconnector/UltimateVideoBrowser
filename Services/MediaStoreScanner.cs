@@ -184,8 +184,6 @@ public sealed class MediaStoreScanner
         ".thumbnails"
     };
 
-    private const long PhotoSizeThresholdBytes = 32 * 1024;
-
     private static void LogScanEntry(string? path, string? name, string source, string result,
         ModelMediaType mediaType)
     {
@@ -259,16 +257,15 @@ public sealed class MediaStoreScanner
                 return ModelMediaType.None;
         }
 
+        var hasCameraExif = HasCameraExif(path);
+
         if (wantsPhotos && !wantsGraphics)
-            return ModelMediaType.Photos;
+            return hasCameraExif ? ModelMediaType.Photos : ModelMediaType.None;
 
         if (!wantsPhotos && wantsGraphics)
             return ModelMediaType.Graphics;
 
-        if (contentSize.HasValue && contentSize.Value >= PhotoSizeThresholdBytes)
-            return ModelMediaType.Photos;
-
-        if (HasCameraExif(path))
+        if (hasCameraExif)
             return ModelMediaType.Photos;
 
         return ModelMediaType.Graphics;
