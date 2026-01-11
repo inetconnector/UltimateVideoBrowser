@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
@@ -38,13 +39,23 @@ public sealed partial class PeopleViewModel : ObservableObject
             var items = new List<PersonListItemViewModel>(overview.Count);
             foreach (var p in overview)
             {
-                ct.ThrowIfCancellationRequested();
+                if (ct.IsCancellationRequested)
+                    break;
+
                 string? coverPath = null;
                 if (p.CoverFace != null)
                 {
-                    coverPath = await faceThumbnails
-                        .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
-                        .ConfigureAwait(false);
+                    try
+                    {
+                        coverPath = await faceThumbnails
+                            .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        coverPath = null;
+                    }
+
                     if (string.IsNullOrWhiteSpace(coverPath))
                         coverPath = null;
                 }
@@ -66,6 +77,14 @@ public sealed partial class PeopleViewModel : ObservableObject
         catch (OperationCanceledException)
         {
             // Ignore
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "PeopleViewModel.RefreshAsync");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                People = new ObservableCollection<PersonListItemViewModel>();
+            });
         }
         finally
         {
