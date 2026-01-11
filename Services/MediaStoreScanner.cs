@@ -922,20 +922,23 @@ public sealed class MediaStoreScanner
     {
         ct.ThrowIfCancellationRequested();
 
-        FileInfo? info;
+        FileInfo? info = null;
+        var name = IOPath.GetFileName(path);
         try
         {
             info = new FileInfo(path);
+            name = info.Name;
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            LogScanEntry(path, name, "Windows.FileSystem", $"Warning: metadata read failed ({ex.Message})",
+                ModelMediaType.None);
         }
 
-        var mediaType = ResolveMediaTypeFromPath(path, info.Name, indexedTypes, extensions);
+        var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions);
         if (mediaType == ModelMediaType.None)
         {
-            LogScanEntry(path, info.Name, "Windows.FileSystem", "Skipped: media type filtered", ModelMediaType.None);
+            LogScanEntry(path, name, "Windows.FileSystem", "Skipped: media type filtered", ModelMediaType.None);
             return null;
         }
 
@@ -953,25 +956,26 @@ public sealed class MediaStoreScanner
             }
 
         var createdUtc = DateTimeOffset.UtcNow;
-        try
-        {
-            createdUtc = new DateTimeOffset(info.CreationTimeUtc);
-        }
-        catch
-        {
-            createdUtc = DateTimeOffset.UtcNow;
-        }
+        if (info != null)
+            try
+            {
+                createdUtc = new DateTimeOffset(info.CreationTimeUtc);
+            }
+            catch
+            {
+                createdUtc = DateTimeOffset.UtcNow;
+            }
 
         var item = new MediaItem
         {
             Path = path,
-            Name = Path.GetFileName(path),
+            Name = name,
             DurationMs = durationMs,
             DateAddedSeconds = createdUtc.ToUnixTimeSeconds(),
             SourceId = sourceId,
             MediaType = mediaType
         };
-        LogScanEntry(path, info.Name, "Windows.FileSystem", "Indexed", mediaType);
+        LogScanEntry(path, name, "Windows.FileSystem", "Indexed", mediaType);
         return item;
     }
 #endif
