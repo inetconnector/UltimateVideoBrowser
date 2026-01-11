@@ -931,8 +931,13 @@ public sealed class MediaStoreScanner
         }
         catch (Exception ex)
         {
-            LogScanEntry(path, name, "Windows.FileSystem", $"Warning: metadata read failed ({ex.Message})",
-                ModelMediaType.None);
+            LogScanEntry(path, name, "Windows.FileSystem",
+                $"Warning: metadata read failed ({ex.GetType().Name})", ModelMediaType.None);
+            if (IsInvalidPathException(ex))
+                return null;
+
+            if (!SafeFileExists(path))
+                return null;
         }
 
         var mediaType = ResolveMediaTypeFromPath(path, name, indexedTypes, extensions);
@@ -977,6 +982,23 @@ public sealed class MediaStoreScanner
         };
         LogScanEntry(path, name, "Windows.FileSystem", "Indexed", mediaType);
         return item;
+    }
+
+    private static bool SafeFileExists(string path)
+    {
+        try
+        {
+            return File.Exists(path);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool IsInvalidPathException(Exception ex)
+    {
+        return ex is ArgumentException or NotSupportedException or PathTooLongException;
     }
 #endif
 
