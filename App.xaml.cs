@@ -1,3 +1,4 @@
+using Microsoft.Maui.Graphics;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Resources.Styles;
 using UltimateVideoBrowser.Services;
@@ -45,8 +46,46 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var mainPage = _serviceProvider.GetRequiredService<MainPage>();
-        return new Window(new NavigationPage(mainPage));
+        try
+        {
+            var mainPage = _serviceProvider.GetRequiredService<MainPage>();
+            return new Window(new NavigationPage(mainPage));
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "App.CreateWindow");
+            return new Window(new ContentPage
+            {
+                Content = new ScrollView
+                {
+                    Content = new VerticalStackLayout
+                    {
+                        Padding = new Thickness(24),
+                        Spacing = 12,
+                        Children =
+                        {
+                            new Label
+                            {
+                                Text = "Beim Starten der Anwendung ist ein Fehler aufgetreten.",
+                                FontSize = 20,
+                                FontAttributes = FontAttributes.Bold
+                            },
+                            new Label
+                            {
+                                Text = "Details finden Sie in der error.log im App-Datenverzeichnis.",
+                                FontSize = 14
+                            },
+                            new Label
+                            {
+                                Text = ex.Message,
+                                FontSize = 12,
+                                TextColor = Colors.Red
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private static bool IsFollowingSystem(string themePreference)

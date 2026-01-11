@@ -18,5 +18,7 @@ public partial class App
             ErrorLog.LogException(exception, "WinUI.UnhandledException");
         else
             ErrorLog.LogMessage(args.Message, "WinUI.UnhandledException");
+
+        args.Handled = true;
     }
 }

@@ -70,8 +70,8 @@ public sealed class IndexService
 
             var locationsEnabled = locationMetadataService.IsEnabled;
 
-            // Bigger batches drastically reduce DB overhead.
-            const int BatchSize = 512;
+            // Smaller batches reduce data loss risk if indexing is interrupted.
+            const int BatchSize = 128;
 
             if (locationsEnabled)
             {
