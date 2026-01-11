@@ -247,8 +247,8 @@ public partial class MainPage : ContentPage
         TimelineSidebar.TimelineView.SelectedItem = entry;
         isTimelineSelectionSyncing = false;
 
-        if (BindingContext is MainPageBinding binding)
-            binding.SetTimelinePreview(entry);
+        if (BindingContext is MainPageBinding binding1)
+            binding1.SetTimelinePreview(entry);
     }
 
     private void OnTimelineScrolled(object? sender, ItemsViewScrolledEventArgs e)
