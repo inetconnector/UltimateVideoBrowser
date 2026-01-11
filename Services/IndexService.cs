@@ -124,38 +124,59 @@ public sealed class IndexService
 
                 var insertedRows = 0;
 
+
                 try
                 {
                     // Batch DB operations in a single transaction to dramatically reduce async overhead.
+                    // NOTE: Avoid reusing SQLiteCommand.Bind() in tight loops. On some platforms/providers this can
+                    // accumulate parameter bindings and silently break subsequent executions, leading to missing rows.
+                    var insertedLocal = 0;
+
                     await db.Db.RunInTransactionAsync(conn =>
                     {
-                        // Reuse prepared commands inside the transaction to reduce per-row overhead.
-                        // This significantly speeds up large indexing runs.
-                        var insertCmd = conn.CreateCommand(
-                            "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);");
-                        var updateCmd = conn.CreateCommand(
-                            "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;");
-
                         foreach (var item in items)
                         {
                             if (item == null || string.IsNullOrWhiteSpace(item.Path))
                                 continue;
 
-                            insertCmd.Bind(item.Path, item.Name, (int)item.MediaType, item.DurationMs,
-                                item.DateAddedSeconds, item.SourceId);
-                            var rows = insertCmd.ExecuteNonQuery();
-
-                            if (rows == 0)
+                            try
                             {
-                                // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
-                                updateCmd.Bind(item.Name, (int)item.MediaType, item.DurationMs, item.DurationMs,
-                                    item.DateAddedSeconds, item.SourceId, item.Path);
-                                updateCmd.ExecuteNonQuery();
-                            }
+                                var rows = conn.Execute(
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    item.Path,
+                                    item.Name,
+                                    (int)item.MediaType,
+                                    item.DurationMs,
+                                    item.DateAddedSeconds,
+                                    item.SourceId);
 
-                            insertedRows += rows;
+                                if (rows == 0)
+                                {
+                                    // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
+                                    conn.Execute(
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        item.Name,
+                                        (int)item.MediaType,
+                                        item.DurationMs,
+                                        item.DurationMs,
+                                        item.DateAddedSeconds,
+                                        item.SourceId,
+                                        item.Path);
+                                }
+                                else
+                                {
+                                    insertedLocal += rows;
+                                }
+                            }
+                            catch (Exception rowEx)
+                            {
+                                // Do not fail the whole transaction because of a single bad row.
+                                ErrorLog.LogException(rowEx, "IndexService.UpsertBatchAsync", $"BatchUpsert Path={item.Path}");
+                            }
                         }
                     }).ConfigureAwait(false);
+
+                    insertedRows += insertedLocal;
                 }
                 catch (Exception ex)
                 {
@@ -192,8 +213,10 @@ public sealed class IndexService
                                         item.Path)
                                     .ConfigureAwait(false);
                             }
-
-                            insertedRows += rows;
+                            else
+                            {
+                                insertedRows += rows;
+                            }
                         }
                         catch (Exception itemEx)
                         {
@@ -497,197 +520,197 @@ public sealed class IndexService
         }
     }
 
-    
+
     private static async ValueTask WriteToChannelAsync<T>(ChannelWriter<T> writer, T item, CancellationToken ct)
-{
-    // Avoid per-item await stalls when the channel is not full by trying to write synchronously first.
-    // If the channel is full, wait until space is available (backpressure) without dropping items.
-    while (!writer.TryWrite(item))
     {
-        if (!await writer.WaitToWriteAsync(ct).ConfigureAwait(false))
-            return;
-    }
-}
-
-private static async ValueTask QueueThumbnailAsync(
-    Channel<MediaItem> thumbnailQueue,
-    string path,
-    MediaType mediaType,
-    CancellationToken ct)
-{
-    await WriteToChannelAsync(
-            thumbnailQueue.Writer,
-            new MediaItem
-            {
-                Path = path,
-                MediaType = mediaType
-            },
-            ct)
-        .ConfigureAwait(false);
-}
-
-private async Task ProcessLocationQueueAsync(
-    ChannelReader<MediaItem> reader,
-    WorkCounters counters,
-    CancellationToken ct)
-{
-    const int BatchSize = 128;
-
-    var pending = new List<(string Path, double Lat, double Lon)>(BatchSize);
-
-    async Task FlushAsync()
-    {
-        if (pending.Count == 0)
-            return;
-
-        var updates = pending.ToArray();
-        pending.Clear();
-
-        try
+        // Avoid per-item await stalls when the channel is not full by trying to write synchronously first.
+        // If the channel is full, wait until space is available (backpressure) without dropping items.
+        while (!writer.TryWrite(item))
         {
-            await db.Db.RunInTransactionAsync(conn =>
-            {
-                // Reuse a prepared UPDATE command for all rows in this batch.
-                var cmd = conn.CreateCommand(
-                    "UPDATE MediaItem SET Latitude = ?, Longitude = ? WHERE Path = ?;");
+            if (!await writer.WaitToWriteAsync(ct).ConfigureAwait(false))
+                return;
+        }
+    }
 
-                foreach (var u in updates)
+    private static async ValueTask QueueThumbnailAsync(
+        Channel<MediaItem> thumbnailQueue,
+        string path,
+        MediaType mediaType,
+        CancellationToken ct)
+    {
+        await WriteToChannelAsync(
+                thumbnailQueue.Writer,
+                new MediaItem
                 {
-                    cmd.Bind(u.Lat, u.Lon, u.Path);
-                    cmd.ExecuteNonQuery();
-                }
-            }).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Location batch update failed: {ex}");
-            ErrorLog.LogException(ex, "IndexService.ProcessLocationQueueAsync", "BatchUpdate");
-        }
+                    Path = path,
+                    MediaType = mediaType
+                },
+                ct)
+            .ConfigureAwait(false);
     }
 
-    await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
+    private async Task ProcessLocationQueueAsync(
+        ChannelReader<MediaItem> reader,
+        WorkCounters counters,
+        CancellationToken ct)
     {
-        if (item == null || string.IsNullOrWhiteSpace(item.Path))
-            continue;
+        const int BatchSize = 128;
 
-        try
+        var pending = new List<(string Path, double Lat, double Lon)>(BatchSize);
+
+        async Task FlushAsync()
         {
-            if (!await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false))
-                continue;
+            if (pending.Count == 0)
+                return;
 
-            if (!item.Latitude.HasValue || !item.Longitude.HasValue)
-                continue;
+            var updates = pending.ToArray();
+            pending.Clear();
 
-            pending.Add((item.Path, item.Latitude.Value, item.Longitude.Value));
-
-            if (pending.Count >= BatchSize)
-                await FlushAsync().ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Location metadata update failed for '{item.Path}': {ex}");
-            ErrorLog.LogException(ex, "IndexService.ProcessLocationQueueAsync", $"Path={item.Path}");
-        }
-        finally
-        {
-            Interlocked.Increment(ref counters.LocationsDone);
-        }
-    }
-
-    await FlushAsync().ConfigureAwait(false);
-}
-
-private static async ValueTask QueueLocationLookupAsync(
-    Channel<MediaItem>? locationQueue,
-    string path,
-    MediaType mediaType,
-    CancellationToken ct)
-{
-    if (locationQueue == null)
-        return;
-
-    await WriteToChannelAsync(
-            locationQueue.Writer,
-            new MediaItem
+            try
             {
-                Path = path,
-                MediaType = mediaType
-            },
-            ct)
-        .ConfigureAwait(false);
-}
+                await db.Db.RunInTransactionAsync(conn =>
+                {
+                    // Reuse a prepared UPDATE command for all rows in this batch.
+                    var cmd = conn.CreateCommand(
+                        "UPDATE MediaItem SET Latitude = ?, Longitude = ? WHERE Path = ?;");
 
-private async Task ProcessDurationQueueAsync(
-    ChannelReader<string> reader,
-    WorkCounters counters,
-    CancellationToken ct)
-{
-    const int BatchSize = 256;
+                    foreach (var u in updates)
+                    {
+                        cmd.Bind(u.Lat, u.Lon, u.Path);
+                        cmd.ExecuteNonQuery();
+                    }
+                }).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Location batch update failed: {ex}");
+                ErrorLog.LogException(ex, "IndexService.ProcessLocationQueueAsync", "BatchUpdate");
+            }
+        }
 
-    var pending = new List<(string Path, long DurationMs)>(BatchSize);
+        await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
+        {
+            if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                continue;
 
-    async Task FlushAsync()
+            try
+            {
+                if (!await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false))
+                    continue;
+
+                if (!item.Latitude.HasValue || !item.Longitude.HasValue)
+                    continue;
+
+                pending.Add((item.Path, item.Latitude.Value, item.Longitude.Value));
+
+                if (pending.Count >= BatchSize)
+                    await FlushAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Location metadata update failed for '{item.Path}': {ex}");
+                ErrorLog.LogException(ex, "IndexService.ProcessLocationQueueAsync", $"Path={item.Path}");
+            }
+            finally
+            {
+                Interlocked.Increment(ref counters.LocationsDone);
+            }
+        }
+
+        await FlushAsync().ConfigureAwait(false);
+    }
+
+    private static async ValueTask QueueLocationLookupAsync(
+        Channel<MediaItem>? locationQueue,
+        string path,
+        MediaType mediaType,
+        CancellationToken ct)
     {
-        if (pending.Count == 0)
+        if (locationQueue == null)
             return;
 
-        var updates = pending.ToArray();
-        pending.Clear();
-
-        try
-        {
-            await db.Db.RunInTransactionAsync(conn =>
-            {
-                // Update only when DurationMs is missing/unknown to avoid overwriting better data.
-                var cmd = conn.CreateCommand(
-                    "UPDATE MediaItem SET DurationMs = ? WHERE Path = ? AND (DurationMs IS NULL OR DurationMs <= 0);");
-
-                foreach (var u in updates)
+        await WriteToChannelAsync(
+                locationQueue.Writer,
+                new MediaItem
                 {
-                    cmd.Bind(u.DurationMs, u.Path);
-                    cmd.ExecuteNonQuery();
-                }
-            }).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Duration batch update failed: {ex}");
-            ErrorLog.LogException(ex, "IndexService.ProcessDurationQueueAsync", "BatchUpdate");
-        }
+                    Path = path,
+                    MediaType = mediaType
+                },
+                ct)
+            .ConfigureAwait(false);
     }
 
-    await foreach (var path in reader.ReadAllAsync(ct).ConfigureAwait(false))
+    private async Task ProcessDurationQueueAsync(
+        ChannelReader<string> reader,
+        WorkCounters counters,
+        CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(path))
-            continue;
+        const int BatchSize = 256;
 
-        try
+        var pending = new List<(string Path, long DurationMs)>(BatchSize);
+
+        async Task FlushAsync()
         {
-            var durationMs = await videoDurationService.TryGetDurationMsAsync(path, ct).ConfigureAwait(false);
-            if (durationMs <= 0)
+            if (pending.Count == 0)
+                return;
+
+            var updates = pending.ToArray();
+            pending.Clear();
+
+            try
+            {
+                await db.Db.RunInTransactionAsync(conn =>
+                {
+                    // Update only when DurationMs is missing/unknown to avoid overwriting better data.
+                    var cmd = conn.CreateCommand(
+                        "UPDATE MediaItem SET DurationMs = ? WHERE Path = ? AND (DurationMs IS NULL OR DurationMs <= 0);");
+
+                    foreach (var u in updates)
+                    {
+                        cmd.Bind(u.DurationMs, u.Path);
+                        cmd.ExecuteNonQuery();
+                    }
+                }).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Duration batch update failed: {ex}");
+                ErrorLog.LogException(ex, "IndexService.ProcessDurationQueueAsync", "BatchUpdate");
+            }
+        }
+
+        await foreach (var path in reader.ReadAllAsync(ct).ConfigureAwait(false))
+        {
+            if (string.IsNullOrWhiteSpace(path))
                 continue;
 
-            pending.Add((path, durationMs));
+            try
+            {
+                var durationMs = await videoDurationService.TryGetDurationMsAsync(path, ct).ConfigureAwait(false);
+                if (durationMs <= 0)
+                    continue;
 
-            if (pending.Count >= BatchSize)
-                await FlushAsync().ConfigureAwait(false);
+                pending.Add((path, durationMs));
+
+                if (pending.Count >= BatchSize)
+                    await FlushAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Duration update failed for '{path}': {ex}");
+                ErrorLog.LogException(ex, "IndexService.ProcessDurationQueueAsync", $"Path={path}");
+            }
+            finally
+            {
+                Interlocked.Increment(ref counters.DurationsDone);
+            }
         }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Duration update failed for '{path}': {ex}");
-            ErrorLog.LogException(ex, "IndexService.ProcessDurationQueueAsync", $"Path={path}");
-        }
-        finally
-        {
-            Interlocked.Increment(ref counters.DurationsDone);
-        }
+
+        await FlushAsync().ConfigureAwait(false);
     }
 
-    await FlushAsync().ConfigureAwait(false);
-}
-
-public Task<List<MediaItem>> QueryAsync(string search, SearchScope searchScope, string? sourceId, string sortKey,
-        DateTime? from, DateTime? to, MediaType mediaTypes)
+    public Task<List<MediaItem>> QueryAsync(string search, SearchScope searchScope, string? sourceId, string sortKey,
+            DateTime? from, DateTime? to, MediaType mediaTypes)
     {
         return QueryAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes);
     }
