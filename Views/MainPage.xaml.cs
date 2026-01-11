@@ -64,6 +64,19 @@ public partial class MainPage : ContentPage
         pendingScrollToMediaPath = item?.Path;
     }
 
+    internal void ClearMediaSelection()
+    {
+        try
+        {
+            MediaItemsView.SelectedItem = null;
+            MediaItemsView.SelectedItems?.Clear();
+        }
+        catch
+        {
+            // Best-effort: never crash due to selection edge cases.
+        }
+    }
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -407,7 +420,7 @@ public partial class MainPage : ContentPage
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
-            ClearMarkedCommand = vm.ClearMarkedCommand;
+            ClearMarkedCommand = new RelayCommand(ClearMarked);
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = new AsyncRelayCommand<MediaItem>(OpenTagEditorAsync);
             OpenPersonFromTagCommand = new AsyncRelayCommand<TagNavigationContext>(OpenPersonFromTagAsync);
@@ -643,6 +656,16 @@ public partial class MainPage : ContentPage
                     OnPropertyChanged(nameof(MediaItems));
                 });
             };
+        }
+
+        private void ClearMarked()
+        {
+            if (vm.ClearMarkedCommand.CanExecute(null))
+                vm.ClearMarkedCommand.Execute(null);
+
+#if WINDOWS
+            page.ClearMediaSelection();
+#endif
         }
 
 
