@@ -365,13 +365,13 @@ public partial class MainPage : ContentPage
         private double headerHeight;
         private Window? indexingWindow;
         private bool isFiltersDockExpanded = true;
+        private bool isIndexRefreshPending;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
         private bool isPreviewDockExpanded = true;
         private bool isTimelinePreviewVisible;
 
         private long lastLiveRefreshMs;
-        private CancellationTokenSource? liveRefreshCts;
         private string timelinePreviewLabel = "";
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
@@ -441,14 +441,15 @@ public partial class MainPage : ContentPage
                 isIndexingOverlaySuppressed = false;
                 IsIndexingOverlayVisible = true;
             });
+            RefreshIndexCommand = new AsyncRelayCommand(RefreshIndexAsync);
 
 
             proUpgradeService.ProStatusChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(IsProUnlocked)));
 
-            // While indexing we want newly inserted items to appear in the list.
-            // We refresh in the background and then restore scroll position.
-            vm.IndexLiveRefreshSuggested += (_, _) => MainThread.BeginInvokeOnMainThread(ScheduleLiveRefresh);
+            // While indexing we avoid automatic refreshes that can scroll the grid.
+            // Instead we show a refresh button so the user can opt-in.
+            vm.IndexLiveRefreshSuggested += (_, _) => MainThread.BeginInvokeOnMainThread(MarkIndexRefreshPending);
 
             vm.PropertyChanged += (_, args) =>
             {
@@ -459,6 +460,7 @@ public partial class MainPage : ContentPage
                         {
                             isIndexingOverlaySuppressed = false;
                             IsIndexingOverlayVisible = false;
+                            IsIndexRefreshPending = false;
                         }
                         else
                         {
@@ -474,6 +476,8 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(ShowIndexBannerAction));
                         OnPropertyChanged(nameof(IndexBannerActionText));
                         OnPropertyChanged(nameof(IndexBannerActionCommand));
+                        OnPropertyChanged(nameof(ShowIndexRefreshAction));
+                        OnPropertyChanged(nameof(RefreshIndexCommand));
                         OnPropertyChanged(nameof(IndexState));
                         break;
                     case nameof(MainViewModel.IndexedCount):
@@ -511,6 +515,10 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IndexedMediaCount):
                         OnPropertyChanged(nameof(IndexedMediaCount));
+                        break;
+                    case nameof(MainViewModel.LocationsCount):
+                        OnPropertyChanged(nameof(LocationsCount));
+                        OnPropertyChanged(nameof(HasLocations));
                         break;
                     case nameof(MainViewModel.TimelineEntries):
                         OnPropertyChanged(nameof(TimelineEntries));
@@ -609,6 +617,8 @@ public partial class MainPage : ContentPage
                         break;
                     case nameof(MainViewModel.IsLocationEnabled):
                         OnPropertyChanged(nameof(IsLocationEnabled));
+                        OnPropertyChanged(nameof(ShowLocationsHighlight));
+                        OnPropertyChanged(nameof(HasLocations));
                         break;
                     case nameof(MainViewModel.NeedsReindex):
                         OnPropertyChanged(nameof(ShowIndexingBanner));
@@ -617,6 +627,7 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(ShowIndexBannerAction));
                         OnPropertyChanged(nameof(IndexBannerActionText));
                         OnPropertyChanged(nameof(IndexBannerActionCommand));
+                        OnPropertyChanged(nameof(ShowIndexRefreshAction));
                         OnPropertyChanged(nameof(IndexState));
                         break;
                 }
@@ -662,6 +673,7 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand RequestPermissionCommand { get; }
         public IRelayCommand DismissIndexOverlayCommand { get; }
         public IRelayCommand ShowIndexOverlayCommand { get; }
+        public IAsyncRelayCommand RefreshIndexCommand { get; }
         public IRelayCommand TogglePreviewDockExpandedCommand { get; }
         public IRelayCommand ToggleFiltersDockExpandedCommand { get; }
         public IRelayCommand PlayCommand { get; }
@@ -823,6 +835,21 @@ public partial class MainPage : ContentPage
         public ICommand IndexBannerActionCommand =>
             vm.IndexState == IndexingState.Running ? ShowIndexOverlayCommand : RunIndexCommand;
 
+        public bool ShowIndexRefreshAction => vm.IndexState == IndexingState.Running;
+
+        public bool IsIndexRefreshPending
+        {
+            get => isIndexRefreshPending;
+            private set
+            {
+                if (isIndexRefreshPending == value)
+                    return;
+
+                isIndexRefreshPending = value;
+                OnPropertyChanged();
+            }
+        }
+
         public int IndexedCount => vm.IndexedCount;
         public int IndexProcessed => vm.IndexProcessed;
         public int IndexTotal => vm.IndexTotal;
@@ -833,6 +860,7 @@ public partial class MainPage : ContentPage
         public bool HasMediaPermission => vm.HasMediaPermission;
         public int MediaCount => vm.MediaCount;
         public int IndexedMediaCount => vm.IndexedMediaCount;
+        public int LocationsCount => vm.LocationsCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
         public int TaggedPeopleCount => vm.TaggedPeopleCount;
         public string SourcesSummary => vm.SourcesSummary;
@@ -962,6 +990,8 @@ public partial class MainPage : ContentPage
         public bool AllowFileChanges => vm.AllowFileChanges;
         public bool IsPeopleTaggingEnabled => vm.IsPeopleTaggingEnabled;
         public bool IsLocationEnabled => vm.IsLocationEnabled;
+        public bool HasLocations => vm.HasLocations;
+        public bool ShowLocationsHighlight => vm.IsLocationEnabled;
 
         public void SetTimelinePreview(TimelineEntry entry)
         {
@@ -1174,7 +1204,7 @@ public partial class MainPage : ContentPage
             Application.Current?.CloseWindow(window);
         }
 
-        private void ScheduleLiveRefresh()
+        private void MarkIndexRefreshPending()
         {
             if (!vm.IsIndexing)
                 return;
@@ -1184,63 +1214,13 @@ public partial class MainPage : ContentPage
                 return;
 
             lastLiveRefreshMs = now;
-
-            liveRefreshCts?.Cancel();
-            liveRefreshCts?.Dispose();
-            liveRefreshCts = new CancellationTokenSource();
-            var ct = liveRefreshCts.Token;
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    // Capture current visual anchor so we can restore scroll after refresh.
-                    var anchorPath = GetFirstVisibleMediaPath();
-
-                    await vm.RefreshAsync().ConfigureAwait(false);
-
-                    if (ct.IsCancellationRequested || string.IsNullOrWhiteSpace(anchorPath))
-                        return;
-
-                    var target = await vm.EnsureMediaItemLoadedAsync(anchorPath, ct).ConfigureAwait(false);
-                    if (target == null || ct.IsCancellationRequested)
-                        return;
-
-                    await MainThread.InvokeOnMainThreadAsync(() =>
-                    {
-                        try
-                        {
-                            page.MediaItemsView?.ScrollTo(target, position: ScrollToPosition.Start, animate: false);
-                        }
-                        catch
-                        {
-                            // Ignore
-                        }
-                    });
-                }
-                catch
-                {
-                    // Keep UI resilient.
-                }
-            }, ct);
+            IsIndexRefreshPending = true;
         }
 
-        private string? GetFirstVisibleMediaPath()
+        private async Task RefreshIndexAsync()
         {
-            try
-            {
-                var count = vm.MediaItems.Count;
-                if (count <= 0)
-                    return null;
-
-                var idx = Math.Clamp(page.lastFirstVisibleIndex, 0, count - 1);
-                var item = vm.MediaItems[idx];
-                return item?.Path;
-            }
-            catch
-            {
-                return null;
-            }
+            IsIndexRefreshPending = false;
+            await vm.RefreshAsync().ConfigureAwait(false);
         }
 
         public Task ApplyGridSpanAsync()

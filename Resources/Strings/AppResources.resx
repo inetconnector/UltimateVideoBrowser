@@ -141,6 +141,12 @@
   <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
     <value>People tagged</value>
   </data>
+  <data name="HighlightsLocationsLabel" xml:space="preserve">
+    <value>Places</value>
+  </data>
+  <data name="HighlightsLocationsHint" xml:space="preserve">
+    <value>View where your photos were taken on the map.</value>
+  </data>
   <data name="SourcesSummaryFormat" xml:space="preserve">
     <value>{0} of {1} sources active</value>
   </data>

@@ -279,6 +279,22 @@
     
   
   </data>
+
+  <data name="HighlightsLocationsLabel" xml:space="preserve">
+    
+    
+    <value>Orte</value>
+    
+  
+  </data>
+
+  <data name="HighlightsLocationsHint" xml:space="preserve">
+    
+    
+    <value>Zeigt auf der Karte, wo deine Fotos aufgenommen wurden.</value>
+    
+  
+  </data>
   
 
   <data name="Indexing" xml:space="preserve">

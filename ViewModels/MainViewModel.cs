@@ -87,6 +87,7 @@ public partial class MainViewModel : ObservableObject
     private bool isSyncingFilterOptions;
     [ObservableProperty] private int markedCount;
     [ObservableProperty] private int mediaCount;
+    [ObservableProperty] private int locationsCount;
 
     // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
     private CancellationTokenSource? mediaDerivedCts;
@@ -122,10 +123,16 @@ public partial class MainViewModel : ObservableObject
     private int visibleLastIndex;
 
     public bool HasIndexWorkStatus => !string.IsNullOrWhiteSpace(IndexWorkStatus);
+    public bool HasLocations => LocationsCount > 0;
 
     partial void OnIndexWorkStatusChanged(string value)
     {
         OnPropertyChanged(nameof(HasIndexWorkStatus));
+    }
+
+    partial void OnLocationsCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(HasLocations));
     }
 
     public MainViewModel(
@@ -301,6 +308,7 @@ public partial class MainViewModel : ObservableObject
 
         _ = RefreshAsync();
         _ = RefreshTaggedPeopleCountAsync();
+        _ = RefreshLocationsCountAsync();
 
         if (SettingsService.NeedsReindex)
             _ = RunIndexAsync();
@@ -321,6 +329,7 @@ public partial class MainViewModel : ObservableObject
         ReloadSettingsFromService();
         await RefreshAsync().ConfigureAwait(false);
         _ = RefreshTaggedPeopleCountAsync();
+        _ = RefreshLocationsCountAsync();
     }
 
     public async Task TryShowPeopleTaggingTrialHintAsync()
@@ -472,6 +481,9 @@ public partial class MainViewModel : ObservableObject
                     hasMoreMediaItems = result.items.Count < result.filteredCount;
                     isLoadingMoreMediaItems = false;
                 });
+
+                _ = RefreshTaggedPeopleCountAsync();
+                _ = RefreshLocationsCountAsync();
             }
             catch (Exception ex)
             {
@@ -1667,6 +1679,25 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private async Task RefreshLocationsCountAsync()
+    {
+        try
+        {
+            if (!IsLocationEnabled)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => LocationsCount = 0);
+                return;
+            }
+
+            var count = await indexService.CountLocationsAsync(MediaType.All).ConfigureAwait(false);
+            MainThread.BeginInvokeOnMainThread(() => LocationsCount = count);
+        }
+        catch
+        {
+            // Keep browsing resilient if the DB is unavailable or not initialized yet.
+        }
+    }
+
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
@@ -1923,6 +1954,11 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshPeopleTagsAsync(MediaItems.ToList(), mediaItemsVersion);
         _ = RefreshTaggedPeopleCountAsync();
         RefreshPeopleModelsStatus();
+    }
+
+    partial void OnIsLocationEnabledChanged(bool value)
+    {
+        _ = RefreshLocationsCountAsync();
     }
 
     private void RefreshPeopleModelsStatus()
