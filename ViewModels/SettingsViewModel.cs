@@ -31,6 +31,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool isDateFilterEnabled;
     [ObservableProperty] private bool isDocumentsIndexed;
     [ObservableProperty] private bool isGraphicsIndexed;
+    [ObservableProperty] private bool isHideDuplicateFilesEnabled;
     [ObservableProperty] private bool isIndexing;
     [ObservableProperty] private bool isInternalPlayerEnabled;
     [ObservableProperty] private bool isLocationEnabled;
@@ -98,6 +99,7 @@ public partial class SettingsViewModel : ObservableObject
         PhotoExtensionsText = settingsService.PhotoExtensions;
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
+        IsHideDuplicateFilesEnabled = settingsService.HideDuplicateFilesEnabled;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
         var searchScope = settingsService.SearchScope == SearchScope.None
             ? SearchScope.All
@@ -247,6 +249,11 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnAllowFileChangesChanged(bool value)
     {
         settingsService.AllowFileChanges = value;
+    }
+
+    partial void OnIsHideDuplicateFilesEnabledChanged(bool value)
+    {
+        settingsService.HideDuplicateFilesEnabled = value;
     }
 
     partial void OnIsPeopleTaggingEnabledChanged(bool value)
@@ -490,6 +497,7 @@ public partial class SettingsViewModel : ObservableObject
         PhotoExtensionsText = settingsService.PhotoExtensions;
         DocumentExtensionsText = settingsService.DocumentExtensions;
         AllowFileChanges = settingsService.AllowFileChanges;
+        IsHideDuplicateFilesEnabled = settingsService.HideDuplicateFilesEnabled;
         IsPeopleTaggingEnabled = settingsService.PeopleTaggingEnabled;
 
         var searchScope = settingsService.SearchScope == SearchScope.None

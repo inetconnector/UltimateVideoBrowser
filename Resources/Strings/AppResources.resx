@@ -378,6 +378,15 @@
   <data name="SettingsDateToLabel" xml:space="preserve">
     <value>To</value>
   </data>
+  <data name="SettingsDuplicatesTitle" xml:space="preserve">
+    <value>Duplicates</value>
+  </data>
+  <data name="SettingsDuplicatesHint" xml:space="preserve">
+    <value>Albums always show all items.</value>
+  </data>
+  <data name="SettingsDuplicatesLabel" xml:space="preserve">
+    <value>Hide duplicate files (keep oldest)</value>
+  </data>
   <data name="SettingsIndexingTitle" xml:space="preserve">
     <value>Indexing</value>
   </data>

@@ -21,6 +21,7 @@ public sealed class AppSettingsService
     private const string PhotoExtensionsKey = "photo_extensions";
     private const string DocumentExtensionsKey = "document_extensions";
     private const string AllowFileChangesKey = "allow_file_changes";
+    private const string HideDuplicateFilesKey = "hide_duplicate_files";
     private const string PeopleTaggingEnabledKey = "people_tagging_enabled";
     private const string PeopleTaggingTrialStartedUtcKey = "people_tagging_trial_started_utc";
     private const string PeopleTaggingTrialHintShownKey = "people_tagging_trial_hint_shown";
@@ -184,6 +185,12 @@ public sealed class AppSettingsService
         set => store.SetBool(AllowFileChangesKey, value);
     }
 
+    public bool HideDuplicateFilesEnabled
+    {
+        get => store.GetBool(HideDuplicateFilesKey, true);
+        set => store.SetBool(HideDuplicateFilesKey, value);
+    }
+
     public bool PeopleTaggingEnabled
     {
         get
@@ -306,6 +313,9 @@ public sealed class AppSettingsService
 
         if (!store.ContainsKey(FiltersDockExpandedKey))
             store.SetBool(FiltersDockExpandedKey, true);
+
+        if (!store.ContainsKey(HideDuplicateFilesKey))
+            store.SetBool(HideDuplicateFilesKey, true);
     }
 
     public event EventHandler<bool>? NeedsReindexChanged;

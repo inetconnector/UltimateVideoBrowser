@@ -398,6 +398,8 @@ public partial class MainViewModel : ObservableObject
                     var sortKey = SelectedSortOption?.Key ?? "name";
                     var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
                     var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+                    var hideDuplicates = SettingsService.HideDuplicateFilesEnabled &&
+                                         string.IsNullOrWhiteSpace(normalizedAlbumId);
 
                     // IMPORTANT:
                     // An empty source id is treated as "all sources" (no SourceId filter).
@@ -405,17 +407,26 @@ public partial class MainViewModel : ObservableObject
                     // when the active source wasn't set or when sources were temporarily unavailable.
                     var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
                     var items = string.IsNullOrWhiteSpace(normalizedAlbumId)
-                        ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
-                                dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
-                            .ConfigureAwait(false)
+                        ? hideDuplicates
+                            ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
+                                    querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                                .ConfigureAwait(false)
+                            : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
+                                    dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                                .ConfigureAwait(false)
                         : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
                                 querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
                             .ConfigureAwait(false);
                     var filteredCount = string.IsNullOrWhiteSpace(normalizedAlbumId)
-                        ? await indexService
-                            .CountQueryAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
-                                SelectedMediaTypes)
-                            .ConfigureAwait(false)
+                        ? hideDuplicates
+                            ? await indexService
+                                .CountQueryUniqueAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
+                                    SelectedMediaTypes)
+                                .ConfigureAwait(false)
+                            : await indexService
+                                .CountQueryAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
+                                    SelectedMediaTypes)
+                                .ConfigureAwait(false)
                         : await albumService
                             .CountAlbumItemsAsync(normalizedAlbumId, SearchText, SelectedSearchScope, querySourceId,
                                 dateFrom, dateTo, SelectedMediaTypes)
@@ -428,9 +439,14 @@ public partial class MainViewModel : ObservableObject
                         while (offset < filteredCount && expanded.Count < initialLoadTarget)
                         {
                             var nextItems = string.IsNullOrWhiteSpace(normalizedAlbumId)
-                                ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId,
-                                        sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize)
-                                    .ConfigureAwait(false)
+                                ? hideDuplicates
+                                    ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
+                                            querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, offset,
+                                            PageSize)
+                                        .ConfigureAwait(false)
+                                    : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId,
+                                            sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize)
+                                        .ConfigureAwait(false)
                                 : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText,
                                         SelectedSearchScope, querySourceId, sortKey, dateFrom, dateTo,
                                         SelectedMediaTypes, offset, PageSize)
@@ -503,10 +519,15 @@ public partial class MainViewModel : ObservableObject
             var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
             var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
             var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+            var hideDuplicates = SettingsService.HideDuplicateFilesEnabled && string.IsNullOrWhiteSpace(ActiveAlbumId);
             var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
-                ? await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey, dateFrom,
-                        dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
-                    .ConfigureAwait(false)
+                ? hideDuplicates
+                    ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope, querySourceId,
+                            sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                        .ConfigureAwait(false)
+                    : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
+                            dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
+                        .ConfigureAwait(false)
                 : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
                         sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
                     .ConfigureAwait(false);
