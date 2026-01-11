@@ -721,10 +721,23 @@ public sealed class IndexService
         return QueryPageAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit);
     }
 
+    public Task<List<MediaItem>> QueryPageUniqueOldestAsync(string search, SearchScope searchScope, string? sourceId,
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        return QueryPageUniqueOldestAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset,
+            limit);
+    }
+
     public Task<int> CountQueryAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
         DateTime? to, MediaType mediaTypes)
     {
         return CountQueryAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes);
+    }
+
+    public Task<int> CountQueryUniqueAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
+        DateTime? to, MediaType mediaTypes)
+    {
+        return CountQueryUniqueAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes);
     }
 
     public Task<int> CountAsync(MediaType mediaTypes)
@@ -842,12 +855,30 @@ public sealed class IndexService
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
+    private async Task<List<MediaItem>> QueryPageUniqueOldestAsyncInternal(string search, SearchScope searchScope,
+        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset,
+            limit, false);
+        return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
+    }
+
     private async Task<int> CountQueryAsyncInternal(string search, SearchScope searchScope, string? sourceId,
         DateTime? from, DateTime? to, MediaType mediaTypes)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null, null,
             true);
+        return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
+    }
+
+    private async Task<int> CountQueryUniqueAsyncInternal(string search, SearchScope searchScope, string? sourceId,
+        DateTime? from, DateTime? to, MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null,
+            null, true);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -872,6 +903,112 @@ public sealed class IndexService
         int? offset,
         int? limit,
         bool countOnly)
+    {
+        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes);
+
+        var sql = countOnly ? "SELECT COUNT(*) FROM MediaItem" : "SELECT MediaItem.* FROM MediaItem";
+
+        if (filters.Count > 0)
+            sql += " WHERE " + string.Join(" AND ", filters);
+
+        if (!countOnly)
+        {
+            var orderBy = sortKey switch
+            {
+                "date" => "MediaItem.DateAddedSeconds DESC",
+                "duration" => "MediaItem.DurationMs DESC",
+                _ => "MediaItem.Name"
+            };
+
+            sql += $" ORDER BY {orderBy}";
+
+            if (limit.HasValue)
+            {
+                sql += " LIMIT ?";
+                args.Add(limit.Value);
+            }
+
+            if (offset.HasValue)
+            {
+                sql += " OFFSET ?";
+                args.Add(offset.Value);
+            }
+        }
+
+        return (sql, args);
+    }
+
+    private static (string sql, List<object> args) BuildUniqueOldestQuerySql(
+        string search,
+        SearchScope searchScope,
+        string? sourceId,
+        string sortKey,
+        DateTime? from,
+        DateTime? to,
+        MediaType mediaTypes,
+        int? offset,
+        int? limit,
+        bool countOnly)
+    {
+        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes);
+        var filterSql = filters.Count > 0 ? " WHERE " + string.Join(" AND ", filters) : string.Empty;
+
+        var orderBy = sortKey switch
+        {
+            "date" => "DateAddedSeconds DESC",
+            "duration" => "DurationMs DESC",
+            _ => "Name"
+        };
+
+        var selectColumns =
+            "Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId, Latitude, Longitude, ThumbnailPath, PeopleTagsSummary, FaceScanModelKey, FaceScanAtSeconds";
+
+        if (countOnly)
+        {
+            var countSql = $@"
+WITH Filtered AS (
+    SELECT {selectColumns} FROM MediaItem{filterSql}
+),
+Ranked AS (
+    SELECT Filtered.*, ROW_NUMBER() OVER (PARTITION BY Name ORDER BY DateAddedSeconds ASC, Path ASC) AS rn
+    FROM Filtered
+)
+SELECT COUNT(*) FROM Ranked WHERE rn = 1";
+            return (countSql, args);
+        }
+
+        var sql = $@"
+WITH Filtered AS (
+    SELECT {selectColumns} FROM MediaItem{filterSql}
+),
+Ranked AS (
+    SELECT Filtered.*, ROW_NUMBER() OVER (PARTITION BY Name ORDER BY DateAddedSeconds ASC, Path ASC) AS rn
+    FROM Filtered
+)
+SELECT {selectColumns} FROM Ranked WHERE rn = 1 ORDER BY {orderBy}";
+
+        if (limit.HasValue)
+        {
+            sql += " LIMIT ?";
+            args.Add(limit.Value);
+        }
+
+        if (offset.HasValue)
+        {
+            sql += " OFFSET ?";
+            args.Add(offset.Value);
+        }
+
+        return (sql, args);
+    }
+
+    private static (List<string> filters, List<object> args) BuildFilters(
+        string search,
+        SearchScope searchScope,
+        string? sourceId,
+        DateTime? from,
+        DateTime? to,
+        MediaType mediaTypes)
     {
         var args = new List<object>();
         var filters = new List<string>();
@@ -938,36 +1075,7 @@ public sealed class IndexService
             args.Add(toSeconds);
         }
 
-        var sql = countOnly ? "SELECT COUNT(*) FROM MediaItem" : "SELECT MediaItem.* FROM MediaItem";
-
-        if (filters.Count > 0)
-            sql += " WHERE " + string.Join(" AND ", filters);
-
-        if (!countOnly)
-        {
-            var orderBy = sortKey switch
-            {
-                "date" => "MediaItem.DateAddedSeconds DESC",
-                "duration" => "MediaItem.DurationMs DESC",
-                _ => "MediaItem.Name"
-            };
-
-            sql += $" ORDER BY {orderBy}";
-
-            if (limit.HasValue)
-            {
-                sql += " LIMIT ?";
-                args.Add(limit.Value);
-            }
-
-            if (offset.HasValue)
-            {
-                sql += " OFFSET ?";
-                args.Add(offset.Value);
-            }
-        }
-
-        return (sql, args);
+        return (filters, args);
     }
 
     private sealed class ProgressScheduler

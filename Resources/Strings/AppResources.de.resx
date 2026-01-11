@@ -991,6 +991,32 @@
   
   </data>
   
+  <data name="SettingsDuplicatesTitle" xml:space="preserve">
+    
+    
+    <value>Duplikate</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDuplicatesHint" xml:space="preserve">
+    
+    
+    <value>In Alben werden immer alle Dateien angezeigt.</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsDuplicatesLabel" xml:space="preserve">
+    
+    
+    <value>Doppelte Dateien ausblenden (älteste behalten)</value>
+    
+  
+  </data>
+  
   
   <data name="SettingsIndexingTitle" xml:space="preserve">
     
