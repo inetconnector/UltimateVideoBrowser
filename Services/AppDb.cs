@@ -33,23 +33,32 @@ public sealed class AppDb
                 return;
 
             await TryConfigurePragmasAsync().ConfigureAwait(false);
+            await TryCheckpointAsync().ConfigureAwait(false);
 
-            // Base tables
-            await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
-            await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
-            await Db.CreateTableAsync<Album>().ConfigureAwait(false);
-            await Db.CreateTableAsync<AlbumItem>().ConfigureAwait(false);
-            await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
-            await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
-            await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
-            await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
-            await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
+            try
+            {
+                // Base tables
+                await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
+                await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
+                await Db.CreateTableAsync<Album>().ConfigureAwait(false);
+                await Db.CreateTableAsync<AlbumItem>().ConfigureAwait(false);
+                await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
+                await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
+                await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
+                await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
+                await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
 
-            // Schema migrations (idempotent, column-existence checked to avoid exception spam)
-            await EnsureSchemaAsync().ConfigureAwait(false);
+                // Schema migrations (idempotent, column-existence checked to avoid exception spam)
+                await EnsureSchemaAsync().ConfigureAwait(false);
 
-            // Indexes (best-effort: app must remain usable even if an index fails)
-            await EnsureIndexesAsync().ConfigureAwait(false);
+                // Indexes (best-effort: app must remain usable even if an index fails)
+                await EnsureIndexesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "AppDb.EnsureInitializedAsync");
+                throw;
+            }
 
             isInitialized = true;
         }
