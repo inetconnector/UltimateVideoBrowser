@@ -62,9 +62,10 @@ public sealed class PeopleDataService
 
             foreach (var r in tagCounts)
             {
-                if (string.IsNullOrWhiteSpace(r.PersonName))
+                var name = (r.PersonName ?? string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(name))
                     continue;
-                tagCountMap[r.PersonName] = r.Cnt;
+                tagCountMap[name] = r.Cnt;
             }
         }
         catch
