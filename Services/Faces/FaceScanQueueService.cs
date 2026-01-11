@@ -64,7 +64,7 @@ public sealed class FaceScanQueueService
         }
     }
 
-    public async Task<int> ProcessQueueAsync(CancellationToken ct)
+    public async Task<int> ProcessQueueAsync(CancellationToken ct, IProgress<int>? progress = null)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
 
@@ -121,6 +121,8 @@ public sealed class FaceScanQueueService
                         .ConfigureAwait(false);
                 }
             }
+
+            progress?.Report(processed);
         }
 
         return processed;
