@@ -758,6 +758,19 @@ public sealed class IndexService
         return await db.Db.QueryAsync<MediaItem>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
     }
 
+    public async Task<int> CountLocationsAsync(MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var allowed = BuildAllowedTypes(mediaTypes == MediaType.None ? MediaType.All : mediaTypes);
+        if (allowed.Count == 0)
+            return 0;
+
+        var placeholders = string.Join(",", allowed.Select(_ => "?"));
+        var sql =
+            $"SELECT COUNT(*) FROM MediaItem WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND MediaType IN ({placeholders})";
+        return await db.Db.ExecuteScalarAsync<int>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
+    }
+
     public async Task RemoveAsync(IEnumerable<MediaItem> items)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);

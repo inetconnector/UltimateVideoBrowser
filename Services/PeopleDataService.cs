@@ -122,11 +122,55 @@ public sealed class PeopleDataService
             // Keep UI resilient.
         }
 
-        // Fetch all face embeddings once; pick the highest-score row per person as cover.
-        var allEmbeddings = await db.Db.QueryAsync<FaceEmbedding>(
-                "SELECT * FROM FaceEmbedding WHERE PersonId IS NOT NULL AND PersonId <> '' ORDER BY PersonId, Score DESC;")
-            .ConfigureAwait(false);
         var coverMap = new Dictionary<string, FaceEmbedding>(StringComparer.OrdinalIgnoreCase);
+
+        var primaryIds = people
+            .Where(p => p.PrimaryFaceEmbeddingId.HasValue)
+            .Select(p => p.PrimaryFaceEmbeddingId!.Value)
+            .Distinct()
+            .ToList();
+
+        if (primaryIds.Count > 0)
+        {
+            var placeholders = string.Join(",", primaryIds.Select(_ => "?"));
+            var primarySql = $"SELECT * FROM FaceEmbedding WHERE Id IN ({placeholders});";
+            var primaryEmbeddings = await db.Db
+                .QueryAsync<FaceEmbedding>(primarySql, primaryIds.Cast<object>().ToArray())
+                .ConfigureAwait(false);
+            var primaryMap = primaryEmbeddings.ToDictionary(e => e.Id);
+            foreach (var p in people)
+            {
+                if (p.PrimaryFaceEmbeddingId is not { } id)
+                    continue;
+                if (primaryMap.TryGetValue(id, out var emb))
+                    coverMap[p.Id] = emb;
+            }
+        }
+
+        // Prefer photo-based faces for cover thumbnails.
+        var photoEmbeddings = await db.Db.QueryAsync<FaceEmbedding>(
+                "SELECT FaceEmbedding.* FROM FaceEmbedding " +
+                "INNER JOIN MediaItem ON MediaItem.Path = FaceEmbedding.MediaPath " +
+                "WHERE FaceEmbedding.PersonId IS NOT NULL AND FaceEmbedding.PersonId <> '' " +
+                "AND MediaItem.MediaType = ? " +
+                "ORDER BY FaceEmbedding.PersonId, FaceEmbedding.FaceQuality DESC, FaceEmbedding.Score DESC;",
+                (int)MediaType.Photos)
+            .ConfigureAwait(false);
+
+        foreach (var e in photoEmbeddings)
+        {
+            if (string.IsNullOrWhiteSpace(e.PersonId))
+                continue;
+            if (!coverMap.ContainsKey(e.PersonId!))
+                coverMap[e.PersonId!] = e;
+        }
+
+        // Fallback: use any face embedding if we still don't have a cover.
+        var allEmbeddings = await db.Db.QueryAsync<FaceEmbedding>(
+                "SELECT * FROM FaceEmbedding WHERE PersonId IS NOT NULL AND PersonId <> '' " +
+                "ORDER BY PersonId, FaceQuality DESC, Score DESC;")
+            .ConfigureAwait(false);
+
         foreach (var e in allEmbeddings)
         {
             if (string.IsNullOrWhiteSpace(e.PersonId))

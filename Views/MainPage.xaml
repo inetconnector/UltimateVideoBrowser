@@ -113,6 +113,7 @@
                             RemainingItemsThreshold="12"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
                             VerticalScrollBarVisibility="Always"
+                            Padding="0,0,16,0"
                             Scrolled="OnMediaItemsScrolled"
                             VerticalOptions="FillAndExpand"
                             HorizontalOptions="FillAndExpand"

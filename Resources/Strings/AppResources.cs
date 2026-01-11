@@ -162,6 +162,10 @@ public static class AppResources
 
     public static string HighlightsPeopleTaggedLabel =>
         GetString(nameof(HighlightsPeopleTaggedLabel), "People tagged");
+    public static string HighlightsLocationsLabel =>
+        GetString(nameof(HighlightsLocationsLabel), "Places");
+    public static string HighlightsLocationsHint =>
+        GetString(nameof(HighlightsLocationsHint), "View where your photos were taken on the map.");
 
     public static string HighlightsTipText =>
         GetString(nameof(HighlightsTipText),
