@@ -46,7 +46,7 @@ public sealed partial class PeopleViewModel : ObservableObject
                         .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
                         .ConfigureAwait(false);
                     if (string.IsNullOrWhiteSpace(coverPath))
-                        coverPath = p.CoverFace.MediaPath;
+                        coverPath = null;
                 }
 
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,

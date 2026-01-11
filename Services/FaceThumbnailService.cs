@@ -247,10 +247,26 @@ public sealed class FaceThumbnailService
 
     private static ImageSharpRectangle BuildCropRect(int imageWidth, int imageHeight, FaceEmbedding embedding)
     {
-        var x = MathF.Max(0, embedding.X);
-        var y = MathF.Max(0, embedding.Y);
-        var w = MathF.Max(0, embedding.W);
-        var h = MathF.Max(0, embedding.H);
+        var x = embedding.X;
+        var y = embedding.Y;
+        var w = embedding.W;
+        var h = embedding.H;
+
+        if (embedding.ImageWidth > 0 && embedding.ImageHeight > 0)
+        {
+            if (x <= 1 && y <= 1 && w <= 1 && h <= 1)
+            {
+                x *= embedding.ImageWidth;
+                y *= embedding.ImageHeight;
+                w *= embedding.ImageWidth;
+                h *= embedding.ImageHeight;
+            }
+        }
+
+        x = MathF.Max(0, x);
+        y = MathF.Max(0, y);
+        w = MathF.Max(0, w);
+        h = MathF.Max(0, h);
 
         if (w <= 1 || h <= 1)
         {

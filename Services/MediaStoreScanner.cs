@@ -184,7 +184,7 @@ public sealed class MediaStoreScanner
         ".thumbnails"
     };
 
-    private const long PhotoSizeThresholdBytes = 256 * 1024;
+    private const long PhotoSizeThresholdBytes = 32 * 1024;
 
     private static void LogScanEntry(string? path, string? name, string source, string result,
         ModelMediaType mediaType)
