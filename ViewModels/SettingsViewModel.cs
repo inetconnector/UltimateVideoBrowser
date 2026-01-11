@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Helpers;
@@ -137,6 +139,17 @@ public partial class SettingsViewModel : ObservableObject
     public IReadOnlyList<SortOption> SortOptions { get; }
     public string ErrorLogPath => ErrorLog.LogPath;
     public string ScanLogPath => ScanLog.LogPath;
+    public bool IsScanLogVisible
+    {
+        get
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+    }
 
     partial void OnSelectedThemeChanged(ThemeOption? value)
     {
@@ -700,6 +713,42 @@ public partial class SettingsViewModel : ObservableObject
                 AppResources.ScanLogTitle,
                 AppResources.ScanLogClearedMessage,
                 AppResources.OkButton));
+    }
+
+    [RelayCommand]
+    private async Task OpenScanLogFolderAsync()
+    {
+        var folder = Path.GetDirectoryName(ScanLog.LogPath);
+        if (string.IsNullOrWhiteSpace(folder))
+            return;
+
+        try
+        {
+#if WINDOWS
+            Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folder}\"")
+            {
+                UseShellExecute = true
+            });
+#else
+            var uri = new Uri($"file://{folder}");
+            await Launcher.OpenAsync(uri);
+#endif
+        }
+        catch (NotImplementedException)
+        {
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenFolderFailedTitle,
+                AppResources.OpenFolderNotSupportedMessage,
+                AppResources.OkButton);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Open scan log folder failed: {ex}");
+            await dialogService.DisplayAlertAsync(
+                AppResources.OpenFolderFailedTitle,
+                AppResources.OpenFolderFailedMessage,
+                AppResources.OkButton);
+        }
     }
 
     private void ApplyPeopleModelsSnapshot(ModelFileService.ModelStatusSnapshot s)
