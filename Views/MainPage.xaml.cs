@@ -218,6 +218,12 @@ public partial class MainPage : ContentPage
         vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
         lastFirstVisibleIndex = e.FirstVisibleItemIndex;
         lastLastVisibleIndex = e.LastVisibleItemIndex;
+        if (BindingContext is MainPageBinding binding)
+        {
+            var headerHeight = HeaderContainer?.Height ?? binding.HeaderHeight;
+            var isHeaderVisible = e.VerticalOffset <= Math.Max(0, headerHeight - 1);
+            binding.SetHeaderVisibility(isHeaderVisible);
+        }
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
@@ -467,11 +473,19 @@ public partial class MainPage : ContentPage
         private double headerHeight;
         private Window? indexingWindow;
         private bool isFiltersDockExpanded = true;
+        private bool isHeaderVisible = true;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
         private bool isIndexRefreshPending;
         private bool isPreviewDockExpanded = true;
         private bool isTimelinePreviewVisible;
+
+        private int displayIndexedMediaCount;
+        private int displayLocationsCount;
+        private int displayTaggedPeopleCount;
+        private int? pendingIndexedMediaCount;
+        private int? pendingLocationsCount;
+        private int? pendingTaggedPeopleCount;
 
         private long lastLiveRefreshMs;
         private string timelinePreviewLabel = "";
@@ -534,6 +548,10 @@ public partial class MainPage : ContentPage
             {
                 // Best-effort only.
             }
+
+            displayIndexedMediaCount = vm.IndexedMediaCount;
+            displayLocationsCount = vm.LocationsCount;
+            displayTaggedPeopleCount = vm.TaggedPeopleCount;
 
             TogglePreviewDockExpandedCommand = new RelayCommand(() => IsPreviewDockExpanded = !IsPreviewDockExpanded);
             ToggleFiltersDockExpandedCommand = new RelayCommand(() => IsFiltersDockExpanded = !IsFiltersDockExpanded);
@@ -616,10 +634,12 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(MediaCount));
                         break;
                     case nameof(MainViewModel.IndexedMediaCount):
-                        OnPropertyChanged(nameof(IndexedMediaCount));
+                        UpdateDisplayCount(ref displayIndexedMediaCount, ref pendingIndexedMediaCount,
+                            vm.IndexedMediaCount, nameof(IndexedMediaCountDisplay));
                         break;
                     case nameof(MainViewModel.LocationsCount):
-                        OnPropertyChanged(nameof(LocationsCount));
+                        UpdateDisplayCount(ref displayLocationsCount, ref pendingLocationsCount,
+                            vm.LocationsCount, nameof(LocationsCountDisplay));
                         OnPropertyChanged(nameof(HasLocations));
                         break;
                     case nameof(MainViewModel.TimelineEntries):
@@ -633,7 +653,8 @@ public partial class MainPage : ContentPage
                         OnPropertyChanged(nameof(SourcesSummary));
                         break;
                     case nameof(MainViewModel.TaggedPeopleCount):
-                        OnPropertyChanged(nameof(TaggedPeopleCount));
+                        UpdateDisplayCount(ref displayTaggedPeopleCount, ref pendingTaggedPeopleCount,
+                            vm.TaggedPeopleCount, nameof(TaggedPeopleCountDisplay));
                         break;
                     case nameof(MainViewModel.MarkedCount):
                         OnPropertyChanged(nameof(MarkedCount));
@@ -755,6 +776,58 @@ public partial class MainPage : ContentPage
 #if WINDOWS
             page.ClearMediaSelection();
 #endif
+        }
+
+        public void SetHeaderVisibility(bool isVisible)
+        {
+            if (isHeaderVisible == isVisible)
+                return;
+
+            isHeaderVisible = isVisible;
+            if (isHeaderVisible)
+                FlushPendingCounts();
+        }
+
+        private void FlushPendingCounts()
+        {
+            if (pendingIndexedMediaCount.HasValue)
+            {
+                displayIndexedMediaCount = pendingIndexedMediaCount.Value;
+                pendingIndexedMediaCount = null;
+                OnPropertyChanged(nameof(IndexedMediaCountDisplay));
+            }
+
+            if (pendingLocationsCount.HasValue)
+            {
+                displayLocationsCount = pendingLocationsCount.Value;
+                pendingLocationsCount = null;
+                OnPropertyChanged(nameof(LocationsCountDisplay));
+            }
+
+            if (pendingTaggedPeopleCount.HasValue)
+            {
+                displayTaggedPeopleCount = pendingTaggedPeopleCount.Value;
+                pendingTaggedPeopleCount = null;
+                OnPropertyChanged(nameof(TaggedPeopleCountDisplay));
+            }
+        }
+
+        private void UpdateDisplayCount(ref int displayValue, ref int? pendingValue, int value,
+            string propertyName)
+        {
+            if (isHeaderVisible)
+            {
+                if (displayValue == value)
+                    return;
+
+                displayValue = value;
+                pendingValue = null;
+                OnPropertyChanged(propertyName);
+            }
+            else
+            {
+                pendingValue = value;
+            }
         }
 
 
@@ -971,10 +1044,10 @@ public partial class MainPage : ContentPage
         public string IndexCurrentFile => vm.IndexCurrentFile;
         public bool HasMediaPermission => vm.HasMediaPermission;
         public int MediaCount => vm.MediaCount;
-        public int IndexedMediaCount => vm.IndexedMediaCount;
-        public int LocationsCount => vm.LocationsCount;
+        public int IndexedMediaCountDisplay => displayIndexedMediaCount;
+        public int LocationsCountDisplay => displayLocationsCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
-        public int TaggedPeopleCount => vm.TaggedPeopleCount;
+        public int TaggedPeopleCountDisplay => displayTaggedPeopleCount;
         public string SourcesSummary => vm.SourcesSummary;
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
