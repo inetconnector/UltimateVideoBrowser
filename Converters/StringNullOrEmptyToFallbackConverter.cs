@@ -1,5 +1,4 @@
 using System.Globalization;
-
 #if ANDROID && !WINDOWS
 using Uri = Android.Net.Uri;
 #endif

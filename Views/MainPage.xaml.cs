@@ -365,9 +365,9 @@ public partial class MainPage : ContentPage
         private double headerHeight;
         private Window? indexingWindow;
         private bool isFiltersDockExpanded = true;
-        private bool isIndexRefreshPending;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
+        private bool isIndexRefreshPending;
         private bool isPreviewDockExpanded = true;
         private bool isTimelinePreviewVisible;
 

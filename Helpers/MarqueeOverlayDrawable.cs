@@ -1,5 +1,3 @@
-using Microsoft.Maui.Graphics;
-
 namespace UltimateVideoBrowser.Helpers;
 
 /// <summary>

@@ -10,6 +10,7 @@ using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
 #if ANDROID && !WINDOWS
 using Uri = Android.Net.Uri;
 #endif
+
 #if WINDOWS
 using Windows.Storage;
 using Windows.Storage.AccessCache;
@@ -219,7 +220,6 @@ public sealed class FaceThumbnailService
 
 #if ANDROID && !WINDOWS
         if (mediaPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-        {
             try
             {
                 var resolver = Platform.AppContext?.ContentResolver;
@@ -233,7 +233,6 @@ public sealed class FaceThumbnailService
             {
                 return null;
             }
-        }
 #endif
 
 #if WINDOWS
@@ -253,7 +252,6 @@ public sealed class FaceThumbnailService
         var h = embedding.H;
 
         if (embedding.ImageWidth > 0 && embedding.ImageHeight > 0)
-        {
             if (x <= 1 && y <= 1 && w <= 1 && h <= 1)
             {
                 x *= embedding.ImageWidth;
@@ -261,7 +259,6 @@ public sealed class FaceThumbnailService
                 w *= embedding.ImageWidth;
                 h *= embedding.ImageHeight;
             }
-        }
 
         x = MathF.Max(0, x);
         y = MathF.Max(0, y);
@@ -290,7 +287,7 @@ public sealed class FaceThumbnailService
         // Prefer a square crop for avatar-style thumbnails.
         var side = MathF.Max(cw, ch);
         var centerX = px + cw / 2f;
-        var centerY = py + ch / 2f - (0.1f * h);
+        var centerY = py + ch / 2f - 0.1f * h;
 
         var left = MathF.Max(0, centerX - side / 2f);
         var top = MathF.Max(0, centerY - side / 2f);

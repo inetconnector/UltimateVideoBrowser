@@ -162,8 +162,10 @@ public static class AppResources
 
     public static string HighlightsPeopleTaggedLabel =>
         GetString(nameof(HighlightsPeopleTaggedLabel), "People tagged");
+
     public static string HighlightsLocationsLabel =>
         GetString(nameof(HighlightsLocationsLabel), "Places");
+
     public static string HighlightsLocationsHint =>
         GetString(nameof(HighlightsLocationsHint), "View where your photos were taken on the map.");
 
@@ -332,6 +334,7 @@ public static class AppResources
 
     public static string SettingsDuplicatesLabel =>
         GetString(nameof(SettingsDuplicatesLabel), "Hide duplicate files (keep oldest)");
+
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
     public static string SettingsIndexingStatusLabel => GetString(nameof(SettingsIndexingStatusLabel), "Status");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");

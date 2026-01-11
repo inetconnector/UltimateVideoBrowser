@@ -32,7 +32,8 @@ public sealed class DialogService : IDialogService
         return page == null
             ? Task.FromResult<string?>(null)
             : MainThread.InvokeOnMainThreadAsync(() =>
-                page.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue));
+                page.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard,
+                    initialValue));
     }
 
     public Task<string?> DisplayActionSheetAsync(

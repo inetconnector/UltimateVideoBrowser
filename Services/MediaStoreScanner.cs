@@ -14,7 +14,6 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
-using FileAttributes = System.IO.FileAttributes;
 using IOPath = System.IO.Path;
 #if !ANDROID || WINDOWS
 using SixLabors.ImageSharp;
@@ -191,7 +190,7 @@ public sealed class MediaStoreScanner
         if (string.IsNullOrWhiteSpace(path))
             return;
 
-        ScanLog.LogScan(path, name, source, result, (ModelMediaType)mediaType);
+        ScanLog.LogScan(path, name, source, result, mediaType);
     }
 
     private static ModelMediaType GuessMediaType(string? path, string? name, ExtensionLookup extensions)
@@ -714,7 +713,8 @@ public sealed class MediaStoreScanner
                     continue;
                 }
 
-                var mediaType = ResolveMediaTypeFromPath(path, file.Name, indexedTypes, extensions, sizeBytes: sizeBytes);
+                var mediaType =
+ ResolveMediaTypeFromPath(path, file.Name, indexedTypes, extensions, sizeBytes: sizeBytes);
                 if (mediaType == ModelMediaType.None)
                 {
                     LogScanEntry(path, file.Name, "Windows.StorageFolder", "Skipped: media type filtered",
@@ -1081,7 +1081,8 @@ public sealed class MediaStoreScanner
                 yield return item;
     }
 
-    private static IEnumerable<MediaItem> ScanMediaStoreVideos(string? sourceId, IReadOnlySet<IndexedFileSignature>? knownFiles,
+    private static IEnumerable<MediaItem> ScanMediaStoreVideos(string? sourceId,
+        IReadOnlySet<IndexedFileSignature>? knownFiles,
         CancellationToken ct)
     {
         var ctx = Platform.AppContext;
