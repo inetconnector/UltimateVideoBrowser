@@ -254,6 +254,7 @@ public sealed class AppDb
         await EnsureColumnAsync("MediaItem", "MediaType", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "DurationMs", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "DateAddedSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "SizeBytes", "INTEGER").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "SourceId", "TEXT").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "Latitude", "REAL").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "Longitude", "REAL").ConfigureAwait(false);
