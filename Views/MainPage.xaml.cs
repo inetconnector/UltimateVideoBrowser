@@ -23,6 +23,8 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
+    private int lastTimelineFirstVisibleIndex = -1;
+    private int lastTimelineLastVisibleIndex = -1;
 
 #if WINDOWS
     private IDisposable? marqueeSelection;
@@ -43,6 +45,7 @@ public partial class MainPage : ContentPage
         BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData, proUpgradeService);
         HeaderContainer.BindingContext = BindingContext;
         BindingContextChanged += (_, _) => HeaderContainer.BindingContext = BindingContext;
+        TimelineSidebar.TimelineView.Scrolled += OnTimelineScrolled;
 
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
@@ -242,6 +245,12 @@ public partial class MainPage : ContentPage
             binding.SetTimelinePreview(entry);
     }
 
+    private void OnTimelineScrolled(object? sender, ItemsViewScrolledEventArgs e)
+    {
+        lastTimelineFirstVisibleIndex = e.FirstVisibleItemIndex;
+        lastTimelineLastVisibleIndex = e.LastVisibleItemIndex;
+    }
+
     private void OnMediaItemsSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
 #if WINDOWS
@@ -269,22 +278,52 @@ public partial class MainPage : ContentPage
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(false);
-    }
-
-    public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
-    {
-        ScrollMediaByPage(false);
+        ScrollTimelineByPage(false);
     }
 
     public void OnTimelineScrollDownClicked(object sender, EventArgs e)
     {
+        ScrollTimelineByPage(true);
+    }
+
+    public void OnTimelineScrollTopClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToTop();
+    }
+
+    public void OnTimelineScrollBottomClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToBottom();
+    }
+
+    public void OnMediaScrollUpClicked(object sender, EventArgs e)
+    {
+        ScrollMediaByPage(false);
+    }
+
+    public void OnMediaScrollUpClicked(object sender, TappedEventArgs e)
+    {
+        ScrollMediaByPage(false);
+    }
+
+    public void OnMediaScrollDownClicked(object sender, EventArgs e)
+    {
         ScrollMediaByPage(true);
     }
 
-    public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
+    public void OnMediaScrollDownClicked(object sender, TappedEventArgs e)
     {
         ScrollMediaByPage(true);
+    }
+
+    public void OnMediaScrollTopClicked(object sender, EventArgs e)
+    {
+        ScrollMediaToTop();
+    }
+
+    public void OnMediaScrollBottomClicked(object sender, EventArgs e)
+    {
+        ScrollMediaToBottom();
     }
 
     public void OnSettingsClicked(object sender, EventArgs e)
@@ -317,9 +356,59 @@ public partial class MainPage : ContentPage
         MediaItemsView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
     }
 
+    private void ScrollMediaToTop()
+    {
+        if (vm.MediaItems.Count == 0)
+            return;
+
+        MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollMediaToBottom()
+    {
+        if (vm.MediaItems.Count == 0)
+            return;
+
+        MediaItemsView.ScrollTo(vm.MediaItems.Count - 1, position: ScrollToPosition.End, animate: true);
+    }
+
     private void ScrollToHeader()
     {
         MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineByPage(bool isDown)
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var pageSize = lastTimelineFirstVisibleIndex >= 0 && lastTimelineLastVisibleIndex >= lastTimelineFirstVisibleIndex
+            ? Math.Max(1, lastTimelineLastVisibleIndex - lastTimelineFirstVisibleIndex + 1)
+            : Math.Min(8, vm.TimelineEntries.Count);
+
+        var targetIndex = isDown
+            ? Math.Min(vm.TimelineEntries.Count - 1,
+                lastTimelineLastVisibleIndex >= 0 ? lastTimelineLastVisibleIndex + 1 : pageSize)
+            : Math.Max(0, lastTimelineFirstVisibleIndex >= 0 ? lastTimelineFirstVisibleIndex - pageSize : 0);
+
+        var target = vm.TimelineEntries[targetIndex];
+        TimelineSidebar.TimelineView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineToTop()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        TimelineSidebar.TimelineView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineToBottom()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        TimelineSidebar.TimelineView.ScrollTo(vm.TimelineEntries.Count - 1, position: ScrollToPosition.End, animate: true);
     }
 
     private void TryHookHeaderSize()
