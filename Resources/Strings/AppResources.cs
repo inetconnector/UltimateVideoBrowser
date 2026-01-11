@@ -163,6 +163,12 @@ public static class AppResources
     public static string HighlightsPeopleTaggedLabel =>
         GetString(nameof(HighlightsPeopleTaggedLabel), "People tagged");
 
+    public static string HighlightsLocationsLabel =>
+        GetString(nameof(HighlightsLocationsLabel), "Places");
+
+    public static string HighlightsLocationsHint =>
+        GetString(nameof(HighlightsLocationsHint), "View where your photos were taken on the map.");
+
     public static string HighlightsTipText =>
         GetString(nameof(HighlightsTipText),
             "Use search + filters, then reindex after adding new folders for the best results.");
@@ -321,6 +327,14 @@ public static class AppResources
     public static string SettingsDateFilterLabel => GetString(nameof(SettingsDateFilterLabel), "Enable date filter");
     public static string SettingsDateFromLabel => GetString(nameof(SettingsDateFromLabel), "From");
     public static string SettingsDateToLabel => GetString(nameof(SettingsDateToLabel), "To");
+    public static string SettingsDuplicatesTitle => GetString(nameof(SettingsDuplicatesTitle), "Duplicates");
+
+    public static string SettingsDuplicatesHint =>
+        GetString(nameof(SettingsDuplicatesHint), "Albums always show all items.");
+
+    public static string SettingsDuplicatesLabel =>
+        GetString(nameof(SettingsDuplicatesLabel), "Hide duplicate files (keep oldest)");
+
     public static string SettingsIndexingTitle => GetString(nameof(SettingsIndexingTitle), "Indexing");
     public static string SettingsIndexingStatusLabel => GetString(nameof(SettingsIndexingStatusLabel), "Status");
     public static string SettingsReindexLabel => GetString(nameof(SettingsReindexLabel), "Re-index on next launch");
@@ -530,6 +544,9 @@ public static class AppResources
     public static string SettingsPeopleModelsStatusDownloading =>
         GetString(nameof(SettingsPeopleModelsStatusDownloading), "Downloading...");
 
+    public static string SettingsPeopleModelsDownloadButton =>
+        GetString(nameof(SettingsPeopleModelsDownloadButton), "Download models");
+
     public static string TagPeopleAction =>
         GetString(nameof(TagPeopleAction), "Tag people");
 
@@ -693,6 +710,11 @@ public static class AppResources
 
     public static string RenameConfirmMessage =>
         GetString(nameof(RenameConfirmMessage), "Rename \"{0}\" to \"{1}\"?");
+
+    public static string LegalSectionTitle => GetString(nameof(LegalSectionTitle), "Legal");
+
+    public static string LegalSectionHint =>
+        GetString(nameof(LegalSectionHint), "Imprint, privacy policy, terms, and withdrawal information.");
 
     public static string LegalImprintTitle => GetString(nameof(LegalImprintTitle), "Imprint");
     public static string LegalPrivacyTitle => GetString(nameof(LegalPrivacyTitle), "Privacy policy");

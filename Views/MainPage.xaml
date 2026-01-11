@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              xmlns:models="clr-namespace:UltimateVideoBrowser.Models;assembly=UltimateVideoBrowser"
-             xmlns:helpers="clr-namespace:UltimateVideoBrowser.Helpers;assembly=UltimateVideoBrowser"
              xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
              xmlns:behaviors="clr-namespace:UltimateVideoBrowser.Behaviors"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -113,6 +112,7 @@
                             RemainingItemsThreshold="12"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
                             VerticalScrollBarVisibility="Always"
+                            Margin="0,0,16,0"
                             Scrolled="OnMediaItemsScrolled"
                             VerticalOptions="FillAndExpand"
                             HorizontalOptions="FillAndExpand"
@@ -257,230 +257,233 @@
                         <!-- Default fallback (no swipe) -->
                         <On Platform="Default">
                             <DataTemplate x:DataType="models:MediaItem">
-        <Frame BackgroundColor="{DynamicResource Surface}"
-               CornerRadius="16"
-               Margin="8"
-               Padding="0"
-               BorderColor="{DynamicResource BorderSubtle}"
-               MinimumWidthRequest="240"
-               MinimumHeightRequest="220">
-            <Frame.Triggers>
-                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                    <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                    <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                </DataTrigger>
-            </Frame.Triggers>
+                                <Frame BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Margin="8"
+                                       Padding="0"
+                                       BorderColor="{DynamicResource BorderSubtle}"
+                                       MinimumWidthRequest="240"
+                                       MinimumHeightRequest="220">
+                                    <Frame.Triggers>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                            <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                        </DataTrigger>
+                                    </Frame.Triggers>
 
-            <Grid RowDefinitions="170,Auto" Padding="10">
-                <Grid>
-                    <components:MediaItemPreviewView HeightRequest="170" />
+                                    <Grid RowDefinitions="170,Auto" Padding="10">
+                                        <Grid>
+                                            <components:MediaItemPreviewView HeightRequest="170" />
 
-                    <!-- Keep just a tiny duration badge; all actions are handled via menus/commands elsewhere. -->
-                    <Frame BackgroundColor="{DynamicResource Surface2}"
-                           BorderColor="{DynamicResource BorderSubtle}"
-                           CornerRadius="10"
-                           Padding="8,4"
-                           Margin="8"
-                           HorizontalOptions="Start"
-                           VerticalOptions="Start"
-                           HasShadow="False"
-                           IsVisible="{Binding HasDuration}">
-                        <HorizontalStackLayout Spacing="6">
-                            <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                            <Label Text="{Binding DurationText}"
-                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                   FontSize="11" />
-                        </HorizontalStackLayout>
-                    </Frame>
-                </Grid>
+                                            <!-- Keep just a tiny duration badge; all actions are handled via menus/commands elsewhere. -->
+                                            <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                   BorderColor="{DynamicResource BorderSubtle}"
+                                                   CornerRadius="10"
+                                                   Padding="8,4"
+                                                   Margin="8"
+                                                   HorizontalOptions="Start"
+                                                   VerticalOptions="Start"
+                                                   HasShadow="False"
+                                                   IsVisible="{Binding HasDuration}">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                    <Label Text="{Binding DurationText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="11" />
+                                                </HorizontalStackLayout>
+                                            </Frame>
+                                        </Grid>
 
-                <VerticalStackLayout Grid.Row="1"
-                                     Spacing="2"
-                                     Margin="0,8,0,0">
-                    <Label Text="{Binding Name}"
-                           TextColor="{DynamicResource OnSurface}"
-                           FontSize="12"
-                           LineBreakMode="TailTruncation"
-                           MaxLines="1" />
-                    <Label Text="{Binding DateAddedText}"
-                           TextColor="{DynamicResource OnSurfaceMuted}"
-                           FontSize="10"
-                           LineBreakMode="TailTruncation"
-                           MaxLines="1"
-                           IsVisible="{Binding HasDateAdded}" />
-                </VerticalStackLayout>
-            </Grid>
+                                        <VerticalStackLayout Grid.Row="1"
+                                                             Spacing="2"
+                                                             Margin="0,8,0,0">
+                                            <Label Text="{Binding Name}"
+                                                   TextColor="{DynamicResource OnSurface}"
+                                                   FontSize="12"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="1" />
+                                            <Label Text="{Binding DateAddedText}"
+                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                   FontSize="10"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="1"
+                                                   IsVisible="{Binding HasDateAdded}" />
+                                        </VerticalStackLayout>
+                                    </Grid>
 
-            <Frame.GestureRecognizers>
-                <TapGestureRecognizer
-                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                    CommandParameter="{Binding .}" />
-            </Frame.GestureRecognizers>
-        </Frame>
-    </DataTemplate>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+                            </DataTemplate>
                         </On>
 
                         <!-- Android: swipe -> Share -->
                         <On Platform="Android">
                             <DataTemplate x:DataType="models:MediaItem">
-        <SwipeView>
-            <SwipeView.RightItems>
-                <SwipeItems Mode="Reveal">
-                    <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
-                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
-                               CommandParameter="{Binding .}" />
-                </SwipeItems>
-            </SwipeView.RightItems>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
 
-            <Frame BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="16"
-                   Margin="8"
-                   Padding="0"
-                   BorderColor="{DynamicResource BorderSubtle}"
-                   MinimumWidthRequest="240"
-                   MinimumHeightRequest="220">
-                <Frame.Triggers>
-                    <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                        <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                    </DataTrigger>
-                </Frame.Triggers>
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="240"
+                                           MinimumHeightRequest="220">
+                                        <Frame.Triggers>
+                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                            </DataTrigger>
+                                        </Frame.Triggers>
 
-                <!-- Long press opens the action menu; tile stays clean. -->
-                <Frame.Behaviors>
-                    <toolkit:TouchBehavior
-                        LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
-                        LongPressCommandParameter="{Binding .}" />
-                </Frame.Behaviors>
+                                        <!-- Long press opens the action menu; tile stays clean. -->
+                                        <Frame.Behaviors>
+                                            <toolkit:TouchBehavior
+                                                LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
+                                                LongPressCommandParameter="{Binding .}" />
+                                        </Frame.Behaviors>
 
-                <Grid RowDefinitions="170,Auto" Padding="10">
-                    <Grid>
-                        <components:MediaItemPreviewView HeightRequest="170" />
-                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                               BorderColor="{DynamicResource BorderSubtle}"
-                               CornerRadius="10"
-                               Padding="8,4"
-                               Margin="8"
-                               HorizontalOptions="Start"
-                               VerticalOptions="Start"
-                               HasShadow="False"
-                               IsVisible="{Binding HasDuration}">
-                            <HorizontalStackLayout Spacing="6">
-                                <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                                <Label Text="{Binding DurationText}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       FontSize="11" />
-                            </HorizontalStackLayout>
-                        </Frame>
-                    </Grid>
+                                        <Grid RowDefinitions="170,Auto" Padding="10">
+                                            <Grid>
+                                                <components:MediaItemPreviewView HeightRequest="170" />
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="10"
+                                                       Padding="8,4"
+                                                       Margin="8"
+                                                       HorizontalOptions="Start"
+                                                       VerticalOptions="Start"
+                                                       HasShadow="False"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </Grid>
 
-                    <VerticalStackLayout Grid.Row="1"
-                                         Spacing="2"
-                                         Margin="0,8,0,0">
-                        <Label Text="{Binding Name}"
-                               TextColor="{DynamicResource OnSurface}"
-                               FontSize="12"
-                               LineBreakMode="TailTruncation"
-                               MaxLines="1" />
-                        <Label Text="{Binding DateAddedText}"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               FontSize="10"
-                               LineBreakMode="TailTruncation"
-                               MaxLines="1"
-                               IsVisible="{Binding HasDateAdded}" />
-                    </VerticalStackLayout>
-                </Grid>
+                                            <VerticalStackLayout Grid.Row="1"
+                                                                 Spacing="2"
+                                                                 Margin="0,8,0,0">
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1" />
+                                                <Label Text="{Binding DateAddedText}"
+                                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                                       FontSize="10"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1"
+                                                       IsVisible="{Binding HasDateAdded}" />
+                                            </VerticalStackLayout>
+                                        </Grid>
 
-                <Frame.GestureRecognizers>
-                    <TapGestureRecognizer
-                        NumberOfTapsRequired="2"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                        CommandParameter="{Binding .}" />
-                </Frame.GestureRecognizers>
-            </Frame>
-        </SwipeView>
-    </DataTemplate>
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                NumberOfTapsRequired="2"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
                         </On>
 
                         <!-- WinUI: swipe -> Save As -->
                         <On Platform="WinUI">
                             <DataTemplate x:DataType="models:MediaItem">
-        <SwipeView>
-            <SwipeView.RightItems>
-                <SwipeItems Mode="Reveal">
-                    <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
-                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
-                               CommandParameter="{Binding .}" />
-                </SwipeItems>
-            </SwipeView.RightItems>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
 
-            <Frame BackgroundColor="{DynamicResource Surface}"
-                   CornerRadius="16"
-                   Margin="8"
-                   Padding="0"
-                   BorderColor="{DynamicResource BorderSubtle}"
-                   MinimumWidthRequest="240"
-                   MinimumHeightRequest="220">
-                <Frame.Triggers>
-                    <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                        <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                        <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                    </DataTrigger>
-                </Frame.Triggers>
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="8"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="240"
+                                           MinimumHeightRequest="220">
+                                        <Frame.Triggers>
+                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                            </DataTrigger>
+                                        </Frame.Triggers>
 
-                <!-- WinUI: right-click context menu (Explorer-style). Keeps tiles clean. -->
-                <Frame.Behaviors>
-                    <behaviors:MediaItemContextMenuBehavior HostCollectionView="{x:Reference MediaItemsView}" />
-                </Frame.Behaviors>
+                                        <!-- WinUI: right-click context menu (Explorer-style). Keeps tiles clean. -->
+                                        <Frame.Behaviors>
+                                            <behaviors:MediaItemContextMenuBehavior
+                                                HostCollectionView="{x:Reference MediaItemsView}" />
+                                        </Frame.Behaviors>
 
-                <Grid RowDefinitions="170,Auto" Padding="10">
-                    <Grid>
-                        <components:MediaItemPreviewView HeightRequest="170" />
-                        <Frame BackgroundColor="{DynamicResource Surface2}"
-                               BorderColor="{DynamicResource BorderSubtle}"
-                               CornerRadius="10"
-                               Padding="8,4"
-                               Margin="8"
-                               HorizontalOptions="Start"
-                               VerticalOptions="Start"
-                               HasShadow="False"
-                               IsVisible="{Binding HasDuration}">
-                            <HorizontalStackLayout Spacing="6">
-                                <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                                <Label Text="{Binding DurationText}"
-                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                       FontSize="11" />
-                            </HorizontalStackLayout>
-                        </Frame>
-                    </Grid>
+                                        <Grid RowDefinitions="170,Auto" Padding="10">
+                                            <Grid>
+                                                <components:MediaItemPreviewView HeightRequest="170" />
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="10"
+                                                       Padding="8,4"
+                                                       Margin="8"
+                                                       HorizontalOptions="Start"
+                                                       VerticalOptions="Start"
+                                                       HasShadow="False"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </Grid>
 
-                    <VerticalStackLayout Grid.Row="1"
-                                         Spacing="2"
-                                         Margin="0,8,0,0">
-                        <Label Text="{Binding Name}"
-                               TextColor="{DynamicResource OnSurface}"
-                               FontSize="12"
-                               LineBreakMode="TailTruncation"
-                               MaxLines="1" />
-                        <Label Text="{Binding DateAddedText}"
-                               TextColor="{DynamicResource OnSurfaceMuted}"
-                               FontSize="10"
-                               LineBreakMode="TailTruncation"
-                               MaxLines="1"
-                               IsVisible="{Binding HasDateAdded}" />
-                    </VerticalStackLayout>
-                </Grid>
+                                            <VerticalStackLayout Grid.Row="1"
+                                                                 Spacing="2"
+                                                                 Margin="0,8,0,0">
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1" />
+                                                <Label Text="{Binding DateAddedText}"
+                                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                                       FontSize="10"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1"
+                                                       IsVisible="{Binding HasDateAdded}" />
+                                            </VerticalStackLayout>
+                                        </Grid>
 
-                <!-- WinUI: single click selects (CollectionView selection); double click opens. -->
-                <Frame.GestureRecognizers>
-                    <TapGestureRecognizer
-                        NumberOfTapsRequired="2"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                        CommandParameter="{Binding .}" />
-                </Frame.GestureRecognizers>
-            </Frame>
-        </SwipeView>
-    </DataTemplate>
+                                        <!-- WinUI: single click selects (CollectionView selection); double click opens. -->
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                NumberOfTapsRequired="2"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
                         </On>
 
                     </OnPlatform>

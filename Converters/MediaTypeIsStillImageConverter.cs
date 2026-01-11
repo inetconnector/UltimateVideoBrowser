@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using UltimateVideoBrowser.Models;
 
@@ -15,5 +14,7 @@ public sealed class MediaTypeIsStillImageConverter : IValueConverter
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+    {
+        throw new NotSupportedException();
+    }
 }

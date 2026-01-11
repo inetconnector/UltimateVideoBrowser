@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
+             x:Class="UltimateVideoBrowser.Views.Components.LocationsTaggedHighlightView">
+    <Frame Style="{StaticResource CardFrameStyle}"
+           IsVisible="{Binding ShowLocationsHighlight}">
+        <VerticalStackLayout Spacing="6">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                <Frame Style="{StaticResource IconBadgeStyle}">
+                    <Image Source="icon_location.svg"
+                           HeightRequest="18"
+                           WidthRequest="18"
+                           VerticalOptions="Center" />
+                </Frame>
+                <Label Grid.Column="1"
+                       Text="{x:Static strings:AppResources.HighlightsLocationsLabel}"
+                       FontSize="12"
+                       TextColor="{DynamicResource OnSurfaceMuted}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="2"
+                       Text="{Binding LocationsCount}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource OnSurface}"
+                       VerticalOptions="Center" />
+                <Button Grid.Column="3"
+                        Text="{x:Static strings:AppResources.MapButton}"
+                        ImageSource="icon_location.svg"
+                        Command="{Binding OpenMapCommand}"
+                        IsEnabled="{Binding HasLocations}"
+                        Style="{StaticResource OverlayButtonStyle}"
+                        Padding="12,6"
+                        VerticalOptions="Center" />
+            </Grid>
+
+            <Label Text="{x:Static strings:AppResources.HighlightsLocationsHint}"
+                   FontSize="11"
+                   TextColor="{DynamicResource OnSurfaceMuted}" />
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

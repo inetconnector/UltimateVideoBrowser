@@ -6,7 +6,7 @@
              xmlns:components="clr-namespace:UltimateVideoBrowser.Views.Components"
              x:Class="UltimateVideoBrowser.Views.Components.MainHighlightsView">
     <Grid Padding="20,0,20,16"
-          RowDefinitions="Auto,Auto,Auto"
+          RowDefinitions="Auto,Auto,Auto,Auto"
           RowSpacing="12">
         <Label Text="{x:Static strings:AppResources.HighlightsTitle}"
                FontAttributes="Bold"
@@ -70,5 +70,6 @@
         </Grid>
 
         <components:PeopleTaggedHighlightView Grid.Row="2" />
+        <components:LocationsTaggedHighlightView Grid.Row="3" />
     </Grid>
 </ContentView>

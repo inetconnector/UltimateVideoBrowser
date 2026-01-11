@@ -223,6 +223,6 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
 
     private sealed class PathRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
     }
 }

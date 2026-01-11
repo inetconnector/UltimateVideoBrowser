@@ -65,7 +65,6 @@ public sealed class BackupRestoreService : IBackupRestoreService
             CreateBackupZip(tempPath, dbSnapshot);
 
             if (!string.IsNullOrWhiteSpace(dbSnapshot))
-            {
                 try
                 {
                     File.Delete(dbSnapshot);
@@ -74,7 +73,6 @@ public sealed class BackupRestoreService : IBackupRestoreService
                 {
                     // Ignore snapshot cleanup failures.
                 }
-            }
 
 #if WINDOWS
             var destination = await PickSaveLocationAsync().ConfigureAwait(false);

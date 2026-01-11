@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -23,7 +19,9 @@ public sealed class ImageEditService
     private const int JpegQuality = 92;
 
     public Task<bool> TryApplyAsync(string path, ImageEditOperation operation, CancellationToken ct)
-        => Task.Run(() => TryApply(path, operation, ct), ct);
+    {
+        return Task.Run(() => TryApply(path, operation, ct), ct);
+    }
 
     private static bool TryApply(string path, ImageEditOperation operation, CancellationToken ct)
     {
@@ -81,7 +79,13 @@ public sealed class ImageEditService
             }
             finally
             {
-                try { if (File.Exists(tmpPath)) File.Delete(tmpPath); } catch { }
+                try
+                {
+                    if (File.Exists(tmpPath)) File.Delete(tmpPath);
+                }
+                catch
+                {
+                }
             }
         }
         catch (OperationCanceledException)

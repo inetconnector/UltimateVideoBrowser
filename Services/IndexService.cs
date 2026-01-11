@@ -26,16 +26,6 @@ public sealed class IndexService
         this.videoDurationService = videoDurationService;
     }
 
-    private sealed class WorkCounters
-    {
-        public int ThumbsQueued;
-        public int ThumbsDone;
-        public int LocationsQueued;
-        public int LocationsDone;
-        public int DurationsQueued;
-        public int DurationsDone;
-    }
-
     public async Task<int> IndexSourcesAsync(
         IEnumerable<MediaSource> sources,
         MediaType indexedTypes,
@@ -59,6 +49,8 @@ public sealed class IndexService
             var sourceList = (sources ?? Enumerable.Empty<MediaSource>())
                 .Where(s => s != null)
                 .ToList();
+
+            var knownFiles = await LoadKnownFileSignaturesAsync(ct).ConfigureAwait(false);
 
             var inserted = 0;
             // Number of items consumed by the DB writer (used for progress).
@@ -142,36 +134,37 @@ public sealed class IndexService
                             try
                             {
                                 var rows = conn.Execute(
-                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SizeBytes, SourceId) VALUES(?, ?, ?, ?, ?, ?, ?);",
                                     item.Path,
                                     item.Name,
                                     (int)item.MediaType,
                                     item.DurationMs,
                                     item.DateAddedSeconds,
+                                    item.SizeBytes,
                                     item.SourceId);
 
                                 if (rows == 0)
-                                {
                                     // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
                                     conn.Execute(
-                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SizeBytes = CASE WHEN ? IS NOT NULL AND ? > 0 THEN ? ELSE SizeBytes END, SourceId = ? WHERE Path = ?;",
                                         item.Name,
                                         (int)item.MediaType,
                                         item.DurationMs,
                                         item.DurationMs,
                                         item.DateAddedSeconds,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
                                         item.SourceId,
                                         item.Path);
-                                }
                                 else
-                                {
                                     insertedLocal += rows;
-                                }
                             }
                             catch (Exception rowEx)
                             {
                                 // Do not fail the whole transaction because of a single bad row.
-                                ErrorLog.LogException(rowEx, "IndexService.UpsertBatchAsync", $"BatchUpsert Path={item.Path}");
+                                ErrorLog.LogException(rowEx, "IndexService.UpsertBatchAsync",
+                                    $"BatchUpsert Path={item.Path}");
                             }
                         }
                     }).ConfigureAwait(false);
@@ -190,33 +183,33 @@ public sealed class IndexService
                         try
                         {
                             var rows = await db.Db.ExecuteAsync(
-                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId) VALUES(?, ?, ?, ?, ?, ?);",
+                                    "INSERT OR IGNORE INTO MediaItem(Path, Name, MediaType, DurationMs, DateAddedSeconds, SizeBytes, SourceId) VALUES(?, ?, ?, ?, ?, ?, ?);",
                                     item.Path,
                                     item.Name,
                                     (int)item.MediaType,
                                     item.DurationMs,
                                     item.DateAddedSeconds,
+                                    item.SizeBytes,
                                     item.SourceId)
                                 .ConfigureAwait(false);
 
                             if (rows == 0)
-                            {
                                 // Keep existing ThumbnailPath/PeopleTagsSummary/etc. intact.
                                 await db.Db.ExecuteAsync(
-                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SourceId = ? WHERE Path = ?;",
+                                        "UPDATE MediaItem SET Name = ?, MediaType = ?, DurationMs = CASE WHEN ? > 0 THEN ? ELSE DurationMs END, DateAddedSeconds = ?, SizeBytes = CASE WHEN ? IS NOT NULL AND ? > 0 THEN ? ELSE SizeBytes END, SourceId = ? WHERE Path = ?;",
                                         item.Name,
                                         (int)item.MediaType,
                                         item.DurationMs,
                                         item.DurationMs,
                                         item.DateAddedSeconds,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
+                                        item.SizeBytes,
                                         item.SourceId,
                                         item.Path)
                                     .ConfigureAwait(false);
-                            }
                             else
-                            {
                                 insertedRows += rows;
-                            }
                         }
                         catch (Exception itemEx)
                         {
@@ -257,6 +250,7 @@ public sealed class IndexService
 
                 return insertedRows;
             }
+
             var scheduler = new ProgressScheduler(progress, 150);
             scheduler.Report(new IndexProgress(0, 0, 0, "", "", 0, 0, 0, 0, 0, 0), true);
 
@@ -318,27 +312,28 @@ public sealed class IndexService
                         Volatile.Read(ref inserted),
                         lastSourceName,
                         lastPath,
-                            Volatile.Read(ref counters.ThumbsQueued),
-                            Volatile.Read(ref counters.ThumbsDone),
-                            Volatile.Read(ref counters.LocationsQueued),
-                            Volatile.Read(ref counters.LocationsDone),
-                            Volatile.Read(ref counters.DurationsQueued),
-                            Volatile.Read(ref counters.DurationsDone)));
+                        Volatile.Read(ref counters.ThumbsQueued),
+                        Volatile.Read(ref counters.ThumbsDone),
+                        Volatile.Read(ref counters.LocationsQueued),
+                        Volatile.Read(ref counters.LocationsDone),
+                        Volatile.Read(ref counters.DurationsQueued),
+                        Volatile.Read(ref counters.DurationsDone)));
 
                     batch.Clear();
                 }
+
                 scheduler.Report(new IndexProgress(
                     Volatile.Read(ref processedOverall),
                     Volatile.Read(ref discoveredOverall),
                     Volatile.Read(ref inserted),
                     lastSourceName,
                     lastPath,
-                            Volatile.Read(ref counters.ThumbsQueued),
-                            Volatile.Read(ref counters.ThumbsDone),
-                            Volatile.Read(ref counters.LocationsQueued),
-                            Volatile.Read(ref counters.LocationsDone),
-                            Volatile.Read(ref counters.DurationsQueued),
-                            Volatile.Read(ref counters.DurationsDone)), true);
+                    Volatile.Read(ref counters.ThumbsQueued),
+                    Volatile.Read(ref counters.ThumbsDone),
+                    Volatile.Read(ref counters.LocationsQueued),
+                    Volatile.Read(ref counters.LocationsDone),
+                    Volatile.Read(ref counters.DurationsQueued),
+                    Volatile.Read(ref counters.DurationsDone)), true);
             }, ct);
 
             var maxProducers = Math.Clamp(Environment.ProcessorCount, 1, 8);
@@ -349,7 +344,8 @@ public sealed class IndexService
                 try
                 {
                     var sourceName = source.DisplayName ?? string.Empty;
-                    await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, ct).ConfigureAwait(false))
+                    await foreach (var v in scanner.StreamSourceAsync(source, indexedTypes, knownFiles, ct)
+                                       .ConfigureAwait(false))
                     {
                         ct.ThrowIfCancellationRequested();
 
@@ -462,6 +458,40 @@ public sealed class IndexService
         }
     }
 
+    private async Task<IReadOnlySet<IndexedFileSignature>> LoadKnownFileSignaturesAsync(CancellationToken ct)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        List<MediaItemSignatureRow> rows;
+        try
+        {
+            rows = await db.Db
+                .QueryAsync<MediaItemSignatureRow>("SELECT Path, SizeBytes FROM MediaItem;")
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "IndexService.LoadKnownFileSignaturesAsync");
+            return new HashSet<IndexedFileSignature>();
+        }
+
+        var known = new HashSet<IndexedFileSignature>();
+        foreach (var row in rows)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            if (string.IsNullOrWhiteSpace(row.Path))
+                continue;
+
+            if (!row.SizeBytes.HasValue || row.SizeBytes.Value <= 0)
+                continue;
+
+            known.Add(new IndexedFileSignature(row.Path, row.SizeBytes.Value));
+        }
+
+        return known;
+    }
+
     private async Task<int> CountAllAsync(List<MediaSource> sources, MediaType indexedTypes, CancellationToken ct)
     {
         if (sources.Count == 0)
@@ -496,7 +526,8 @@ public sealed class IndexService
         return total;
     }
 
-    private async Task ProcessThumbnailQueueAsync(ChannelReader<MediaItem> reader, WorkCounters counters, CancellationToken ct)
+    private async Task ProcessThumbnailQueueAsync(ChannelReader<MediaItem> reader, WorkCounters counters,
+        CancellationToken ct)
     {
         await foreach (var item in reader.ReadAllAsync(ct).ConfigureAwait(false))
         {
@@ -526,10 +557,8 @@ public sealed class IndexService
         // Avoid per-item await stalls when the channel is not full by trying to write synchronously first.
         // If the channel is full, wait until space is available (backpressure) without dropping items.
         while (!writer.TryWrite(item))
-        {
             if (!await writer.WaitToWriteAsync(ct).ConfigureAwait(false))
                 return;
-        }
     }
 
     private static async ValueTask QueueThumbnailAsync(
@@ -710,7 +739,7 @@ public sealed class IndexService
     }
 
     public Task<List<MediaItem>> QueryAsync(string search, SearchScope searchScope, string? sourceId, string sortKey,
-            DateTime? from, DateTime? to, MediaType mediaTypes)
+        DateTime? from, DateTime? to, MediaType mediaTypes)
     {
         return QueryAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes);
     }
@@ -756,6 +785,19 @@ public sealed class IndexService
         var sql =
             $"SELECT * FROM MediaItem WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND MediaType IN ({placeholders}) ORDER BY DateAddedSeconds DESC";
         return await db.Db.QueryAsync<MediaItem>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
+    }
+
+    public async Task<int> CountLocationsAsync(MediaType mediaTypes)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var allowed = BuildAllowedTypes(mediaTypes == MediaType.None ? MediaType.All : mediaTypes);
+        if (allowed.Count == 0)
+            return 0;
+
+        var placeholders = string.Join(",", allowed.Select(_ => "?"));
+        var sql =
+            $"SELECT COUNT(*) FROM MediaItem WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND MediaType IN ({placeholders})";
+        return await db.Db.ExecuteScalarAsync<int>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
     }
 
     public async Task RemoveAsync(IEnumerable<MediaItem> items)
@@ -859,7 +901,8 @@ public sealed class IndexService
         string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
-        var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset,
+        var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes,
+            offset,
             limit, false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
@@ -1076,6 +1119,22 @@ SELECT {selectColumns} FROM Ranked WHERE rn = 1 ORDER BY {orderBy}";
         }
 
         return (filters, args);
+    }
+
+    private sealed class WorkCounters
+    {
+        public int DurationsDone;
+        public int DurationsQueued;
+        public int LocationsDone;
+        public int LocationsQueued;
+        public int ThumbsDone;
+        public int ThumbsQueued;
+    }
+
+    private sealed class MediaItemSignatureRow
+    {
+        public string? Path { get; set; }
+        public long? SizeBytes { get; set; }
     }
 
     private sealed class ProgressScheduler

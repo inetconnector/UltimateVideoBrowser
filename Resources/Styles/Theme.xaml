@@ -121,7 +121,6 @@
     <Style x:Key="HeroFrameStyle" TargetType="Frame" BasedOn="{StaticResource CardFrameStyle}">
         <Setter Property="CornerRadius" Value="24" />
         <Setter Property="Padding" Value="20" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
         <Setter Property="Shadow">
             <Shadow Brush="{DynamicResource ShadowColor}"
                     Opacity="0.40"
@@ -245,7 +244,6 @@
     <Style x:Key="SettingsRowFrameStyle" TargetType="Frame" BasedOn="{StaticResource CardFrameStyle}">
         <Setter Property="Padding" Value="18,14" />
         <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
-        <Setter Property="BorderColor" Value="{DynamicResource BorderStrong}" />
     </Style>
 
 </ResourceDictionary>

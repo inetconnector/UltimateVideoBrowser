@@ -23,15 +23,18 @@ namespace UltimateVideoBrowser.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private const int PageSize = 60;
+    private const int ThumbUiFlushBatchSize = 160;
     private readonly AlbumService albumService;
     private readonly IDialogService dialogService;
     private readonly FaceScanQueueService faceScanQueueService;
     private readonly IFileExportService fileExportService;
+    private readonly ImageEditService imageEditService;
     private readonly object indexProgressLock = new();
     private readonly IndexService indexService;
 
     private readonly PropertyChangedEventHandler mediaMarkedHandler;
     private readonly ModelFileService modelFileService;
+    private readonly ConcurrentQueue<(MediaItem Item, string Path)> pendingThumbUiUpdates = new();
     private readonly PeopleRecognitionService peopleRecognitionService;
     private readonly PeopleTagService peopleTagService;
     private readonly PermissionService permissionService;
@@ -40,11 +43,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ISourceService sourceService;
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
-    private readonly ConcurrentQueue<(MediaItem Item, string Path)> pendingThumbUiUpdates = new();
-    private int pendingThumbUiFlushScheduled;
-    private const int ThumbUiFlushBatchSize = 160;
     private readonly ThumbnailService thumbnailService;
-    private readonly ImageEditService imageEditService;
     [ObservableProperty] private string activeAlbumId = "";
     [ObservableProperty] private string activeSourceId = "";
     [ObservableProperty] private List<AlbumListItem> albumTabs = new();
@@ -70,8 +69,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private double indexRatio;
     private int indexStartingCount;
     [ObservableProperty] private string indexStatus = "";
-    [ObservableProperty] private string indexWorkStatus = "";
     [ObservableProperty] private int indexTotal;
+    [ObservableProperty] private string indexWorkStatus = "";
     private bool isApplyingIndexProgress;
     private bool isApplyingSavedSettings;
     [ObservableProperty] private bool isDateFilterEnabled;
@@ -85,17 +84,19 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
     private bool isSyncingFilterOptions;
+    [ObservableProperty] private int locationsCount;
     [ObservableProperty] private int markedCount;
     [ObservableProperty] private int mediaCount;
 
     // Coalesce expensive derived-data rebuilds (timeline, tag summaries, etc.).
     private CancellationTokenSource? mediaDerivedCts;
-    private int mediaItemsOffset;
     private int mediaItemsFilteredCount;
+    private int mediaItemsOffset;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
     [ObservableProperty] private bool needsReindex;
     private IndexProgress? pendingIndexProgress;
+    private int pendingThumbUiFlushScheduled;
 
     // Best-effort background people scan after indexing so the People browser is populated automatically.
     private CancellationTokenSource? peopleAutoScanCts;
@@ -120,13 +121,6 @@ public partial class MainViewModel : ObservableObject
     // Visible range is reported by the view (Scrolled event) so thumbnail work can prioritize what's on screen.
     private int visibleFirstIndex;
     private int visibleLastIndex;
-
-    public bool HasIndexWorkStatus => !string.IsNullOrWhiteSpace(IndexWorkStatus);
-
-    partial void OnIndexWorkStatusChanged(string value)
-    {
-        OnPropertyChanged(nameof(HasIndexWorkStatus));
-    }
 
     public MainViewModel(
         ISourceService sourceService,
@@ -198,6 +192,9 @@ public partial class MainViewModel : ObservableObject
         settingsService.NeedsReindexChanged += HandleNeedsReindexChanged;
     }
 
+    public bool HasIndexWorkStatus => !string.IsNullOrWhiteSpace(IndexWorkStatus);
+    public bool HasLocations => LocationsCount > 0;
+
     internal AppSettingsService SettingsService { get; }
 
     public IReadOnlyList<SortOption> SortOptions { get; }
@@ -227,6 +224,16 @@ public partial class MainViewModel : ObservableObject
         IsIndexing ? IndexingState.Running :
         NeedsReindex ? IndexingState.NeedsReindex :
         IndexingState.Ready;
+
+    partial void OnIndexWorkStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(HasIndexWorkStatus));
+    }
+
+    partial void OnLocationsCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(HasLocations));
+    }
 
     public event EventHandler? ProUpgradeRequested;
 
@@ -301,6 +308,7 @@ public partial class MainViewModel : ObservableObject
 
         _ = RefreshAsync();
         _ = RefreshTaggedPeopleCountAsync();
+        _ = RefreshLocationsCountAsync();
 
         if (SettingsService.NeedsReindex)
             _ = RunIndexAsync();
@@ -321,6 +329,7 @@ public partial class MainViewModel : ObservableObject
         ReloadSettingsFromService();
         await RefreshAsync().ConfigureAwait(false);
         _ = RefreshTaggedPeopleCountAsync();
+        _ = RefreshLocationsCountAsync();
     }
 
     public async Task TryShowPeopleTaggingTrialHintAsync()
@@ -488,6 +497,9 @@ public partial class MainViewModel : ObservableObject
                     hasMoreMediaItems = result.items.Count < result.filteredCount;
                     isLoadingMoreMediaItems = false;
                 });
+
+                _ = RefreshTaggedPeopleCountAsync();
+                _ = RefreshLocationsCountAsync();
             }
             catch (Exception ex)
             {
@@ -1440,7 +1452,6 @@ public partial class MainViewModel : ObservableObject
     }
 
 
-
     private void EnqueueThumbnailUiUpdate(MediaItem item, string path)
     {
         if (item == null || string.IsNullOrWhiteSpace(path))
@@ -1481,20 +1492,19 @@ public partial class MainViewModel : ObservableObject
             }
 
             if (!pendingThumbUiUpdates.IsEmpty)
-            {
                 // Defer the next batch slightly so scrolling and input remain responsive.
                 _ = Task.Run(async () =>
                 {
                     await Task.Delay(33).ConfigureAwait(false);
                     ScheduleThumbnailUiFlush();
                 });
-            }
         }
         catch
         {
             // Best-effort: never crash UI because of thumbnail updates.
         }
     }
+
     private void StartThumbnailPipeline()
     {
         int currentVersion;
@@ -1681,6 +1691,25 @@ public partial class MainViewModel : ObservableObject
 
             var count = await peopleTagService.CountDistinctPeopleAsync().ConfigureAwait(false);
             MainThread.BeginInvokeOnMainThread(() => TaggedPeopleCount = count);
+        }
+        catch
+        {
+            // Keep browsing resilient if the DB is unavailable or not initialized yet.
+        }
+    }
+
+    private async Task RefreshLocationsCountAsync()
+    {
+        try
+        {
+            if (!IsLocationEnabled)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => LocationsCount = 0);
+                return;
+            }
+
+            var count = await indexService.CountLocationsAsync(MediaType.All).ConfigureAwait(false);
+            MainThread.BeginInvokeOnMainThread(() => LocationsCount = count);
         }
         catch
         {
@@ -1944,6 +1973,11 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshPeopleTagsAsync(MediaItems.ToList(), mediaItemsVersion);
         _ = RefreshTaggedPeopleCountAsync();
         RefreshPeopleModelsStatus();
+    }
+
+    partial void OnIsLocationEnabledChanged(bool value)
+    {
+        _ = RefreshLocationsCountAsync();
     }
 
     private void RefreshPeopleModelsStatus()
@@ -2277,6 +2311,58 @@ public partial class MainViewModel : ObservableObject
         return $"{datePart}-{baseName}";
     }
 
+    [RelayCommand]
+    public async Task RotateLeftAsync(MediaItem item)
+    {
+        await ApplyImageEditAsync(item, ImageEditOperation.RotateLeft).ConfigureAwait(false);
+    }
+
+    [RelayCommand]
+    public async Task RotateRightAsync(MediaItem item)
+    {
+        await ApplyImageEditAsync(item, ImageEditOperation.RotateRight).ConfigureAwait(false);
+    }
+
+    [RelayCommand]
+    public async Task MirrorAsync(MediaItem item)
+    {
+        await ApplyImageEditAsync(item, ImageEditOperation.MirrorHorizontal).ConfigureAwait(false);
+    }
+
+    private async Task ApplyImageEditAsync(MediaItem item, ImageEditOperation operation)
+    {
+        if (!AllowFileChanges)
+            return;
+
+        if (item == null || string.IsNullOrWhiteSpace(item.Path))
+            return;
+
+        if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
+            return;
+
+        try
+        {
+            IsRefreshing = true;
+
+            var ok = await imageEditService.TryApplyAsync(item.Path, operation, CancellationToken.None)
+                .ConfigureAwait(false);
+            if (!ok)
+                return;
+
+            // Force thumbnail refresh and update the UI binding immediately.
+            thumbnailService.DeleteThumbnailForPath(item.Path);
+            item.ThumbnailPath = null;
+
+            var thumb = await thumbnailService.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(thumb))
+                item.ThumbnailPath = thumb;
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
     public sealed partial class MediaTypeFilterOption : ObservableObject
     {
         [ObservableProperty] private bool isSelected;
@@ -2304,49 +2390,4 @@ public partial class MainViewModel : ObservableObject
         public SearchScope Scope { get; }
         public string Label { get; }
     }
-    [RelayCommand]
-    public async Task RotateLeftAsync(MediaItem item)
-        => await ApplyImageEditAsync(item, ImageEditOperation.RotateLeft).ConfigureAwait(false);
-
-    [RelayCommand]
-    public async Task RotateRightAsync(MediaItem item)
-        => await ApplyImageEditAsync(item, ImageEditOperation.RotateRight).ConfigureAwait(false);
-
-    [RelayCommand]
-    public async Task MirrorAsync(MediaItem item)
-        => await ApplyImageEditAsync(item, ImageEditOperation.MirrorHorizontal).ConfigureAwait(false);
-
-    private async Task ApplyImageEditAsync(MediaItem item, ImageEditOperation operation)
-    {
-        if (!AllowFileChanges)
-            return;
-
-        if (item == null || string.IsNullOrWhiteSpace(item.Path))
-            return;
-
-        if (item.MediaType is not (MediaType.Photos or MediaType.Graphics))
-            return;
-
-        try
-        {
-            IsRefreshing = true;
-
-            var ok = await imageEditService.TryApplyAsync(item.Path, operation, CancellationToken.None).ConfigureAwait(false);
-            if (!ok)
-                return;
-
-            // Force thumbnail refresh and update the UI binding immediately.
-            thumbnailService.DeleteThumbnailForPath(item.Path);
-            item.ThumbnailPath = null;
-
-            var thumb = await thumbnailService.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(thumb))
-                item.ThumbnailPath = thumb;
-        }
-        finally
-        {
-            IsRefreshing = false;
-        }
-    }
-
 }

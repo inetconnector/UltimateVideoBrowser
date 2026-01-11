@@ -1,4 +1,3 @@
-using System;
 using Window = Microsoft.Maui.Controls.Window;
 
 #if WINDOWS
@@ -7,7 +6,6 @@ using System.Runtime.InteropServices;
 
 #if ANDROID
 using Android.Views;
-using Microsoft.Maui.ApplicationModel;
 #endif
 
 #if MACCATALYST
@@ -17,8 +15,8 @@ using UIKit;
 namespace UltimateVideoBrowser.Helpers;
 
 /// <summary>
-/// Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window" /> to the foreground.
-/// This is intentionally resilient: failures must never crash the app.
+///     Best-effort helper to bring a MAUI <see cref="Microsoft.Maui.Controls.Window" /> to the foreground.
+///     This is intentionally resilient: failures must never crash the app.
 /// </summary>
 internal static class WindowFocusHelper
 {
@@ -123,10 +121,7 @@ internal static class WindowFocusHelper
         try
         {
             var activity = Platform.CurrentActivity;
-            activity?.RunOnUiThread(() =>
-            {
-                activity.Window?.AddFlags(WindowManagerFlags.TurnScreenOn);
-            });
+            activity?.RunOnUiThread(() => { activity.Window?.AddFlags(WindowManagerFlags.TurnScreenOn); });
         }
         catch
         {

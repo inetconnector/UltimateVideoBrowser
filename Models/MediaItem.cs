@@ -48,6 +48,7 @@ public class MediaItem : INotifyPropertyChanged
 
     public long DurationMs { get; set; }
     public long DateAddedSeconds { get; set; }
+    public long? SizeBytes { get; set; }
 
     [Ignore] public bool HasDateAdded => DateAddedSeconds > 0;
 
