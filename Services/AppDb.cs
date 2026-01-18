@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+using System.Threading;
 using SQLite;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
@@ -10,9 +11,11 @@ public sealed class AppDb
 {
     private readonly SemaphoreSlim initLock = new(1, 1);
     private bool isInitialized;
+    private static int sqliteInitialized;
 
     public AppDb()
     {
+        EnsureSqliteInitialized();
         DatabasePath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
         Db = new SQLiteAsyncConnection(DatabasePath);
     }
@@ -20,6 +23,14 @@ public sealed class AppDb
     public SQLiteAsyncConnection Db { get; private set; }
 
     public string DatabasePath { get; }
+
+    private static void EnsureSqliteInitialized()
+    {
+        if (Interlocked.Exchange(ref sqliteInitialized, 1) == 1)
+            return;
+
+        SQLitePCL.Batteries_V2.Init();
+    }
 
     public async Task EnsureInitializedAsync()
     {
