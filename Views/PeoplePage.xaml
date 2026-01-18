@@ -45,6 +45,7 @@
                         ItemsSource="{Binding People}"
                         SelectionMode="Single"
                         SelectionChanged="OnPersonSelected"
+                        VerticalScrollBarVisibility="Always"
                         ItemSizingStrategy="MeasureFirstItem"
                         ItemsUpdatingScrollMode="KeepScrollOffset"
                         x:Name="PeopleList">
