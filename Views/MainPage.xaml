@@ -92,8 +92,6 @@
                                                 TimelineScrollDownClicked="OnTimelineScrollDownClicked"
                                                 TimelineScrollTopClicked="OnTimelineScrollTopClicked"
                                                 TimelineScrollBottomClicked="OnTimelineScrollBottomClicked"
-                                                MediaScrollUpClicked="OnMediaScrollUpClicked"
-                                                MediaScrollDownClicked="OnMediaScrollDownClicked"
                                                 MediaScrollTopClicked="OnMediaScrollTopClicked"
                                                 MediaScrollBottomClicked="OnMediaScrollBottomClicked"
                                                 SettingsClicked="OnSettingsClicked"
