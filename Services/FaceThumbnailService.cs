@@ -57,7 +57,10 @@ public sealed class FaceThumbnailService
             return null;
 
         var path = GetFaceThumbnailPath(mediaPath, embedding.FaceIndex, size);
-        if (File.Exists(path))
+        var hasNormalizedBox = embedding.X <= 1f && embedding.Y <= 1f && embedding.W <= 1f && embedding.H <= 1f;
+        var isMissingImageSize = embedding.ImageWidth <= 0 || embedding.ImageHeight <= 0;
+        var shouldRegenerate = hasNormalizedBox && isMissingImageSize;
+        if (File.Exists(path) && !shouldRegenerate)
             return path;
 
         var stream = await TryOpenImageStreamAsync(mediaPath, ct).ConfigureAwait(false);
@@ -251,14 +254,16 @@ public sealed class FaceThumbnailService
         var w = embedding.W;
         var h = embedding.H;
 
-        if (embedding.ImageWidth > 0 && embedding.ImageHeight > 0)
-            if (x <= 1 && y <= 1 && w <= 1 && h <= 1)
-            {
-                x *= embedding.ImageWidth;
-                y *= embedding.ImageHeight;
-                w *= embedding.ImageWidth;
-                h *= embedding.ImageHeight;
-            }
+        if (x <= 1 && y <= 1 && w <= 1 && h <= 1)
+        {
+            var scaleW = embedding.ImageWidth > 0 ? embedding.ImageWidth : imageWidth;
+            var scaleH = embedding.ImageHeight > 0 ? embedding.ImageHeight : imageHeight;
+
+            x *= scaleW;
+            y *= scaleH;
+            w *= scaleW;
+            h *= scaleH;
+        }
 
         x = MathF.Max(0, x);
         y = MathF.Max(0, y);
