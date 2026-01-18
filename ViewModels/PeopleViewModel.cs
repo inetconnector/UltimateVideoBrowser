@@ -63,27 +63,7 @@ public sealed partial class PeopleViewModel : ObservableObject
                         coverPath = null;
                 }
 
-                if (coverPath == null && p.CoverFace != null)
-                {
-                    try
-                    {
-                        var mediaItem = await peopleData
-                            .TryGetMediaItemAsync(p.CoverFace.MediaPath, ct)
-                            .ConfigureAwait(false);
-                        if (mediaItem != null)
-                        {
-                            coverPath = await thumbnails
-                                .EnsureThumbnailAsync(mediaItem, ct)
-                                .ConfigureAwait(false);
-                        }
-                    }
-                    catch
-                    {
-                        coverPath = null;
-                    }
-                }
-
-                if (coverPath == null && !string.IsNullOrWhiteSpace(p.CoverMediaPath) &&
+                if (coverPath == null && p.CoverFace == null && !string.IsNullOrWhiteSpace(p.CoverMediaPath) &&
                     p.CoverMediaType.HasValue)
                 {
                     try
