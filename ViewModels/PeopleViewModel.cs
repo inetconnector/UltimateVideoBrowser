@@ -10,6 +10,7 @@ public sealed partial class PeopleViewModel : ObservableObject
 {
     private readonly FaceThumbnailService faceThumbnails;
     private readonly PeopleDataService peopleData;
+    private readonly ThumbnailService thumbnails;
 
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private ObservableCollection<PersonListItemViewModel> people = new();
@@ -17,10 +18,12 @@ public sealed partial class PeopleViewModel : ObservableObject
     private CancellationTokenSource? searchCts;
     [ObservableProperty] private string searchText = string.Empty;
 
-    public PeopleViewModel(PeopleDataService peopleData, FaceThumbnailService faceThumbnails)
+    public PeopleViewModel(PeopleDataService peopleData, FaceThumbnailService faceThumbnails,
+        ThumbnailService thumbnails)
     {
         this.peopleData = peopleData;
         this.faceThumbnails = faceThumbnails;
+        this.thumbnails = thumbnails;
     }
 
     [RelayCommand]
@@ -58,6 +61,21 @@ public sealed partial class PeopleViewModel : ObservableObject
 
                     if (string.IsNullOrWhiteSpace(coverPath))
                         coverPath = null;
+                }
+
+                if (coverPath == null && !string.IsNullOrWhiteSpace(p.CoverMediaPath) &&
+                    p.CoverMediaType.HasValue)
+                {
+                    try
+                    {
+                        coverPath = await thumbnails
+                            .EnsureThumbnailAsync(p.CoverMediaPath, p.CoverMediaType.Value, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        coverPath = null;
+                    }
                 }
 
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
