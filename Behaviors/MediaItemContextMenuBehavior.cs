@@ -25,10 +25,10 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
 {
     public static readonly MauiControls.BindableProperty HostCollectionViewProperty =
         MauiControls.BindableProperty.Create(
-        nameof(HostCollectionView),
-        typeof(MauiControls.CollectionView),
-        typeof(MediaItemContextMenuBehavior),
-        default(MauiControls.CollectionView));
+            nameof(HostCollectionView),
+            typeof(MauiControls.CollectionView),
+            typeof(MediaItemContextMenuBehavior),
+            default(MauiControls.CollectionView));
 
     private MauiControls.Frame? attachedFrame;
     private FrameworkElement? nativeElement;
@@ -295,5 +295,24 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         }
     }
 }
+#else
+using Microsoft.Maui.Controls;
 
+namespace UltimateVideoBrowser.Behaviors;
+
+public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
+{
+    public static readonly BindableProperty HostCollectionViewProperty =
+        BindableProperty.Create(
+            nameof(HostCollectionView),
+            typeof(CollectionView),
+            typeof(MediaItemContextMenuBehavior),
+            default(CollectionView));
+
+    public CollectionView? HostCollectionView
+    {
+        get => (CollectionView?)GetValue(HostCollectionViewProperty);
+        set => SetValue(HostCollectionViewProperty, value);
+    }
+}
 #endif

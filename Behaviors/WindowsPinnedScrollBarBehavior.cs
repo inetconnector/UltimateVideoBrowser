@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using MauiItemsView = Microsoft.Maui.Controls.ItemsView;
 
 #if WINDOWS
 using Microsoft.UI.Xaml.Controls;
@@ -7,17 +8,17 @@ using Microsoft.UI.Xaml;
 
 namespace UltimateVideoBrowser.Behaviors;
 
-public class WindowsPinnedScrollBarBehavior : Behavior<ItemsView>
+public class WindowsPinnedScrollBarBehavior : Behavior<MauiItemsView>
 {
 #if WINDOWS
-    protected override void OnAttachedTo(ItemsView bindable)
+    protected override void OnAttachedTo(MauiItemsView bindable)
     {
         base.OnAttachedTo(bindable);
         bindable.HandlerChanged += OnHandlerChanged;
         TryApply(bindable);
     }
 
-    protected override void OnDetachingFrom(ItemsView bindable)
+    protected override void OnDetachingFrom(MauiItemsView bindable)
     {
         bindable.HandlerChanged -= OnHandlerChanged;
         base.OnDetachingFrom(bindable);
@@ -25,11 +26,11 @@ public class WindowsPinnedScrollBarBehavior : Behavior<ItemsView>
 
     private void OnHandlerChanged(object? sender, EventArgs e)
     {
-        if (sender is ItemsView itemsView)
+        if (sender is MauiItemsView itemsView)
             TryApply(itemsView);
     }
 
-    private static void TryApply(ItemsView itemsView)
+    private static void TryApply(MauiItemsView itemsView)
     {
         if (itemsView.Handler?.PlatformView is ListViewBase listView)
         {

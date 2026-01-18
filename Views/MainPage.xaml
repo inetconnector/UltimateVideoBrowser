@@ -167,7 +167,7 @@
                                               BackgroundColor="{DynamicResource Surface2}">
                                             <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                                                   ShouldAutoPlay="True"
-                                                                  ShowsPlaybackControls="True"
+                                                                  ShouldShowPlaybackControls="True"
                                                                   Aspect="AspectFit"
                                                                   IsVisible="{Binding ShowVideoPlayer}" />
                                             <Image Source="{Binding CurrentMediaSource}"
@@ -549,7 +549,7 @@
                        BorderColor="{DynamicResource BorderSubtle}">
                     <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                           ShouldAutoPlay="True"
-                                          ShowsPlaybackControls="True"
+                                          ShouldShowPlaybackControls="True"
                                           Aspect="AspectFit" />
                 </Frame>
                 <Label Grid.Row="1"
@@ -612,7 +612,7 @@
                                   BackgroundColor="{DynamicResource Surface2}">
                                 <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                                       ShouldAutoPlay="True"
-                                                      ShowsPlaybackControls="True"
+                                                      ShouldShowPlaybackControls="True"
                                                       Aspect="AspectFit"
                                                       IsVisible="{Binding ShowVideoPlayer}" />
                                 <Image Source="{Binding CurrentMediaSource}"
