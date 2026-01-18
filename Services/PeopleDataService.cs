@@ -346,6 +346,20 @@ public sealed class PeopleDataService
         return list;
     }
 
+    public async Task<MediaItem?> TryGetMediaItemAsync(string mediaPath, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath))
+            return null;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+
+        return await db.Db.Table<MediaItem>()
+            .Where(item => item.Path == mediaPath)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
+    }
+
     public Task RenamePersonAsync(string personId, string newName, CancellationToken ct)
     {
         return recognitionService.RenamePersonAsync(personId, newName, ct);
@@ -730,18 +744,18 @@ public sealed class PeopleDataService
 
     private sealed class PersonCountRow
     {
-        public string PersonId { get; } = string.Empty;
+        public string PersonId { get; set; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class TagCountRow
     {
-        public string PersonName { get; } = string.Empty;
+        public string PersonName { get; set; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class MediaPathRow
     {
-        public string MediaPath { get; } = string.Empty;
+        public string MediaPath { get; set; } = string.Empty;
     }
 }

@@ -1438,13 +1438,13 @@ public partial class MainPage : ContentPage
                 }
             }
 
-            var minTileWidth = 240;
-            var tilePadding = 20;
+            var minTileWidth = 210;
+            var tilePadding = 16;
             var targetTile = minTileWidth + tilePadding;
             if (mode == UiMode.Tv)
-                targetTile = 340;
+                targetTile = 320;
             else if (mode == UiMode.Tablet)
-                targetTile = 300;
+                targetTile = 280;
 
             var span = Math.Max(2, (int)(width / targetTile));
 
