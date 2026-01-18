@@ -322,26 +322,6 @@ public partial class MainPage : ContentPage
         ScrollTimelineToBottom();
     }
 
-    public void OnMediaScrollUpClicked(object sender, EventArgs e)
-    {
-        ScrollMediaByPage(false);
-    }
-
-    public void OnMediaScrollUpClicked(object sender, TappedEventArgs e)
-    {
-        ScrollMediaByPage(false);
-    }
-
-    public void OnMediaScrollDownClicked(object sender, EventArgs e)
-    {
-        ScrollMediaByPage(true);
-    }
-
-    public void OnMediaScrollDownClicked(object sender, TappedEventArgs e)
-    {
-        ScrollMediaByPage(true);
-    }
-
     public void OnMediaScrollTopClicked(object sender, EventArgs e)
     {
         ScrollMediaToTop();

@@ -9,8 +9,6 @@ public partial class MainTimelineSidebarView : ContentView
 
     public CollectionView TimelineView => TimelineCollection;
 
-    public event EventHandler? MediaScrollUpClicked;
-    public event EventHandler? MediaScrollDownClicked;
     public event EventHandler? MediaScrollTopClicked;
     public event EventHandler? MediaScrollBottomClicked;
     public event EventHandler? TimelineScrollUpClicked;
@@ -19,16 +17,6 @@ public partial class MainTimelineSidebarView : ContentView
     public event EventHandler? TimelineScrollBottomClicked;
     public event EventHandler? SettingsClicked;
     public event EventHandler<SelectionChangedEventArgs>? TimelineSelectionChanged;
-
-    private void OnMediaScrollUpClicked(object sender, EventArgs e)
-    {
-        MediaScrollUpClicked?.Invoke(this, e);
-    }
-
-    private void OnMediaScrollDownClicked(object sender, EventArgs e)
-    {
-        MediaScrollDownClicked?.Invoke(this, e);
-    }
 
     private void OnMediaScrollTopClicked(object sender, EventArgs e)
     {
