@@ -39,7 +39,7 @@ public class WindowsPinnedScrollBarBehavior : Behavior<MauiItemsView>
             ScrollViewer.SetVerticalScrollBarVisibility(listView, WinScrollBarVisibility.Visible);
             ScrollViewer.SetHorizontalScrollBarVisibility(listView, WinScrollBarVisibility.Disabled);
             ScrollViewer.SetIsVerticalRailEnabled(listView, true);
-            listView.Padding = new WinThickness(0);
+            listView.Padding = new WinThickness(0, 0, 16, 0);
             listView.Margin = new WinThickness(0);
         }
     }
