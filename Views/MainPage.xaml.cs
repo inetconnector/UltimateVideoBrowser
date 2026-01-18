@@ -240,15 +240,35 @@ public partial class MainPage : ContentPage
             .ToLocalTime()
             .DateTime;
         var entry = vm.TimelineEntries.FirstOrDefault(t => t.Year == date.Year && t.Month == date.Month);
-        if (entry == null || TimelineSidebar.TimelineView.SelectedItem == entry)
+        if (entry == null)
             return;
+
+        // If timeline already shows the correct selection, we still may want to keep it in view,
+        // but avoid jitter: only re-scroll when the selected entry actually changes.
+        var selectionChanged = TimelineSidebar.TimelineView.SelectedItem != entry;
 
         isTimelineSelectionSyncing = true;
         TimelineSidebar.TimelineView.SelectedItem = entry;
+
+        // Keep timeline in sync with the media scroll (single-scrollbar UX).
+        // No animation -> no jitter; keep the entry visible.
+        if (selectionChanged)
+        {
+            try
+            {
+                TimelineSidebar.TimelineView.ScrollTo(entry, position: ScrollToPosition.MakeVisible, animate: false);
+            }
+            catch
+            {
+                // Best-effort only.
+            }
+        }
+
         isTimelineSelectionSyncing = false;
 
         if (BindingContext is MainPageBinding binding1)
             binding1.SetTimelinePreview(entry);
+
     }
 
     private void OnTimelineScrolled(object? sender, ItemsViewScrolledEventArgs e)
