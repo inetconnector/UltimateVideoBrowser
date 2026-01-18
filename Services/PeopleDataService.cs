@@ -181,8 +181,10 @@ public sealed class PeopleDataService
                 coverMap[e.PersonId!] = e;
         }
 
+        var peopleMap = people
+            .ToDictionary(p => p.Id, StringComparer.OrdinalIgnoreCase);
+
         var facePeople = people
-            .Where(p => countMap.ContainsKey(p.Id))
             .Where(p =>
                 string.IsNullOrWhiteSpace(normalizedSearch) ||
                 p.Name.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase))
@@ -194,6 +196,25 @@ public sealed class PeopleDataService
                 coverMap.TryGetValue(p.Id, out var cover) ? cover : null,
                 p.IsIgnored))
             .ToList();
+
+        foreach (var (personId, count) in countMap)
+        {
+            if (peopleMap.ContainsKey(personId))
+                continue;
+
+            var fallbackName = BuildFallbackName(personId);
+            if (!string.IsNullOrWhiteSpace(normalizedSearch) &&
+                !fallbackName.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            facePeople.Add(new PersonOverview(
+                personId,
+                fallbackName,
+                count,
+                0f,
+                coverMap.TryGetValue(personId, out var cover) ? cover : null,
+                false));
+        }
 
         var faceNameSet = new HashSet<string>(
             facePeople.Select(p => p.Name),
@@ -458,6 +479,16 @@ public sealed class PeopleDataService
     {
         public string Path { get; } = string.Empty;
         public string PeopleTagsSummary { get; } = string.Empty;
+    }
+
+    private static string BuildFallbackName(string personId)
+    {
+        if (string.IsNullOrWhiteSpace(personId))
+            return "Unknown";
+
+        var trimmed = personId.Trim();
+        var shortId = trimmed.Length <= 6 ? trimmed : trimmed[..6];
+        return $"Unknown {shortId}";
     }
 
     private sealed class PersonCountRow
