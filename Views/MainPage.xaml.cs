@@ -367,7 +367,7 @@ public partial class MainPage : ContentPage
         if (vm.MediaItems.Count == 0)
             return;
 
-        MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+        ScrollToHeader();
     }
 
     private void ScrollMediaToBottom()
@@ -380,7 +380,7 @@ public partial class MainPage : ContentPage
 
     private void ScrollToHeader()
     {
-        MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+        MediaItemsView.ScrollTo(0, position: ScrollToPosition.MakeVisible, animate: true);
     }
 
     private void ScrollTimelineByPage(bool isDown)
