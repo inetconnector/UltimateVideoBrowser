@@ -4,6 +4,8 @@ using MauiItemsView = Microsoft.Maui.Controls.ItemsView;
 #if WINDOWS
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using WinScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility;
+using WinThickness = Microsoft.UI.Xaml.Thickness;
 #endif
 
 namespace UltimateVideoBrowser.Behaviors;
@@ -34,11 +36,11 @@ public class WindowsPinnedScrollBarBehavior : Behavior<MauiItemsView>
     {
         if (itemsView.Handler?.PlatformView is ListViewBase listView)
         {
-            ScrollViewer.SetVerticalScrollBarVisibility(listView, ScrollBarVisibility.Visible);
-            ScrollViewer.SetHorizontalScrollBarVisibility(listView, ScrollBarVisibility.Disabled);
+            ScrollViewer.SetVerticalScrollBarVisibility(listView, WinScrollBarVisibility.Visible);
+            ScrollViewer.SetHorizontalScrollBarVisibility(listView, WinScrollBarVisibility.Disabled);
             ScrollViewer.SetIsVerticalRailEnabled(listView, true);
-            listView.Padding = new Thickness(0);
-            listView.Margin = new Thickness(0);
+            listView.Padding = new WinThickness(0);
+            listView.Margin = new WinThickness(0);
         }
     }
 #endif
