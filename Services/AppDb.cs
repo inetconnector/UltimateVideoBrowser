@@ -43,35 +43,22 @@ public sealed class AppDb
             if (isInitialized)
                 return;
 
-            await TryConfigurePragmasAsync().ConfigureAwait(false);
-            await TryCheckpointAsync().ConfigureAwait(false);
-
             try
             {
-                // Base tables
-                await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
-                await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
-                await Db.CreateTableAsync<Album>().ConfigureAwait(false);
-                await Db.CreateTableAsync<AlbumItem>().ConfigureAwait(false);
-                await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
-                await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
-                await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
-                await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
-                await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
-
-                // Schema migrations (idempotent, column-existence checked to avoid exception spam)
-                await EnsureSchemaAsync().ConfigureAwait(false);
-
-                // Indexes (best-effort: app must remain usable even if an index fails)
-                await EnsureIndexesAsync().ConfigureAwait(false);
+                await TryConfigurePragmasAsync().ConfigureAwait(false);
+                await TryCheckpointAsync().ConfigureAwait(false);
+                await InitializeSchemaAsync().ConfigureAwait(false);
+                isInitialized = true;
             }
             catch (Exception ex)
             {
                 ErrorLog.LogException(ex, "AppDb.EnsureInitializedAsync");
+
+                if (ex is SQLiteException && await TryRecoverDatabaseAsync(ex).ConfigureAwait(false))
+                    return;
+
                 throw;
             }
-
-            isInitialized = true;
         }
         finally
         {
@@ -151,6 +138,25 @@ public sealed class AppDb
         catch
         {
             // Ignore sidecar copy failures to keep restore resilient.
+        }
+    }
+
+    private static void MoveSidecarIfExists(string source, string target)
+    {
+        try
+        {
+            if (File.Exists(source))
+            {
+                File.Move(source, target, true);
+            }
+            else if (File.Exists(target))
+            {
+                File.Delete(target);
+            }
+        }
+        catch
+        {
+            // Ignore sidecar move failures to keep recovery resilient.
         }
     }
 
@@ -252,6 +258,77 @@ public sealed class AppDb
         catch (SQLiteException ex) when (ex.Message.Contains("not an error", StringComparison.OrdinalIgnoreCase))
         {
             // Some sqlite-net builds throw "not an error" for PRAGMA writes; ignore to keep snapshot resilient.
+        }
+    }
+
+    private async Task InitializeSchemaAsync()
+    {
+        // Base tables
+        await Db.CreateTableAsync<MediaSource>().ConfigureAwait(false);
+        await Db.CreateTableAsync<MediaItem>().ConfigureAwait(false);
+        await Db.CreateTableAsync<Album>().ConfigureAwait(false);
+        await Db.CreateTableAsync<AlbumItem>().ConfigureAwait(false);
+        await Db.CreateTableAsync<PersonTag>().ConfigureAwait(false);
+        await Db.CreateTableAsync<PersonProfile>().ConfigureAwait(false);
+        await Db.CreateTableAsync<PersonAlias>().ConfigureAwait(false);
+        await Db.CreateTableAsync<FaceEmbedding>().ConfigureAwait(false);
+        await Db.CreateTableAsync<FaceScanJob>().ConfigureAwait(false);
+
+        // Schema migrations (idempotent, column-existence checked to avoid exception spam)
+        await EnsureSchemaAsync().ConfigureAwait(false);
+
+        // Indexes (best-effort: app must remain usable even if an index fails)
+        await EnsureIndexesAsync().ConfigureAwait(false);
+    }
+
+    private async Task<bool> TryRecoverDatabaseAsync(Exception ex)
+    {
+        try
+        {
+            await TryCloseConnectionAsync().ConfigureAwait(false);
+        }
+        catch
+        {
+            // Best-effort only.
+        }
+
+        var backupRoot = Path.Combine(AppDataPaths.Root, "db_backups");
+        var stamp = DateTimeOffset.UtcNow.ToString("yyyyMMdd_HHmmss");
+        var backupPath = Path.Combine(backupRoot, $"ultimatevideobrowser_corrupt_{stamp}.db");
+
+        try
+        {
+            Directory.CreateDirectory(backupRoot);
+
+            if (File.Exists(DatabasePath))
+                File.Move(DatabasePath, backupPath, true);
+
+            MoveSidecarIfExists(DatabasePath + "-wal", backupPath + "-wal");
+            MoveSidecarIfExists(DatabasePath + "-shm", backupPath + "-shm");
+        }
+        catch (Exception moveEx)
+        {
+            ErrorLog.LogException(moveEx, "AppDb.TryRecoverDatabaseAsync", "Failed to move database files.");
+            return false;
+        }
+
+        try
+        {
+            Db = new SQLiteAsyncConnection(DatabasePath);
+            await TryConfigurePragmasAsync().ConfigureAwait(false);
+            await TryCheckpointAsync().ConfigureAwait(false);
+            await InitializeSchemaAsync().ConfigureAwait(false);
+            isInitialized = true;
+
+            ErrorLog.LogMessage(
+                $"Database recovered after {ex.GetType().Name}. Previous DB moved to {backupPath}.",
+                "AppDb.TryRecoverDatabaseAsync");
+            return true;
+        }
+        catch (Exception recoveryEx)
+        {
+            ErrorLog.LogException(recoveryEx, "AppDb.TryRecoverDatabaseAsync", "Failed to rebuild database.");
+            return false;
         }
     }
 
