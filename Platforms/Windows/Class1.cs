@@ -4,7 +4,6 @@ using Microsoft.Maui.Handlers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using FlowDirection = Microsoft.UI.Xaml.FlowDirection;
 using ScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility;
 
 namespace UltimateVideoBrowser.Platforms.Windows;
@@ -24,28 +23,17 @@ internal static class WinUiScrollBarMapper
                 if (sv == null)
                     return;
 
-                // Always visible (prevents the "disappearing" behavior as much as WinUI allows)
+                // Always show scrollbar (no auto-hide overlay behavior as much as possible)
                 sv.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
-                // Move scrollbar to LEFT: RTL trick for ScrollViewer
-                sv.FlowDirection = FlowDirection.RightToLeft; 
+                // Move scrollbar to LEFT: RTL trick for WinUI ScrollViewer
+                sv.FlowDirection = Microsoft.UI.Xaml.FlowDirection.RightToLeft;
 
-                if (sv.Content is UIElement content)
+                // Keep CONTENT normal (LTR) so items are not mirrored
+                if (sv.Content is Microsoft.UI.Xaml.FrameworkElement fe)
                 {
-                    // Always show scrollbar (no auto-hide overlay behavior as much as possible)
-                    sv.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                    sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-                    // Move scrollbar to LEFT: RTL trick for WinUI ScrollViewer
-                    sv.FlowDirection = Microsoft.UI.Xaml.FlowDirection.RightToLeft;
-
-                    // Keep CONTENT normal (LTR) so items are not mirrored
-                    if (sv.Content is Microsoft.UI.Xaml.FrameworkElement fe)
-                    {
-                        fe.FlowDirection = Microsoft.UI.Xaml.FlowDirection.LeftToRight;
-                    }
-
+                    fe.FlowDirection = Microsoft.UI.Xaml.FlowDirection.LeftToRight;
                 }
             };
         });
