@@ -122,7 +122,6 @@
             <!-- Media area: NOW RIGHT (Grid.Column=1) -->
             <Grid x:Name="MediaItemsHost"
                   Grid.Column="1"
-                  Padding="{OnPlatform WinUI='0,0,24,0', Default='0'}"
                   ZIndex="0">
 
                 <CollectionView
@@ -139,6 +138,9 @@
                     HorizontalOptions="FillAndExpand"
                     ItemSizingStrategy="MeasureFirstItem"
                     ItemsUpdatingScrollMode="KeepScrollOffset">
+                    <CollectionView.Behaviors>
+                        <behaviors:WindowsPinnedScrollBarBehavior />
+                    </CollectionView.Behaviors>
 
                     <CollectionView.Header>
                         <Grid x:Name="HeaderContainer"
