@@ -1,8 +1,10 @@
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Services.Faces;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpRectangle = SixLabors.ImageSharp.Rectangle;
 using ImageSharpSize = SixLabors.ImageSharp.Size;
@@ -114,6 +116,72 @@ public sealed class FaceThumbnailService
         catch (Exception ex)
         {
             ErrorLog.LogException(ex, "FaceThumbnailService.EnsureFaceThumbnailAsync", $"Path={mediaPath}");
+            return null;
+        }
+        finally
+        {
+            TryDeleteFile(tmpPath);
+        }
+    }
+
+    public async Task<string?> EnsureFaceThumbnailAsync(
+        Image<Rgba32> image,
+        string mediaPath,
+        DetectedFace face,
+        int faceIndex,
+        int size,
+        CancellationToken ct)
+    {
+        if (image == null || string.IsNullOrWhiteSpace(mediaPath))
+            return null;
+
+        var path = GetFaceThumbnailPath(mediaPath, faceIndex, size);
+        if (File.Exists(path))
+            return path;
+
+        var tmpPath = GetTempPath(path);
+        try
+        {
+            return await Task.Run(() =>
+            {
+                ct.ThrowIfCancellationRequested();
+
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(dir))
+                    Directory.CreateDirectory(dir);
+
+                var crop = BuildCropRect(image.Width, image.Height, face);
+                if (crop.Width <= 1 || crop.Height <= 1)
+                    return null;
+
+                using var clone = image.Clone(ctx =>
+                {
+                    ctx.Crop(crop);
+                    ctx.Resize(new ResizeOptions
+                    {
+                        Mode = ImageSharpResizeMode.Crop,
+                        Size = new ImageSharpSize(size, size)
+                    });
+                });
+
+                ct.ThrowIfCancellationRequested();
+
+                var encoder = new JpegEncoder { Quality = 85 };
+
+                using var fs = new FileStream(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                clone.Save(fs, encoder);
+
+                if (!IsUsableThumbFile(tmpPath))
+                    return null;
+
+                File.Move(tmpPath, path, true);
+                return path;
+            }, ct).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "FaceThumbnailService.EnsureFaceThumbnailAsync(DetectedFace)",
+                $"Path={mediaPath}");
             return null;
         }
         finally
@@ -265,6 +333,17 @@ public sealed class FaceThumbnailService
             h *= scaleH;
         }
 
+        return BuildCropRect(imageWidth, imageHeight, x, y, w, h);
+    }
+
+    private static ImageSharpRectangle BuildCropRect(int imageWidth, int imageHeight, DetectedFace face)
+    {
+        return BuildCropRect(imageWidth, imageHeight, face.X, face.Y, face.W, face.H);
+    }
+
+    private static ImageSharpRectangle BuildCropRect(int imageWidth, int imageHeight, float x, float y, float w,
+        float h)
+    {
         x = MathF.Max(0, x);
         y = MathF.Max(0, y);
         w = MathF.Max(0, w);

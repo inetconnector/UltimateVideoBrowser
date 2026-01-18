@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
+using UltimateVideoBrowser.Services;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
 namespace UltimateVideoBrowser.Services.Faces;
@@ -17,6 +18,7 @@ public sealed class PeopleRecognitionService
     private readonly AppDb db;
     private readonly YuNetFaceDetector faceDetector;
     private readonly SFaceRecognizer faceRecognizer;
+    private readonly FaceThumbnailService faceThumbnails;
     private readonly ModelFileService modelFiles;
     private readonly PeopleTagService peopleTagService;
     private readonly IProUpgradeService proUpgradeService;
@@ -27,6 +29,7 @@ public sealed class PeopleRecognitionService
         ModelFileService modelFiles,
         YuNetFaceDetector faceDetector,
         SFaceRecognizer faceRecognizer,
+        FaceThumbnailService faceThumbnails,
         IProUpgradeService proUpgradeService)
     {
         this.db = db;
@@ -34,6 +37,7 @@ public sealed class PeopleRecognitionService
         this.modelFiles = modelFiles;
         this.faceDetector = faceDetector;
         this.faceRecognizer = faceRecognizer;
+        this.faceThumbnails = faceThumbnails;
         this.proUpgradeService = proUpgradeService;
     }
 
@@ -428,6 +432,18 @@ public sealed class PeopleRecognitionService
                     FaceQuality = faceQuality,
                     Embedding = FloatsToBytes(embedding)
                 });
+
+                try
+                {
+                    await faceThumbnails
+                        .EnsureFaceThumbnailAsync(image, path, face, i, 96, ct)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        $"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
+                }
             }
 
             foreach (var embedding in embeddings)
