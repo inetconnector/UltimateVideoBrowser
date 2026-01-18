@@ -54,11 +54,19 @@ public partial class MapViewModel : ObservableObject
             itemLookup.Clear();
             SelectedItem = null;
 
-            var mediaTypes = settingsService.VisibleMediaTypes & (MediaType.Photos | MediaType.Videos);
+            var mediaTypes = settingsService.VisibleMediaTypes & (MediaType.Photos | MediaType.Graphics | MediaType.Videos);
             if (mediaTypes == MediaType.None)
-                mediaTypes = MediaType.Photos | MediaType.Videos;
+                mediaTypes = MediaType.Photos | MediaType.Graphics | MediaType.Videos;
 
             var items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
+
+            if (items.Count == 0 && settingsService.LocationsEnabled)
+            {
+                // Best-effort backfill for existing media that hasn't been location-scanned yet.
+                await indexService.BackfillLocationsAsync(mediaTypes, 600, CancellationToken.None)
+                    .ConfigureAwait(false);
+                items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
+            }
             foreach (var item in items)
             {
                 Items.Add(item);

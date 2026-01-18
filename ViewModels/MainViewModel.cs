@@ -1132,7 +1132,7 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 var photos = await indexService
-                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos)
+                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos | MediaType.Graphics)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }

@@ -153,9 +153,10 @@ public sealed class PeopleDataService
                 "SELECT FaceEmbedding.* FROM FaceEmbedding " +
                 "INNER JOIN MediaItem ON MediaItem.Path = FaceEmbedding.MediaPath " +
                 "WHERE FaceEmbedding.PersonId IS NOT NULL AND FaceEmbedding.PersonId <> '' " +
-                "AND MediaItem.MediaType = ? " +
+                "AND MediaItem.MediaType IN (?, ?) " +
                 "ORDER BY FaceEmbedding.PersonId, FaceEmbedding.FaceQuality DESC, FaceEmbedding.Score DESC;",
-                (int)MediaType.Photos)
+                (int)MediaType.Photos,
+                (int)MediaType.Graphics)
             .ConfigureAwait(false);
 
         foreach (var e in photoEmbeddings)
@@ -256,9 +257,10 @@ public sealed class PeopleDataService
             var chunk = paths.Skip(i).Take(chunkSize).ToList();
             var placeholders = string.Join(",", chunk.Select(_ => "?"));
             var sql =
-                $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
+                $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType IN (?, ?) ORDER BY DateAddedSeconds DESC;";
             var args = chunk.Cast<object>().ToList();
             args.Add((int)MediaType.Photos);
+            args.Add((int)MediaType.Graphics);
             var result = await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
             items.AddRange(result);
         }

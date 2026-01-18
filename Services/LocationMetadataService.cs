@@ -29,7 +29,7 @@ public sealed class LocationMetadataService
         if (!settingsService.LocationsEnabled)
             return false;
 
-        if (item.MediaType is not (MediaType.Photos or MediaType.Videos))
+        if (item.MediaType is not (MediaType.Photos or MediaType.Graphics or MediaType.Videos))
             return false;
 
         if (item.Latitude.HasValue && item.Longitude.HasValue)
@@ -57,7 +57,7 @@ public sealed class LocationMetadataService
             return await TryGetLocationFromAndroidContentAsync(path, ct).ConfigureAwait(false);
 #endif
 
-        if (item.MediaType == MediaType.Photos)
+        if (item.MediaType is MediaType.Photos or MediaType.Graphics)
         {
             var location = await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
 #if WINDOWS
