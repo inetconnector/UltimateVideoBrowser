@@ -279,11 +279,7 @@ public sealed class PeopleDataService
 
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         ct.ThrowIfCancellationRequested();
-
-        var nameOverride = TryExtractTagName(personId);
-        if (!string.IsNullOrWhiteSpace(nameOverride))
-            return await GetMediaForPersonNameAsync(nameOverride, ct).ConfigureAwait(false);
-
+          
         var paths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var faceRows = await db.Db.QueryAsync<MediaPathRow>(
