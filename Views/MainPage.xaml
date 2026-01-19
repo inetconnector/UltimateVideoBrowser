@@ -545,7 +545,7 @@
         </Grid>
 
         <Grid Grid.RowSpan="2"
-              BackgroundColor="#CC000000"
+              BackgroundColor="{DynamicResource OverlayScrim}"
               IsVisible="{Binding IsPlayerFullscreen}">
             <Grid RowDefinitions="*,Auto"
                   Padding="24">
