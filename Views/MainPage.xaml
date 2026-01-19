@@ -100,29 +100,35 @@
                                                 ZIndex="1" />
 
             <!-- Timeline preview badge: keep on media area (RIGHT), aligned to End -->
-            <Grid Grid.Column="1"
-                  InputTransparent="True"
-                  ZIndex="2">
+            <AbsoluteLayout Grid.Column="1"
+                            x:Name="TimelinePreviewLayer"
+                            InputTransparent="True"
+                            ZIndex="2">
                 <Frame Padding="10,6"
+                       x:Name="TimelinePreviewFrame"
                        CornerRadius="12"
                        BackgroundColor="{DynamicResource SurfaceElevated}"
                        BorderColor="{DynamicResource BorderSubtle}"
                        HasShadow="True"
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"
-                       Margin="0,0,16,0"
+                       AbsoluteLayout.LayoutBounds="{Binding TimelinePreviewBounds}"
+                       AbsoluteLayout.LayoutFlags="None"
                        IsVisible="{Binding IsTimelinePreviewVisible}">
                     <Label Text="{Binding TimelinePreviewLabel}"
                            FontAttributes="Bold"
                            FontSize="12"
                            TextColor="{DynamicResource OnSurface}" />
                 </Frame>
-            </Grid>
+            </AbsoluteLayout>
 
             <!-- Media area: NOW RIGHT (Grid.Column=1) -->
             <Grid x:Name="MediaItemsHost"
                   Grid.Column="1"
                   ZIndex="0">
+                <Grid.GestureRecognizers>
+                    <PointerGestureRecognizer PointerMoved="OnMediaPointerMoved"
+                                              PointerEntered="OnMediaPointerEntered"
+                                              PointerExited="OnMediaPointerExited" />
+                </Grid.GestureRecognizers>
 
                 <CollectionView
                     ItemsSource="{Binding MediaItems}"
