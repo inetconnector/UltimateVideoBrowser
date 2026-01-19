@@ -1806,25 +1806,6 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private async Task RefreshLocationsCountAsync()
-    {
-        try
-        {
-            if (!IsLocationEnabled)
-            {
-                await MainThread.InvokeOnMainThreadAsync(() => LocationsCount = 0);
-                return;
-            }
-
-            var count = await indexService.CountLocationsAsync(MediaType.All).ConfigureAwait(false);
-            MainThread.BeginInvokeOnMainThread(() => LocationsCount = count);
-        }
-        catch
-        {
-            // Keep browsing resilient if the DB is unavailable or not initialized yet.
-        }
-    }
-
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
