@@ -479,31 +479,22 @@ public sealed class FaceThumbnailService
                 return false;
             }
 
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-
             using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-
-            if (ext == ".png")
+            Span<byte> sig = stackalloc byte[8];
+            if (fs.Read(sig) != 8)
             {
-                Span<byte> sig = stackalloc byte[8];
-                if (fs.Read(sig) != 8)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                if (sig[0] != 0x89 || sig[1] != 0x50 || sig[2] != 0x4E || sig[3] != 0x47 ||
-                    sig[4] != 0x0D || sig[5] != 0x0A || sig[6] != 0x1A || sig[7] != 0x0A)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                return true;
+                TryDeleteFile(path);
+                return false;
             }
 
-            TryDeleteFile(path);
-            return false;
+            if (sig[0] != 0x89 || sig[1] != 0x50 || sig[2] != 0x4E || sig[3] != 0x47 ||
+                sig[4] != 0x0D || sig[5] != 0x0A || sig[6] != 0x1A || sig[7] != 0x0A)
+            {
+                TryDeleteFile(path);
+                return false;
+            }
+
+            return true;
         }
         catch (IOException ex) when (IsFileInUse(ex))
         {
