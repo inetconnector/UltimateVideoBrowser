@@ -2193,6 +2193,24 @@ Fehlend:
   </data>
   
   
+  <data name="SettingsSourcesAlbumsTitle" xml:space="preserve">
+    
+    
+    <value>Quellen / Alben</value>
+    
+  
+  </data>
+  
+  
+  <data name="SettingsSourcesAlbumsLocationsTitle" xml:space="preserve">
+    
+    
+    <value>Quellen / Alben / Orte</value>
+    
+  
+  </data>
+  
+  
   <data name="AlbumsHeader" xml:space="preserve">
     
     

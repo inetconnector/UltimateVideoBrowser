@@ -77,4 +77,25 @@ public partial class SettingsPage : ContentPage
                      ?? ActivatorUtilities.CreateInstance<AboutPage>(serviceProvider);
         await Navigation.PushAsync(target, false);
     }
+
+    private async void OnSourcesClicked(object sender, EventArgs e)
+    {
+        var target = serviceProvider.GetService<SourcesPage>()
+                     ?? ActivatorUtilities.CreateInstance<SourcesPage>(serviceProvider);
+        await Navigation.PushAsync(target, false);
+    }
+
+    private async void OnAlbumsClicked(object sender, EventArgs e)
+    {
+        var target = serviceProvider.GetService<AlbumsPage>()
+                     ?? ActivatorUtilities.CreateInstance<AlbumsPage>(serviceProvider);
+        await Navigation.PushAsync(target, false);
+    }
+
+    private async void OnLocationsClicked(object sender, EventArgs e)
+    {
+        var target = serviceProvider.GetService<MapPage>()
+                     ?? ActivatorUtilities.CreateInstance<MapPage>(serviceProvider);
+        await Navigation.PushAsync(target, false);
+    }
 }

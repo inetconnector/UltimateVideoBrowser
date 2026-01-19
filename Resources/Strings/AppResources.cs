@@ -12,6 +12,11 @@ public static class AppResources
     public static string MainPageTitle => GetString(nameof(MainPageTitle), "Media");
     public static string SourcesButton => GetString(nameof(SourcesButton), "Sources");
     public static string AlbumsButton => GetString(nameof(AlbumsButton), "Albums");
+    public static string SettingsSourcesAlbumsTitle =>
+        GetString(nameof(SettingsSourcesAlbumsTitle), "Sources / Albums");
+
+    public static string SettingsSourcesAlbumsLocationsTitle =>
+        GetString(nameof(SettingsSourcesAlbumsLocationsTitle), "Sources / Albums / Places");
     public static string PeopleButton => GetString(nameof(PeopleButton), "People");
     public static string MergeIntoTitle => GetString(nameof(MergeIntoTitle), "Merge into…");
     public static string MergeButton => GetString(nameof(MergeButton), "Merge");
