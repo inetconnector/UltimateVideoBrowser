@@ -13,8 +13,40 @@
                FontSize="14"
                TextColor="{DynamicResource OnSurface}" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="14">
-            <Frame Style="{StaticResource CardFrameStyle}">
+        <Grid Grid.Row="1"
+              x:Name="HighlightsGrid"
+              ColumnDefinitions="*,*,*"
+              ColumnSpacing="14">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="HighlightsLayoutStates">
+                    <VisualState x:Name="HighlightsPhone">
+                        <VisualState.StateTriggers>
+                            <OnIdiom x:TypeArguments="StateTriggerBase">
+                                <OnIdiom.Phone>
+                                    <StateTrigger IsActive="True" />
+                                </OnIdiom.Phone>
+                                <OnIdiom.Default>
+                                    <StateTrigger IsActive="False" />
+                                </OnIdiom.Default>
+                            </OnIdiom>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="HighlightsGrid" Property="ColumnDefinitions" Value="*" />
+                            <Setter TargetName="HighlightsGrid" Property="RowDefinitions" Value="Auto,Auto,Auto" />
+                            <Setter TargetName="HighlightsGrid" Property="RowSpacing" Value="12" />
+                            <Setter TargetName="HighlightsVideosCard" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="HighlightsVideosCard" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="HighlightsSourcesCard" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="HighlightsSourcesCard" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="HighlightsTipCard" Property="Grid.Row" Value="2" />
+                            <Setter TargetName="HighlightsTipCard" Property="Grid.Column" Value="0" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Frame x:Name="HighlightsVideosCard"
+                   Style="{StaticResource CardFrameStyle}">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding RequestReindexCommand}" />
                 </Frame.GestureRecognizers>
@@ -32,7 +64,9 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Column="1" Style="{StaticResource CardFrameStyle}">
+            <Frame x:Name="HighlightsSourcesCard"
+                   Grid.Column="1"
+                   Style="{StaticResource CardFrameStyle}">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenSourcesCommand}" />
                 </Frame.GestureRecognizers>
@@ -53,7 +87,9 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Column="2" Style="{StaticResource CardFrameStyle}">
+            <Frame x:Name="HighlightsTipCard"
+                   Grid.Column="2"
+                   Style="{StaticResource CardFrameStyle}">
                 <VerticalStackLayout Spacing="8">
                     <Frame Style="{StaticResource IconBadgeStyle}">
                         <Image Source="chip_spark.svg" HeightRequest="18" WidthRequest="18" />

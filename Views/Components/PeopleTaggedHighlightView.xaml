@@ -31,12 +31,20 @@
                         Command="{Binding OpenPeopleCommand}"
                         Style="{StaticResource OverlayButtonStyle}"
                         Padding="12,6"
-                        VerticalOptions="Center" />
+                        VerticalOptions="Center"
+                        IsVisible="{OnIdiom Phone=False, Default=True}" />
             </Grid>
 
             <Label Text="{Binding PeopleModelsStatusText}"
                    FontSize="11"
                    TextColor="{DynamicResource OnSurfaceMuted}" />
+            <Button Text="{x:Static strings:AppResources.PeopleButton}"
+                    ImageSource="icon_people.svg"
+                    Command="{Binding OpenPeopleCommand}"
+                    Style="{StaticResource OverlayButtonStyle}"
+                    Padding="12,6"
+                    HorizontalOptions="Start"
+                    IsVisible="{OnIdiom Phone=True, Default=False}" />
         </VerticalStackLayout>
     </Frame>
 </ContentView>

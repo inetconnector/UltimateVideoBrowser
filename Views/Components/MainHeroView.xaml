@@ -14,8 +14,38 @@
                 </LinearGradientBrush>
             </Frame.Background>
 
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                <VerticalStackLayout Spacing="10">
+            <Grid x:Name="HeroGrid"
+                  ColumnDefinitions="*,Auto"
+                  ColumnSpacing="16">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="HeroLayoutStates">
+                        <VisualState x:Name="HeroPhone">
+                            <VisualState.StateTriggers>
+                                <OnIdiom x:TypeArguments="StateTriggerBase">
+                                    <OnIdiom.Phone>
+                                        <StateTrigger IsActive="True" />
+                                    </OnIdiom.Phone>
+                                    <OnIdiom.Default>
+                                        <StateTrigger IsActive="False" />
+                                    </OnIdiom.Default>
+                                </OnIdiom>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter TargetName="HeroGrid" Property="ColumnDefinitions" Value="*" />
+                                <Setter TargetName="HeroGrid" Property="RowDefinitions" Value="Auto,Auto" />
+                                <Setter TargetName="HeroGrid" Property="ColumnSpacing" Value="0" />
+                                <Setter TargetName="HeroImage" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="HeroImage" Property="Grid.Column" Value="0" />
+                                <Setter TargetName="HeroImage" Property="HorizontalOptions" Value="Center" />
+                                <Setter TargetName="HeroContent" Property="Grid.Row" Value="1" />
+                                <Setter TargetName="HeroContent" Property="Grid.Column" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <VerticalStackLayout x:Name="HeroContent"
+                                     Spacing="10">
                     <Label Text="{x:Static strings:AppResources.HeroEyebrow}"
                            FontSize="12"
                            TextColor="{DynamicResource OnSurfaceMuted}" />
@@ -34,7 +64,8 @@
                             Clicked="OnActionsClicked" />
                 </VerticalStackLayout>
 
-                <Image Grid.Column="1"
+                <Image x:Name="HeroImage"
+                       Grid.Column="1"
                        Source="hero_video.svg"
                        HeightRequest="128"
                        WidthRequest="148"

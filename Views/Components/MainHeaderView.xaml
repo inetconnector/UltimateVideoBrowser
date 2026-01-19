@@ -32,12 +32,26 @@
             </VerticalStackLayout>
         </HorizontalStackLayout>
 
-        <ActivityIndicator Grid.Column="1"
-                           IsVisible="{Binding IsTopBusy}"
-                           IsRunning="{Binding IsTopBusy}"
-                           WidthRequest="22"
-                           HeightRequest="22"
-                           VerticalOptions="Center"
-                           HorizontalOptions="End" />
+        <HorizontalStackLayout Grid.Column="1"
+                               Spacing="10"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End">
+            <Button Text="⚙"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    HeightRequest="32"
+                    Padding="0"
+                    HorizontalOptions="End"
+                    Style="{StaticResource OverlayButtonStyle}"
+                    Command="{Binding OpenSettingsCommand}"
+                    IsVisible="{OnIdiom Phone=True, Default=False}"
+                    AutomationProperties.Name="Open settings" />
+            <ActivityIndicator IsVisible="{Binding IsTopBusy}"
+                               IsRunning="{Binding IsTopBusy}"
+                               WidthRequest="22"
+                               HeightRequest="22"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End" />
+        </HorizontalStackLayout>
     </Grid>
 </ContentView>
