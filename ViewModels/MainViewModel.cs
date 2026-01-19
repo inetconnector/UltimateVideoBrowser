@@ -2464,11 +2464,33 @@ public partial class MainViewModel : ObservableObject
 
             // Force thumbnail refresh and update the UI binding immediately.
             thumbnailService.DeleteThumbnailForPath(item.Path);
-            item.ThumbnailPath = null;
 
             var thumb = await thumbnailService.EnsureThumbnailAsync(item, CancellationToken.None).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(thumb))
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                item.ThumbnailPath = string.Empty;
                 item.ThumbnailPath = thumb;
+
+                if (string.Equals(CurrentMediaSource, item.Path, StringComparison.OrdinalIgnoreCase))
+                {
+                    CurrentMediaSource = null;
+                    CurrentMediaSource = item.Path;
+                }
+            });
+
+            if (!string.IsNullOrWhiteSpace(thumb))
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await indexService.UpdateThumbnailPathAsync(item.Path, thumb, CancellationToken.None)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Best-effort only.
+                    }
+                });
         }
         finally
         {
