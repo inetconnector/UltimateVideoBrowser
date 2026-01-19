@@ -182,13 +182,28 @@ public partial class MapViewModel : ObservableObject
             "L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map);");
         sb.AppendLine(
             "function escapeHtml(str) { return str.replace(/[&<>\"']/g, c => ({\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\",\"\\\"\":\"&quot;\",\"'\":\"&#39;\"}[c])); }");
+        sb.AppendLine("function buildActionUrl(action, item) {");
+        sb.AppendLine(
+            "  return `uvb://media?path=${encodeURIComponent(item.path)}&action=${encodeURIComponent(action)}`;");
+        sb.AppendLine("}");
+        sb.AppendLine("map.doubleClickZoom.disable();");
         sb.AppendLine("const markers = [];");
         sb.AppendLine("items.forEach(item => {");
         sb.AppendLine("  const marker = L.marker([item.lat, item.lon]).addTo(map);");
         sb.AppendLine(
             "  const label = escapeHtml(item.name || '');");
         sb.AppendLine(
-            "  marker.bindPopup(`<strong>${label}</strong><br/><a href=\"uvb://media?path=${encodeURIComponent(item.path)}\">${openLabel}</a>`);");
+            "  marker.bindPopup(`<strong>${label}</strong><br/><span>${openLabel}</span>`);");
+        sb.AppendLine("  marker.on('click', () => {");
+        sb.AppendLine("    map.setView([item.lat, item.lon], Math.max(map.getZoom(), 12));");
+        sb.AppendLine("    window.location.href = buildActionUrl('select', item);");
+        sb.AppendLine("  });");
+        sb.AppendLine("  marker.on('dblclick', () => {");
+        sb.AppendLine("    window.location.href = buildActionUrl('open', item);");
+        sb.AppendLine("  });");
+        sb.AppendLine("  marker.on('contextmenu', () => {");
+        sb.AppendLine("    window.location.href = buildActionUrl('menu', item);");
+        sb.AppendLine("  });");
         sb.AppendLine("  markers.push(marker);");
         sb.AppendLine("});");
         sb.AppendLine("if (markers.length > 0) {");
