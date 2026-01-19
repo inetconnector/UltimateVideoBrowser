@@ -133,11 +133,27 @@ public sealed class AlbumService
         string? sourceId,
         DateTime? from,
         DateTime? to,
+        MediaType mediaTypes,
+        bool includeHidden)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var (sql, args) = BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, "name", null,
+            null, true, includeHidden ? null : false);
+        return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
+    }
+
+    public async Task<int> CountHiddenAlbumItemsAsync(
+        string albumId,
+        string search,
+        SearchScope searchScope,
+        string? sourceId,
+        DateTime? from,
+        DateTime? to,
         MediaType mediaTypes)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, "name", null,
-            null, true);
+            null, true, true);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -151,12 +167,13 @@ public sealed class AlbumService
         DateTime? to,
         MediaType mediaTypes,
         int offset,
-        int limit)
+        int limit,
+        bool includeHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) =
             BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, sortKey, offset, limit,
-                false);
+                false, includeHidden ? null : false);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -171,7 +188,8 @@ public sealed class AlbumService
         string sortKey,
         int? offset,
         int? limit,
-        bool countOnly)
+        bool countOnly,
+        bool? isHidden)
     {
         var args = new List<object>();
         var filters = new List<string>
@@ -239,6 +257,12 @@ public sealed class AlbumService
             filters.Add("MediaItem.DateAddedSeconds >= ? AND MediaItem.DateAddedSeconds <= ?");
             args.Add(fromSeconds);
             args.Add(toSeconds);
+        }
+
+        if (isHidden.HasValue)
+        {
+            filters.Add("MediaItem.IsHidden = ?");
+            args.Add(isHidden.Value ? 1 : 0);
         }
 
         var sql = countOnly

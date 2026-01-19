@@ -41,6 +41,7 @@ public partial class MainViewModel : ObservableObject
     private readonly PlaybackService playbackService;
     private readonly SemaphoreSlim refreshLock = new(1, 1);
     private readonly ISourceService sourceService;
+    private readonly Dictionary<string, bool> showHiddenBySource = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<MediaItem> subscribedMediaItems = new();
     private readonly object thumbnailLock = new();
     private readonly ThumbnailService thumbnailService;
@@ -97,6 +98,7 @@ public partial class MainViewModel : ObservableObject
     private int mediaItemsOffset;
     private int mediaItemsVersion;
     private int mediaQueryVersion;
+    private bool isApplyingShowHiddenState;
     [ObservableProperty] private bool needsReindex;
     private IndexProgress? pendingIndexProgress;
     private int pendingThumbUiFlushScheduled;
@@ -111,6 +113,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private AlbumListItem? selectedAlbum;
+    [ObservableProperty] private bool showHiddenInFolder;
+    [ObservableProperty] private bool hasHiddenItemsInFolder;
 
     [ObservableProperty] private MediaType selectedMediaTypes = MediaType.All;
     [ObservableProperty] private SearchScope selectedSearchScope = SearchScope.All;
@@ -213,6 +217,8 @@ public partial class MainViewModel : ObservableObject
     public ObservableRangeCollection<MediaItem> MediaItems { get; } = new();
 
     public bool HasMarked => MarkedCount > 0;
+
+    public bool ShowHiddenToggleVisible => HasHiddenItemsInFolder || ShowHiddenInFolder;
 
     public bool ShowBottomDock => IsInternalPlayerEnabled || HasMarked;
 
@@ -440,6 +446,7 @@ public partial class MainViewModel : ObservableObject
                     var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
                     var hideDuplicates = SettingsService.HideDuplicateFilesEnabled &&
                                          string.IsNullOrWhiteSpace(normalizedAlbumId);
+                    var includeHidden = ShowHiddenInFolder && !string.IsNullOrWhiteSpace(normalizedSourceId);
 
                     // IMPORTANT:
                     // An empty source id is treated as "all sources" (no SourceId filter).
@@ -449,27 +456,29 @@ public partial class MainViewModel : ObservableObject
                     var items = string.IsNullOrWhiteSpace(normalizedAlbumId)
                         ? hideDuplicates
                             ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
-                                    querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                                    querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize,
+                                    includeHidden)
                                 .ConfigureAwait(false)
                             : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
-                                    dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                                    dateFrom, dateTo, SelectedMediaTypes, 0, PageSize, includeHidden)
                                 .ConfigureAwait(false)
                         : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
-                                querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize)
+                                querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize,
+                                includeHidden)
                             .ConfigureAwait(false);
                     var filteredCount = string.IsNullOrWhiteSpace(normalizedAlbumId)
                         ? hideDuplicates
                             ? await indexService
                                 .CountQueryUniqueAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
-                                    SelectedMediaTypes)
+                                    SelectedMediaTypes, includeHidden)
                                 .ConfigureAwait(false)
                             : await indexService
                                 .CountQueryAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
-                                    SelectedMediaTypes)
+                                    SelectedMediaTypes, includeHidden)
                                 .ConfigureAwait(false)
                         : await albumService
                             .CountAlbumItemsAsync(normalizedAlbumId, SearchText, SelectedSearchScope, querySourceId,
-                                dateFrom, dateTo, SelectedMediaTypes)
+                                dateFrom, dateTo, SelectedMediaTypes, includeHidden)
                             .ConfigureAwait(false);
 
                     if (items.Count < filteredCount && items.Count < initialLoadTarget)
@@ -482,14 +491,15 @@ public partial class MainViewModel : ObservableObject
                                 ? hideDuplicates
                                     ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
                                             querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, offset,
-                                            PageSize)
+                                            PageSize, includeHidden)
                                         .ConfigureAwait(false)
                                     : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId,
-                                            sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize)
+                                            sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize,
+                                            includeHidden)
                                         .ConfigureAwait(false)
                                 : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText,
                                         SelectedSearchScope, querySourceId, sortKey, dateFrom, dateTo,
-                                        SelectedMediaTypes, offset, PageSize)
+                                        SelectedMediaTypes, offset, PageSize, includeHidden)
                                     .ConfigureAwait(false);
 
                             if (nextItems.Count == 0)
@@ -506,9 +516,22 @@ public partial class MainViewModel : ObservableObject
 
                     var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
                     var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+                    var hiddenCount = string.IsNullOrWhiteSpace(querySourceId)
+                        ? 0
+                        : string.IsNullOrWhiteSpace(normalizedAlbumId)
+                            ? hideDuplicates
+                                ? await indexService.CountHiddenUniqueAsync(SearchText, SelectedSearchScope,
+                                        querySourceId, dateFrom, dateTo, SelectedMediaTypes)
+                                    .ConfigureAwait(false)
+                                : await indexService.CountHiddenAsync(SearchText, SelectedSearchScope, querySourceId,
+                                        dateFrom, dateTo, SelectedMediaTypes)
+                                    .ConfigureAwait(false)
+                            : await albumService.CountHiddenAlbumItemsAsync(normalizedAlbumId, SearchText,
+                                    SelectedSearchScope, querySourceId, dateFrom, dateTo, SelectedMediaTypes)
+                                .ConfigureAwait(false);
 
                     return (sources, enabledSources, items, totalCount, filteredCount, normalizedSourceId,
-                        normalizedAlbumId, albumTabs, refreshVersion);
+                        normalizedAlbumId, albumTabs, refreshVersion, hiddenCount);
                 });
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -527,6 +550,7 @@ public partial class MainViewModel : ObservableObject
                     mediaItemsFilteredCount = result.filteredCount;
                     hasMoreMediaItems = result.items.Count < result.filteredCount;
                     isLoadingMoreMediaItems = false;
+                    HasHiddenItemsInFolder = result.hiddenCount > 0;
                 });
 
                 _ = RefreshTaggedPeopleCountAsync();
@@ -558,22 +582,23 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
-            var sortKey = SelectedSortOption?.Key ?? "name";
-            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-            var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-            var hideDuplicates = SettingsService.HideDuplicateFilesEnabled && string.IsNullOrWhiteSpace(ActiveAlbumId);
-            var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
-                ? hideDuplicates
-                    ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope, querySourceId,
-                            sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
-                        .ConfigureAwait(false)
-                    : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
-                            dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
-                        .ConfigureAwait(false)
-                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
-                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize)
-                    .ConfigureAwait(false);
+        var sortKey = SelectedSortOption?.Key ?? "name";
+        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+        var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+        var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+        var hideDuplicates = SettingsService.HideDuplicateFilesEnabled && string.IsNullOrWhiteSpace(ActiveAlbumId);
+        var includeHidden = ShowHiddenInFolder && !string.IsNullOrWhiteSpace(querySourceId);
+        var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
+            ? hideDuplicates
+                ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope, querySourceId,
+                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
+                    .ConfigureAwait(false)
+                : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
+                        dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
+                    .ConfigureAwait(false)
+            : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
+                    sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
+                .ConfigureAwait(false);
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -1156,7 +1181,7 @@ public partial class MainViewModel : ObservableObject
 
                 var photos = await indexService
                     .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null,
-                        MediaType.Photos | MediaType.Graphics)
+                        MediaType.Photos | MediaType.Graphics, true)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }
@@ -1440,6 +1465,50 @@ public partial class MainViewModel : ObservableObject
         RecomputeMarkedCount();
     }
 
+    [RelayCommand]
+    public Task HideItemAsync(MediaItem item)
+    {
+        if (item == null)
+            return Task.CompletedTask;
+
+        return UpdateHiddenAsync(new List<MediaItem> { item }, true);
+    }
+
+    [RelayCommand]
+    public Task UnhideItemAsync(MediaItem item)
+    {
+        if (item == null)
+            return Task.CompletedTask;
+
+        return UpdateHiddenAsync(new List<MediaItem> { item }, false);
+    }
+
+    [RelayCommand]
+    public Task HideMarkedAsync()
+    {
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return Task.CompletedTask;
+
+        return UpdateHiddenAsync(markedItems, true);
+    }
+
+    [RelayCommand]
+    public Task UnhideMarkedAsync()
+    {
+        var markedItems = MediaItems.Where(v => v.IsMarked).ToList();
+        if (markedItems.Count == 0)
+            return Task.CompletedTask;
+
+        return UpdateHiddenAsync(markedItems, false);
+    }
+
+    [RelayCommand]
+    public void ToggleShowHiddenInFolder()
+    {
+        ShowHiddenInFolder = !ShowHiddenInFolder;
+    }
+
 
     [RelayCommand]
     public async Task OpenItemMenuAsync(MediaItem item)
@@ -1450,7 +1519,8 @@ public partial class MainViewModel : ObservableObject
         var actions = new List<string>
         {
             AppResources.ShareAction,
-            AppResources.CopyMarkedAction
+            AppResources.CopyMarkedAction,
+            item.IsHidden ? AppResources.UnhideAction : AppResources.HideAction
         };
 
         if (AllowFileChanges)
@@ -1474,8 +1544,39 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        if (string.Equals(choice, AppResources.HideAction, StringComparison.Ordinal))
+        {
+            await HideItemAsync(item);
+            return;
+        }
+
+        if (string.Equals(choice, AppResources.UnhideAction, StringComparison.Ordinal))
+        {
+            await UnhideItemAsync(item);
+            return;
+        }
+
         if (string.Equals(choice, AppResources.DeleteMarkedAction, StringComparison.Ordinal))
             await DeleteItemAsync(item);
+    }
+
+    private async Task UpdateHiddenAsync(IReadOnlyList<MediaItem> items, bool isHidden)
+    {
+        if (items.Count == 0)
+            return;
+
+        await indexService.SetHiddenAsync(items, isHidden);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            foreach (var item in items)
+                item.IsHidden = isHidden;
+
+            if (!ShowHiddenInFolder && isHidden)
+                MediaItems.RemoveRange(items);
+        });
+
+        await RefreshAsync();
     }
 
     [RelayCommand]
@@ -2100,11 +2201,37 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowBottomDock));
     }
 
+    partial void OnShowHiddenInFolderChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowHiddenToggleVisible));
+
+        if (isApplyingShowHiddenState)
+            return;
+
+        SetShowHiddenForSource(ActiveSourceId, value);
+        _ = RefreshAsync();
+    }
+
+    partial void OnHasHiddenItemsInFolderChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowHiddenToggleVisible));
+    }
+
     partial void OnActiveSourceIdChanged(string value)
     {
         SettingsService.ActiveSourceId = value;
         SelectedSource = Sources.FirstOrDefault(source => source.Id == value)
                          ?? Sources.FirstOrDefault();
+
+        isApplyingShowHiddenState = true;
+        try
+        {
+            ShowHiddenInFolder = GetShowHiddenForSource(value);
+        }
+        finally
+        {
+            isApplyingShowHiddenState = false;
+        }
     }
 
     partial void OnActiveAlbumIdChanged(string value)
@@ -2218,6 +2345,25 @@ public partial class MainViewModel : ObservableObject
         SelectedAlbum = value.FirstOrDefault(album => album.Id == ActiveAlbumId)
                         ?? value.FirstOrDefault();
         OnPropertyChanged(nameof(HasAlbums));
+    }
+
+    private bool GetShowHiddenForSource(string sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId))
+            return false;
+
+        return showHiddenBySource.TryGetValue(sourceId, out var value) && value;
+    }
+
+    private void SetShowHiddenForSource(string sourceId, bool value)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId))
+            return;
+
+        if (value)
+            showHiddenBySource[sourceId] = true;
+        else
+            showHiddenBySource.Remove(sourceId);
     }
 
     private static List<TimelineEntry> BuildTimelineEntries(List<MediaItem>? items)

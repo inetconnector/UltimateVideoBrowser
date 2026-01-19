@@ -530,10 +530,15 @@ public partial class MainPage : ContentPage
             SaveAsCommand = vm.SaveAsCommand;
             CopyItemCommand = vm.CopyItemCommand;
             DeleteItemCommand = vm.DeleteItemCommand;
+            HideItemCommand = vm.HideItemCommand;
+            UnhideItemCommand = vm.UnhideItemCommand;
+            HideMarkedCommand = vm.HideMarkedCommand;
+            UnhideMarkedCommand = vm.UnhideMarkedCommand;
             RotateLeftCommand = vm.RotateLeftCommand;
             RotateRightCommand = vm.RotateRightCommand;
             MirrorCommand = vm.MirrorCommand;
             OpenItemMenuCommand = vm.OpenItemMenuCommand;
+            ToggleShowHiddenInFolderCommand = vm.ToggleShowHiddenInFolderCommand;
             // Restore UI states from persisted settings.
             try
             {
@@ -635,10 +640,15 @@ public partial class MainPage : ContentPage
         public IAsyncRelayCommand SaveAsCommand { get; }
         public IAsyncRelayCommand CopyItemCommand { get; }
         public IAsyncRelayCommand DeleteItemCommand { get; }
+        public IAsyncRelayCommand HideItemCommand { get; }
+        public IAsyncRelayCommand UnhideItemCommand { get; }
+        public IAsyncRelayCommand HideMarkedCommand { get; }
+        public IAsyncRelayCommand UnhideMarkedCommand { get; }
         public IAsyncRelayCommand RotateLeftCommand { get; }
         public IAsyncRelayCommand RotateRightCommand { get; }
         public IAsyncRelayCommand MirrorCommand { get; }
         public IAsyncRelayCommand OpenItemMenuCommand { get; }
+        public IRelayCommand ToggleShowHiddenInFolderCommand { get; }
 
         public int GridSpan
         {
@@ -929,6 +939,21 @@ public partial class MainPage : ContentPage
         public bool IsLocationEnabled => vm.IsLocationEnabled;
         public bool HasLocations => vm.HasLocations;
         public bool ShowLocationsHighlight => vm.IsLocationEnabled;
+        public bool ShowHiddenInFolder
+        {
+            get => vm.ShowHiddenInFolder;
+            set
+            {
+                if (vm.ShowHiddenInFolder == value)
+                    return;
+
+                vm.ShowHiddenInFolder = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool HasHiddenItemsInFolder => vm.HasHiddenItemsInFolder;
+        public bool ShowHiddenToggleVisible => vm.ShowHiddenToggleVisible;
 
         private void HandleViewModelPropertyChanged(string? propertyName)
         {
@@ -1039,6 +1064,17 @@ public partial class MainPage : ContentPage
                     break;
                 case nameof(MainViewModel.ActiveAlbumId):
                     OnPropertyChanged(nameof(ActiveAlbumId));
+                    break;
+                case nameof(MainViewModel.ShowHiddenInFolder):
+                    OnPropertyChanged(nameof(ShowHiddenInFolder));
+                    OnPropertyChanged(nameof(ShowHiddenToggleVisible));
+                    break;
+                case nameof(MainViewModel.HasHiddenItemsInFolder):
+                    OnPropertyChanged(nameof(HasHiddenItemsInFolder));
+                    OnPropertyChanged(nameof(ShowHiddenToggleVisible));
+                    break;
+                case nameof(MainViewModel.ShowHiddenToggleVisible):
+                    OnPropertyChanged(nameof(ShowHiddenToggleVisible));
                     break;
                 case nameof(MainViewModel.SelectedSearchScope):
                     OnPropertyChanged(nameof(SelectedSearchScope));
