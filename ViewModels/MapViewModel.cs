@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -61,12 +62,13 @@ public partial class MapViewModel : ObservableObject
 
             var items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
 
-            if (items.Count == 0 && settingsService.LocationsEnabled)
+            if (settingsService.LocationsEnabled)
             {
                 // Best-effort backfill for existing media that hasn't been location-scanned yet.
-                await indexService.BackfillLocationsAsync(mediaTypes, 600, CancellationToken.None)
+                var updated = await indexService.BackfillLocationsAsync(mediaTypes, 600, CancellationToken.None)
                     .ConfigureAwait(false);
-                items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
+                if (updated > 0)
+                    items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
             }
 
             foreach (var item in items)
@@ -147,8 +149,12 @@ public partial class MapViewModel : ObservableObject
     {
         var mapItems = items
             .Where(item => item.Latitude.HasValue && item.Longitude.HasValue)
-            .Select(item => new MapItem(item.Path ?? string.Empty, item.Name ?? string.Empty,
-                item.Latitude!.Value, item.Longitude!.Value))
+            .Select(item => new MapItem(
+                item.Path ?? string.Empty,
+                item.Name ?? string.Empty,
+                item.Latitude!.Value,
+                item.Longitude!.Value,
+                BuildPreviewUrl(item)))
             .ToList();
 
         var json = JsonSerializer.Serialize(mapItems, new JsonSerializerOptions
@@ -169,6 +175,9 @@ public partial class MapViewModel : ObservableObject
         sb.AppendLine("<style>");
         sb.AppendLine("html, body, #map { height: 100%; margin: 0; background: #0f172a; }");
         sb.AppendLine(".leaflet-popup-content { font-family: -apple-system, Segoe UI, sans-serif; }");
+        sb.AppendLine(".map-popup { display: flex; flex-direction: column; gap: 6px; }");
+        sb.AppendLine(".map-popup img { max-width: 240px; max-height: 160px; border-radius: 8px; object-fit: cover; }");
+        sb.AppendLine(".map-popup .title { font-weight: 600; }");
         sb.AppendLine("</style>");
         sb.AppendLine("</head>");
         sb.AppendLine("<body>");
@@ -188,15 +197,16 @@ public partial class MapViewModel : ObservableObject
         sb.AppendLine("}");
         sb.AppendLine("map.doubleClickZoom.disable();");
         sb.AppendLine("const markers = [];");
+        sb.AppendLine("let activeIndex = -1;");
         sb.AppendLine("items.forEach(item => {");
         sb.AppendLine("  const marker = L.marker([item.lat, item.lon]).addTo(map);");
-        sb.AppendLine(
-            "  const label = escapeHtml(item.name || '');");
-        sb.AppendLine(
-            "  marker.bindPopup(`<strong>${label}</strong><br/><span>${openLabel}</span>`);");
+        sb.AppendLine("  const label = escapeHtml(item.name || '');");
+        sb.AppendLine("  const preview = item.preview ? encodeURI(item.preview) : '';");
+        sb.AppendLine("  const previewHtml = preview ? `<img src=\"${preview}\" alt=\"${label}\"/>` : '';");
+        sb.AppendLine("  const popupHtml = `<div class=\"map-popup\">${previewHtml}<div class=\"title\">${label}</div><div>${openLabel}</div></div>`;");
+        sb.AppendLine("  marker.bindPopup(popupHtml);");
         sb.AppendLine("  marker.on('click', () => {");
-        sb.AppendLine("    map.setView([item.lat, item.lon], Math.max(map.getZoom(), 12));");
-        sb.AppendLine("    window.location.href = buildActionUrl('select', item);");
+        sb.AppendLine("    focusMarker(item);");
         sb.AppendLine("  });");
         sb.AppendLine("  marker.on('dblclick', () => {");
         sb.AppendLine("    window.location.href = buildActionUrl('open', item);");
@@ -204,11 +214,31 @@ public partial class MapViewModel : ObservableObject
         sb.AppendLine("  marker.on('contextmenu', () => {");
         sb.AppendLine("    window.location.href = buildActionUrl('menu', item);");
         sb.AppendLine("  });");
-        sb.AppendLine("  markers.push(marker);");
+        sb.AppendLine("  markers.push({ marker, item });");
+        sb.AppendLine("});");
+        sb.AppendLine("function focusMarker(item) {");
+        sb.AppendLine("  map.setView([item.lat, item.lon], Math.max(map.getZoom(), 12));");
+        sb.AppendLine("  window.location.href = buildActionUrl('select', item);");
+        sb.AppendLine("}");
+        sb.AppendLine("function focusMarkerByIndex(index) {");
+        sb.AppendLine("  if (markers.length === 0) return;");
+        sb.AppendLine("  activeIndex = (index + markers.length) % markers.length;");
+        sb.AppendLine("  const entry = markers[activeIndex];");
+        sb.AppendLine("  focusMarker(entry.item);");
+        sb.AppendLine("  entry.marker.openPopup();");
+        sb.AppendLine("}");
+        sb.AppendLine("function focusNext() {");
+        sb.AppendLine("  focusMarkerByIndex(activeIndex + 1);");
+        sb.AppendLine("}");
+        sb.AppendLine("document.addEventListener('keydown', (event) => {");
+        sb.AppendLine("  if (event.code === 'Enter' || event.code === 'Space') {");
+        sb.AppendLine("    event.preventDefault();");
+        sb.AppendLine("    focusNext();");
+        sb.AppendLine("  }");
         sb.AppendLine("});");
         sb.AppendLine("if (markers.length > 0) {");
-        sb.AppendLine("  const group = L.featureGroup(markers);");
-        sb.AppendLine("  map.fitBounds(group.getBounds().pad(0.2));");
+        sb.AppendLine("  const startIndex = Math.floor(Math.random() * markers.length);");
+        sb.AppendLine("  focusMarkerByIndex(startIndex);");
         sb.AppendLine("}");
         sb.AppendLine("</script>");
         sb.AppendLine("</body>");
@@ -216,5 +246,20 @@ public partial class MapViewModel : ObservableObject
         return sb.ToString();
     }
 
-    private sealed record MapItem(string Path, string Name, double Lat, double Lon);
+    private static string BuildPreviewUrl(MediaItem item)
+    {
+        var previewPath = item.TilePreviewPath;
+        if (string.IsNullOrWhiteSpace(previewPath))
+            return string.Empty;
+
+        if (Uri.TryCreate(previewPath, UriKind.Absolute, out var absolute))
+            return absolute.AbsoluteUri;
+
+        if (Path.IsPathRooted(previewPath))
+            return new Uri(previewPath).AbsoluteUri;
+
+        return previewPath;
+    }
+
+    private sealed record MapItem(string Path, string Name, double Lat, double Lon, string Preview);
 }
