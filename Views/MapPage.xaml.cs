@@ -1,4 +1,5 @@
 using System.Net;
+using UltimateVideoBrowser.Resources.Strings;
 using UltimateVideoBrowser.ViewModels;
 
 namespace UltimateVideoBrowser.Views;
@@ -24,7 +25,7 @@ public partial class MapPage : ContentPage
         };
     }
 
-    private void OnMapNavigating(object sender, WebNavigatingEventArgs e)
+    private async void OnMapNavigating(object sender, WebNavigatingEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(e.Url) ||
             !e.Url.StartsWith("uvb://media", StringComparison.OrdinalIgnoreCase))
@@ -33,8 +34,50 @@ public partial class MapPage : ContentPage
         e.Cancel = true;
         var uri = new Uri(e.Url);
         var path = GetQueryValue(uri, "path");
-        if (!string.IsNullOrWhiteSpace(path))
-            vm.TrySelectByPath(path);
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+
+        if (!vm.TrySelectByPath(path))
+            return;
+
+        var action = GetQueryValue(uri, "action");
+        if (string.IsNullOrWhiteSpace(action) ||
+            string.Equals(action, "select", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        if (string.Equals(action, "open", StringComparison.OrdinalIgnoreCase))
+        {
+            if (vm.OpenSelectedCommand.CanExecute(null))
+                vm.OpenSelectedCommand.Execute(null);
+            return;
+        }
+
+        if (!string.Equals(action, "menu", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var choice = await DisplayActionSheet(
+            vm.SelectedItem?.Name ?? string.Empty,
+            AppResources.CancelButton,
+            null,
+            AppResources.OpenAction,
+            AppResources.ShareAction,
+            AppResources.SaveAsAction);
+
+        if (string.Equals(choice, AppResources.OpenAction, StringComparison.Ordinal))
+        {
+            if (vm.OpenSelectedCommand.CanExecute(null))
+                vm.OpenSelectedCommand.Execute(null);
+        }
+        else if (string.Equals(choice, AppResources.ShareAction, StringComparison.Ordinal))
+        {
+            if (vm.ShareSelectedCommand.CanExecute(null))
+                vm.ShareSelectedCommand.Execute(null);
+        }
+        else if (string.Equals(choice, AppResources.SaveAsAction, StringComparison.Ordinal))
+        {
+            if (vm.SaveAsSelectedCommand.CanExecute(null))
+                vm.SaveAsSelectedCommand.Execute(null);
+        }
     }
 
     private static string? GetQueryValue(Uri uri, string key)
