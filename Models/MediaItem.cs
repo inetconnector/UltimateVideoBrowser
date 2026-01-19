@@ -8,6 +8,7 @@ namespace UltimateVideoBrowser.Models;
 
 public class MediaItem : INotifyPropertyChanged
 {
+    private bool isHidden;
     private bool isMarked;
     private string name = "";
     private string path = "";
@@ -187,6 +188,19 @@ public class MediaItem : INotifyPropertyChanged
     }
 
     [Ignore] public bool HasPeopleTags => !string.IsNullOrWhiteSpace(PeopleTagsSummary);
+
+    public bool IsHidden
+    {
+        get => isHidden;
+        set
+        {
+            if (isHidden == value)
+                return;
+
+            isHidden = value;
+            OnPropertyChanged();
+        }
+    }
 
     [Ignore]
     public IReadOnlyList<string> PeopleTags

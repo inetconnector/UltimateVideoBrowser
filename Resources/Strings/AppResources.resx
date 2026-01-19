@@ -288,6 +288,18 @@
   <data name="CopyMarkedAction" xml:space="preserve">
     <value>Copy</value>
   </data>
+  <data name="HideAction" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="UnhideAction" xml:space="preserve">
+    <value>Unhide</value>
+  </data>
+  <data name="ShowHiddenAction" xml:space="preserve">
+    <value>Show hidden</value>
+  </data>
+  <data name="HideHiddenAction" xml:space="preserve">
+    <value>Hide hidden</value>
+  </data>
   <data name="MoveMarkedAction" xml:space="preserve">
     <value>Move</value>
   </data>

@@ -276,6 +276,10 @@ public static class AppResources
 
     public static string MarkedCountFormat => GetString(nameof(MarkedCountFormat), "Marked: {0}");
     public static string CopyMarkedAction => GetString(nameof(CopyMarkedAction), "Copy");
+    public static string HideAction => GetString(nameof(HideAction), "Hide");
+    public static string UnhideAction => GetString(nameof(UnhideAction), "Unhide");
+    public static string ShowHiddenAction => GetString(nameof(ShowHiddenAction), "Show hidden");
+    public static string HideHiddenAction => GetString(nameof(HideHiddenAction), "Hide hidden");
     public static string MoveMarkedAction => GetString(nameof(MoveMarkedAction), "Move");
     public static string ClearMarkedAction => GetString(nameof(ClearMarkedAction), "Clear");
     public static string DeleteMarkedAction => GetString(nameof(DeleteMarkedAction), "Delete permanently");

@@ -758,39 +758,72 @@ public sealed class IndexService
     }
 
     public Task<List<MediaItem>> QueryAsync(string search, SearchScope searchScope, string? sourceId, string sortKey,
-        DateTime? from, DateTime? to, MediaType mediaTypes)
+        DateTime? from, DateTime? to, MediaType mediaTypes, bool includeHidden)
     {
-        return QueryAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes);
+        return QueryAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes,
+            includeHidden ? null : false);
     }
 
     public Task<List<MediaItem>> QueryPageAsync(string search, SearchScope searchScope, string? sourceId,
-        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit, bool includeHidden)
     {
-        return QueryPageAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit);
+        return QueryPageAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit,
+            includeHidden ? null : false);
     }
 
     public Task<List<MediaItem>> QueryPageUniqueOldestAsync(string search, SearchScope searchScope, string? sourceId,
-        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit, bool includeHidden)
     {
         return QueryPageUniqueOldestAsyncInternal(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset,
-            limit);
+            limit, includeHidden ? null : false);
     }
 
     public Task<int> CountQueryAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
-        DateTime? to, MediaType mediaTypes)
+        DateTime? to, MediaType mediaTypes, bool includeHidden)
     {
-        return CountQueryAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes);
+        return CountQueryAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes,
+            includeHidden ? null : false);
     }
 
     public Task<int> CountQueryUniqueAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
+        DateTime? to, MediaType mediaTypes, bool includeHidden)
+    {
+        return CountQueryUniqueAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes,
+            includeHidden ? null : false);
+    }
+
+    public Task<int> CountHiddenAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
         DateTime? to, MediaType mediaTypes)
     {
-        return CountQueryUniqueAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes);
+        return CountQueryAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes, true);
+    }
+
+    public Task<int> CountHiddenUniqueAsync(string search, SearchScope searchScope, string? sourceId, DateTime? from,
+        DateTime? to, MediaType mediaTypes)
+    {
+        return CountQueryUniqueAsyncInternal(search, searchScope, sourceId, from, to, mediaTypes, true);
     }
 
     public Task<int> CountAsync(MediaType mediaTypes)
     {
         return CountAsyncInternal(mediaTypes);
+    }
+
+    public async Task SetHiddenAsync(IEnumerable<MediaItem> items, bool isHidden)
+    {
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        var flag = isHidden ? 1 : 0;
+        foreach (var item in items)
+        {
+            if (string.IsNullOrWhiteSpace(item.Path))
+                continue;
+
+            await db.Db.ExecuteAsync(
+                    "UPDATE MediaItem SET IsHidden = ? WHERE Path = ?;",
+                    flag,
+                    item.Path)
+                .ConfigureAwait(false);
+        }
     }
 
     public async Task<List<MediaItem>> QueryLocationsAsync(MediaType mediaTypes)
@@ -961,48 +994,50 @@ public sealed class IndexService
     }
 
     private async Task<List<MediaItem>> QueryAsyncInternal(string search, SearchScope searchScope, string? sourceId,
-        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes)
+        string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, bool? isHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, null, null,
-            false);
+            false, isHidden);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private async Task<List<MediaItem>> QueryPageAsyncInternal(string search, SearchScope searchScope,
-        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit,
+        bool? isHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes, offset, limit,
-            false);
+            false, isHidden);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private async Task<List<MediaItem>> QueryPageUniqueOldestAsyncInternal(string search, SearchScope searchScope,
-        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit)
+        string? sourceId, string sortKey, DateTime? from, DateTime? to, MediaType mediaTypes, int offset, int limit,
+        bool? isHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, sortKey, from, to, mediaTypes,
             offset,
-            limit, false);
+            limit, false, isHidden);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private async Task<int> CountQueryAsyncInternal(string search, SearchScope searchScope, string? sourceId,
-        DateTime? from, DateTime? to, MediaType mediaTypes)
+        DateTime? from, DateTime? to, MediaType mediaTypes, bool? isHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null, null,
-            true);
+            true, isHidden);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
     private async Task<int> CountQueryUniqueAsyncInternal(string search, SearchScope searchScope, string? sourceId,
-        DateTime? from, DateTime? to, MediaType mediaTypes)
+        DateTime? from, DateTime? to, MediaType mediaTypes, bool? isHidden)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildUniqueOldestQuerySql(search, searchScope, sourceId, "name", from, to, mediaTypes, null,
-            null, true);
+            null, true, isHidden);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -1026,9 +1061,10 @@ public sealed class IndexService
         MediaType mediaTypes,
         int? offset,
         int? limit,
-        bool countOnly)
+        bool countOnly,
+        bool? isHidden)
     {
-        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes);
+        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes, isHidden);
 
         var sql = countOnly ? "SELECT COUNT(*) FROM MediaItem" : "SELECT MediaItem.* FROM MediaItem";
 
@@ -1072,9 +1108,10 @@ public sealed class IndexService
         MediaType mediaTypes,
         int? offset,
         int? limit,
-        bool countOnly)
+        bool countOnly,
+        bool? isHidden)
     {
-        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes);
+        var (filters, args) = BuildFilters(search, searchScope, sourceId, from, to, mediaTypes, isHidden);
         var filterSql = filters.Count > 0 ? " WHERE " + string.Join(" AND ", filters) : string.Empty;
 
         var orderBy = sortKey switch
@@ -1085,7 +1122,7 @@ public sealed class IndexService
         };
 
         var selectColumns =
-            "Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId, Latitude, Longitude, ThumbnailPath, PeopleTagsSummary, FaceScanModelKey, FaceScanAtSeconds";
+            "Path, Name, MediaType, DurationMs, DateAddedSeconds, SourceId, Latitude, Longitude, ThumbnailPath, PeopleTagsSummary, FaceScanModelKey, FaceScanAtSeconds, IsHidden";
 
         if (countOnly)
         {
@@ -1132,7 +1169,8 @@ SELECT {selectColumns} FROM Ranked WHERE rn = 1 ORDER BY {orderBy}";
         string? sourceId,
         DateTime? from,
         DateTime? to,
-        MediaType mediaTypes)
+        MediaType mediaTypes,
+        bool? isHidden)
     {
         var args = new List<object>();
         var filters = new List<string>();
@@ -1197,6 +1235,12 @@ SELECT {selectColumns} FROM Ranked WHERE rn = 1 ORDER BY {orderBy}";
             filters.Add("MediaItem.DateAddedSeconds >= ? AND MediaItem.DateAddedSeconds <= ?");
             args.Add(fromSeconds);
             args.Add(toSeconds);
+        }
+
+        if (isHidden.HasValue)
+        {
+            filters.Add("MediaItem.IsHidden = ?");
+            args.Add(isHidden.Value ? 1 : 0);
         }
 
         return (filters, args);

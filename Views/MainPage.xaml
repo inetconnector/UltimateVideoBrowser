@@ -255,6 +255,18 @@
                                         <components:MainDateFilterView IsVisible="{Binding IsDateFilterEnabled}" />
                                         <components:MainSourcesTabsView IsVisible="{Binding HasMultipleSources}" />
                                         <components:MainAlbumsTabsView IsVisible="{Binding HasAlbums}" />
+                                        <Button IsVisible="{Binding ShowHiddenToggleVisible}"
+                                                Command="{Binding ToggleShowHiddenInFolderCommand}"
+                                                Text="{x:Static strings:AppResources.ShowHiddenAction}">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button"
+                                                             Binding="{Binding ShowHiddenInFolder}"
+                                                             Value="True">
+                                                    <Setter Property="Text"
+                                                            Value="{x:Static strings:AppResources.HideHiddenAction}" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Frame>

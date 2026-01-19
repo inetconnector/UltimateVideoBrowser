@@ -391,6 +391,7 @@ public sealed class AppDb
         await EnsureColumnAsync("MediaItem", "PeopleTagsSummary", "TEXT").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "FaceScanModelKey", "TEXT").ConfigureAwait(false);
         await EnsureColumnAsync("MediaItem", "FaceScanAtSeconds", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
+        await EnsureColumnAsync("MediaItem", "IsHidden", "INTEGER NOT NULL DEFAULT 0").ConfigureAwait(false);
 
         // FaceEmbedding (People feature)
         await EnsureColumnAsync("FaceEmbedding", "X", "REAL").ConfigureAwait(false);
@@ -432,6 +433,9 @@ public sealed class AppDb
                 "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
         await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_facescan_modelkey ON MediaItem(FaceScanModelKey);",
+                "AppDb.EnsureIndexesAsync")
+            .ConfigureAwait(false);
+        await TryExecuteAsync("CREATE INDEX IF NOT EXISTS idx_media_hidden ON MediaItem(IsHidden);",
                 "AppDb.EnsureIndexesAsync")
             .ConfigureAwait(false);
 

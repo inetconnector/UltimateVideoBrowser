@@ -29,7 +29,7 @@ public sealed class FaceScanQueueService
         {
             var page = await indexService
                 .QueryPageAsync("", SearchScope.All, sourceId, sortKey, from, to, MediaType.Photos | MediaType.Graphics,
-                    offset, batchSize)
+                    offset, batchSize, true)
                 .ConfigureAwait(false);
 
             if (page.Count == 0)

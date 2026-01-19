@@ -199,6 +199,8 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
 
         if (isMulti)
         {
+            var hasHidden = selection.Any(item => item.IsHidden);
+            var hasVisible = selection.Any(item => !item.IsHidden);
             AddCommandItem(flyout, AppResources.SaveAsAction, binding, "SaveAsMarkedCommand", null);
             AddCommandItem(flyout, AppResources.AddToAlbumAction, binding, "AddMarkedToAlbumCommand", null);
 
@@ -209,6 +211,11 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
                 AddCommandItem(flyout, AppResources.DeleteMarkedAction, binding, "DeleteMarkedCommand", null);
             }
 
+            if (hasVisible)
+                AddCommandItem(flyout, AppResources.HideAction, binding, "HideMarkedCommand", null);
+            if (hasHidden)
+                AddCommandItem(flyout, AppResources.UnhideAction, binding, "UnhideMarkedCommand", null);
+
             AddCommandItem(flyout, AppResources.ClearMarkedAction, binding, "ClearMarkedCommand", null);
             return flyout;
         }
@@ -216,6 +223,8 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         // Single item actions
         AddCommandItem(flyout, AppResources.SaveAsAction, binding, "SaveAsCommand", primaryItem);
         AddCommandItem(flyout, AppResources.CopyMarkedAction, binding, "CopyItemCommand", primaryItem);
+        AddCommandItem(flyout, primaryItem.IsHidden ? AppResources.UnhideAction : AppResources.HideAction, binding,
+            primaryItem.IsHidden ? "UnhideItemCommand" : "HideItemCommand", primaryItem);
 
         flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
 
