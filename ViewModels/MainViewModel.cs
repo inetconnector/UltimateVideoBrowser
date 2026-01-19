@@ -1523,6 +1523,9 @@ public partial class MainViewModel : ObservableObject
             item.IsHidden ? AppResources.UnhideAction : AppResources.HideAction
         };
 
+        if (ShowHiddenToggleVisible)
+            actions.Add(ShowHiddenInFolder ? AppResources.HideHiddenAction : AppResources.ShowHiddenAction);
+
         if (AllowFileChanges)
             actions.Add(AppResources.DeleteMarkedAction);
 
@@ -1556,6 +1559,13 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        if (string.Equals(choice, AppResources.ShowHiddenAction, StringComparison.Ordinal)
+            || string.Equals(choice, AppResources.HideHiddenAction, StringComparison.Ordinal))
+        {
+            ToggleShowHiddenInFolder();
+            return;
+        }
+
         if (string.Equals(choice, AppResources.DeleteMarkedAction, StringComparison.Ordinal))
             await DeleteItemAsync(item);
     }
@@ -1573,10 +1583,55 @@ public partial class MainViewModel : ObservableObject
                 item.IsHidden = isHidden;
 
             if (!ShowHiddenInFolder && isHidden)
+            {
                 MediaItems.RemoveRange(items);
+                var removedCount = items.Count;
+                mediaItemsOffset = Math.Max(0, mediaItemsOffset - removedCount);
+                mediaItemsFilteredCount = Math.Max(0, mediaItemsFilteredCount - removedCount);
+                hasMoreMediaItems = mediaItemsOffset < mediaItemsFilteredCount;
+            }
         });
 
-        await RefreshAsync();
+        await RefreshHiddenCountAsync();
+    }
+
+    private async Task RefreshHiddenCountAsync()
+    {
+        try
+        {
+            var normalizedSourceId = ActiveSourceId;
+            var normalizedAlbumId = ActiveAlbumId;
+            var querySourceId = string.IsNullOrWhiteSpace(normalizedSourceId) ? null : normalizedSourceId;
+
+            if (string.IsNullOrWhiteSpace(querySourceId))
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => HasHiddenItemsInFolder = false);
+                return;
+            }
+
+            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+            var hideDuplicates = SettingsService.HideDuplicateFilesEnabled &&
+                                 string.IsNullOrWhiteSpace(normalizedAlbumId);
+
+            var hiddenCount = string.IsNullOrWhiteSpace(normalizedAlbumId)
+                ? hideDuplicates
+                    ? await indexService.CountHiddenUniqueAsync(SearchText, SelectedSearchScope, querySourceId,
+                            dateFrom, dateTo, SelectedMediaTypes)
+                        .ConfigureAwait(false)
+                    : await indexService.CountHiddenAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom,
+                            dateTo, SelectedMediaTypes)
+                        .ConfigureAwait(false)
+                : await albumService.CountHiddenAlbumItemsAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
+                        querySourceId, dateFrom, dateTo, SelectedMediaTypes)
+                    .ConfigureAwait(false);
+
+            await MainThread.InvokeOnMainThreadAsync(() => HasHiddenItemsInFolder = hiddenCount > 0);
+        }
+        catch
+        {
+            // Best-effort only.
+        }
     }
 
     [RelayCommand]
