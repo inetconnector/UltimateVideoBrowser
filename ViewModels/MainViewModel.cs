@@ -360,8 +360,30 @@ public partial class MainViewModel : ObservableObject
             upgrade,
             ok).ConfigureAwait(false);
 
+        await TryPromptLocationOptInAsync().ConfigureAwait(false);
+
         if (goUpgrade)
             ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async Task TryPromptLocationOptInAsync()
+    {
+        if (SettingsService.LocationsEnabled)
+            return;
+
+        var accepted = await dialogService.DisplayAlertAsync(
+            AppResources.LocationOptInTitle,
+            AppResources.LocationOptInMessage,
+            AppResources.LocationOptInAccept,
+            AppResources.LocationOptInDecline).ConfigureAwait(false);
+
+        if (!accepted)
+            return;
+
+        SettingsService.LocationsEnabled = true;
+        IsLocationEnabled = true;
+        if (!SettingsService.NeedsReindex)
+            SettingsService.NeedsReindex = true;
     }
 
     public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)
