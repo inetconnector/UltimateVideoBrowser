@@ -372,14 +372,22 @@ public sealed class PeopleRecognitionService
             IReadOnlyList<DetectedFace> faces;
             try
             {
-                using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
-                var tuning = YuNetFaceDetector.YuNetTuning.Default;
+                //using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
 
-                // 2) Use tuned detection if available, otherwise fallback to the default threshold.
-                if (tuning != null)
-                    faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
-                else
-                    faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+                YuNetFaceDetector.YuNetTuning? tuning = null;
+
+                //If a reference image exists, calibrate against it(best quality).
+                tuning = YuNetFaceDetector.YuNetTuning.Default;
+                //if (referenceImage != null)
+                //{
+                //    // ExpectedFaces=1 is a sane default for calibration.
+                //    tuning = await faceDetector
+                //        .CalibrateFromReferenceImageAsync(referenceImage, expectedFaces: 6, ct)
+                //        .ConfigureAwait(false);
+                //} 
+ 
+                // Otherwise: let the detector pick dynamic defaults (BuildAutoTuning).
+                faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -416,6 +424,18 @@ public sealed class PeopleRecognitionService
 
                 var faceQuality = ComputeFaceQuality(face.Score, face.W, face.H);
 
+                string? thumb96Path = null;
+                try
+                {
+                    thumb96Path = await faceThumbnails
+                        .EnsureFaceThumbnailAsync(image, path, face, i, 96, ct)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
+                }
+
                 embeddings.Add(new FaceEmbedding
                 {
                     MediaPath = path,
@@ -430,7 +450,8 @@ public sealed class PeopleRecognitionService
                     DetectionModelKey = detectionModelKey,
                     EmbeddingModelKey = embeddingModelKey,
                     FaceQuality = faceQuality,
-                    Embedding = FloatsToBytes(embedding)
+                    Embedding = FloatsToBytes(embedding),
+                    Thumb96Path = thumb96Path
                 });
 
                 try
