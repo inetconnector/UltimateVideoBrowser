@@ -339,14 +339,14 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshLocationsCountAsync();
     }
 
-    public async Task TryShowPeopleTaggingTrialHintAsync()
+    public async Task<bool> TryShowPeopleTaggingTrialHintAsync()
     {
         if (SettingsService.IsProUnlocked)
-            return;
+            return false;
         if (!SettingsService.PeopleTaggingEnabled)
-            return;
+            return false;
         if (SettingsService.PeopleTaggingTrialHintShown)
-            return;
+            return false;
 
         SettingsService.PeopleTaggingTrialHintShown = true;
 
@@ -362,6 +362,28 @@ public partial class MainViewModel : ObservableObject
 
         if (goUpgrade)
             ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
+
+        return true;
+    }
+
+    public async Task TryPromptLocationOptInAsync()
+    {
+        if (SettingsService.LocationsEnabled)
+            return;
+
+        var accepted = await dialogService.DisplayAlertAsync(
+            AppResources.LocationOptInTitle,
+            AppResources.LocationOptInMessage,
+            AppResources.LocationOptInAccept,
+            AppResources.LocationOptInDecline).ConfigureAwait(false);
+
+        if (!accepted)
+            return;
+
+        SettingsService.LocationsEnabled = true;
+        IsLocationEnabled = true;
+        if (!SettingsService.NeedsReindex)
+            SettingsService.NeedsReindex = true;
     }
 
     public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)
