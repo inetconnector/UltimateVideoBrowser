@@ -537,6 +537,7 @@ public partial class MainPage : ContentPage
 
     private sealed class MainPageBinding : BindableObject
     {
+        private static readonly bool IsAndroid = OperatingSystem.IsAndroid();
         private readonly DeviceModeService deviceMode;
         private readonly IDialogService dialogService;
         private readonly MainPage page;
@@ -577,6 +578,8 @@ public partial class MainPage : ContentPage
             this.peopleData = peopleData;
             this.proUpgradeService = proUpgradeService;
             dialogService = serviceProvider.GetService<IDialogService>() ?? new DialogService();
+            if (IsAndroid)
+                isIndexingOverlaySuppressed = true;
 
             OpenSourcesCommand = new AsyncRelayCommand(OpenSourcesAsync);
             RequestReindexCommand = new AsyncRelayCommand(RequestReindexAsync);
@@ -814,6 +817,9 @@ public partial class MainPage : ContentPage
             get => isIndexingOverlayVisible;
             set
             {
+                if (IsAndroid && value)
+                    return;
+
                 if (isIndexingOverlayVisible == value)
                     return;
 
@@ -836,7 +842,7 @@ public partial class MainPage : ContentPage
 
         public bool ShowIndexingBanner =>
             vm.IndexState == IndexingState.NeedsReindex ||
-            (vm.IndexState == IndexingState.Running && !IsIndexingOverlayVisible);
+            (vm.IndexState == IndexingState.Running && !IsIndexingOverlayVisible && !IsAndroid);
 
         public IndexingState IndexState => vm.IndexState;
 
@@ -1056,13 +1062,21 @@ public partial class MainPage : ContentPage
                 case nameof(MainViewModel.IsIndexing):
                     if (!vm.IsIndexing)
                     {
-                        isIndexingOverlaySuppressed = false;
+                        isIndexingOverlaySuppressed = IsAndroid;
                         IsIndexingOverlayVisible = false;
                         IsIndexRefreshPending = false;
                     }
                     else
                     {
-                        IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
+                        if (IsAndroid)
+                        {
+                            isIndexingOverlaySuppressed = true;
+                            IsIndexingOverlayVisible = false;
+                        }
+                        else
+                        {
+                            IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
+                        }
                     }
 
                     OnPropertyChanged(nameof(IsIndexing));
