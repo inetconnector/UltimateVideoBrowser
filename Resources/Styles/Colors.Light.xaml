@@ -24,4 +24,7 @@
 
     <Color x:Key="ShadowColor">#000000</Color>
     <Color x:Key="OnAccent">#FFFFFF</Color>
+
+    <Color x:Key="OverlayScrim">#CC000000</Color>
+    <Color x:Key="MediaBadgeBackground">#CC0E0F14</Color>
 </ResourceDictionary>

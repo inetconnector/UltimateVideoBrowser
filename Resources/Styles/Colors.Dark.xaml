@@ -35,4 +35,7 @@
 
     <!-- Text on accent surfaces -->
     <Color x:Key="OnAccent">#FFFFFF</Color>
+
+    <Color x:Key="OverlayScrim">#99000000</Color>
+    <Color x:Key="MediaBadgeBackground">#CC1B2230</Color>
 </ResourceDictionary>

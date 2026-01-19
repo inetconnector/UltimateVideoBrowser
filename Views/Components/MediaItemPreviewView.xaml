@@ -14,7 +14,7 @@
             Source="{Binding TilePreviewPath, Converter={StaticResource StringFallbackConverter}, ConverterParameter=video_placeholder.svg}"
             Aspect="AspectFit"
             helpers:Tooltip.Text="{Binding PeopleTagsSummary}" />
-        <Frame BackgroundColor="#CC0E0F14"
+        <Frame BackgroundColor="{DynamicResource MediaBadgeBackground}"
                CornerRadius="999"
                Padding="6"
                HorizontalOptions="End"
