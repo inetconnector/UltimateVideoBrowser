@@ -37,16 +37,20 @@
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="120,*" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*" />
 
                             <!-- Sidebar LEFT -->
                             <Setter TargetName="TimelineSidebar" Property="Grid.Row" Value="0" />
                             <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="0" />
-                            <Setter TargetName="TimelineSidebar" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="TimelineSidebar" Property="Margin" Value="0" />
+                            <Setter TargetName="TimelineSidebar" Property="IsVisible" Value="False" />
 
                             <!-- Media list RIGHT -->
                             <Setter TargetName="MediaItemsHost" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="MediaItemsHost" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="MediaItemsHost" Property="Grid.Column" Value="0" />
+
+                            <!-- Timeline preview badge -->
+                            <Setter TargetName="TimelinePreviewLayer" Property="Grid.Column" Value="0" />
                         </VisualState.Setters>
                     </VisualState>
 
@@ -75,6 +79,7 @@
                             <Setter TargetName="TimelineSidebar" Property="Grid.Row" Value="0" />
                             <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="0" />
                             <Setter TargetName="TimelineSidebar" Property="Margin" Value="8,0,8,0" />
+                            <Setter TargetName="TimelineSidebar" Property="IsVisible" Value="True" />
 
                             <!-- Media list RIGHT -->
                             <Setter TargetName="MediaItemsHost" Property="Grid.Row" Value="0" />
