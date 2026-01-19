@@ -361,6 +361,7 @@ public sealed class AppDb
         await EnsureColumnAsync("FaceEmbedding", "DetectionModelKey", "TEXT").ConfigureAwait(false);
         await EnsureColumnAsync("FaceEmbedding", "EmbeddingModelKey", "TEXT").ConfigureAwait(false);
         await EnsureColumnAsync("FaceEmbedding", "FaceQuality", "REAL").ConfigureAwait(false);
+        await EnsureColumnAsync("FaceEmbedding", "Thumb96Path", "TEXT").ConfigureAwait(false);
 
         // PersonProfile
         await EnsureColumnAsync("PersonProfile", "MergedIntoPersonId", "TEXT").ConfigureAwait(false);

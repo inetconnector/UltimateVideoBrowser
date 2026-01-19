@@ -1534,6 +1534,18 @@ public partial class MainViewModel : ObservableObject
                     item.ThumbnailPath = string.Empty;
 
                 item.ThumbnailPath = p;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await indexService.UpdateThumbnailPathAsync(item.Path, p, CancellationToken.None)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Best-effort only.
+                    }
+                });
                 processed++;
             }
 

@@ -458,6 +458,22 @@ public sealed class IndexService
         }
     }
 
+    public async Task UpdateThumbnailPathAsync(string mediaPath, string? thumbnailPath, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath) || string.IsNullOrWhiteSpace(thumbnailPath))
+            return;
+
+        ct.ThrowIfCancellationRequested();
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        await db.Db.ExecuteAsync(
+                "UPDATE MediaItem SET ThumbnailPath = ? WHERE Path = ? AND (ThumbnailPath IS NULL OR ThumbnailPath <> ?);",
+                thumbnailPath,
+                mediaPath,
+                thumbnailPath)
+            .ConfigureAwait(false);
+    }
+
     private async Task<IReadOnlySet<IndexedFileSignature>> LoadKnownFileSignaturesAsync(CancellationToken ct)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
@@ -537,7 +553,10 @@ public sealed class IndexService
             try
             {
                 // Best-effort: generate and cache thumbnail file, UI will pick it up on next refresh.
-                await thumbnailService.EnsureThumbnailAsync(item.Path, item.MediaType, ct).ConfigureAwait(false);
+                var thumbPath = await thumbnailService.EnsureThumbnailAsync(item.Path, item.MediaType, ct)
+                    .ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(thumbPath))
+                    await UpdateThumbnailPathAsync(item.Path, thumbPath, ct).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
