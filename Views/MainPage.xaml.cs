@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using Microsoft.Maui.Graphics;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Collections;
 using UltimateVideoBrowser.Helpers;
@@ -25,6 +26,7 @@ public partial class MainPage : ContentPage
     private int lastLastVisibleIndex = -1;
     private int lastTimelineFirstVisibleIndex = -1;
     private int lastTimelineLastVisibleIndex = -1;
+    private Point? lastMediaPointerPosition;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
@@ -194,6 +196,80 @@ public partial class MainPage : ContentPage
     private void OnPageSizeChanged(object? sender, EventArgs e)
     {
         _ = ((MainPageBinding)BindingContext).ApplyGridSpanAsync();
+        UpdateTimelinePreviewPosition(lastMediaPointerPosition);
+    }
+
+    private void OnMediaPointerMoved(object? sender, PointerEventArgs e)
+    {
+        var position = e.GetPosition(TimelinePreviewLayer);
+        if (!position.HasValue)
+            return;
+
+        lastMediaPointerPosition = position.Value;
+        UpdateTimelinePreviewPosition(position.Value);
+    }
+
+    private void OnMediaPointerEntered(object? sender, PointerEventArgs e)
+    {
+        var position = e.GetPosition(TimelinePreviewLayer);
+        if (position.HasValue)
+        {
+            lastMediaPointerPosition = position.Value;
+            UpdateTimelinePreviewPosition(position.Value);
+        }
+    }
+
+    private void OnMediaPointerExited(object? sender, PointerEventArgs e)
+    {
+        lastMediaPointerPosition = null;
+        UpdateTimelinePreviewPosition(null);
+    }
+
+    private void UpdateTimelinePreviewPosition(Point? pointerPosition)
+    {
+        if (BindingContext is not MainPageBinding binding)
+            return;
+
+        if (TimelinePreviewLayer == null || TimelinePreviewFrame == null)
+            return;
+
+        var layerWidth = TimelinePreviewLayer.Width;
+        var layerHeight = TimelinePreviewLayer.Height;
+        if (layerWidth <= 0 || layerHeight <= 0)
+            return;
+
+        var frameWidth = TimelinePreviewFrame.Width;
+        var frameHeight = TimelinePreviewFrame.Height;
+        if (frameWidth <= 0)
+            frameWidth = 140;
+        if (frameHeight <= 0)
+            frameHeight = 32;
+
+        const double offset = 12;
+        const double padding = 8;
+        double x;
+        double y;
+
+        if (pointerPosition is { } position)
+        {
+            x = position.X + offset;
+            y = position.Y + offset;
+
+            if (x + frameWidth > layerWidth - padding)
+                x = position.X - frameWidth - offset;
+            if (y + frameHeight > layerHeight - padding)
+                y = position.Y - frameHeight - offset;
+        }
+        else
+        {
+            x = layerWidth - frameWidth - 16;
+            y = (layerHeight - frameHeight) / 2;
+        }
+
+        x = Math.Clamp(x, padding, Math.Max(padding, layerWidth - frameWidth - padding));
+        y = Math.Clamp(y, padding, Math.Max(padding, layerHeight - frameHeight - padding));
+
+        binding.TimelinePreviewBounds = new Rect(x, y, frameWidth, frameHeight);
     }
 
     private void OnTimelineSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -207,6 +283,8 @@ public partial class MainPage : ContentPage
         MediaItemsView.ScrollTo(entry.AnchorMedia, position: ScrollToPosition.Start, animate: true);
         if (BindingContext is MainPageBinding binding)
             binding.SetTimelinePreview(entry);
+
+        UpdateTimelinePreviewPosition(lastMediaPointerPosition);
     }
 
     private void OnMediaItemsScrolled(object? sender, ItemsViewScrolledEventArgs e)
@@ -263,6 +341,8 @@ public partial class MainPage : ContentPage
 
         if (BindingContext is MainPageBinding binding1)
             binding1.SetTimelinePreview(entry);
+
+        UpdateTimelinePreviewPosition(lastMediaPointerPosition);
     }
 
     private void OnTimelineScrolled(object? sender, ItemsViewScrolledEventArgs e)
@@ -485,6 +565,7 @@ public partial class MainPage : ContentPage
         private int? pendingLocationsCount;
         private int? pendingTaggedPeopleCount;
         private string timelinePreviewLabel = "";
+        private Rect timelinePreviewBounds;
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
             IServiceProvider serviceProvider, PeopleDataService peopleData, IProUpgradeService proUpgradeService)
@@ -919,6 +1000,19 @@ public partial class MainPage : ContentPage
                     return;
 
                 timelinePreviewLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Rect TimelinePreviewBounds
+        {
+            get => timelinePreviewBounds;
+            set
+            {
+                if (timelinePreviewBounds == value)
+                    return;
+
+                timelinePreviewBounds = value;
                 OnPropertyChanged();
             }
         }
