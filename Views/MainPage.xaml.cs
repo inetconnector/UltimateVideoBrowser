@@ -106,7 +106,9 @@ public partial class MainPage : ContentPage
                 await vm.OnMainPageAppearingAsync();
 
                 // Requested: default People Tags ON but inform users about the 2-week non-Pro trial.
-                await vm.TryShowPeopleTaggingTrialHintAsync().ConfigureAwait(false);
+                var trialShown = await vm.TryShowPeopleTaggingTrialHintAsync().ConfigureAwait(false);
+                if (trialShown)
+                    await vm.TryPromptLocationOptInAsync().ConfigureAwait(false);
 
                 // Restore scroll position after returning from a detail page (e.g. tagging).
                 var path = pendingScrollToMediaPath;
