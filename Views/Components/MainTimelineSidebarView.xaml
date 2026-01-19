@@ -33,7 +33,7 @@
                   RowDefinitions="Auto,Auto"
                   ColumnSpacing="6"
                   RowSpacing="6">
-                <Button Text="⇞"
+                <Button Text="↑"
                         FontSize="12"
                         FontAttributes="Bold"
                         HeightRequest="28"
@@ -41,7 +41,7 @@
                         Style="{StaticResource OverlayButtonStyle}"
                         Clicked="OnMediaScrollTopClicked"
                         AutomationProperties.Name="Scroll media to top" />
-                <Button Text="⇟"
+                <Button Text="↓"
                         Grid.Row="1"
                         FontSize="12"
                         FontAttributes="Bold"
