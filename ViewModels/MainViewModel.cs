@@ -366,28 +366,7 @@ public partial class MainViewModel : ObservableObject
             ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
 
         return true;
-    }
-
-    public async Task TryPromptLocationOptInAsync()
-    {
-        if (SettingsService.LocationsEnabled)
-            return;
-
-        var accepted = await dialogService.DisplayAlertAsync(
-            AppResources.LocationOptInTitle,
-            AppResources.LocationOptInMessage,
-            AppResources.LocationOptInAccept,
-            AppResources.LocationOptInDecline).ConfigureAwait(false);
-
-        if (!accepted)
-            return;
-
-        SettingsService.LocationsEnabled = true;
-        IsLocationEnabled = true;
-        if (!SettingsService.NeedsReindex)
-            SettingsService.NeedsReindex = true;
-    }
-
+    } 
     private async Task TryPromptLocationOptInAsync()
     {
         if (SettingsService.LocationsEnabled)
