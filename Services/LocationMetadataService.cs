@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using SixLabors.ImageSharp;
@@ -204,27 +205,60 @@ public sealed class LocationMetadataService
     }
 #endif
 
+    private static void DumpAllExifProperties(ExifProfile profile)
+    {
+        if (profile == null)
+        {
+            Debug.WriteLine("ExifProfile is null");
+            return;
+        }
+
+        foreach (var value in profile.Values)
+        {
+            var tag = value.Tag;
+            var dataType = value.DataType;
+            var runtimeType = value.GetValue()?.GetType().FullName ?? "null";
+            var stringValue = SafeToString(value.GetValue());
+
+            Debug.WriteLine(
+                $"Tag={tag}, DataType={dataType}, RuntimeType={runtimeType}, Value={stringValue}");
+        }
+    }
+
+    private static string SafeToString(object? value)
+    {
+        if (value == null)
+            return "null";
+
+        if (value is Array arr)
+            return $"Array[{arr.Length}]";
+
+        return value.ToString() ?? "null";
+    }
+
     private static GeoLocation? TryGetLocationFromExifProfile(ExifProfile? profile)
     {
         if (profile == null)
             return null;
 
         if (!profile.TryGetValue(ExifTag.GPSLatitude, out var latValue) ||
-            !TryConvertGpsCoordinate(latValue.Value, out var lat))
+            !TryConvertGpsCoordinate(latValue.GetValue(), out var lat))
             return null;
+
         if (!profile.TryGetValue(ExifTag.GPSLongitude, out var lonValue) ||
-            !TryConvertGpsCoordinate(lonValue.Value, out var lon))
+            !TryConvertGpsCoordinate(lonValue.GetValue(), out var lon))
             return null;
 
         profile.TryGetValue(ExifTag.GPSLatitudeRef, out var latRefValue);
         profile.TryGetValue(ExifTag.GPSLongitudeRef, out var lonRefValue);
-        var latRef = latRefValue?.Value;
-        var lonRef = lonRefValue?.Value;
-        latRef ??= ExtractCardinalRef(latValue.Value, true);
-        lonRef ??= ExtractCardinalRef(lonValue.Value, false);
+
+        var latRef = latRefValue?.GetValue() as string;
+        var lonRef = lonRefValue?.GetValue() as string;
+
         if (!string.IsNullOrWhiteSpace(latRef) &&
             latRef.StartsWith("S", StringComparison.OrdinalIgnoreCase))
             lat = -lat;
+
         if (!string.IsNullOrWhiteSpace(lonRef) &&
             lonRef.StartsWith("W", StringComparison.OrdinalIgnoreCase))
             lon = -lon;
@@ -235,46 +269,63 @@ public sealed class LocationMetadataService
     private static bool TryConvertGpsCoordinate(object? value, out double result)
     {
         result = 0;
+
+        if (value == null)
+            return false;
+
         switch (value)
         {
-            case Rational[] rationals:
+            case Rational[] rationals when rationals.Length > 0:
                 result = ConvertRationalsToDegrees(rationals);
                 return true;
-            case SignedRational[] signedRationals:
+
+            case SignedRational[] signedRationals when signedRationals.Length > 0:
                 result = ConvertSignedRationalsToDegrees(signedRationals);
                 return true;
-            case double[] doubles:
+
+            case double[] doubles when doubles.Length > 0:
                 result = ConvertDoubleArrayToDegrees(doubles);
                 return true;
-            case float[] floats:
+
+            case float[] floats when floats.Length > 0:
                 result = ConvertDoubleArrayToDegrees(floats.Select(v => (double)v).ToArray());
                 return true;
-            case int[] ints:
+
+            case int[] ints when ints.Length > 0:
                 result = ConvertDoubleArrayToDegrees(ints.Select(v => (double)v).ToArray());
                 return true;
-            case long[] longs:
+
+            case long[] longs when longs.Length > 0:
                 result = ConvertDoubleArrayToDegrees(longs.Select(v => (double)v).ToArray());
                 return true;
+
             case Rational rational:
                 result = ToDouble(rational);
                 return true;
+
             case SignedRational signedRational:
                 result = ToDouble(signedRational);
                 return true;
+
             case double d:
                 result = d;
                 return true;
+
             case float f:
                 result = f;
                 return true;
+
             case int i:
                 result = i;
                 return true;
+
             case long l:
                 result = l;
                 return true;
+
             case string s:
                 return TryParseGpsString(s, out result);
+
             default:
                 return false;
         }
@@ -363,9 +414,11 @@ public sealed class LocationMetadataService
         {
             if (!double.TryParse(split[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var numerator))
                 return false;
+
             if (!double.TryParse(split[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var denominator) ||
                 Math.Abs(denominator) < double.Epsilon)
                 return false;
+
             result = numerator / denominator;
             return true;
         }

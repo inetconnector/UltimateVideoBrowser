@@ -366,8 +366,9 @@ public partial class MainViewModel : ObservableObject
             ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
 
         return true;
-    } 
-    private async Task TryPromptLocationOptInAsync()
+    }
+
+    internal async Task TryPromptLocationOptInAsync()
     {
         if (SettingsService.LocationsEnabled)
             return;
