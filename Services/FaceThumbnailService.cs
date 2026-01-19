@@ -1,5 +1,4 @@
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -49,7 +48,7 @@ public sealed class FaceThumbnailService
     public string GetFaceThumbnailPath(string mediaPath, int faceIndex, int size, string extension)
     {
         if (string.IsNullOrWhiteSpace(extension))
-            extension = ".jpg";
+            extension = ".png";
 
         if (!extension.StartsWith(".", StringComparison.Ordinal))
             extension = "." + extension;
@@ -67,8 +66,12 @@ public sealed class FaceThumbnailService
         if (string.IsNullOrWhiteSpace(mediaPath))
             return null;
 
+        var storedPath = embedding.Thumb96Path;
+        if (!string.IsNullOrWhiteSpace(storedPath) && File.Exists(storedPath))
+            return storedPath;
+
         // This overload regenerates from the stored box only, so it is square but not circular.
-        var path = GetFaceThumbnailPath(mediaPath, embedding.FaceIndex, size, ".jpg");
+        var path = GetFaceThumbnailPath(mediaPath, embedding.FaceIndex, size, ".png");
 
         var hasNormalizedBox = embedding.X <= 1f && embedding.Y <= 1f && embedding.W <= 1f && embedding.H <= 1f;
         var isMissingImageSize = embedding.ImageWidth <= 0 || embedding.ImageHeight <= 0;
@@ -113,7 +116,7 @@ public sealed class FaceThumbnailService
 
                 ct.ThrowIfCancellationRequested();
 
-                var encoder = new JpegEncoder { Quality = 85 };
+                var encoder = new PngEncoder();
 
                 using (var fs = new FileStream(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     clone.Save(fs, encoder);
@@ -476,53 +479,22 @@ public sealed class FaceThumbnailService
                 return false;
             }
 
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-
             using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-
-            if (ext is ".jpg" or ".jpeg")
+            Span<byte> sig = stackalloc byte[8];
+            if (fs.Read(sig) != 8)
             {
-                var b1 = fs.ReadByte();
-                var b2 = fs.ReadByte();
-                if (b1 != 0xFF || b2 != 0xD8)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                fs.Seek(-2, SeekOrigin.End);
-                var e1 = fs.ReadByte();
-                var e2 = fs.ReadByte();
-                if (e1 != 0xFF || e2 != 0xD9)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                return true;
+                TryDeleteFile(path);
+                return false;
             }
 
-            if (ext == ".png")
+            if (sig[0] != 0x89 || sig[1] != 0x50 || sig[2] != 0x4E || sig[3] != 0x47 ||
+                sig[4] != 0x0D || sig[5] != 0x0A || sig[6] != 0x1A || sig[7] != 0x0A)
             {
-                Span<byte> sig = stackalloc byte[8];
-                if (fs.Read(sig) != 8)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                if (sig[0] != 0x89 || sig[1] != 0x50 || sig[2] != 0x4E || sig[3] != 0x47 ||
-                    sig[4] != 0x0D || sig[5] != 0x0A || sig[6] != 0x1A || sig[7] != 0x0A)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
-
-                return true;
+                TryDeleteFile(path);
+                return false;
             }
 
-            TryDeleteFile(path);
-            return false;
+            return true;
         }
         catch (IOException ex) when (IsFileInUse(ex))
         {

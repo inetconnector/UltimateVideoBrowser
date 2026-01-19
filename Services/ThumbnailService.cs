@@ -13,7 +13,7 @@ using SysStream = System.IO.Stream;
 
 #elif WINDOWS
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 using ImageSharpResizeMode = SixLabors.ImageSharp.Processing.ResizeMode;
@@ -56,7 +56,7 @@ public sealed class ThumbnailService
     public string GetThumbnailPath(MediaItem item)
     {
         var safe = MakeSafeFileName(item.Path ?? string.Empty);
-        return IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
+        return IOPath.Combine(ThumbnailsDirectoryPath, safe + ".png");
     }
 
     public void DeleteThumbnailForPath(string? mediaPath)
@@ -65,7 +65,7 @@ public sealed class ThumbnailService
             return;
 
         var safe = MakeSafeFileName(mediaPath);
-        var path = IOPath.Combine(ThumbnailsDirectoryPath, safe + ".jpg");
+        var path = IOPath.Combine(ThumbnailsDirectoryPath, safe + ".png");
         TryDeleteFile(path);
     }
 
@@ -140,7 +140,7 @@ public sealed class ThumbnailService
                     Directory.CreateDirectory(IOPath.GetDirectoryName(thumbPath) ?? ThumbnailsDirectoryPath);
                     using (var fs = File.Open(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        var format = Bitmap.CompressFormat.Jpeg;
+                        var format = Bitmap.CompressFormat.Png;
                         if (format == null)
                             return null;
 
@@ -312,7 +312,7 @@ public sealed class ThumbnailService
                 return;
 
             var files = Directory
-                .EnumerateFiles(ThumbnailsDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly)
+                .EnumerateFiles(ThumbnailsDirectoryPath, "*.png", SearchOption.TopDirectoryOnly)
                 .Select(path => new FileInfo(path))
                 .Where(fi => fi.Exists)
                 .OrderBy(fi => fi.LastWriteTimeUtc)
@@ -456,9 +456,9 @@ public sealed class ThumbnailService
                 });
             });
 
-            var encoder = new JpegEncoder { Quality = ThumbQuality };
+            var encoder = new PngEncoder();
             await image
-                .SaveAsJpegAsync(tmpPath, encoder, ct)
+                .SaveAsPngAsync(tmpPath, encoder, ct)
                 .ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
@@ -482,14 +482,6 @@ public sealed class ThumbnailService
             if (buffer.Length < 128)
                 return false;
 
-            var length = (int)buffer.Length;
-            var bytes = buffer.GetBuffer();
-            if (IsJpegBuffer(bytes, length))
-            {
-                await File.WriteAllBytesAsync(tmpPath, bytes.AsMemory(0, length), ct).ConfigureAwait(false);
-                return IsUsableThumbFile(tmpPath);
-            }
-
             buffer.Position = 0;
             using var image = await ImageSharpImage.LoadAsync(buffer, ct).ConfigureAwait(false);
             image.Mutate(ctx =>
@@ -502,8 +494,8 @@ public sealed class ThumbnailService
                 });
             });
 
-            var encoder = new JpegEncoder { Quality = ThumbQuality };
-            await image.SaveAsJpegAsync(tmpPath, encoder, ct).ConfigureAwait(false);
+            var encoder = new PngEncoder();
+            await image.SaveAsPngAsync(tmpPath, encoder, ct).ConfigureAwait(false);
             return IsUsableThumbFile(tmpPath);
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
@@ -517,16 +509,6 @@ public sealed class ThumbnailService
         }
     }
 
-    private static bool IsJpegBuffer(byte[] buffer, int length)
-    {
-        if (length < 4)
-            return false;
-
-        return buffer[0] == 0xFF
-            && buffer[1] == 0xD8
-            && buffer[length - 2] == 0xFF
-            && buffer[length - 1] == 0xD9;
-    }
 #endif
 
 #if ANDROID && !WINDOWS
@@ -686,26 +668,20 @@ public sealed class ThumbnailService
                 return false;
             }
 
-            // Very cheap sanity checks: JPEG header + end marker.
+            // Very cheap sanity checks: PNG signature.
             using var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var b1 = fs.ReadByte();
-            var b2 = fs.ReadByte();
-            if (b1 != 0xFF || b2 != 0xD8)
+            Span<byte> sig = stackalloc byte[8];
+            if (fs.Read(sig) != 8)
             {
                 TryDeleteFile(path);
                 return false;
             }
 
-            if (fs.Length >= 2)
+            if (sig[0] != 0x89 || sig[1] != 0x50 || sig[2] != 0x4E || sig[3] != 0x47 ||
+                sig[4] != 0x0D || sig[5] != 0x0A || sig[6] != 0x1A || sig[7] != 0x0A)
             {
-                fs.Seek(-2, SeekOrigin.End);
-                var e1 = fs.ReadByte();
-                var e2 = fs.ReadByte();
-                if (e1 != 0xFF || e2 != 0xD9)
-                {
-                    TryDeleteFile(path);
-                    return false;
-                }
+                TryDeleteFile(path);
+                return false;
             }
 
             return true;
