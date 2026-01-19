@@ -189,6 +189,8 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         var flyout = new WinUIControls.MenuFlyout();
 
         var allowFileChanges = GetBool(binding, "AllowFileChanges", true);
+        var showHiddenToggleVisible = GetBool(binding, "ShowHiddenToggleVisible", false);
+        var showHiddenInFolder = GetBool(binding, "ShowHiddenInFolder", false);
         var isMulti = selection.Count > 1;
 
         // Open / Share
@@ -216,6 +218,10 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
             if (hasHidden)
                 AddCommandItem(flyout, AppResources.UnhideAction, binding, "UnhideMarkedCommand", null);
 
+            if (showHiddenToggleVisible)
+                AddCommandItem(flyout, showHiddenInFolder ? AppResources.HideHiddenAction : AppResources.ShowHiddenAction,
+                    binding, "ToggleShowHiddenInFolderCommand", null);
+
             AddCommandItem(flyout, AppResources.ClearMarkedAction, binding, "ClearMarkedCommand", null);
             return flyout;
         }
@@ -225,6 +231,15 @@ public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
         AddCommandItem(flyout, AppResources.CopyMarkedAction, binding, "CopyItemCommand", primaryItem);
         AddCommandItem(flyout, primaryItem.IsHidden ? AppResources.UnhideAction : AppResources.HideAction, binding,
             primaryItem.IsHidden ? "UnhideItemCommand" : "HideItemCommand", primaryItem);
+
+        if (showHiddenToggleVisible)
+        {
+            AddCommandItem(flyout,
+                showHiddenInFolder ? AppResources.HideHiddenAction : AppResources.ShowHiddenAction,
+                binding,
+                "ToggleShowHiddenInFolderCommand",
+                null);
+        }
 
         flyout.Items.Add(new WinUIControls.MenuFlyoutSeparator());
 

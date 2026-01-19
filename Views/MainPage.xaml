@@ -678,7 +678,7 @@
                        Padding="12"
                        HasShadow="False"
                        IsVisible="{Binding HasMarked}">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto"
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                           ColumnSpacing="8">
                         <Label
                             Text="{Binding MarkedCount, StringFormat={x:Static strings:AppResources.MarkedCountFormat}}"
@@ -703,6 +703,9 @@
                                 IsVisible="{Binding AllowFileChanges}"
                                 Command="{Binding DeleteMarkedCommand}" />
                         <Button Grid.Column="6"
+                                Text="{x:Static strings:AppResources.HideAction}"
+                                Command="{Binding HideMarkedCommand}" />
+                        <Button Grid.Column="7"
                                 Text="{x:Static strings:AppResources.ClearMarkedAction}"
                                 Command="{Binding ClearMarkedCommand}" />
                     </Grid>
