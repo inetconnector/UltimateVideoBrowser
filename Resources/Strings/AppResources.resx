@@ -796,6 +796,12 @@ Missing:
   <data name="AlbumsButton" xml:space="preserve">
     <value>Albums</value>
   </data>
+  <data name="SettingsSourcesAlbumsTitle" xml:space="preserve">
+    <value>Sources / Albums</value>
+  </data>
+  <data name="SettingsSourcesAlbumsLocationsTitle" xml:space="preserve">
+    <value>Sources / Albums / Places</value>
+  </data>
   <data name="AlbumsHeader" xml:space="preserve">
     <value>Albums</value>
   </data>

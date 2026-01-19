@@ -26,6 +26,42 @@
                        CornerRadius="14"
                        Padding="14">
                     <VerticalStackLayout Spacing="12">
+                        <Label Text="{x:Static strings:AppResources.SettingsSourcesAlbumsTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}"
+                               IsVisible="{Binding IsLocationEnabled, Converter={StaticResource InverseBoolConverter}}" />
+                        <Label Text="{x:Static strings:AppResources.SettingsSourcesAlbumsLocationsTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource OnSurface}"
+                               IsVisible="{Binding IsLocationEnabled}" />
+                        <HorizontalStackLayout Spacing="12">
+                            <Button Text="{x:Static strings:AppResources.SourcesButton}"
+                                    Clicked="OnSourcesClicked"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.AlbumsButton}"
+                                    Clicked="OnAlbumsClicked"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                            <Button Text="{x:Static strings:AppResources.HighlightsLocationsLabel}"
+                                    Clicked="OnLocationsClicked"
+                                    IsVisible="{Binding IsLocationEnabled}"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    CornerRadius="6"
+                                    HorizontalOptions="Start"
+                                    Padding="12,6" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{DynamicResource Surface}"
+                       CornerRadius="14"
+                       Padding="14">
+                    <VerticalStackLayout Spacing="12">
                         <Label Text="{x:Static strings:AppResources.SettingsAppearanceTitle}"
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}" />
