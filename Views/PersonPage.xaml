@@ -94,6 +94,7 @@
                         SelectionChanged="OnPhotoSelected"
                         ItemSizingStrategy="MeasureFirstItem"
                         ItemsUpdatingScrollMode="KeepScrollOffset"
+                        VerticalScrollBarVisibility="Always"
                         x:Name="PersonMediaItemsView">
             <CollectionView.EmptyView>
                 <Grid Padding="20" RowDefinitions="Auto,Auto" RowSpacing="10">

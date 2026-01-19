@@ -1,9 +1,9 @@
 #if WINDOWS
-using System;
+using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Windows.System;
+using Window = Microsoft.UI.Xaml.Window;
 
 namespace UltimateVideoBrowser.Views;
 
@@ -19,7 +19,7 @@ public partial class MainPage
 
         try
         {
-            if (Window?.Handler?.PlatformView is not Microsoft.UI.Xaml.Window win)
+            if (Window?.Handler?.PlatformView is not Window win)
                 return;
 
             if (win.Content is not UIElement root)

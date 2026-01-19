@@ -42,6 +42,9 @@ public sealed class AppSettingsService
     private static readonly string[] DefaultDocumentExtensions =
         { ".pdf", ".doc", ".docx", ".txt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" };
 
+    private static readonly MediaType DefaultIndexedMediaTypes = MediaType.Videos | MediaType.Photos;
+    private static readonly MediaType DefaultVisibleMediaTypes = MediaType.Videos | MediaType.Photos;
+
     private readonly FileSettingsStore store;
     private bool isIndexing;
 
@@ -151,13 +154,13 @@ public sealed class AppSettingsService
 
     public MediaType IndexedMediaTypes
     {
-        get => (MediaType)store.GetInt(IndexedMediaTypesKey, (int)MediaType.All);
+        get => (MediaType)store.GetInt(IndexedMediaTypesKey, (int)DefaultIndexedMediaTypes);
         set => store.SetInt(IndexedMediaTypesKey, (int)value);
     }
 
     public MediaType VisibleMediaTypes
     {
-        get => (MediaType)store.GetInt(VisibleMediaTypesKey, (int)MediaType.All);
+        get => (MediaType)store.GetInt(VisibleMediaTypesKey, (int)DefaultVisibleMediaTypes);
         set => store.SetInt(VisibleMediaTypesKey, (int)value);
     }
 
@@ -316,6 +319,12 @@ public sealed class AppSettingsService
 
         if (!store.ContainsKey(HideDuplicateFilesKey))
             store.SetBool(HideDuplicateFilesKey, true);
+
+        if (!store.ContainsKey(IndexedMediaTypesKey))
+            store.SetInt(IndexedMediaTypesKey, (int)DefaultIndexedMediaTypes);
+
+        if (!store.ContainsKey(VisibleMediaTypesKey))
+            store.SetInt(VisibleMediaTypesKey, (int)DefaultVisibleMediaTypes);
     }
 
     public event EventHandler<bool>? NeedsReindexChanged;

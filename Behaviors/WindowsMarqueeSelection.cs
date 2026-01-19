@@ -1,14 +1,14 @@
 #if WINDOWS
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
+using System.Collections;
+using Windows.System;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using UltimateVideoBrowser.Helpers;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace UltimateVideoBrowser.Behaviors;
 
@@ -29,34 +29,27 @@ public static class WindowsMarqueeSelection
 
     private sealed class Subscription : IDisposable
     {
-        private readonly CollectionView host;
-        private readonly GraphicsView overlay;
+        private readonly HashSet<object> baseSelection = new();
         private readonly MarqueeOverlayDrawable drawable;
-
-        private ListViewBase? listView;
+        private readonly CollectionView host;
+        private readonly HashSet<object> lastAppliedTarget = new();
+        private readonly HashSet<object> latestTarget = new();
+        private readonly GraphicsView overlay;
+        private bool ctrlAtStart;
+        private Point current;
         private bool isArmed;
         private bool isDragging;
-        private bool ctrlAtStart;
-        private bool shiftAtStart;
-        private Windows.Foundation.Point start;
-        private Windows.Foundation.Point current;
-
-        private readonly HashSet<object> baseSelection = new();
-        private readonly HashSet<object> latestTarget = new();
-        private readonly HashSet<object> lastAppliedTarget = new();
         private long lastApplyTick;
+
+        private ListViewBase? listView;
+        private bool shiftAtStart;
+        private Point start;
 
         public Subscription(CollectionView host, GraphicsView overlay, MarqueeOverlayDrawable drawable)
         {
             this.host = host;
             this.overlay = overlay;
             this.drawable = drawable;
-        }
-
-        public void Attach()
-        {
-            host.HandlerChanged += OnHandlerChanged;
-            TryHook();
         }
 
         public void Dispose()
@@ -71,6 +64,12 @@ public static class WindowsMarqueeSelection
             }
 
             Unhook();
+        }
+
+        public void Attach()
+        {
+            host.HandlerChanged += OnHandlerChanged;
+            TryHook();
         }
 
         private void OnHandlerChanged(object? sender, EventArgs e)
@@ -132,7 +131,7 @@ public static class WindowsMarqueeSelection
                 if (listView == null)
                     return;
 
-                if (e.Pointer.PointerDeviceType != Microsoft.UI.Input.PointerDeviceType.Mouse)
+                if (e.Pointer.PointerDeviceType != PointerDeviceType.Mouse)
                     return;
 
                 var pt = e.GetCurrentPoint(listView);
@@ -147,8 +146,8 @@ public static class WindowsMarqueeSelection
                     return;
                 }
 
-                ctrlAtStart = (e.KeyModifiers & Windows.System.VirtualKeyModifiers.Control) != 0;
-                shiftAtStart = (e.KeyModifiers & Windows.System.VirtualKeyModifiers.Shift) != 0;
+                ctrlAtStart = (e.KeyModifiers & VirtualKeyModifiers.Control) != 0;
+                shiftAtStart = (e.KeyModifiers & VirtualKeyModifiers.Shift) != 0;
                 baseSelection.Clear();
                 latestTarget.Clear();
                 lastAppliedTarget.Clear();
@@ -159,14 +158,10 @@ public static class WindowsMarqueeSelection
                 {
                     // Ctrl/Shift: additive selection (keep existing selection as a base).
                     if (ctrlAtStart || shiftAtStart)
-                    {
-                        foreach (var x in selected.Cast<object>())
+                        foreach (var x in selected)
                             baseSelection.Add(x);
-                    }
                     else
-                    {
                         selected.Clear();
-                    }
                 }
 
                 start = pt.Position;
@@ -203,7 +198,7 @@ public static class WindowsMarqueeSelection
                 // Small threshold to avoid accidental marquee when the user simply clicks.
                 var dx = current.X - start.X;
                 var dy = current.Y - start.Y;
-                if (!isDragging && (dx * dx + dy * dy) < 16)
+                if (!isDragging && dx * dx + dy * dy < 16)
                     return;
 
                 isDragging = true;
@@ -214,10 +209,8 @@ public static class WindowsMarqueeSelection
                 // Build the latest selection target.
                 latestTarget.Clear();
                 if (ctrlAtStart || shiftAtStart)
-                {
                     foreach (var x in baseSelection)
                         latestTarget.Add(x);
-                }
 
                 foreach (var x in HitTest(rect))
                     latestTarget.Add(x);
@@ -225,7 +218,7 @@ public static class WindowsMarqueeSelection
                 // Throttle selection updates to avoid churn while the pointer is moving.
                 // Overlay remains smooth because it's purely drawn.
                 var now = Environment.TickCount64;
-                if ((now - lastApplyTick) >= 33)
+                if (now - lastApplyTick >= 33)
                 {
                     ApplySelectionIfChanged(latestTarget);
                     lastApplyTick = now;
@@ -259,10 +252,8 @@ public static class WindowsMarqueeSelection
             try
             {
                 if (isDragging)
-                {
                     // Ensure the final rectangle selection is applied even if throttling skipped the last move.
                     ApplySelectionIfChanged(latestTarget);
-                }
 
                 isArmed = false;
                 isDragging = false;
@@ -286,7 +277,7 @@ public static class WindowsMarqueeSelection
             }
         }
 
-        private bool IsOverItem(Windows.Foundation.Point point)
+        private bool IsOverItem(Point point)
         {
             try
             {
@@ -295,10 +286,8 @@ public static class WindowsMarqueeSelection
 
                 var elements = VisualTreeHelper.FindElementsInHostCoordinates(point, listView);
                 foreach (var el in elements)
-                {
                     if (el is DependencyObject dep && FindAncestor<ListViewItem>(dep) != null)
                         return true;
-                }
             }
             catch
             {
@@ -308,7 +297,7 @@ public static class WindowsMarqueeSelection
             return false;
         }
 
-        private IEnumerable<object> HitTest(Windows.Foundation.Rect rect)
+        private IEnumerable<object> HitTest(Rect rect)
         {
             var results = new List<object>();
             if (listView == null)
@@ -317,7 +306,7 @@ public static class WindowsMarqueeSelection
             try
             {
                 // ItemsPanelRoot contains the realized (visible) containers.
-                var panel = listView.ItemsPanelRoot as Panel;
+                var panel = listView.ItemsPanelRoot;
                 if (panel == null)
                     return results;
 
@@ -328,8 +317,8 @@ public static class WindowsMarqueeSelection
 
                     // Compute bounds of the container in ListView coordinates.
                     var t = fe.TransformToVisual(listView);
-                    var p = t.TransformPoint(new Windows.Foundation.Point(0, 0));
-                    var b = new Windows.Foundation.Rect(p.X, p.Y, fe.ActualWidth, fe.ActualHeight);
+                    var p = t.TransformPoint(new Point(0, 0));
+                    var b = new Rect(p.X, p.Y, fe.ActualWidth, fe.ActualHeight);
 
                     if (b.Width <= 1 || b.Height <= 1)
                         continue;
@@ -363,7 +352,7 @@ public static class WindowsMarqueeSelection
                     return;
 
                 // Remove items not in target.
-                if (selected is System.Collections.IList list)
+                if (selected is IList list)
                 {
                     for (var i = list.Count - 1; i >= 0; i--)
                     {
@@ -374,23 +363,19 @@ public static class WindowsMarqueeSelection
 
                     // Add missing items.
                     foreach (var x in target)
-                    {
                         if (!list.Contains(x))
                             list.Add(x);
-                    }
                 }
                 else
                 {
                     // Fallback (should rarely happen)
-                    var toRemove = selected.Cast<object>().Where(x => !target.Contains(x)).ToList();
+                    var toRemove = selected.Where(x => !target.Contains(x)).ToList();
                     foreach (var x in toRemove)
                         selected.Remove(x);
 
                     foreach (var x in target)
-                    {
                         if (!selected.Contains(x))
                             selected.Add(x);
-                    }
                 }
 
                 lastAppliedTarget.Clear();
@@ -403,7 +388,7 @@ public static class WindowsMarqueeSelection
             }
         }
 
-        private void UpdateOverlay(Windows.Foundation.Rect? rect)
+        private void UpdateOverlay(Rect? rect)
         {
             try
             {
@@ -427,16 +412,16 @@ public static class WindowsMarqueeSelection
             }
         }
 
-        private static Windows.Foundation.Rect NormalizeRect(Windows.Foundation.Point a, Windows.Foundation.Point b)
+        private static Rect NormalizeRect(Point a, Point b)
         {
             var x1 = Math.Min(a.X, b.X);
             var y1 = Math.Min(a.Y, b.Y);
             var x2 = Math.Max(a.X, b.X);
             var y2 = Math.Max(a.Y, b.Y);
-            return new Windows.Foundation.Rect(x1, y1, Math.Max(0, x2 - x1), Math.Max(0, y2 - y1));
+            return new Rect(x1, y1, Math.Max(0, x2 - x1), Math.Max(0, y2 - y1));
         }
 
-        private static bool RectsIntersect(Windows.Foundation.Rect a, Windows.Foundation.Rect b)
+        private static bool RectsIntersect(Rect a, Rect b)
         {
             if (a.Width <= 0 || a.Height <= 0 || b.Width <= 0 || b.Height <= 0)
                 return false;

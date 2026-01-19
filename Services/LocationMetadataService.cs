@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Globalization;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
@@ -29,7 +31,7 @@ public sealed class LocationMetadataService
         if (!settingsService.LocationsEnabled)
             return false;
 
-        if (item.MediaType is not (MediaType.Photos or MediaType.Videos))
+        if (item.MediaType is not (MediaType.Photos or MediaType.Graphics or MediaType.Videos))
             return false;
 
         if (item.Latitude.HasValue && item.Longitude.HasValue)
@@ -57,7 +59,7 @@ public sealed class LocationMetadataService
             return await TryGetLocationFromAndroidContentAsync(path, ct).ConfigureAwait(false);
 #endif
 
-        if (item.MediaType == MediaType.Photos)
+        if (item.MediaType is MediaType.Photos or MediaType.Graphics)
         {
             var location = await TryGetLocationFromImageAsync(path, ct).ConfigureAwait(false);
 #if WINDOWS
@@ -202,25 +204,62 @@ public sealed class LocationMetadataService
     }
 #endif
 
+    private static void DumpAllExifProperties(ExifProfile profile)
+    {
+        if (profile == null)
+        {
+            Debug.WriteLine("ExifProfile is null");
+            return;
+        }
+
+        foreach (var value in profile.Values)
+        {
+            var tag = value.Tag;
+            var dataType = value.DataType;
+            var runtimeType = value.GetValue()?.GetType().FullName ?? "null";
+            var stringValue = SafeToString(value.GetValue());
+
+            Debug.WriteLine(
+                $"Tag={tag}, DataType={dataType}, RuntimeType={runtimeType}, Value={stringValue}");
+        }
+    }
+
+    private static string SafeToString(object? value)
+    {
+        if (value == null)
+            return "null";
+
+        if (value is Array arr)
+            return $"Array[{arr.Length}]";
+
+        return value.ToString() ?? "null";
+    }
+
     private static GeoLocation? TryGetLocationFromExifProfile(ExifProfile? profile)
     {
         if (profile == null)
             return null;
 
         if (!profile.TryGetValue(ExifTag.GPSLatitude, out var latValue) ||
-            !TryConvertGpsCoordinate(latValue.Value, out var lat))
+            !TryConvertGpsCoordinate(latValue.GetValue(), out var lat))
             return null;
+
         if (!profile.TryGetValue(ExifTag.GPSLongitude, out var lonValue) ||
-            !TryConvertGpsCoordinate(lonValue.Value, out var lon))
+            !TryConvertGpsCoordinate(lonValue.GetValue(), out var lon))
             return null;
 
         profile.TryGetValue(ExifTag.GPSLatitudeRef, out var latRefValue);
         profile.TryGetValue(ExifTag.GPSLongitudeRef, out var lonRefValue);
-        var latRef = latRefValue?.Value;
-        var lonRef = lonRefValue?.Value;
-        if (string.Equals(latRef, "S", StringComparison.OrdinalIgnoreCase))
+
+        var latRef = latRefValue?.GetValue() as string;
+        var lonRef = lonRefValue?.GetValue() as string;
+
+        if (!string.IsNullOrWhiteSpace(latRef) &&
+            latRef.StartsWith("S", StringComparison.OrdinalIgnoreCase))
             lat = -lat;
-        if (string.Equals(lonRef, "W", StringComparison.OrdinalIgnoreCase))
+
+        if (!string.IsNullOrWhiteSpace(lonRef) &&
+            lonRef.StartsWith("W", StringComparison.OrdinalIgnoreCase))
             lon = -lon;
 
         return new GeoLocation(lat, lon);
@@ -229,20 +268,63 @@ public sealed class LocationMetadataService
     private static bool TryConvertGpsCoordinate(object? value, out double result)
     {
         result = 0;
+
+        if (value == null)
+            return false;
+
         switch (value)
         {
-            case Rational[] rationals:
+            case Rational[] rationals when rationals.Length > 0:
                 result = ConvertRationalsToDegrees(rationals);
                 return true;
-            case SignedRational[] signedRationals:
+
+            case SignedRational[] signedRationals when signedRationals.Length > 0:
                 result = ConvertSignedRationalsToDegrees(signedRationals);
                 return true;
+
+            case double[] doubles when doubles.Length > 0:
+                result = ConvertDoubleArrayToDegrees(doubles);
+                return true;
+
+            case float[] floats when floats.Length > 0:
+                result = ConvertDoubleArrayToDegrees(floats.Select(v => (double)v).ToArray());
+                return true;
+
+            case int[] ints when ints.Length > 0:
+                result = ConvertDoubleArrayToDegrees(ints.Select(v => (double)v).ToArray());
+                return true;
+
+            case long[] longs when longs.Length > 0:
+                result = ConvertDoubleArrayToDegrees(longs.Select(v => (double)v).ToArray());
+                return true;
+
             case Rational rational:
                 result = ToDouble(rational);
                 return true;
+
             case SignedRational signedRational:
                 result = ToDouble(signedRational);
                 return true;
+
+            case double d:
+                result = d;
+                return true;
+
+            case float f:
+                result = f;
+                return true;
+
+            case int i:
+                result = i;
+                return true;
+
+            case long l:
+                result = l;
+                return true;
+
+            case string s:
+                return TryParseGpsString(s, out result);
+
             default:
                 return false;
         }
@@ -268,6 +350,120 @@ public sealed class LocationMetadataService
         var min = values.Count > 1 ? ToDouble(values[1]) : 0;
         var sec = values.Count > 2 ? ToDouble(values[2]) : 0;
         return deg + min / 60.0 + sec / 3600.0;
+    }
+
+    private static double ConvertDoubleArrayToDegrees(IReadOnlyList<double> values)
+    {
+        if (values.Count == 0)
+            return 0;
+
+        if (values.Count == 1)
+            return values[0];
+
+        var deg = values[0];
+        var min = values.Count > 1 ? values[1] : 0;
+        var sec = values.Count > 2 ? values[2] : 0;
+        return deg + min / 60.0 + sec / 3600.0;
+    }
+
+    private static bool TryParseGpsString(string value, out double result)
+    {
+        result = 0;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var trimmed = NormalizeGpsString(value.Trim());
+        if (double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+        {
+            result = parsed;
+            return true;
+        }
+
+        var tokens = trimmed
+            .Replace("°", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace("'", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace("\"", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace(",", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace(":", " ", StringComparison.OrdinalIgnoreCase)
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (tokens.Length == 0)
+            return false;
+
+        var parts = new List<double>(tokens.Length);
+        foreach (var token in tokens)
+        {
+            if (!TryParseRationalToken(token, out var part))
+                return false;
+            parts.Add(part);
+        }
+
+        result = ConvertDoubleArrayToDegrees(parts);
+        return true;
+    }
+
+    private static bool TryParseRationalToken(string token, out double result)
+    {
+        result = 0;
+        if (string.IsNullOrWhiteSpace(token))
+            return false;
+
+        var split = token.Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (split.Length == 2)
+        {
+            if (!double.TryParse(split[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var numerator))
+                return false;
+
+            if (!double.TryParse(split[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var denominator) ||
+                Math.Abs(denominator) < double.Epsilon)
+                return false;
+
+            result = numerator / denominator;
+            return true;
+        }
+
+        return double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
+    }
+
+    private static string NormalizeGpsString(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        var buffer = new char[value.Length];
+        var length = 0;
+        foreach (var ch in value)
+        {
+            if (char.IsLetter(ch))
+                continue;
+            buffer[length++] = ch;
+        }
+
+        return length == value.Length ? value : new string(buffer, 0, length);
+    }
+
+    private static string? ExtractCardinalRef(object? value, bool isLatitude)
+    {
+        if (value is not string s || string.IsNullOrWhiteSpace(s))
+            return null;
+
+        var upper = s.ToUpperInvariant();
+        if (isLatitude)
+        {
+            if (upper.Contains('S'))
+                return "S";
+            if (upper.Contains('N'))
+                return "N";
+        }
+        else
+        {
+            if (upper.Contains('W'))
+                return "W";
+            if (upper.Contains('E'))
+                return "E";
+        }
+
+        return null;
     }
 
     private static double ToDouble(Rational rational)

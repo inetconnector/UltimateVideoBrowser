@@ -103,8 +103,9 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
                 if (!string.IsNullOrWhiteSpace(term))
                 {
                     var fall = await db.Db.QueryAsync<PathRow>(
-                            "SELECT DISTINCT Path AS MediaPath FROM MediaItem WHERE MediaType = ? AND PeopleTagsSummary LIKE ?;",
+                            "SELECT DISTINCT Path AS MediaPath FROM MediaItem WHERE MediaType IN (?, ?) AND PeopleTagsSummary LIKE ?;",
                             (int)MediaType.Photos,
+                            (int)MediaType.Graphics,
                             $"%{term}%")
                         .ConfigureAwait(false);
 
@@ -159,10 +160,11 @@ public sealed partial class TaggedPhotosViewModel : ObservableObject
                 var chunk = paths.Skip(i).Take(chunkSize).ToList();
                 var placeholders = string.Join(", ", chunk.Select(_ => "?"));
                 var sql =
-                    $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType = ? ORDER BY DateAddedSeconds DESC;";
+                    $"SELECT * FROM MediaItem WHERE Path IN ({placeholders}) AND MediaType IN (?, ?) ORDER BY DateAddedSeconds DESC;";
 
                 var args = chunk.Cast<object>().ToList();
                 args.Add((int)MediaType.Photos);
+                args.Add((int)MediaType.Graphics);
 
                 var result = await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
                 items.AddRange(result);

@@ -20,7 +20,7 @@
                        TextColor="{DynamicResource OnSurfaceMuted}"
                        VerticalOptions="Center" />
                 <Label Grid.Column="2"
-                       Text="{Binding LocationsCount}"
+                       Text="{Binding LocationsCountDisplay}"
                        FontSize="18"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource OnSurface}"

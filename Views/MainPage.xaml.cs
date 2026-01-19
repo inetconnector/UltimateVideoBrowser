@@ -23,11 +23,8 @@ public partial class MainPage : ContentPage
     private bool isTimelineSelectionSyncing;
     private int lastFirstVisibleIndex = -1;
     private int lastLastVisibleIndex = -1;
-
-#if WINDOWS
-    private IDisposable? marqueeSelection;
-    private MarqueeOverlayDrawable? marqueeDrawable;
-#endif
+    private int lastTimelineFirstVisibleIndex = -1;
+    private int lastTimelineLastVisibleIndex = -1;
 
     // Remember the origin tile when navigating away (e.g. tagging) so we can restore
     // the scroll position when the user returns.
@@ -43,6 +40,7 @@ public partial class MainPage : ContentPage
         BindingContext = new MainPageBinding(vm, deviceMode, this, serviceProvider, peopleData, proUpgradeService);
         HeaderContainer.BindingContext = BindingContext;
         BindingContextChanged += (_, _) => HeaderContainer.BindingContext = BindingContext;
+        TimelineSidebar.TimelineView.Scrolled += OnTimelineScrolled;
 
         // The header lives inside the MediaItemsView header. We keep a spacer above the timeline
         // so both columns align and scrolling feels natural.
@@ -62,6 +60,19 @@ public partial class MainPage : ContentPage
     internal void RememberScrollTarget(MediaItem item)
     {
         pendingScrollToMediaPath = item?.Path;
+    }
+
+    internal void ClearMediaSelection()
+    {
+        try
+        {
+            MediaItemsView.SelectedItem = null;
+            MediaItemsView.SelectedItems?.Clear();
+        }
+        catch
+        {
+            // Best-effort: never crash due to selection edge cases.
+        }
     }
 
     protected override void OnAppearing()
@@ -90,7 +101,9 @@ public partial class MainPage : ContentPage
                 await vm.OnMainPageAppearingAsync();
 
                 // Requested: default People Tags ON but inform users about the 2-week non-Pro trial.
-                await vm.TryShowPeopleTaggingTrialHintAsync().ConfigureAwait(false);
+                var trialShown = await vm.TryShowPeopleTaggingTrialHintAsync().ConfigureAwait(false);
+                if (trialShown)
+                    await vm.TryPromptLocationOptInAsync().ConfigureAwait(false);
 
                 // Restore scroll position after returning from a detail page (e.g. tagging).
                 var path = pendingScrollToMediaPath;
@@ -202,6 +215,12 @@ public partial class MainPage : ContentPage
         vm.UpdateVisibleRange(e.FirstVisibleItemIndex, e.LastVisibleItemIndex);
         lastFirstVisibleIndex = e.FirstVisibleItemIndex;
         lastLastVisibleIndex = e.LastVisibleItemIndex;
+        if (BindingContext is MainPageBinding binding)
+        {
+            var headerHeight = HeaderContainer?.Height ?? binding.HeaderHeight;
+            var isHeaderVisible = e.VerticalOffset <= Math.Max(0, headerHeight - 1);
+            binding.SetHeaderVisibility(isHeaderVisible);
+        }
 
         if (vm.MediaItems.Count == 0 || vm.TimelineEntries.Count == 0)
             return;
@@ -218,15 +237,38 @@ public partial class MainPage : ContentPage
             .ToLocalTime()
             .DateTime;
         var entry = vm.TimelineEntries.FirstOrDefault(t => t.Year == date.Year && t.Month == date.Month);
-        if (entry == null || TimelineSidebar.TimelineView.SelectedItem == entry)
+        if (entry == null)
             return;
+
+        // If timeline already shows the correct selection, we still may want to keep it in view,
+        // but avoid jitter: only re-scroll when the selected entry actually changes.
+        var selectionChanged = TimelineSidebar.TimelineView.SelectedItem != entry;
 
         isTimelineSelectionSyncing = true;
         TimelineSidebar.TimelineView.SelectedItem = entry;
+
+        // Keep timeline in sync with the media scroll (single-scrollbar UX).
+        // No animation -> no jitter; keep the entry visible.
+        if (selectionChanged)
+            try
+            {
+                TimelineSidebar.TimelineView.ScrollTo(entry, position: ScrollToPosition.MakeVisible, animate: false);
+            }
+            catch
+            {
+                // Best-effort only.
+            }
+
         isTimelineSelectionSyncing = false;
 
-        if (BindingContext is MainPageBinding binding)
-            binding.SetTimelinePreview(entry);
+        if (BindingContext is MainPageBinding binding1)
+            binding1.SetTimelinePreview(entry);
+    }
+
+    private void OnTimelineScrolled(object? sender, ItemsViewScrolledEventArgs e)
+    {
+        lastTimelineFirstVisibleIndex = e.FirstVisibleItemIndex;
+        lastTimelineLastVisibleIndex = e.LastVisibleItemIndex;
     }
 
     private void OnMediaItemsSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -256,22 +298,32 @@ public partial class MainPage : ContentPage
 
     public void OnTimelineScrollUpClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(false);
-    }
-
-    public void OnTimelineScrollUpClicked(object sender, TappedEventArgs e)
-    {
-        ScrollMediaByPage(false);
+        ScrollTimelineByPage(false);
     }
 
     public void OnTimelineScrollDownClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(true);
+        ScrollTimelineByPage(true);
     }
 
-    public void OnTimelineScrollDownClicked(object sender, TappedEventArgs e)
+    public void OnTimelineScrollTopClicked(object sender, EventArgs e)
     {
-        ScrollMediaByPage(true);
+        ScrollTimelineToTop();
+    }
+
+    public void OnTimelineScrollBottomClicked(object sender, EventArgs e)
+    {
+        ScrollTimelineToBottom();
+    }
+
+    public void OnMediaScrollTopClicked(object sender, EventArgs e)
+    {
+        ScrollMediaToTop();
+    }
+
+    public void OnMediaScrollBottomClicked(object sender, EventArgs e)
+    {
+        ScrollMediaToBottom();
     }
 
     public void OnSettingsClicked(object sender, EventArgs e)
@@ -304,9 +356,61 @@ public partial class MainPage : ContentPage
         MediaItemsView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
     }
 
+    private void ScrollMediaToTop()
+    {
+        if (vm.MediaItems.Count == 0)
+            return;
+
+        ScrollToHeader();
+    }
+
+    private void ScrollMediaToBottom()
+    {
+        if (vm.MediaItems.Count == 0)
+            return;
+
+        MediaItemsView.ScrollTo(vm.MediaItems.Count - 1, position: ScrollToPosition.End, animate: true);
+    }
+
     private void ScrollToHeader()
     {
         MediaItemsView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineByPage(bool isDown)
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        var pageSize = lastTimelineFirstVisibleIndex >= 0 &&
+                       lastTimelineLastVisibleIndex >= lastTimelineFirstVisibleIndex
+            ? Math.Max(1, lastTimelineLastVisibleIndex - lastTimelineFirstVisibleIndex + 1)
+            : Math.Min(8, vm.TimelineEntries.Count);
+
+        var targetIndex = isDown
+            ? Math.Min(vm.TimelineEntries.Count - 1,
+                lastTimelineLastVisibleIndex >= 0 ? lastTimelineLastVisibleIndex + 1 : pageSize)
+            : Math.Max(0, lastTimelineFirstVisibleIndex >= 0 ? lastTimelineFirstVisibleIndex - pageSize : 0);
+
+        var target = vm.TimelineEntries[targetIndex];
+        TimelineSidebar.TimelineView.ScrollTo(target, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineToTop()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        TimelineSidebar.TimelineView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+    }
+
+    private void ScrollTimelineToBottom()
+    {
+        if (vm.TimelineEntries.Count == 0)
+            return;
+
+        TimelineSidebar.TimelineView.ScrollTo(vm.TimelineEntries.Count - 1, position: ScrollToPosition.End,
+            animate: true);
     }
 
     private void TryHookHeaderSize()
@@ -361,10 +465,15 @@ public partial class MainPage : ContentPage
         private readonly IServiceProvider serviceProvider;
         private readonly MainViewModel vm;
 
+        private int displayIndexedMediaCount;
+        private int displayLocationsCount;
+        private int displayTaggedPeopleCount;
+
         private int gridSpan = 3;
         private double headerHeight;
         private Window? indexingWindow;
         private bool isFiltersDockExpanded = true;
+        private bool isHeaderVisible = true;
         private bool isIndexingOverlaySuppressed;
         private bool isIndexingOverlayVisible;
         private bool isIndexRefreshPending;
@@ -372,6 +481,9 @@ public partial class MainPage : ContentPage
         private bool isTimelinePreviewVisible;
 
         private long lastLiveRefreshMs;
+        private int? pendingIndexedMediaCount;
+        private int? pendingLocationsCount;
+        private int? pendingTaggedPeopleCount;
         private string timelinePreviewLabel = "";
 
         public MainPageBinding(MainViewModel vm, DeviceModeService deviceMode, MainPage page,
@@ -407,7 +519,7 @@ public partial class MainPage : ContentPage
             CopyMarkedCommand = vm.CopyMarkedCommand;
             MoveMarkedCommand = vm.MoveMarkedCommand;
             DeleteMarkedCommand = vm.DeleteMarkedCommand;
-            ClearMarkedCommand = vm.ClearMarkedCommand;
+            ClearMarkedCommand = new RelayCommand(ClearMarked);
             RenameCommand = vm.RenameCommand;
             TagPeopleCommand = new AsyncRelayCommand<MediaItem>(OpenTagEditorAsync);
             OpenPersonFromTagCommand = new AsyncRelayCommand<TagNavigationContext>(OpenPersonFromTagAsync);
@@ -433,6 +545,10 @@ public partial class MainPage : ContentPage
                 // Best-effort only.
             }
 
+            displayIndexedMediaCount = vm.IndexedMediaCount;
+            displayLocationsCount = vm.LocationsCount;
+            displayTaggedPeopleCount = vm.TaggedPeopleCount;
+
             TogglePreviewDockExpandedCommand = new RelayCommand(() => IsPreviewDockExpanded = !IsPreviewDockExpanded);
             ToggleFiltersDockExpandedCommand = new RelayCommand(() => IsFiltersDockExpanded = !IsFiltersDockExpanded);
             DismissIndexOverlayCommand = new RelayCommand(() => IsIndexingOverlayVisible = false);
@@ -452,186 +568,7 @@ public partial class MainPage : ContentPage
             vm.IndexLiveRefreshSuggested += (_, _) => MainThread.BeginInvokeOnMainThread(MarkIndexRefreshPending);
 
             vm.PropertyChanged += (_, args) =>
-            {
-                switch (args.PropertyName)
-                {
-                    case nameof(MainViewModel.IsIndexing):
-                        if (!vm.IsIndexing)
-                        {
-                            isIndexingOverlaySuppressed = false;
-                            IsIndexingOverlayVisible = false;
-                            IsIndexRefreshPending = false;
-                        }
-                        else
-                        {
-                            IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
-                        }
-
-                        OnPropertyChanged(nameof(IsIndexing));
-                        OnPropertyChanged(nameof(IsTopBusy));
-                        OnPropertyChanged(nameof(IsEmptyStateVisible));
-                        OnPropertyChanged(nameof(ShowIndexingBanner));
-                        OnPropertyChanged(nameof(IndexBannerTitle));
-                        OnPropertyChanged(nameof(IndexBannerMessage));
-                        OnPropertyChanged(nameof(ShowIndexBannerAction));
-                        OnPropertyChanged(nameof(IndexBannerActionText));
-                        OnPropertyChanged(nameof(IndexBannerActionCommand));
-                        OnPropertyChanged(nameof(ShowIndexRefreshAction));
-                        OnPropertyChanged(nameof(RefreshIndexCommand));
-                        OnPropertyChanged(nameof(IndexState));
-                        break;
-                    case nameof(MainViewModel.IndexedCount):
-                        OnPropertyChanged(nameof(IndexedCount));
-                        OnPropertyChanged(nameof(ShowIndexingBanner));
-                        break;
-                    case nameof(MainViewModel.IndexProcessed):
-                        OnPropertyChanged(nameof(IndexProcessed));
-                        break;
-                    case nameof(MainViewModel.IndexTotal):
-                        OnPropertyChanged(nameof(IndexTotal));
-                        break;
-                    case nameof(MainViewModel.IndexRatio):
-                        OnPropertyChanged(nameof(IndexRatio));
-                        break;
-                    case nameof(MainViewModel.IndexStatus):
-                        OnPropertyChanged(nameof(IndexStatus));
-                        break;
-                    case nameof(MainViewModel.IndexCurrentFolder):
-                        OnPropertyChanged(nameof(IndexCurrentFolder));
-                        break;
-                    case nameof(MainViewModel.IndexCurrentFile):
-                        OnPropertyChanged(nameof(IndexCurrentFile));
-                        break;
-                    case nameof(MainViewModel.HasMediaPermission):
-                        OnPropertyChanged(nameof(HasMediaPermission));
-                        OnPropertyChanged(nameof(IsEmptyStateVisible));
-                        break;
-                    case nameof(MainViewModel.MediaItems):
-                        OnPropertyChanged(nameof(MediaItems));
-                        UpdateTimelinePreviewVisibility();
-                        break;
-                    case nameof(MainViewModel.MediaCount):
-                        OnPropertyChanged(nameof(MediaCount));
-                        break;
-                    case nameof(MainViewModel.IndexedMediaCount):
-                        OnPropertyChanged(nameof(IndexedMediaCount));
-                        break;
-                    case nameof(MainViewModel.LocationsCount):
-                        OnPropertyChanged(nameof(LocationsCount));
-                        OnPropertyChanged(nameof(HasLocations));
-                        break;
-                    case nameof(MainViewModel.TimelineEntries):
-                        OnPropertyChanged(nameof(TimelineEntries));
-                        UpdateTimelinePreviewVisibility();
-                        break;
-                    case nameof(MainViewModel.EnabledSourceCount):
-                        OnPropertyChanged(nameof(EnabledSourceCount));
-                        break;
-                    case nameof(MainViewModel.SourcesSummary):
-                        OnPropertyChanged(nameof(SourcesSummary));
-                        break;
-                    case nameof(MainViewModel.TaggedPeopleCount):
-                        OnPropertyChanged(nameof(TaggedPeopleCount));
-                        break;
-                    case nameof(MainViewModel.MarkedCount):
-                        OnPropertyChanged(nameof(MarkedCount));
-                        OnPropertyChanged(nameof(HasMarked));
-                        OnPropertyChanged(nameof(ShowBottomDock));
-                        break;
-                    case nameof(MainViewModel.Sources):
-                        OnPropertyChanged(nameof(Sources));
-                        OnPropertyChanged(nameof(HasMultipleSources));
-                        break;
-                    case nameof(MainViewModel.AlbumTabs):
-                        OnPropertyChanged(nameof(AlbumTabs));
-                        OnPropertyChanged(nameof(HasAlbums));
-                        break;
-                    case nameof(MainViewModel.HasMultipleSources):
-                        OnPropertyChanged(nameof(HasMultipleSources));
-                        break;
-                    case nameof(MainViewModel.HasAlbums):
-                        OnPropertyChanged(nameof(HasAlbums));
-                        break;
-                    case nameof(MainViewModel.ActiveSourceId):
-                        OnPropertyChanged(nameof(ActiveSourceId));
-                        break;
-                    case nameof(MainViewModel.ActiveAlbumId):
-                        OnPropertyChanged(nameof(ActiveAlbumId));
-                        break;
-                    case nameof(MainViewModel.SelectedSearchScope):
-                        OnPropertyChanged(nameof(SelectedSearchScope));
-                        break;
-                    case nameof(MainViewModel.IsDateFilterEnabled):
-                        OnPropertyChanged(nameof(IsDateFilterEnabled));
-                        break;
-                    case nameof(MainViewModel.DateFilterFrom):
-                        OnPropertyChanged(nameof(DateFilterFrom));
-                        break;
-                    case nameof(MainViewModel.DateFilterTo):
-                        OnPropertyChanged(nameof(DateFilterTo));
-                        break;
-                    case nameof(MainViewModel.IsSourceSwitching):
-                        OnPropertyChanged(nameof(IsSourceSwitching));
-                        OnPropertyChanged(nameof(IsTopBusy));
-                        OnPropertyChanged(nameof(IsEmptyStateVisible));
-                        break;
-                    case nameof(MainViewModel.IsRefreshing):
-                        OnPropertyChanged(nameof(IsRefreshing));
-                        OnPropertyChanged(nameof(IsTopBusy));
-                        OnPropertyChanged(nameof(IsEmptyStateVisible));
-                        break;
-                    case nameof(MainViewModel.IsInternalPlayerEnabled):
-                        OnPropertyChanged(nameof(IsInternalPlayerEnabled));
-                        OnPropertyChanged(nameof(ShowVideoPlayer));
-                        OnPropertyChanged(nameof(ShowPreview));
-                        OnPropertyChanged(nameof(ShowBottomDock));
-                        break;
-                    case nameof(MainViewModel.CurrentMediaSource):
-                        OnPropertyChanged(nameof(CurrentMediaSource));
-                        OnPropertyChanged(nameof(ShowVideoPlayer));
-                        OnPropertyChanged(nameof(ShowPreview));
-                        OnPropertyChanged(nameof(ShowPhotoPreview));
-                        OnPropertyChanged(nameof(ShowDocumentPreview));
-                        break;
-                    case nameof(MainViewModel.CurrentMediaName):
-                        OnPropertyChanged(nameof(CurrentMediaName));
-                        break;
-                    case nameof(MainViewModel.CurrentMediaType):
-                        OnPropertyChanged(nameof(CurrentMediaType));
-                        OnPropertyChanged(nameof(ShowVideoPlayer));
-                        OnPropertyChanged(nameof(ShowPhotoPreview));
-                        OnPropertyChanged(nameof(ShowDocumentPreview));
-                        OnPropertyChanged(nameof(ShowPreview));
-                        break;
-                    case nameof(MainViewModel.SelectedMediaTypes):
-                        OnPropertyChanged(nameof(SelectedMediaTypes));
-                        break;
-                    case nameof(MainViewModel.IsPlayerFullscreen):
-                        OnPropertyChanged(nameof(IsPlayerFullscreen));
-                        break;
-                    case nameof(MainViewModel.AllowFileChanges):
-                        OnPropertyChanged(nameof(AllowFileChanges));
-                        break;
-                    case nameof(MainViewModel.IsPeopleTaggingEnabled):
-                        OnPropertyChanged(nameof(IsPeopleTaggingEnabled));
-                        break;
-                    case nameof(MainViewModel.IsLocationEnabled):
-                        OnPropertyChanged(nameof(IsLocationEnabled));
-                        OnPropertyChanged(nameof(ShowLocationsHighlight));
-                        OnPropertyChanged(nameof(HasLocations));
-                        break;
-                    case nameof(MainViewModel.NeedsReindex):
-                        OnPropertyChanged(nameof(ShowIndexingBanner));
-                        OnPropertyChanged(nameof(IndexBannerTitle));
-                        OnPropertyChanged(nameof(IndexBannerMessage));
-                        OnPropertyChanged(nameof(ShowIndexBannerAction));
-                        OnPropertyChanged(nameof(IndexBannerActionText));
-                        OnPropertyChanged(nameof(IndexBannerActionCommand));
-                        OnPropertyChanged(nameof(ShowIndexRefreshAction));
-                        OnPropertyChanged(nameof(IndexState));
-                        break;
-                }
-            };
+                MainThread.BeginInvokeOnMainThread(() => HandleViewModelPropertyChanged(args.PropertyName));
 
             // MediaItems is an ObservableRangeCollection; most changes come via CollectionChanged,
             // not PropertyChanged. We need to refresh derived UI state (empty overlay) accordingly.
@@ -859,10 +796,10 @@ public partial class MainPage : ContentPage
         public string IndexCurrentFile => vm.IndexCurrentFile;
         public bool HasMediaPermission => vm.HasMediaPermission;
         public int MediaCount => vm.MediaCount;
-        public int IndexedMediaCount => vm.IndexedMediaCount;
-        public int LocationsCount => vm.LocationsCount;
+        public int IndexedMediaCountDisplay => displayIndexedMediaCount;
+        public int LocationsCountDisplay => displayLocationsCount;
         public int EnabledSourceCount => vm.EnabledSourceCount;
-        public int TaggedPeopleCount => vm.TaggedPeopleCount;
+        public int TaggedPeopleCountDisplay => displayTaggedPeopleCount;
         public string SourcesSummary => vm.SourcesSummary;
         public int MarkedCount => vm.MarkedCount;
         public bool HasMarked => vm.HasMarked;
@@ -992,6 +929,253 @@ public partial class MainPage : ContentPage
         public bool IsLocationEnabled => vm.IsLocationEnabled;
         public bool HasLocations => vm.HasLocations;
         public bool ShowLocationsHighlight => vm.IsLocationEnabled;
+
+        private void HandleViewModelPropertyChanged(string? propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(MainViewModel.IsIndexing):
+                    if (!vm.IsIndexing)
+                    {
+                        isIndexingOverlaySuppressed = false;
+                        IsIndexingOverlayVisible = false;
+                        IsIndexRefreshPending = false;
+                    }
+                    else
+                    {
+                        IsIndexingOverlayVisible = !isIndexingOverlaySuppressed;
+                    }
+
+                    OnPropertyChanged(nameof(IsIndexing));
+                    OnPropertyChanged(nameof(IsTopBusy));
+                    OnPropertyChanged(nameof(IsEmptyStateVisible));
+                    OnPropertyChanged(nameof(ShowIndexingBanner));
+                    OnPropertyChanged(nameof(IndexBannerTitle));
+                    OnPropertyChanged(nameof(IndexBannerMessage));
+                    OnPropertyChanged(nameof(ShowIndexBannerAction));
+                    OnPropertyChanged(nameof(IndexBannerActionText));
+                    OnPropertyChanged(nameof(IndexBannerActionCommand));
+                    OnPropertyChanged(nameof(ShowIndexRefreshAction));
+                    OnPropertyChanged(nameof(RefreshIndexCommand));
+                    OnPropertyChanged(nameof(IndexState));
+                    break;
+                case nameof(MainViewModel.IndexedCount):
+                    OnPropertyChanged(nameof(IndexedCount));
+                    OnPropertyChanged(nameof(ShowIndexingBanner));
+                    break;
+                case nameof(MainViewModel.IndexProcessed):
+                    OnPropertyChanged(nameof(IndexProcessed));
+                    break;
+                case nameof(MainViewModel.IndexTotal):
+                    OnPropertyChanged(nameof(IndexTotal));
+                    break;
+                case nameof(MainViewModel.IndexRatio):
+                    OnPropertyChanged(nameof(IndexRatio));
+                    break;
+                case nameof(MainViewModel.IndexStatus):
+                    OnPropertyChanged(nameof(IndexStatus));
+                    break;
+                case nameof(MainViewModel.IndexCurrentFolder):
+                    OnPropertyChanged(nameof(IndexCurrentFolder));
+                    break;
+                case nameof(MainViewModel.IndexCurrentFile):
+                    OnPropertyChanged(nameof(IndexCurrentFile));
+                    break;
+                case nameof(MainViewModel.HasMediaPermission):
+                    OnPropertyChanged(nameof(HasMediaPermission));
+                    OnPropertyChanged(nameof(IsEmptyStateVisible));
+                    break;
+                case nameof(MainViewModel.MediaItems):
+                    OnPropertyChanged(nameof(MediaItems));
+                    UpdateTimelinePreviewVisibility();
+                    break;
+                case nameof(MainViewModel.MediaCount):
+                    OnPropertyChanged(nameof(MediaCount));
+                    break;
+                case nameof(MainViewModel.IndexedMediaCount):
+                    UpdateDisplayCount(ref displayIndexedMediaCount, ref pendingIndexedMediaCount,
+                        vm.IndexedMediaCount, nameof(IndexedMediaCountDisplay));
+                    break;
+                case nameof(MainViewModel.LocationsCount):
+                    UpdateDisplayCount(ref displayLocationsCount, ref pendingLocationsCount,
+                        vm.LocationsCount, nameof(LocationsCountDisplay));
+                    OnPropertyChanged(nameof(HasLocations));
+                    break;
+                case nameof(MainViewModel.TimelineEntries):
+                    OnPropertyChanged(nameof(TimelineEntries));
+                    UpdateTimelinePreviewVisibility();
+                    break;
+                case nameof(MainViewModel.EnabledSourceCount):
+                    OnPropertyChanged(nameof(EnabledSourceCount));
+                    break;
+                case nameof(MainViewModel.SourcesSummary):
+                    OnPropertyChanged(nameof(SourcesSummary));
+                    break;
+                case nameof(MainViewModel.TaggedPeopleCount):
+                    UpdateDisplayCount(ref displayTaggedPeopleCount, ref pendingTaggedPeopleCount,
+                        vm.TaggedPeopleCount, nameof(TaggedPeopleCountDisplay));
+                    break;
+                case nameof(MainViewModel.MarkedCount):
+                    OnPropertyChanged(nameof(MarkedCount));
+                    OnPropertyChanged(nameof(HasMarked));
+                    OnPropertyChanged(nameof(ShowBottomDock));
+                    break;
+                case nameof(MainViewModel.Sources):
+                    OnPropertyChanged(nameof(Sources));
+                    OnPropertyChanged(nameof(HasMultipleSources));
+                    break;
+                case nameof(MainViewModel.AlbumTabs):
+                    OnPropertyChanged(nameof(AlbumTabs));
+                    OnPropertyChanged(nameof(HasAlbums));
+                    break;
+                case nameof(MainViewModel.HasMultipleSources):
+                    OnPropertyChanged(nameof(HasMultipleSources));
+                    break;
+                case nameof(MainViewModel.HasAlbums):
+                    OnPropertyChanged(nameof(HasAlbums));
+                    break;
+                case nameof(MainViewModel.ActiveSourceId):
+                    OnPropertyChanged(nameof(ActiveSourceId));
+                    break;
+                case nameof(MainViewModel.ActiveAlbumId):
+                    OnPropertyChanged(nameof(ActiveAlbumId));
+                    break;
+                case nameof(MainViewModel.SelectedSearchScope):
+                    OnPropertyChanged(nameof(SelectedSearchScope));
+                    break;
+                case nameof(MainViewModel.IsDateFilterEnabled):
+                    OnPropertyChanged(nameof(IsDateFilterEnabled));
+                    break;
+                case nameof(MainViewModel.DateFilterFrom):
+                    OnPropertyChanged(nameof(DateFilterFrom));
+                    break;
+                case nameof(MainViewModel.DateFilterTo):
+                    OnPropertyChanged(nameof(DateFilterTo));
+                    break;
+                case nameof(MainViewModel.IsSourceSwitching):
+                    OnPropertyChanged(nameof(IsSourceSwitching));
+                    OnPropertyChanged(nameof(IsTopBusy));
+                    OnPropertyChanged(nameof(IsEmptyStateVisible));
+                    break;
+                case nameof(MainViewModel.IsRefreshing):
+                    OnPropertyChanged(nameof(IsRefreshing));
+                    OnPropertyChanged(nameof(IsTopBusy));
+                    OnPropertyChanged(nameof(IsEmptyStateVisible));
+                    break;
+                case nameof(MainViewModel.IsInternalPlayerEnabled):
+                    OnPropertyChanged(nameof(IsInternalPlayerEnabled));
+                    OnPropertyChanged(nameof(ShowVideoPlayer));
+                    OnPropertyChanged(nameof(ShowPreview));
+                    OnPropertyChanged(nameof(ShowBottomDock));
+                    break;
+                case nameof(MainViewModel.CurrentMediaSource):
+                    OnPropertyChanged(nameof(CurrentMediaSource));
+                    OnPropertyChanged(nameof(ShowVideoPlayer));
+                    OnPropertyChanged(nameof(ShowPreview));
+                    OnPropertyChanged(nameof(ShowPhotoPreview));
+                    OnPropertyChanged(nameof(ShowDocumentPreview));
+                    break;
+                case nameof(MainViewModel.CurrentMediaName):
+                    OnPropertyChanged(nameof(CurrentMediaName));
+                    break;
+                case nameof(MainViewModel.CurrentMediaType):
+                    OnPropertyChanged(nameof(CurrentMediaType));
+                    OnPropertyChanged(nameof(ShowVideoPlayer));
+                    OnPropertyChanged(nameof(ShowPhotoPreview));
+                    OnPropertyChanged(nameof(ShowDocumentPreview));
+                    OnPropertyChanged(nameof(ShowPreview));
+                    break;
+                case nameof(MainViewModel.SelectedMediaTypes):
+                    OnPropertyChanged(nameof(SelectedMediaTypes));
+                    break;
+                case nameof(MainViewModel.IsPlayerFullscreen):
+                    OnPropertyChanged(nameof(IsPlayerFullscreen));
+                    break;
+                case nameof(MainViewModel.AllowFileChanges):
+                    OnPropertyChanged(nameof(AllowFileChanges));
+                    break;
+                case nameof(MainViewModel.IsPeopleTaggingEnabled):
+                    OnPropertyChanged(nameof(IsPeopleTaggingEnabled));
+                    break;
+                case nameof(MainViewModel.IsLocationEnabled):
+                    OnPropertyChanged(nameof(IsLocationEnabled));
+                    OnPropertyChanged(nameof(ShowLocationsHighlight));
+                    OnPropertyChanged(nameof(HasLocations));
+                    break;
+                case nameof(MainViewModel.NeedsReindex):
+                    OnPropertyChanged(nameof(ShowIndexingBanner));
+                    OnPropertyChanged(nameof(IndexBannerTitle));
+                    OnPropertyChanged(nameof(IndexBannerMessage));
+                    OnPropertyChanged(nameof(ShowIndexBannerAction));
+                    OnPropertyChanged(nameof(IndexBannerActionText));
+                    OnPropertyChanged(nameof(IndexBannerActionCommand));
+                    OnPropertyChanged(nameof(ShowIndexRefreshAction));
+                    OnPropertyChanged(nameof(IndexState));
+                    break;
+            }
+        }
+
+        private void ClearMarked()
+        {
+            if (vm.ClearMarkedCommand.CanExecute(null))
+                vm.ClearMarkedCommand.Execute(null);
+
+#if WINDOWS
+            page.ClearMediaSelection();
+#endif
+        }
+
+        public void SetHeaderVisibility(bool isVisible)
+        {
+            if (isHeaderVisible == isVisible)
+                return;
+
+            isHeaderVisible = isVisible;
+            if (isHeaderVisible)
+                FlushPendingCounts();
+        }
+
+        private void FlushPendingCounts()
+        {
+            if (pendingIndexedMediaCount.HasValue)
+            {
+                displayIndexedMediaCount = pendingIndexedMediaCount.Value;
+                pendingIndexedMediaCount = null;
+                OnPropertyChanged(nameof(IndexedMediaCountDisplay));
+            }
+
+            if (pendingLocationsCount.HasValue)
+            {
+                displayLocationsCount = pendingLocationsCount.Value;
+                pendingLocationsCount = null;
+                OnPropertyChanged(nameof(LocationsCountDisplay));
+            }
+
+            if (pendingTaggedPeopleCount.HasValue)
+            {
+                displayTaggedPeopleCount = pendingTaggedPeopleCount.Value;
+                pendingTaggedPeopleCount = null;
+                OnPropertyChanged(nameof(TaggedPeopleCountDisplay));
+            }
+        }
+
+        private void UpdateDisplayCount(ref int displayValue, ref int? pendingValue, int value,
+            string propertyName)
+        {
+            if (isHeaderVisible)
+            {
+                if (displayValue == value)
+                    return;
+
+                displayValue = value;
+                pendingValue = null;
+                OnPropertyChanged(propertyName);
+            }
+            else
+            {
+                pendingValue = value;
+            }
+        }
 
         public void SetTimelinePreview(TimelineEntry entry)
         {
@@ -1250,13 +1434,13 @@ public partial class MainPage : ContentPage
                 }
             }
 
-            var minTileWidth = 240;
-            var tilePadding = 20;
+            var minTileWidth = 210;
+            var tilePadding = 16;
             var targetTile = minTileWidth + tilePadding;
             if (mode == UiMode.Tv)
-                targetTile = 340;
+                targetTile = 320;
             else if (mode == UiMode.Tablet)
-                targetTile = 300;
+                targetTile = 280;
 
             var span = Math.Max(2, (int)(width / targetTile));
 
@@ -1264,4 +1448,9 @@ public partial class MainPage : ContentPage
             return Task.CompletedTask;
         }
     }
+
+#if WINDOWS
+    private IDisposable? marqueeSelection;
+    private MarqueeOverlayDrawable? marqueeDrawable;
+#endif
 }

@@ -220,7 +220,7 @@ public sealed class IndexService
 
                 if (locationsEnabled && locationQueue != null)
                     foreach (var item in items)
-                        if (item?.MediaType is MediaType.Photos or MediaType.Videos &&
+                        if (item?.MediaType is MediaType.Photos or MediaType.Graphics or MediaType.Videos &&
                             !string.IsNullOrWhiteSpace(item.Path))
                         {
                             await QueueLocationLookupAsync(locationQueue, item.Path, item.MediaType, ct)
@@ -458,6 +458,22 @@ public sealed class IndexService
         }
     }
 
+    public async Task UpdateThumbnailPathAsync(string mediaPath, string? thumbnailPath, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(mediaPath) || string.IsNullOrWhiteSpace(thumbnailPath))
+            return;
+
+        ct.ThrowIfCancellationRequested();
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+
+        await db.Db.ExecuteAsync(
+                "UPDATE MediaItem SET ThumbnailPath = ? WHERE Path = ? AND (ThumbnailPath IS NULL OR ThumbnailPath <> ?);",
+                thumbnailPath,
+                mediaPath,
+                thumbnailPath)
+            .ConfigureAwait(false);
+    }
+
     private async Task<IReadOnlySet<IndexedFileSignature>> LoadKnownFileSignaturesAsync(CancellationToken ct)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
@@ -537,7 +553,10 @@ public sealed class IndexService
             try
             {
                 // Best-effort: generate and cache thumbnail file, UI will pick it up on next refresh.
-                await thumbnailService.EnsureThumbnailAsync(item.Path, item.MediaType, ct).ConfigureAwait(false);
+                var thumbPath = await thumbnailService.EnsureThumbnailAsync(item.Path, item.MediaType, ct)
+                    .ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(thumbPath))
+                    await UpdateThumbnailPathAsync(item.Path, thumbPath, ct).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -798,6 +817,68 @@ public sealed class IndexService
         var sql =
             $"SELECT COUNT(*) FROM MediaItem WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND MediaType IN ({placeholders})";
         return await db.Db.ExecuteScalarAsync<int>(sql, allowed.Cast<object>().ToArray()).ConfigureAwait(false);
+    }
+
+
+    public async Task<int> BackfillLocationsAsync(MediaType mediaTypes, int maxItems, CancellationToken ct)
+    {
+        if (!locationMetadataService.IsEnabled || maxItems <= 0)
+            return 0;
+
+        await db.EnsureInitializedAsync().ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+
+        var allowed = BuildAllowedTypes(mediaTypes == MediaType.None ? MediaType.All : mediaTypes);
+        if (allowed.Count == 0)
+            return 0;
+
+        var placeholders = string.Join(",", allowed.Select(_ => "?"));
+        var sql =
+            $"SELECT Path, MediaType, Latitude, Longitude FROM MediaItem " +
+            $"WHERE (Latitude IS NULL OR Longitude IS NULL) AND MediaType IN ({placeholders}) " +
+            "ORDER BY DateAddedSeconds DESC LIMIT ?;";
+
+        var args = allowed.Cast<object>().ToList();
+        args.Add(maxItems);
+
+        var candidates = await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
+        if (candidates.Count == 0)
+            return 0;
+
+        var updated = 0;
+        foreach (var item in candidates)
+        {
+            ct.ThrowIfCancellationRequested();
+            if (item == null || string.IsNullOrWhiteSpace(item.Path))
+                continue;
+
+            try
+            {
+                var hasLocation =
+                    await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false);
+                if (!hasLocation)
+                    continue;
+
+                await db.Db.ExecuteAsync(
+                        "UPDATE MediaItem SET Latitude = ?, Longitude = ? WHERE Path = ?;",
+                        item.Latitude,
+                        item.Longitude,
+                        item.Path)
+                    .ConfigureAwait(false);
+
+                updated++;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "IndexService.BackfillLocationsAsync", $"Path={item.Path}");
+            }
+        }
+
+        return updated;
     }
 
     public async Task RemoveAsync(IEnumerable<MediaItem> items)

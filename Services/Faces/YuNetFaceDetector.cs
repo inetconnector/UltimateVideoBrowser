@@ -1015,13 +1015,13 @@ public sealed class YuNetFaceDetector : IDisposable
         float NmsIou)
     {
         public static YuNetTuning Default => new(
-            0.50f,
-            0.45f,
-            0.06f,
-            0.0027f,
-            0.35f,
-            2.5f,
-            0.45f);
+            GeometryThreshold: 0.45f,
+            MaxAspect: 2.5f,
+            MinAreaFrac: 0.0018750001f,
+            MinAspect: 0.35f,
+            MinScore: 0.45f,
+            MinSizeFrac: 0.05f,
+            NmsIou: .45f);
     }
 
     // ---------------------------

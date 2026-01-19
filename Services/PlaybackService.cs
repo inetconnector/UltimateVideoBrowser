@@ -1,4 +1,5 @@
 using UltimateVideoBrowser.Models;
+
 #if ANDROID && !WINDOWS
 using Android.Content;
 using Uri = Android.Net.Uri;

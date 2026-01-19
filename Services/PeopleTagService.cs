@@ -160,7 +160,8 @@ public sealed class PeopleTagService
         {
             // Use a lightweight COUNT(DISTINCT ...) query to avoid loading all tags into memory.
             var rows = await db.Db.QueryAsync<CountRow>(
-                    "SELECT COUNT(DISTINCT PersonName) AS Count FROM PersonTag;")
+                    "SELECT COUNT(DISTINCT PersonName) AS Count FROM PersonTag " +
+                    "WHERE PersonName IS NOT NULL AND TRIM(PersonName) <> '';")
                 .ConfigureAwait(false);
 
             return rows.FirstOrDefault()?.Count ?? 0;

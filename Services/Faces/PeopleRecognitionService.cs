@@ -5,6 +5,9 @@ using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
+#if WINDOWS
+using Windows.Storage;
+#endif
 namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class PeopleRecognitionService
@@ -17,6 +20,7 @@ public sealed class PeopleRecognitionService
     private readonly AppDb db;
     private readonly YuNetFaceDetector faceDetector;
     private readonly SFaceRecognizer faceRecognizer;
+    private readonly FaceThumbnailService faceThumbnails;
     private readonly ModelFileService modelFiles;
     private readonly PeopleTagService peopleTagService;
     private readonly IProUpgradeService proUpgradeService;
@@ -27,6 +31,7 @@ public sealed class PeopleRecognitionService
         ModelFileService modelFiles,
         YuNetFaceDetector faceDetector,
         SFaceRecognizer faceRecognizer,
+        FaceThumbnailService faceThumbnails,
         IProUpgradeService proUpgradeService)
     {
         this.db = db;
@@ -34,6 +39,7 @@ public sealed class PeopleRecognitionService
         this.modelFiles = modelFiles;
         this.faceDetector = faceDetector;
         this.faceRecognizer = faceRecognizer;
+        this.faceThumbnails = faceThumbnails;
         this.proUpgradeService = proUpgradeService;
     }
 
@@ -61,7 +67,8 @@ public sealed class PeopleRecognitionService
 
     public async Task<IReadOnlyList<FaceMatch>> EnsurePeopleTagsForMediaAsync(MediaItem item, CancellationToken ct)
     {
-        if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
+        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) ||
+            string.IsNullOrWhiteSpace(item.Path))
             return Array.Empty<FaceMatch>();
 
         Debug.WriteLine($"[PeopleRecognition] EnsurePeopleTagsForMediaAsync: {item.Path}");
@@ -279,7 +286,8 @@ public sealed class PeopleRecognitionService
 
     public async Task RenamePeopleForMediaAsync(MediaItem item, IReadOnlyList<string> names, CancellationToken ct)
     {
-        if (item == null || item.MediaType != MediaType.Photos || string.IsNullOrWhiteSpace(item.Path))
+        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) ||
+            string.IsNullOrWhiteSpace(item.Path))
             return;
 
         await db.EnsureInitializedAsync().ConfigureAwait(false);
@@ -338,7 +346,9 @@ public sealed class PeopleRecognitionService
         IProgress<(int processed, int total, string path)>? progress,
         CancellationToken ct)
     {
-        var list = items.Where(item => item.MediaType == MediaType.Photos && !string.IsNullOrWhiteSpace(item.Path))
+        var list = items
+            .Where(item => item.MediaType is MediaType.Photos or MediaType.Graphics &&
+                           !string.IsNullOrWhiteSpace(item.Path))
             .ToList();
 
         var total = list.Count;
@@ -356,89 +366,106 @@ public sealed class PeopleRecognitionService
     private async Task<List<FaceEmbedding>> DetectAndStoreFacesAsync(string path, string detectionModelKey,
         CancellationToken ct)
     {
-        if (!File.Exists(path))
+        var image = await TryLoadOrientedRgbaImageAsync(path, ct).ConfigureAwait(false);
+        if (image == null)
             return new List<FaceEmbedding>();
 
-        using var image = ImageSharpImage.Load<Rgba32>(path);
-        image.Mutate(ctx => ctx.AutoOrient());
-
-        var embeddingModelKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
-
-        IReadOnlyList<DetectedFace> faces;
-        try
+        using (image)
         {
-            using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
-            var tuning = YuNetFaceDetector.YuNetTuning.Default;
+            var embeddingModelKey = await modelFiles.GetSFaceModelKeyAsync(ct).ConfigureAwait(false);
 
-            //if (referenceImage != null)
-            //{
-            //    tuning = await faceDetector.CalibrateFromReferenceImageAsync(referenceImage, expectedFaces: 4, ct)
-            //        .ConfigureAwait(false);
-            //}
-
-            // 2) Use tuned detection if available, otherwise fallback to your default.
-            if (tuning != null)
-                faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
-            else
-                faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            LastModelLoadError = ex.Message;
-            Debug.WriteLine($"[PeopleRecognition] DetectFacesAsync FAILED: {ex}");
-            return new List<FaceEmbedding>();
-        }
-
-        if (faces.Count == 0)
-            return new List<FaceEmbedding>();
-
-        await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", path).ConfigureAwait(false);
-
-        var embeddings = new List<FaceEmbedding>();
-        for (var i = 0; i < faces.Count; i++)
-        {
-            ct.ThrowIfCancellationRequested();
-            var face = faces[i];
-
-            float[] embedding;
+            IReadOnlyList<DetectedFace> faces;
             try
             {
-                embedding = await faceRecognizer.ExtractEmbeddingAsync(image, face, ct).ConfigureAwait(false);
+                //using var referenceImage = await TryLoadReferenceImageFromDesktopAsync(ct).ConfigureAwait(false);
+
+                YuNetFaceDetector.YuNetTuning? tuning = null;
+
+                //If a reference image exists, calibrate against it(best quality).
+                tuning = YuNetFaceDetector.YuNetTuning.Default;
+                //if (referenceImage != null)
+                //{
+                //    // ExpectedFaces=1 is a sane default for calibration.
+                //    tuning = await faceDetector
+                //        .CalibrateFromReferenceImageAsync(referenceImage, expectedFaces: 6, ct)
+                //        .ConfigureAwait(false);
+                //} 
+
+                // Otherwise: let the detector pick dynamic defaults (BuildAutoTuning).
+                faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 LastModelLoadError = ex.Message;
-                Debug.WriteLine($"[PeopleRecognition] ExtractEmbeddingAsync FAILED (face {i}): {ex}");
-                continue;
+                Debug.WriteLine($"[PeopleRecognition] DetectFacesAsync FAILED: {ex}");
+                return new List<FaceEmbedding>();
             }
 
-            if (embedding.Length == 0)
-                continue;
+            if (faces.Count == 0)
+                return new List<FaceEmbedding>();
 
-            var faceQuality = ComputeFaceQuality(face.Score, face.W, face.H);
+            await db.Db.ExecuteAsync("DELETE FROM FaceEmbedding WHERE MediaPath = ?;", path).ConfigureAwait(false);
 
-            embeddings.Add(new FaceEmbedding
+            var embeddings = new List<FaceEmbedding>(faces.Count);
+            for (var i = 0; i < faces.Count; i++)
             {
-                MediaPath = path,
-                FaceIndex = i,
-                Score = face.Score,
-                X = face.X,
-                Y = face.Y,
-                W = face.W,
-                H = face.H,
-                ImageWidth = image.Width,
-                ImageHeight = image.Height,
-                DetectionModelKey = detectionModelKey,
-                EmbeddingModelKey = embeddingModelKey,
-                FaceQuality = faceQuality,
-                Embedding = FloatsToBytes(embedding)
-            });
+                ct.ThrowIfCancellationRequested();
+                var face = faces[i];
+
+                float[] embedding;
+                try
+                {
+                    embedding = await faceRecognizer.ExtractEmbeddingAsync(image, face, ct).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    LastModelLoadError = ex.Message;
+                    Debug.WriteLine($"[PeopleRecognition] ExtractEmbeddingAsync FAILED (face {i}): {ex}");
+                    continue;
+                }
+
+                if (embedding.Length == 0)
+                    continue;
+
+                var faceQuality = ComputeFaceQuality(face.Score, face.W, face.H);
+
+                string? thumb96Path = null;
+                try
+                {
+                    thumb96Path = await faceThumbnails
+                        .EnsureFaceThumbnailAsync(image, path, face, i, 96, ct)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        $"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
+                }
+
+                embeddings.Add(new FaceEmbedding
+                {
+                    MediaPath = path,
+                    FaceIndex = i,
+                    Score = face.Score,
+                    X = face.X,
+                    Y = face.Y,
+                    W = face.W,
+                    H = face.H,
+                    ImageWidth = image.Width,
+                    ImageHeight = image.Height,
+                    DetectionModelKey = detectionModelKey,
+                    EmbeddingModelKey = embeddingModelKey,
+                    FaceQuality = faceQuality,
+                    Embedding = FloatsToBytes(embedding),
+                    Thumb96Path = thumb96Path
+                });
+            }
+
+            foreach (var embedding in embeddings)
+                await db.Db.InsertAsync(embedding).ConfigureAwait(false);
+
+            return embeddings;
         }
-
-        foreach (var embedding in embeddings)
-            await db.Db.InsertAsync(embedding).ConfigureAwait(false);
-
-        return embeddings;
     }
 
     private async Task TryUpdateFaceBoxesAsync(string mediaPath, List<FaceEmbedding> embeddings, CancellationToken ct)
@@ -450,41 +477,42 @@ public sealed class PeopleRecognitionService
         if (!needsUpdate)
             return;
 
-        if (!File.Exists(mediaPath))
-            return;
-
         try
         {
-            using var image = ImageSharpImage.Load<Rgba32>(mediaPath);
-            image.Mutate(ctx => ctx.AutoOrient());
-
-            IReadOnlyList<DetectedFace> faces;
-            try
-            {
-                faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                LastModelLoadError = ex.Message;
-                Debug.WriteLine($"[PeopleRecognition] TryUpdateFaceBoxes DetectFacesAsync FAILED: {ex}");
-                return;
-            }
-
-            if (faces.Count == 0)
+            var image = await TryLoadOrientedRgbaImageAsync(mediaPath, ct).ConfigureAwait(false);
+            if (image == null)
                 return;
 
-            var count = Math.Min(embeddings.Count, faces.Count);
-            for (var i = 0; i < count; i++)
+            using (image)
             {
-                var face = faces[i];
-                var row = embeddings[i];
-                row.X = face.X;
-                row.Y = face.Y;
-                row.W = face.W;
-                row.H = face.H;
-                row.ImageWidth = image.Width;
-                row.ImageHeight = image.Height;
-                await db.Db.UpdateAsync(row).ConfigureAwait(false);
+                IReadOnlyList<DetectedFace> faces;
+                try
+                {
+                    faces = await faceDetector.DetectFacesAsync(image, DefaultMinScore, ct).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    LastModelLoadError = ex.Message;
+                    Debug.WriteLine($"[PeopleRecognition] TryUpdateFaceBoxes DetectFacesAsync FAILED: {ex}");
+                    return;
+                }
+
+                if (faces.Count == 0)
+                    return;
+
+                var count = Math.Min(embeddings.Count, faces.Count);
+                for (var i = 0; i < count; i++)
+                {
+                    var face = faces[i];
+                    var row = embeddings[i];
+                    row.X = face.X;
+                    row.Y = face.Y;
+                    row.W = face.W;
+                    row.H = face.H;
+                    row.ImageWidth = image.Width;
+                    row.ImageHeight = image.Height;
+                    await db.Db.UpdateAsync(row).ConfigureAwait(false);
+                }
             }
         }
         catch (Exception ex)
@@ -708,6 +736,123 @@ public sealed class PeopleRecognitionService
         profile.UpdatedUtc = DateTimeOffset.UtcNow;
 
         await db.Db.UpdateAsync(profile).ConfigureAwait(false);
+    }
+
+
+    private async Task<Image<Rgba32>?> TryLoadOrientedRgbaImageAsync(string path, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        await using var stream = await TryOpenImageStreamAsync(path, ct).ConfigureAwait(false);
+        if (stream == null)
+            return null;
+
+        try
+        {
+            var img = await ImageSharpImage.LoadAsync<Rgba32>(stream, ct).ConfigureAwait(false);
+            img.Mutate(ctx => ctx.AutoOrient());
+            return img;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[PeopleRecognition] Failed to load image stream for '{path}': {ex}");
+            return null;
+        }
+    }
+
+    private static string NormalizeFileUriPath(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return path;
+
+        var trimmed = path.Trim();
+        if (Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) && uri.IsFile)
+            return uri.LocalPath;
+
+        return trimmed;
+    }
+
+    private async Task<Stream?> TryOpenImageStreamAsync(string path, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
+
+        var normalized = NormalizeFileUriPath(path);
+
+#if ANDROID && !WINDOWS
+        if (normalized.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var resolver = Platform.AppContext?.ContentResolver;
+                if (resolver == null)
+                    return null;
+
+                var uri = Android.Net.Uri.Parse(normalized);
+                var input = resolver.OpenInputStream(uri);
+                if (input == null)
+                    return null;
+
+                return await EnsureSeekableAsync(input, ct).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PeopleRecognition] OpenInputStream failed for '{normalized}': {ex}");
+                return null;
+            }
+        }
+#endif
+
+#if WINDOWS
+        try
+        {
+            // First try direct file access.
+            if (File.Exists(normalized))
+                try
+                {
+                    return File.OpenRead(normalized);
+                }
+                catch
+                {
+                    // Fall back to brokered access below.
+                }
+
+            // Windows: try brokered access (helps when the file is outside direct access).
+            var file = await StorageFile.GetFileFromPathAsync(normalized);
+            var s = await file.OpenStreamForReadAsync().ConfigureAwait(false);
+            return s;
+        }
+        catch
+        {
+            return null;
+        }
+#else
+        try
+        {
+            if (!File.Exists(normalized))
+                return null;
+
+            return File.OpenRead(normalized);
+        }
+        catch
+        {
+            return null;
+        }
+#endif
+    }
+
+    private static async Task<Stream> EnsureSeekableAsync(Stream input, CancellationToken ct)
+    {
+        if (input.CanSeek)
+            return input;
+
+        var ms = new MemoryStream();
+        await input.CopyToAsync(ms, 81920, ct).ConfigureAwait(false);
+        ms.Position = 0;
+        input.Dispose();
+        return ms;
     }
 
     private static float Clamp01(float v)

@@ -16,11 +16,12 @@
         <!-- Browser grid -->
         <Grid Grid.Row="0"
               x:Name="BrowserGrid"
-              ColumnDefinitions="*,120"
+              ColumnDefinitions="120,*"
               RowDefinitions="*"
               ColumnSpacing="0"
               VerticalOptions="FillAndExpand"
               HorizontalOptions="FillAndExpand">
+
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="LayoutStates">
                     <VisualState x:Name="Phone">
@@ -36,12 +37,16 @@
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="120,*" />
+
+                            <!-- Sidebar LEFT -->
                             <Setter TargetName="TimelineSidebar" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="0" />
                             <Setter TargetName="TimelineSidebar" Property="Margin" Value="8,0,8,0" />
-                            <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
+
+                            <!-- Media list RIGHT -->
+                            <Setter TargetName="MediaItemsHost" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="MediaItemsHost" Property="Grid.Column" Value="1" />
                         </VisualState.Setters>
                     </VisualState>
 
@@ -63,29 +68,39 @@
                             </OnIdiom>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
-                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="*,120" />
+                            <Setter TargetName="BrowserGrid" Property="ColumnDefinitions" Value="120,*" />
                             <Setter TargetName="BrowserGrid" Property="RowDefinitions" Value="*" />
+
+                            <!-- Sidebar LEFT -->
                             <Setter TargetName="TimelineSidebar" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="TimelineSidebar" Property="Grid.Column" Value="0" />
                             <Setter TargetName="TimelineSidebar" Property="Margin" Value="8,0,8,0" />
-                            <Setter TargetName="MediaItemsView" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="MediaItemsView" Property="Grid.Column" Value="0" />
+
+                            <!-- Media list RIGHT -->
+                            <Setter TargetName="MediaItemsHost" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="MediaItemsHost" Property="Grid.Column" Value="1" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
-            <components:MainTimelineSidebarView Grid.Column="1"
+            <!-- Sidebar: NOW LEFT -->
+            <components:MainTimelineSidebarView Grid.Column="0"
                                                 x:Name="TimelineSidebar"
                                                 TimelineSelectionChanged="OnTimelineSelectionChanged"
-                                                ScrollUpClicked="OnTimelineScrollUpClicked"
-                                                ScrollDownClicked="OnTimelineScrollDownClicked"
+                                                TimelineScrollUpClicked="OnTimelineScrollUpClicked"
+                                                TimelineScrollDownClicked="OnTimelineScrollDownClicked"
+                                                TimelineScrollTopClicked="OnTimelineScrollTopClicked"
+                                                TimelineScrollBottomClicked="OnTimelineScrollBottomClicked"
+                                                MediaScrollTopClicked="OnMediaScrollTopClicked"
+                                                MediaScrollBottomClicked="OnMediaScrollBottomClicked"
                                                 SettingsClicked="OnSettingsClicked"
                                                 VerticalOptions="FillAndExpand"
                                                 HorizontalOptions="FillAndExpand"
                                                 ZIndex="1" />
 
-            <Grid Grid.Column="0"
+            <!-- Timeline preview badge: keep on media area (RIGHT), aligned to End -->
+            <Grid Grid.Column="1"
                   InputTransparent="True"
                   ZIndex="2">
                 <Frame Padding="10,6"
@@ -104,397 +119,395 @@
                 </Frame>
             </Grid>
 
-            <CollectionView Grid.Column="0"
-                            ItemsSource="{Binding MediaItems}"
-                            x:Name="MediaItemsView"
-                            SelectionMode="{OnPlatform WinUI=Multiple, Default=None}"
-                            SelectionChanged="OnMediaItemsSelectionChanged"
-                            RemainingItemsThreshold="12"
-                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
-                            VerticalScrollBarVisibility="Always"
-                            Margin="0,0,16,0"
-                            Scrolled="OnMediaItemsScrolled"
-                            VerticalOptions="FillAndExpand"
-                            HorizontalOptions="FillAndExpand"
-                            ItemSizingStrategy="MeasureFirstItem"
-                            ItemsUpdatingScrollMode="KeepScrollOffset"
-                            ZIndex="0">
+            <!-- Media area: NOW RIGHT (Grid.Column=1) -->
+            <Grid x:Name="MediaItemsHost"
+                  Grid.Column="1"
+                  ZIndex="0">
 
-                <CollectionView.Header>
-                    <Grid x:Name="HeaderContainer"
-                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                          BackgroundColor="{DynamicResource AppBg}"
-                          BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}">
-                        <!-- Top bar -->
-                        <components:MainHeaderView />
+                <CollectionView
+                    ItemsSource="{Binding MediaItems}"
+                    x:Name="MediaItemsView"
+                    SelectionMode="{OnPlatform WinUI=Multiple, Default=None}"
+                    SelectionChanged="OnMediaItemsSelectionChanged"
+                    RemainingItemsThreshold="12"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
+                    VerticalScrollBarVisibility="Always"
+                    Margin="0"
+                    Scrolled="OnMediaItemsScrolled"
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand"
+                    ItemSizingStrategy="MeasureFirstItem"
+                    ItemsUpdatingScrollMode="KeepScrollOffset">
+                    <CollectionView.Behaviors>
+                        <behaviors:WindowsPinnedScrollBarBehavior />
+                    </CollectionView.Behaviors>
 
+                    <CollectionView.Header>
+                        <Grid x:Name="HeaderContainer"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                              BackgroundColor="{DynamicResource AppBg}"
+                              BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}">
 
-                        <!-- Hero -->
-                        <components:MainHeroView Grid.Row="1" />
+                            <components:MainHeaderView />
+                            <components:MainHeroView Grid.Row="1" />
+                            <components:MainHighlightsView Grid.Row="2" />
 
-                        <!-- Highlights -->
-                        <components:MainHighlightsView Grid.Row="2" />
+                            <Grid Grid.Row="3"
+                                  Padding="12"
+                                  IsVisible="False">
+                                <Frame BackgroundColor="{DynamicResource Surface}"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="{DynamicResource BorderSubtle}">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{x:Static strings:AppResources.PreviewTitle}"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}" />
+                                        <Grid HeightRequest="220"
+                                              BackgroundColor="{DynamicResource Surface2}">
+                                            <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
+                                                                  ShouldAutoPlay="True"
+                                                                  ShouldShowPlaybackControls="True"
+                                                                  Aspect="AspectFit"
+                                                                  IsVisible="{Binding ShowVideoPlayer}" />
+                                            <Image Source="{Binding CurrentMediaSource}"
+                                                   Aspect="AspectFit"
+                                                   IsVisible="{Binding ShowPhotoPreview}" />
+                                            <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
+                                                                 HorizontalOptions="Center"
+                                                                 VerticalOptions="Center"
+                                                                 Spacing="6">
+                                                <Image Source="chip_collection.svg"
+                                                       HeightRequest="48"
+                                                       WidthRequest="48" />
+                                                <Label Text="{Binding CurrentMediaName}"
+                                                       FontSize="12"
+                                                       TextColor="{DynamicResource OnSurface}" />
+                                            </VerticalStackLayout>
+                                            <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
+                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                                      Command="{Binding TogglePlayerFullscreenCommand}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                        <Label Text="{Binding CurrentMediaName}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                               LineBreakMode="TailTruncation"
+                                               IsVisible="{Binding ShowPreview}" />
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </Grid>
 
-                        <!-- Preview (moved to bottom dock) -->
-                        <Grid Grid.Row="3"
-                              Padding="12"
-                              IsVisible="False">
-                            <Frame BackgroundColor="{DynamicResource Surface}"
+                            <components:MainPermissionNoticeView Grid.Row="4" />
+
+                            <Frame Grid.Row="5"
+                                   Grid.RowSpan="5"
+                                   BackgroundColor="{DynamicResource Surface}"
                                    CornerRadius="16"
                                    Padding="12"
                                    BorderColor="{DynamicResource BorderSubtle}">
-                                <VerticalStackLayout Spacing="8">
-                                    <Label Text="{x:Static strings:AppResources.PreviewTitle}"
-                                           FontAttributes="Bold"
-                                           TextColor="{DynamicResource OnSurface}" />
-                                    <Grid HeightRequest="220"
-                                          BackgroundColor="{DynamicResource Surface2}">
-                                        <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
-                                                              ShouldAutoPlay="True"
-                                                              ShowsPlaybackControls="True"
-                                                              Aspect="AspectFit"
-                                                              IsVisible="{Binding ShowVideoPlayer}" />
-                                        <Image Source="{Binding CurrentMediaSource}"
-                                               Aspect="AspectFit"
-                                               IsVisible="{Binding ShowPhotoPreview}" />
-                                        <VerticalStackLayout IsVisible="{Binding ShowDocumentPreview}"
-                                                             HorizontalOptions="Center"
-                                                             VerticalOptions="Center"
-                                                             Spacing="6">
-                                            <Image Source="chip_collection.svg"
-                                                   HeightRequest="48"
-                                                   WidthRequest="48" />
-                                            <Label Text="{Binding CurrentMediaName}"
-                                                   FontSize="12"
-                                                   TextColor="{DynamicResource OnSurface}" />
-                                        </VerticalStackLayout>
-                                        <Label Text="{x:Static strings:AppResources.PreviewEmptyMessage}"
-                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                               HorizontalTextAlignment="Center"
-                                               VerticalTextAlignment="Center"
-                                               IsVisible="{Binding ShowPreview, Converter={StaticResource InverseBoolConverter}}" />
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                                  Command="{Binding TogglePlayerFullscreenCommand}" />
-                                        </Grid.GestureRecognizers>
+                                <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <Label Text="{x:Static strings:AppResources.SettingsFilterTitle}"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource OnSurface}"
+                                               VerticalOptions="Center" />
+
+                                        <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                            <Button Text="▼"
+                                                    WidthRequest="40"
+                                                    HeightRequest="32"
+                                                    Padding="0"
+                                                    FontAttributes="Bold"
+                                                    Style="{StaticResource OverlayButtonStyle}"
+                                                    IsVisible="{Binding IsFiltersDockExpanded}"
+                                                    Command="{Binding ToggleFiltersDockExpandedCommand}"
+                                                    AutomationProperties.Name="Collapse filters" />
+                                            <Button Text="◀"
+                                                    Grid.Column="1"
+                                                    WidthRequest="40"
+                                                    HeightRequest="32"
+                                                    Padding="0"
+                                                    FontAttributes="Bold"
+                                                    Style="{StaticResource OverlayButtonStyle}"
+                                                    IsVisible="{Binding IsFiltersDockExpanded, Converter={StaticResource InverseBoolConverter}}"
+                                                    Command="{Binding ToggleFiltersDockExpandedCommand}"
+                                                    AutomationProperties.Name="Expand filters" />
+                                        </Grid>
                                     </Grid>
-                                    <Label Text="{Binding CurrentMediaName}"
-                                           FontSize="12"
-                                           TextColor="{DynamicResource OnSurfaceMuted}"
-                                           LineBreakMode="TailTruncation"
-                                           IsVisible="{Binding ShowPreview}" />
-                                </VerticalStackLayout>
-                            </Frame>
-                        </Grid>
 
-                        <!-- Permission notice -->
-                        <components:MainPermissionNoticeView Grid.Row="4" />
-
-                        <!-- Search + filters dock (collapsible, state persisted) -->
-                        <Frame Grid.Row="5"
-                               Grid.RowSpan="5"
-                               BackgroundColor="{DynamicResource Surface}"
-                               CornerRadius="16"
-                               Padding="12"
-                               BorderColor="{DynamicResource BorderSubtle}">
-                            <Grid RowDefinitions="Auto,*" RowSpacing="8">
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                    <Label Text="{x:Static strings:AppResources.SettingsFilterTitle}"
-                                           FontAttributes="Bold"
-                                           TextColor="{DynamicResource OnSurface}"
-                                           VerticalOptions="Center" />
-
-                                    <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
-                                        <Button Text="▼"
-                                                WidthRequest="40"
-                                                HeightRequest="32"
-                                                Padding="0"
-                                                FontAttributes="Bold"
-                                                Style="{StaticResource OverlayButtonStyle}"
-                                                IsVisible="{Binding IsFiltersDockExpanded}"
-                                                Command="{Binding ToggleFiltersDockExpandedCommand}"
-                                                AutomationProperties.Name="Collapse filters" />
-                                        <Button Text="◀"
-                                                Grid.Column="1"
-                                                WidthRequest="40"
-                                                HeightRequest="32"
-                                                Padding="0"
-                                                FontAttributes="Bold"
-                                                Style="{StaticResource OverlayButtonStyle}"
-                                                IsVisible="{Binding IsFiltersDockExpanded, Converter={StaticResource InverseBoolConverter}}"
-                                                Command="{Binding ToggleFiltersDockExpandedCommand}"
-                                                AutomationProperties.Name="Expand filters" />
-                                    </Grid>
+                                    <VerticalStackLayout Grid.Row="1"
+                                                         Spacing="12"
+                                                         IsVisible="{Binding IsFiltersDockExpanded}">
+                                        <components:MainSearchSortView x:Name="SearchSortView" />
+                                        <components:MainMediaTypeFilterView />
+                                        <components:MainDateFilterView IsVisible="{Binding IsDateFilterEnabled}" />
+                                        <components:MainSourcesTabsView IsVisible="{Binding HasMultipleSources}" />
+                                        <components:MainAlbumsTabsView IsVisible="{Binding HasAlbums}" />
+                                    </VerticalStackLayout>
                                 </Grid>
+                            </Frame>
 
-                                <VerticalStackLayout Grid.Row="1"
-                                                     Spacing="12"
-                                                     IsVisible="{Binding IsFiltersDockExpanded}">
-                                    <components:MainSearchSortView x:Name="SearchSortView" />
-                                    <components:MainMediaTypeFilterView />
-                                    <components:MainDateFilterView IsVisible="{Binding IsDateFilterEnabled}" />
-                                    <components:MainSourcesTabsView IsVisible="{Binding HasMultipleSources}" />
-                                    <components:MainAlbumsTabsView IsVisible="{Binding HasAlbums}" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
+                            <components:MainIndexingBannerView Grid.Row="10" />
+                        </Grid>
+                    </CollectionView.Header>
 
-                        <!-- Indexing banner -->
-                        <components:MainIndexingBannerView Grid.Row="10" />
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                                         Span="{Binding GridSpan}" />
+                    </CollectionView.ItemsLayout>
 
-                    </Grid>
-                </CollectionView.Header>
+                    <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
+                    <CollectionView.ItemTemplate>
+                        <OnPlatform x:TypeArguments="DataTemplate">
 
+                            <!-- Default fallback (no swipe) -->
+                            <On Platform="Default">
+                                <DataTemplate x:DataType="models:MediaItem">
+                                    <Frame BackgroundColor="{DynamicResource Surface}"
+                                           CornerRadius="16"
+                                           Margin="6"
+                                           Padding="0"
+                                           BorderColor="{DynamicResource BorderSubtle}"
+                                           MinimumWidthRequest="210"
+                                           MinimumHeightRequest="200">
+                                        <Frame.Triggers>
+                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                            </DataTrigger>
+                                        </Frame.Triggers>
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="{Binding GridSpan}" />
-                </CollectionView.ItemsLayout>
+                                        <Grid RowDefinitions="150,Auto" Padding="10">
+                                            <Grid>
+                                                <components:MediaItemPreviewView HeightRequest="150" />
 
-                <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
-                <CollectionView.ItemTemplate>
-                    <OnPlatform x:TypeArguments="DataTemplate">
+                                                <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                       BorderColor="{DynamicResource BorderSubtle}"
+                                                       CornerRadius="10"
+                                                       Padding="8,4"
+                                                       Margin="8"
+                                                       HorizontalOptions="Start"
+                                                       VerticalOptions="Start"
+                                                       HasShadow="False"
+                                                       IsVisible="{Binding HasDuration}">
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
+                                                        <Label Text="{Binding DurationText}"
+                                                               TextColor="{DynamicResource OnSurfaceMuted}"
+                                                               FontSize="11" />
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </Grid>
 
-                        <!-- Default fallback (no swipe) -->
-                        <On Platform="Default">
-                            <DataTemplate x:DataType="models:MediaItem">
-                                <Frame BackgroundColor="{DynamicResource Surface}"
-                                       CornerRadius="16"
-                                       Margin="8"
-                                       Padding="0"
-                                       BorderColor="{DynamicResource BorderSubtle}"
-                                       MinimumWidthRequest="240"
-                                       MinimumHeightRequest="220">
-                                    <Frame.Triggers>
-                                        <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                                            <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                            <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                                        </DataTrigger>
-                                    </Frame.Triggers>
+                                            <VerticalStackLayout Grid.Row="1"
+                                                                 Spacing="2"
+                                                                 Margin="0,8,0,0">
+                                                <Label Text="{Binding Name}"
+                                                       TextColor="{DynamicResource OnSurface}"
+                                                       FontSize="12"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1" />
+                                                <Label Text="{Binding DateAddedText}"
+                                                       TextColor="{DynamicResource OnSurfaceMuted}"
+                                                       FontSize="10"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1"
+                                                       IsVisible="{Binding HasDateAdded}" />
+                                            </VerticalStackLayout>
+                                        </Grid>
 
-                                    <Grid RowDefinitions="170,Auto" Padding="10">
-                                        <Grid>
-                                            <components:MediaItemPreviewView HeightRequest="170" />
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                    </Frame>
+                                </DataTemplate>
+                            </On>
 
-                                            <!-- Keep just a tiny duration badge; all actions are handled via menus/commands elsewhere. -->
-                                            <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                   BorderColor="{DynamicResource BorderSubtle}"
-                                                   CornerRadius="10"
-                                                   Padding="8,4"
-                                                   Margin="8"
-                                                   HorizontalOptions="Start"
-                                                   VerticalOptions="Start"
-                                                   HasShadow="False"
-                                                   IsVisible="{Binding HasDuration}">
-                                                <HorizontalStackLayout Spacing="6">
-                                                    <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
-                                                    <Label Text="{Binding DurationText}"
+                            <!-- Android: swipe -> Share -->
+                            <On Platform="Android">
+                                <DataTemplate x:DataType="models:MediaItem">
+                                    <SwipeView>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
+                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
+
+                                        <Frame BackgroundColor="{DynamicResource Surface}"
+                                               CornerRadius="16"
+                                               Margin="6"
+                                               Padding="0"
+                                               BorderColor="{DynamicResource BorderSubtle}"
+                                               MinimumWidthRequest="210"
+                                               MinimumHeightRequest="200">
+                                            <Frame.Triggers>
+                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                             Value="True">
+                                                    <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                    <Setter Property="BackgroundColor"
+                                                            Value="{DynamicResource Surface2}" />
+                                                </DataTrigger>
+                                            </Frame.Triggers>
+
+                                            <Frame.Behaviors>
+                                                <toolkit:TouchBehavior
+                                                    LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
+                                                    LongPressCommandParameter="{Binding .}" />
+                                            </Frame.Behaviors>
+
+                                            <Grid RowDefinitions="150,Auto" Padding="10">
+                                                <Grid>
+                                                    <components:MediaItemPreviewView HeightRequest="150" />
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="10"
+                                                           Padding="8,4"
+                                                           Margin="8"
+                                                           HorizontalOptions="Start"
+                                                           VerticalOptions="Start"
+                                                           HasShadow="False"
+                                                           IsVisible="{Binding HasDuration}">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_clock.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding DurationText}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                </Grid>
+
+                                                <VerticalStackLayout Grid.Row="1"
+                                                                     Spacing="2"
+                                                                     Margin="0,8,0,0">
+                                                    <Label Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="12"
+                                                           LineBreakMode="TailTruncation"
+                                                           MaxLines="1" />
+                                                    <Label Text="{Binding DateAddedText}"
                                                            TextColor="{DynamicResource OnSurfaceMuted}"
-                                                           FontSize="11" />
-                                                </HorizontalStackLayout>
-                                            </Frame>
-                                        </Grid>
-
-                                        <VerticalStackLayout Grid.Row="1"
-                                                             Spacing="2"
-                                                             Margin="0,8,0,0">
-                                            <Label Text="{Binding Name}"
-                                                   TextColor="{DynamicResource OnSurface}"
-                                                   FontSize="12"
-                                                   LineBreakMode="TailTruncation"
-                                                   MaxLines="1" />
-                                            <Label Text="{Binding DateAddedText}"
-                                                   TextColor="{DynamicResource OnSurfaceMuted}"
-                                                   FontSize="10"
-                                                   LineBreakMode="TailTruncation"
-                                                   MaxLines="1"
-                                                   IsVisible="{Binding HasDateAdded}" />
-                                        </VerticalStackLayout>
-                                    </Grid>
-
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                            CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                </Frame>
-                            </DataTemplate>
-                        </On>
-
-                        <!-- Android: swipe -> Share -->
-                        <On Platform="Android">
-                            <DataTemplate x:DataType="models:MediaItem">
-                                <SwipeView>
-                                    <SwipeView.RightItems>
-                                        <SwipeItems Mode="Reveal">
-                                            <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
-                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
-                                                       CommandParameter="{Binding .}" />
-                                        </SwipeItems>
-                                    </SwipeView.RightItems>
-
-                                    <Frame BackgroundColor="{DynamicResource Surface}"
-                                           CornerRadius="16"
-                                           Margin="8"
-                                           Padding="0"
-                                           BorderColor="{DynamicResource BorderSubtle}"
-                                           MinimumWidthRequest="240"
-                                           MinimumHeightRequest="220">
-                                        <Frame.Triggers>
-                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                                            </DataTrigger>
-                                        </Frame.Triggers>
-
-                                        <!-- Long press opens the action menu; tile stays clean. -->
-                                        <Frame.Behaviors>
-                                            <toolkit:TouchBehavior
-                                                LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
-                                                LongPressCommandParameter="{Binding .}" />
-                                        </Frame.Behaviors>
-
-                                        <Grid RowDefinitions="170,Auto" Padding="10">
-                                            <Grid>
-                                                <components:MediaItemPreviewView HeightRequest="170" />
-                                                <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                       BorderColor="{DynamicResource BorderSubtle}"
-                                                       CornerRadius="10"
-                                                       Padding="8,4"
-                                                       Margin="8"
-                                                       HorizontalOptions="Start"
-                                                       VerticalOptions="Start"
-                                                       HasShadow="False"
-                                                       IsVisible="{Binding HasDuration}">
-                                                    <HorizontalStackLayout Spacing="6">
-                                                        <Image Source="chip_clock.svg" HeightRequest="12"
-                                                               WidthRequest="12" />
-                                                        <Label Text="{Binding DurationText}"
-                                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                                               FontSize="11" />
-                                                    </HorizontalStackLayout>
-                                                </Frame>
+                                                           FontSize="10"
+                                                           LineBreakMode="TailTruncation"
+                                                           MaxLines="1"
+                                                           IsVisible="{Binding HasDateAdded}" />
+                                                </VerticalStackLayout>
                                             </Grid>
 
-                                            <VerticalStackLayout Grid.Row="1"
-                                                                 Spacing="2"
-                                                                 Margin="0,8,0,0">
-                                                <Label Text="{Binding Name}"
-                                                       TextColor="{DynamicResource OnSurface}"
-                                                       FontSize="12"
-                                                       LineBreakMode="TailTruncation"
-                                                       MaxLines="1" />
-                                                <Label Text="{Binding DateAddedText}"
-                                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                                       FontSize="10"
-                                                       LineBreakMode="TailTruncation"
-                                                       MaxLines="1"
-                                                       IsVisible="{Binding HasDateAdded}" />
-                                            </VerticalStackLayout>
-                                        </Grid>
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    NumberOfTapsRequired="2"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            </Frame.GestureRecognizers>
+                                        </Frame>
+                                    </SwipeView>
+                                </DataTemplate>
+                            </On>
 
-                                        <Frame.GestureRecognizers>
-                                            <TapGestureRecognizer
-                                                NumberOfTapsRequired="2"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                CommandParameter="{Binding .}" />
-                                        </Frame.GestureRecognizers>
-                                    </Frame>
-                                </SwipeView>
-                            </DataTemplate>
-                        </On>
+                            <!-- WinUI: swipe -> Save As -->
+                            <On Platform="WinUI">
+                                <DataTemplate x:DataType="models:MediaItem">
+                                    <SwipeView>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
+                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
 
-                        <!-- WinUI: swipe -> Save As -->
-                        <On Platform="WinUI">
-                            <DataTemplate x:DataType="models:MediaItem">
-                                <SwipeView>
-                                    <SwipeView.RightItems>
-                                        <SwipeItems Mode="Reveal">
-                                            <SwipeItem Text="{x:Static strings:AppResources.SaveAsAction}"
-                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveAsCommand}"
-                                                       CommandParameter="{Binding .}" />
-                                        </SwipeItems>
-                                    </SwipeView.RightItems>
+                                        <Frame BackgroundColor="{DynamicResource Surface}"
+                                               CornerRadius="16"
+                                               Margin="6"
+                                               Padding="0"
+                                               BorderColor="{DynamicResource BorderSubtle}"
+                                               MinimumWidthRequest="210"
+                                               MinimumHeightRequest="200">
+                                            <Frame.Triggers>
+                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                             Value="True">
+                                                    <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
+                                                    <Setter Property="BackgroundColor"
+                                                            Value="{DynamicResource Surface2}" />
+                                                </DataTrigger>
+                                            </Frame.Triggers>
 
-                                    <Frame BackgroundColor="{DynamicResource Surface}"
-                                           CornerRadius="16"
-                                           Margin="8"
-                                           Padding="0"
-                                           BorderColor="{DynamicResource BorderSubtle}"
-                                           MinimumWidthRequest="240"
-                                           MinimumHeightRequest="220">
-                                        <Frame.Triggers>
-                                            <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
-                                                <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
-                                            </DataTrigger>
-                                        </Frame.Triggers>
+                                            <Frame.Behaviors>
+                                                <behaviors:MediaItemContextMenuBehavior
+                                                    HostCollectionView="{x:Reference MediaItemsView}" />
+                                            </Frame.Behaviors>
 
-                                        <!-- WinUI: right-click context menu (Explorer-style). Keeps tiles clean. -->
-                                        <Frame.Behaviors>
-                                            <behaviors:MediaItemContextMenuBehavior
-                                                HostCollectionView="{x:Reference MediaItemsView}" />
-                                        </Frame.Behaviors>
+                                            <Grid RowDefinitions="150,Auto" Padding="10">
+                                                <Grid>
+                                                    <components:MediaItemPreviewView HeightRequest="150" />
+                                                    <Frame BackgroundColor="{DynamicResource Surface2}"
+                                                           BorderColor="{DynamicResource BorderSubtle}"
+                                                           CornerRadius="10"
+                                                           Padding="8,4"
+                                                           Margin="8"
+                                                           HorizontalOptions="Start"
+                                                           VerticalOptions="Start"
+                                                           HasShadow="False"
+                                                           IsVisible="{Binding HasDuration}">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Image Source="chip_clock.svg" HeightRequest="12"
+                                                                   WidthRequest="12" />
+                                                            <Label Text="{Binding DurationText}"
+                                                                   TextColor="{DynamicResource OnSurfaceMuted}"
+                                                                   FontSize="11" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                </Grid>
 
-                                        <Grid RowDefinitions="170,Auto" Padding="10">
-                                            <Grid>
-                                                <components:MediaItemPreviewView HeightRequest="170" />
-                                                <Frame BackgroundColor="{DynamicResource Surface2}"
-                                                       BorderColor="{DynamicResource BorderSubtle}"
-                                                       CornerRadius="10"
-                                                       Padding="8,4"
-                                                       Margin="8"
-                                                       HorizontalOptions="Start"
-                                                       VerticalOptions="Start"
-                                                       HasShadow="False"
-                                                       IsVisible="{Binding HasDuration}">
-                                                    <HorizontalStackLayout Spacing="6">
-                                                        <Image Source="chip_clock.svg" HeightRequest="12"
-                                                               WidthRequest="12" />
-                                                        <Label Text="{Binding DurationText}"
-                                                               TextColor="{DynamicResource OnSurfaceMuted}"
-                                                               FontSize="11" />
-                                                    </HorizontalStackLayout>
-                                                </Frame>
+                                                <VerticalStackLayout Grid.Row="1"
+                                                                     Spacing="2"
+                                                                     Margin="0,8,0,0">
+                                                    <Label Text="{Binding Name}"
+                                                           TextColor="{DynamicResource OnSurface}"
+                                                           FontSize="12"
+                                                           LineBreakMode="TailTruncation"
+                                                           MaxLines="1" />
+                                                    <Label Text="{Binding DateAddedText}"
+                                                           TextColor="{DynamicResource OnSurfaceMuted}"
+                                                           FontSize="10"
+                                                           LineBreakMode="TailTruncation"
+                                                           MaxLines="1"
+                                                           IsVisible="{Binding HasDateAdded}" />
+                                                </VerticalStackLayout>
                                             </Grid>
 
-                                            <VerticalStackLayout Grid.Row="1"
-                                                                 Spacing="2"
-                                                                 Margin="0,8,0,0">
-                                                <Label Text="{Binding Name}"
-                                                       TextColor="{DynamicResource OnSurface}"
-                                                       FontSize="12"
-                                                       LineBreakMode="TailTruncation"
-                                                       MaxLines="1" />
-                                                <Label Text="{Binding DateAddedText}"
-                                                       TextColor="{DynamicResource OnSurfaceMuted}"
-                                                       FontSize="10"
-                                                       LineBreakMode="TailTruncation"
-                                                       MaxLines="1"
-                                                       IsVisible="{Binding HasDateAdded}" />
-                                            </VerticalStackLayout>
-                                        </Grid>
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    NumberOfTapsRequired="2"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            </Frame.GestureRecognizers>
+                                        </Frame>
+                                    </SwipeView>
+                                </DataTemplate>
+                            </On>
 
-                                        <!-- WinUI: single click selects (CollectionView selection); double click opens. -->
-                                        <Frame.GestureRecognizers>
-                                            <TapGestureRecognizer
-                                                NumberOfTapsRequired="2"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
-                                                CommandParameter="{Binding .}" />
-                                        </Frame.GestureRecognizers>
-                                    </Frame>
-                                </SwipeView>
-                            </DataTemplate>
-                        </On>
+                        </OnPlatform>
+                    </CollectionView.ItemTemplate>
 
-                    </OnPlatform>
-                </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            </CollectionView>
+            </Grid>
 
-            <!-- WinUI: marquee (drag) selection overlay.
-                 InputTransparent keeps the CollectionView fully interactive; the overlay is only used for drawing.
-                 Pointer handling is wired up in WindowsMarqueeSelection (WinUI-only). -->
-            <GraphicsView Grid.Column="0"
+            <!-- WinUI: marquee (drag) selection overlay (over media area only) -->
+            <GraphicsView Grid.Column="1"
                           x:Name="MarqueeOverlay"
                           InputTransparent="True"
                           IsVisible="False"
@@ -502,10 +515,8 @@
                           HorizontalOptions="FillAndExpand"
                           VerticalOptions="FillAndExpand" />
 
-            <!-- Empty state overlay.
-                 IMPORTANT: keep this OUTSIDE of CollectionView.EmptyView to avoid hit-test issues on Windows
-                 where the EmptyView can block interaction with the header controls (search, filters, etc.). -->
-            <Grid Grid.Column="0"
+            <!-- Empty state overlay (over media area only) -->
+            <Grid Grid.Column="1"
                   Padding="24"
                   InputTransparent="True"
                   IsVisible="{Binding IsEmptyStateVisible}"
@@ -530,6 +541,7 @@
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Grid>
+
         </Grid>
 
         <Grid Grid.RowSpan="2"
@@ -543,7 +555,7 @@
                        BorderColor="{DynamicResource BorderSubtle}">
                     <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                           ShouldAutoPlay="True"
-                                          ShowsPlaybackControls="True"
+                                          ShouldShowPlaybackControls="True"
                                           Aspect="AspectFit" />
                 </Frame>
                 <Label Grid.Row="1"
@@ -558,6 +570,7 @@
                                       Command="{Binding TogglePlayerFullscreenCommand}" />
             </Grid.GestureRecognizers>
         </Grid>
+
         <!-- Bottom dock (preview + marked actions) -->
         <Grid Grid.Row="1"
               Padding="12"
@@ -577,7 +590,6 @@
                                    TextColor="{DynamicResource OnSurface}"
                                    VerticalOptions="Center" />
 
-                            <!-- Collapse / expand controls (docking-like) -->
                             <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
                                 <Button Text="▼"
                                         WidthRequest="40"
@@ -606,7 +618,7 @@
                                   BackgroundColor="{DynamicResource Surface2}">
                                 <toolkit:MediaElement Source="{Binding CurrentMediaSource}"
                                                       ShouldAutoPlay="True"
-                                                      ShowsPlaybackControls="True"
+                                                      ShouldShowPlaybackControls="True"
                                                       Aspect="AspectFit"
                                                       IsVisible="{Binding ShowVideoPlayer}" />
                                 <Image Source="{Binding CurrentMediaSource}"

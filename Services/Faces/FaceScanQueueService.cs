@@ -28,7 +28,8 @@ public sealed class FaceScanQueueService
         while (!ct.IsCancellationRequested)
         {
             var page = await indexService
-                .QueryPageAsync("", SearchScope.All, sourceId, sortKey, from, to, MediaType.Photos, offset, batchSize)
+                .QueryPageAsync("", SearchScope.All, sourceId, sortKey, from, to, MediaType.Photos | MediaType.Graphics,
+                    offset, batchSize)
                 .ConfigureAwait(false);
 
             if (page.Count == 0)
@@ -64,7 +65,7 @@ public sealed class FaceScanQueueService
         }
     }
 
-    public async Task<int> ProcessQueueAsync(CancellationToken ct)
+    public async Task<int> ProcessQueueAsync(CancellationToken ct, IProgress<int>? progress = null)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
 
@@ -121,6 +122,8 @@ public sealed class FaceScanQueueService
                         .ConfigureAwait(false);
                 }
             }
+
+            progress?.Report(processed);
         }
 
         return processed;

@@ -65,6 +65,8 @@ public partial class MainViewModel : ObservableObject
     private int indexLastInserted;
     private int indexLastLiveRefreshInserted;
     private long indexLastLiveRefreshMs;
+    private int indexLastLocationsRefreshDone;
+    private long indexLastLocationsRefreshMs;
     [ObservableProperty] private int indexProcessed;
     [ObservableProperty] private double indexRatio;
     private int indexStartingCount;
@@ -79,6 +81,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isInternalPlayerEnabled;
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isLocationEnabled;
+    private int isLocationsCountRefreshRunning;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
@@ -100,7 +103,11 @@ public partial class MainViewModel : ObservableObject
 
     // Best-effort background people scan after indexing so the People browser is populated automatically.
     private CancellationTokenSource? peopleAutoScanCts;
+    private bool peopleAutoScanRefreshAfterRun;
+    private bool peopleAutoScanRerunRequested;
     private Task? peopleAutoScanTask;
+    private long peopleCountRefreshMs;
+    private int peopleCountRefreshProcessed;
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private AlbumListItem? selectedAlbum;
@@ -332,14 +339,14 @@ public partial class MainViewModel : ObservableObject
         _ = RefreshLocationsCountAsync();
     }
 
-    public async Task TryShowPeopleTaggingTrialHintAsync()
+    public async Task<bool> TryShowPeopleTaggingTrialHintAsync()
     {
         if (SettingsService.IsProUnlocked)
-            return;
+            return false;
         if (!SettingsService.PeopleTaggingEnabled)
-            return;
+            return false;
         if (SettingsService.PeopleTaggingTrialHintShown)
-            return;
+            return false;
 
         SettingsService.PeopleTaggingTrialHintShown = true;
 
@@ -353,8 +360,32 @@ public partial class MainViewModel : ObservableObject
             upgrade,
             ok).ConfigureAwait(false);
 
+        await TryPromptLocationOptInAsync().ConfigureAwait(false);
+
         if (goUpgrade)
             ProUpgradeRequested?.Invoke(this, EventArgs.Empty);
+
+        return true;
+    }
+
+    internal async Task TryPromptLocationOptInAsync()
+    {
+        if (SettingsService.LocationsEnabled)
+            return;
+
+        var accepted = await dialogService.DisplayAlertAsync(
+            AppResources.LocationOptInTitle,
+            AppResources.LocationOptInMessage,
+            AppResources.LocationOptInAccept,
+            AppResources.LocationOptInDecline).ConfigureAwait(false);
+
+        if (!accepted)
+            return;
+
+        SettingsService.LocationsEnabled = true;
+        IsLocationEnabled = true;
+        if (!SettingsService.NeedsReindex)
+            SettingsService.NeedsReindex = true;
     }
 
     public async Task<MediaItem?> EnsureMediaItemLoadedAsync(string path, CancellationToken cancellationToken)
@@ -574,6 +605,8 @@ public partial class MainViewModel : ObservableObject
         IndexWorkStatus = "";
         IndexCurrentFolder = "";
         IndexCurrentFile = "";
+        indexLastLocationsRefreshDone = 0;
+        indexLastLocationsRefreshMs = 0;
 
         bool hasPermission;
 
@@ -609,6 +642,9 @@ public partial class MainViewModel : ObservableObject
                     AppResources.OkButton) ?? Task.CompletedTask);
             return;
         }
+
+        if (IsPeopleTaggingEnabled)
+            StartPeopleAutoScanInBackground(false, false);
 
         IsIndexing = true;
         IndexedCount = 0;
@@ -674,20 +710,41 @@ public partial class MainViewModel : ObservableObject
         // Kick off automatic people recognition after indexing so the People browser is populated.
         // This is best-effort and runs in the background to keep the UI responsive.
         if (completed && IsPeopleTaggingEnabled)
-            StartPeopleAutoScanInBackground();
+            StartPeopleAutoScanInBackground(true, true);
     }
 
-    private void StartPeopleAutoScanInBackground()
+    private void StartPeopleAutoScanInBackground(bool refreshMediaAfterScan = true, bool rerunIfBusy = false)
     {
         // Avoid starting multiple concurrent scans.
         if (peopleAutoScanTask != null && !peopleAutoScanTask.IsCompleted)
+        {
+            if (rerunIfBusy)
+            {
+                peopleAutoScanRerunRequested = true;
+                peopleAutoScanRefreshAfterRun |= refreshMediaAfterScan;
+            }
+
             return;
+        }
 
         peopleAutoScanCts?.Cancel();
         peopleAutoScanCts?.Dispose();
         peopleAutoScanCts = new CancellationTokenSource();
+        peopleAutoScanRerunRequested = false;
+        peopleAutoScanRefreshAfterRun = refreshMediaAfterScan;
 
         var ct = peopleAutoScanCts.Token;
+        var progress = new Progress<int>(processed =>
+        {
+            var now = Environment.TickCount64;
+            if (processed - peopleCountRefreshProcessed < 20 && now - peopleCountRefreshMs < 2000)
+                return;
+
+            peopleCountRefreshProcessed = processed;
+            peopleCountRefreshMs = now;
+            _ = RefreshTaggedPeopleCountAsync();
+        });
+
         peopleAutoScanTask = Task.Run(async () =>
         {
             try
@@ -713,24 +770,36 @@ public partial class MainViewModel : ObservableObject
                     .EnqueuePhotosForScanAsync(sourceId, sortKey, from, to, ct)
                     .ConfigureAwait(false);
 
-                await faceScanQueueService.ProcessQueueAsync(ct).ConfigureAwait(false);
+                await faceScanQueueService.ProcessQueueAsync(ct, progress).ConfigureAwait(false);
 
-                // Refresh UI once after the scan to populate People/Tag counts.
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    try
+                _ = RefreshTaggedPeopleCountAsync();
+
+                if (refreshMediaAfterScan && !IsIndexing)
+                    // Refresh UI once after the scan to populate People/Tag counts.
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await RefreshAsync();
-                    }
-                    catch
-                    {
-                        /* keep UI resilient */
-                    }
-                });
+                        try
+                        {
+                            await RefreshAsync();
+                        }
+                        catch
+                        {
+                            /* keep UI resilient */
+                        }
+                    });
             }
             catch
             {
                 // Best-effort: never crash the app because of background scanning.
+            }
+            finally
+            {
+                if (peopleAutoScanRerunRequested && !ct.IsCancellationRequested)
+                {
+                    var refreshAfterRerun = peopleAutoScanRefreshAfterRun;
+                    peopleAutoScanRerunRequested = false;
+                    StartPeopleAutoScanInBackground(refreshAfterRerun, false);
+                }
             }
         }, ct);
     }
@@ -1086,7 +1155,8 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 var photos = await indexService
-                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos)
+                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null,
+                        MediaType.Photos | MediaType.Graphics)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }
@@ -1488,6 +1558,18 @@ public partial class MainViewModel : ObservableObject
                     item.ThumbnailPath = string.Empty;
 
                 item.ThumbnailPath = p;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await indexService.UpdateThumbnailPathAsync(item.Path, p, CancellationToken.None)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Best-effort only.
+                    }
+                });
                 processed++;
             }
 
@@ -1695,6 +1777,32 @@ public partial class MainViewModel : ObservableObject
         catch
         {
             // Keep browsing resilient if the DB is unavailable or not initialized yet.
+        }
+    }
+
+    private async Task RefreshLocationsCountAsync()
+    {
+        if (Interlocked.Exchange(ref isLocationsCountRefreshRunning, 1) == 1)
+            return;
+
+        try
+        {
+            if (!IsLocationEnabled)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => LocationsCount = 0);
+                return;
+            }
+
+            var count = await indexService.CountLocationsAsync(MediaType.All).ConfigureAwait(false);
+            MainThread.BeginInvokeOnMainThread(() => LocationsCount = count);
+        }
+        catch
+        {
+            // Keep browsing resilient if the DB is unavailable or not initialized yet.
+        }
+        finally
+        {
+            Interlocked.Exchange(ref isLocationsCountRefreshRunning, 0);
         }
     }
 
@@ -2218,8 +2326,20 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        var fileName = Path.GetFileName(path);
-        var folderName = Path.GetDirectoryName(path);
+        string? fileName;
+        string? folderName;
+
+        try
+        {
+            fileName = Path.GetFileName(path);
+            folderName = Path.GetDirectoryName(path);
+        }
+        catch
+        {
+            fileName = null;
+            folderName = null;
+        }
+
         IndexCurrentFile = string.IsNullOrWhiteSpace(fileName) ? path : fileName;
         IndexCurrentFolder = string.IsNullOrWhiteSpace(folderName) ? sourceName : folderName;
     }
@@ -2271,6 +2391,18 @@ public partial class MainViewModel : ObservableObject
         UpdateIndexLocation(progress.SourceName, progress.CurrentPath);
         IndexedCount = progress.Inserted;
         IndexedMediaCount = indexStartingCount + progress.Inserted;
+
+        if (progress.LocationsDone > indexLastLocationsRefreshDone)
+        {
+            var now = Environment.TickCount64;
+            if (progress.LocationsDone - indexLastLocationsRefreshDone >= 20 ||
+                now - indexLastLocationsRefreshMs >= 2000)
+            {
+                indexLastLocationsRefreshDone = progress.LocationsDone;
+                indexLastLocationsRefreshMs = now;
+                _ = RefreshLocationsCountAsync();
+            }
+        }
 
         // IMPORTANT: Do not refresh the visible media list while indexing.
         // Refreshing without preserving scroll state resets the CollectionView and causes jumpy UI.

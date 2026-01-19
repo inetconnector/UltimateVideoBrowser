@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Services;
 
 namespace UltimateVideoBrowser.ViewModels;
@@ -9,6 +10,7 @@ public sealed partial class PeopleViewModel : ObservableObject
 {
     private readonly FaceThumbnailService faceThumbnails;
     private readonly PeopleDataService peopleData;
+    private readonly ThumbnailService thumbnails;
 
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private ObservableCollection<PersonListItemViewModel> people = new();
@@ -16,10 +18,12 @@ public sealed partial class PeopleViewModel : ObservableObject
     private CancellationTokenSource? searchCts;
     [ObservableProperty] private string searchText = string.Empty;
 
-    public PeopleViewModel(PeopleDataService peopleData, FaceThumbnailService faceThumbnails)
+    public PeopleViewModel(PeopleDataService peopleData, FaceThumbnailService faceThumbnails,
+        ThumbnailService thumbnails)
     {
         this.peopleData = peopleData;
         this.faceThumbnails = faceThumbnails;
+        this.thumbnails = thumbnails;
     }
 
     [RelayCommand]
@@ -38,16 +42,39 @@ public sealed partial class PeopleViewModel : ObservableObject
             var items = new List<PersonListItemViewModel>(overview.Count);
             foreach (var p in overview)
             {
-                ct.ThrowIfCancellationRequested();
+                if (ct.IsCancellationRequested)
+                    break;
+
                 string? coverPath = null;
                 if (p.CoverFace != null)
                 {
-                    coverPath = await faceThumbnails
-                        .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
-                        .ConfigureAwait(false);
+                    try
+                    {
+                        coverPath = await faceThumbnails
+                            .EnsureFaceThumbnailAsync(p.CoverFace.MediaPath, p.CoverFace, 96, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        coverPath = null;
+                    }
+
                     if (string.IsNullOrWhiteSpace(coverPath))
                         coverPath = null;
                 }
+
+                if (coverPath == null && p.CoverFace == null && !string.IsNullOrWhiteSpace(p.CoverMediaPath) &&
+                    p.CoverMediaType.HasValue)
+                    try
+                    {
+                        coverPath = await thumbnails
+                            .EnsureThumbnailAsync(p.CoverMediaPath, p.CoverMediaType.Value, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        coverPath = null;
+                    }
 
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
                     p.IsIgnored));
@@ -66,6 +93,14 @@ public sealed partial class PeopleViewModel : ObservableObject
         catch (OperationCanceledException)
         {
             // Ignore
+        }
+        catch (Exception ex)
+        {
+            ErrorLog.LogException(ex, "PeopleViewModel.RefreshAsync");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                People = new ObservableCollection<PersonListItemViewModel>();
+            });
         }
         finally
         {

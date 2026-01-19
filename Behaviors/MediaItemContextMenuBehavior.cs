@@ -1,16 +1,13 @@
 #if WINDOWS
-using System;
-using System.Collections;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
+using Windows.System;
+using Windows.UI.Core;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
-using Windows.System;
-using MauiControls = Microsoft.Maui.Controls;
 using WinUIControls = Microsoft.UI.Xaml.Controls;
 using WinUIPrimitives = Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -21,25 +18,24 @@ namespace UltimateVideoBrowser.Behaviors;
 ///     Keeps the tile UI clean (no per-tile buttons/checkboxes) and routes actions
 ///     through the existing commands on the page binding context.
 /// </summary>
-public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiControls.Frame>
+public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
 {
-    public static readonly MauiControls.BindableProperty HostCollectionViewProperty =
-        MauiControls.BindableProperty.Create(
-        nameof(HostCollectionView),
-        typeof(MauiControls.CollectionView),
-        typeof(MediaItemContextMenuBehavior),
-        default(MauiControls.CollectionView));
+    public static readonly BindableProperty HostCollectionViewProperty =
+        BindableProperty.Create(
+            nameof(HostCollectionView),
+            typeof(CollectionView),
+            typeof(MediaItemContextMenuBehavior));
 
-    private MauiControls.Frame? attachedFrame;
+    private Frame? attachedFrame;
     private FrameworkElement? nativeElement;
 
-    public MauiControls.CollectionView? HostCollectionView
+    public CollectionView? HostCollectionView
     {
-        get => (MauiControls.CollectionView?)GetValue(HostCollectionViewProperty);
+        get => (CollectionView?)GetValue(HostCollectionViewProperty);
         set => SetValue(HostCollectionViewProperty, value);
     }
 
-    protected override void OnAttachedTo(MauiControls.Frame bindable)
+    protected override void OnAttachedTo(Frame bindable)
     {
         base.OnAttachedTo(bindable);
         attachedFrame = bindable;
@@ -47,7 +43,7 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         TryHookNative(bindable);
     }
 
-    protected override void OnDetachingFrom(MauiControls.Frame bindable)
+    protected override void OnDetachingFrom(Frame bindable)
     {
         UnhookNative();
         bindable.HandlerChanged -= OnHandlerChanged;
@@ -58,11 +54,11 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
     private void OnHandlerChanged(object? sender, EventArgs e)
     {
         UnhookNative();
-        if (sender is MauiControls.Frame frame)
+        if (sender is Frame frame)
             TryHookNative(frame);
     }
 
-    private void TryHookNative(MauiControls.Frame frame)
+    private void TryHookNative(Frame frame)
     {
         try
         {
@@ -134,7 +130,7 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         }
     }
 
-    private static void EnsureExplorerLikeSelection(MauiControls.CollectionView? host, MediaItem item)
+    private static void EnsureExplorerLikeSelection(CollectionView? host, MediaItem item)
     {
         if (host == null)
             return;
@@ -161,15 +157,15 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         }
     }
 
-    private static System.Collections.Generic.List<MediaItem> GetSelectedItems(MauiControls.CollectionView? host)
+    private static List<MediaItem> GetSelectedItems(CollectionView? host)
     {
         try
         {
-            return host?.SelectedItems?.OfType<MediaItem>().ToList() ?? new();
+            return host?.SelectedItems?.OfType<MediaItem>().ToList() ?? new List<MediaItem>();
         }
         catch
         {
-            return new();
+            return new List<MediaItem>();
         }
     }
 
@@ -179,7 +175,7 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         {
             var state = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control);
             // CoreVirtualKeyStates lives in Windows.UI.Core (WinRT) and is available on Windows.
-            return (state & Windows.UI.Core.CoreVirtualKeyStates.Down) == Windows.UI.Core.CoreVirtualKeyStates.Down;
+            return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
         }
         catch
         {
@@ -188,11 +184,11 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
     }
 
     private static WinUIControls.MenuFlyout BuildFlyout(object binding, MediaItem primaryItem,
-        System.Collections.Generic.IReadOnlyList<MediaItem> selection)
+        IReadOnlyList<MediaItem> selection)
     {
         var flyout = new WinUIControls.MenuFlyout();
 
-        var allowFileChanges = GetBool(binding, "AllowFileChanges", defaultValue: true);
+        var allowFileChanges = GetBool(binding, "AllowFileChanges", true);
         var isMulti = selection.Count > 1;
 
         // Open / Share
@@ -295,5 +291,24 @@ public sealed class MediaItemContextMenuBehavior : MauiControls.Behavior<MauiCon
         }
     }
 }
+#else
+using Microsoft.Maui.Controls;
 
+namespace UltimateVideoBrowser.Behaviors;
+
+public sealed class MediaItemContextMenuBehavior : Behavior<Frame>
+{
+    public static readonly BindableProperty HostCollectionViewProperty =
+        BindableProperty.Create(
+            nameof(HostCollectionView),
+            typeof(CollectionView),
+            typeof(MediaItemContextMenuBehavior),
+            default(CollectionView));
+
+    public CollectionView? HostCollectionView
+    {
+        get => (CollectionView?)GetValue(HostCollectionViewProperty);
+        set => SetValue(HostCollectionViewProperty, value);
+    }
+}
 #endif

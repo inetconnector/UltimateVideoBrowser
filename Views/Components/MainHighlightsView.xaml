@@ -22,7 +22,7 @@
                     <Frame Style="{StaticResource IconBadgeStyle}">
                         <Image Source="icon_play.svg" HeightRequest="18" WidthRequest="18" />
                     </Frame>
-                    <Label Text="{Binding IndexedMediaCount}"
+                    <Label Text="{Binding IndexedMediaCountDisplay}"
                            FontSize="20"
                            FontAttributes="Bold"
                            TextColor="{DynamicResource OnSurface}" />
