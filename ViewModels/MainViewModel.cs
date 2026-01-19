@@ -2283,8 +2283,20 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        var fileName = Path.GetFileName(path);
-        var folderName = Path.GetDirectoryName(path);
+        string? fileName;
+        string? folderName;
+
+        try
+        {
+            fileName = Path.GetFileName(path);
+            folderName = Path.GetDirectoryName(path);
+        }
+        catch
+        {
+            fileName = null;
+            folderName = null;
+        }
+
         IndexCurrentFile = string.IsNullOrWhiteSpace(fileName) ? path : fileName;
         IndexCurrentFolder = string.IsNullOrWhiteSpace(folderName) ? sourceName : folderName;
     }
