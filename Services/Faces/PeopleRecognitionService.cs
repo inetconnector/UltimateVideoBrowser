@@ -453,18 +453,6 @@ public sealed class PeopleRecognitionService
                     Embedding = FloatsToBytes(embedding),
                     Thumb96Path = thumb96Path
                 });
-
-                try
-                {
-                    await faceThumbnails
-                        .EnsureFaceThumbnailAsync(image, path, face, i, 96, ct)
-                        .ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(
-                        $"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
-                }
             }
 
             foreach (var embedding in embeddings)
