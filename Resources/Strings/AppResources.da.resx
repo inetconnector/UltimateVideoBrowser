@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Vil du genindeksere alt nu? Det kan tage et stykke tid afhængigt af bibliotekets størrelse.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Databasebackup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Eksportér eller importér den lokale database inkl. indstillinger og miniaturer.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Eksportér backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importér backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup eksporteret</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Din backup blev eksporteret.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Eksport mislykkedes</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Backup kunne ikke oprettes eller gemmes.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Vælg en backup-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Gendan backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dette overskriver din nuværende database, indstillinger og miniaturer. Fortsæt?</value></data><data name="RestoreButton" xml:space="preserve"><value>Gendan</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indeksering i gang</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stop indeksering før du gendanner en backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Gendannelse mislykkedes</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Backup kunne ikke gendannes.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Denne backup indeholder ingen databasefil.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Gendannelse fuldført</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup gendannet. Det kan være nødvendigt at genåbne appen for at se alle ændringer.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Drej til venstre</value></data><data name="RotateRightAction" xml:space="preserve"><value>Drej til højre</value></data><data name="MirrorAction" xml:space="preserve"><value>Spejl vandret</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Databasebackup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Eksportér eller importér den lokale database inkl. indstillinger og miniaturer.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Eksportér backup</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importér backup</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup eksporteret</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Din backup blev eksporteret.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Eksport mislykkedes</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Backup kunne ikke oprettes eller gemmes.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Vælg en backup-ZIP</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Gendan backup?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dette overskriver din nuværende database, indstillinger og miniaturer. Fortsæt?</value></data><data name="RestoreButton" xml:space="preserve"><value>Gendan</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indeksering i gang</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stop indeksering før du gendanner en backup.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Gendannelse mislykkedes</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Backup kunne ikke gendannes.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Denne backup indeholder ingen databasefil.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Gendannelse fuldført</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup gendannet. Det kan være nødvendigt at genåbne appen for at se alle ændringer.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Drej til venstre</value></data><data name="RotateRightAction" xml:space="preserve"><value>Drej til højre</value></data><data name="MirrorAction" xml:space="preserve"><value>Spejl vandret</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>

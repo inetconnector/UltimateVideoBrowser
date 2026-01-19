@@ -646,10 +646,15 @@ public static class AppResources
         GetString(nameof(SourcesPageHeader), "Sources (local folders / synced shares)");
 
     public static string AddSourceButton => GetString(nameof(AddSourceButton), "Add folder");
+    public static string AddSourceActionTitle => GetString(nameof(AddSourceActionTitle), "Add source");
+    public static string AddSourceLocalOption => GetString(nameof(AddSourceLocalOption), "Local folder");
+    public static string AddSourceNetworkOption => GetString(nameof(AddSourceNetworkOption), "Network share (SMB)");
     public static string RemoveSourceButton => GetString(nameof(RemoveSourceButton), "Remove");
     public static string RemoveSourceTitle => GetString(nameof(RemoveSourceTitle), "Remove source?");
     public static string RemoveSourceMessage => GetString(nameof(RemoveSourceMessage), "Remove “{0}” from sources?");
     public static string RemoveSourceConfirm => GetString(nameof(RemoveSourceConfirm), "Remove");
+    public static string EditNetworkCredentialsAction =>
+        GetString(nameof(EditNetworkCredentialsAction), "Edit access");
     public static string NewSourceTitle => GetString(nameof(NewSourceTitle), "Add source");
     public static string NewSourcePrompt => GetString(nameof(NewSourcePrompt), "Source name");
     public static string NewSourceConfirm => GetString(nameof(NewSourceConfirm), "Add");
@@ -668,6 +673,45 @@ public static class AppResources
 
     public static string AddPathPrompt =>
         GetString(nameof(AddPathPrompt), "Enter a local folder or network share path.");
+
+    public static string NetworkShareAddTitle => GetString(nameof(NetworkShareAddTitle), "Add network share");
+    public static string NetworkShareScanOption => GetString(nameof(NetworkShareScanOption), "Scan network");
+    public static string NetworkShareManualOption => GetString(nameof(NetworkShareManualOption), "Enter server");
+    public static string NetworkShareScanEmptyTitle =>
+        GetString(nameof(NetworkShareScanEmptyTitle), "No servers found");
+
+    public static string NetworkShareScanEmptyMessage =>
+        GetString(nameof(NetworkShareScanEmptyMessage), "We couldn't find any servers on your network.");
+
+    public static string NetworkShareScanPickTitle =>
+        GetString(nameof(NetworkShareScanPickTitle), "Select a server");
+
+    public static string NetworkShareServerTitle =>
+        GetString(nameof(NetworkShareServerTitle), "Server name");
+
+    public static string NetworkShareServerPrompt =>
+        GetString(nameof(NetworkShareServerPrompt), "Enter the server name or IP address.");
+
+    public static string NetworkShareNameTitle =>
+        GetString(nameof(NetworkShareNameTitle), "Share name");
+
+    public static string NetworkShareNamePrompt =>
+        GetString(nameof(NetworkShareNamePrompt), "Enter the share name.");
+
+    public static string NetworkShareCredentialsTitle =>
+        GetString(nameof(NetworkShareCredentialsTitle), "Access details");
+
+    public static string NetworkShareUsernamePrompt =>
+        GetString(nameof(NetworkShareUsernamePrompt), "Username");
+
+    public static string NetworkSharePasswordPrompt =>
+        GetString(nameof(NetworkSharePasswordPrompt), "Password");
+
+    public static string NetworkShareSaveFailedTitle =>
+        GetString(nameof(NetworkShareSaveFailedTitle), "Couldn't save access");
+
+    public static string NetworkShareSaveFailedMessage =>
+        GetString(nameof(NetworkShareSaveFailedMessage), "Please check your device security settings and try again.");
 
     public static string AddAnotherFolderTitle => GetString(nameof(AddAnotherFolderTitle), "Add another folder?");
 

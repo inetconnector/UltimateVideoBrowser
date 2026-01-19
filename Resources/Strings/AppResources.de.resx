@@ -1866,6 +1866,30 @@ Fehlend:
     
   
   </data>
+
+  <data name="AddSourceActionTitle" xml:space="preserve">
+    
+    
+    <value>Quelle hinzufügen</value>
+    
+  
+  </data>
+
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    
+    
+    <value>Lokaler Ordner</value>
+    
+  
+  </data>
+
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    
+    
+    <value>Netzwerkfreigabe (SMB)</value>
+    
+  
+  </data>
   
   
   <data name="RemoveSourceButton" xml:space="preserve">
@@ -1899,6 +1923,14 @@ Fehlend:
     
     
     <value>Entfernen</value>
+    
+  
+  </data>
+
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    
+    
+    <value>Zugang ändern</value>
     
   
   </data>
@@ -2007,6 +2039,126 @@ Fehlend:
     
     
     <value>Lokalen Ordner oder Netzwerkfreigabe auswählen.</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    
+    
+    <value>Netzwerkfreigabe hinzufügen</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    
+    
+    <value>Netzwerk scannen</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    
+    
+    <value>Server eingeben</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    
+    
+    <value>Keine Server gefunden</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    
+    
+    <value>Es wurden keine Server im Netzwerk gefunden.</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    
+    
+    <value>Server auswählen</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    
+    
+    <value>Servername</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    
+    
+    <value>Servername oder IP-Adresse eingeben.</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    
+    
+    <value>Freigabename</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    
+    
+    <value>Namen der Freigabe eingeben.</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    
+    
+    <value>Zugangsdaten</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    
+    
+    <value>Benutzername</value>
+    
+  
+  </data>
+
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    
+    
+    <value>Passwort</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    
+    
+    <value>Zugang konnte nicht gespeichert werden</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    
+    
+    <value>Bitte die Gerätesicherheit prüfen und erneut versuchen.</value>
     
   
   </data>
