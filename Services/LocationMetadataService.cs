@@ -220,9 +220,13 @@ public sealed class LocationMetadataService
         profile.TryGetValue(ExifTag.GPSLongitudeRef, out var lonRefValue);
         var latRef = latRefValue?.Value;
         var lonRef = lonRefValue?.Value;
-        if (string.Equals(latRef, "S", StringComparison.OrdinalIgnoreCase))
+        latRef ??= ExtractCardinalRef(latValue.Value, true);
+        lonRef ??= ExtractCardinalRef(lonValue.Value, false);
+        if (!string.IsNullOrWhiteSpace(latRef) &&
+            latRef.StartsWith("S", StringComparison.OrdinalIgnoreCase))
             lat = -lat;
-        if (string.Equals(lonRef, "W", StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrWhiteSpace(lonRef) &&
+            lonRef.StartsWith("W", StringComparison.OrdinalIgnoreCase))
             lon = -lon;
 
         return new GeoLocation(lat, lon);
@@ -318,7 +322,7 @@ public sealed class LocationMetadataService
         if (string.IsNullOrWhiteSpace(value))
             return false;
 
-        var trimmed = value.Trim();
+        var trimmed = NormalizeGpsString(value.Trim());
         if (double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
         {
             result = parsed;
@@ -367,6 +371,47 @@ public sealed class LocationMetadataService
         }
 
         return double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
+    }
+
+    private static string NormalizeGpsString(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        var buffer = new char[value.Length];
+        var length = 0;
+        foreach (var ch in value)
+        {
+            if (char.IsLetter(ch))
+                continue;
+            buffer[length++] = ch;
+        }
+
+        return length == value.Length ? value : new string(buffer, 0, length);
+    }
+
+    private static string? ExtractCardinalRef(object? value, bool isLatitude)
+    {
+        if (value is not string s || string.IsNullOrWhiteSpace(s))
+            return null;
+
+        var upper = s.ToUpperInvariant();
+        if (isLatitude)
+        {
+            if (upper.Contains('S'))
+                return "S";
+            if (upper.Contains('N'))
+                return "N";
+        }
+        else
+        {
+            if (upper.Contains('W'))
+                return "W";
+            if (upper.Contains('E'))
+                return "E";
+        }
+
+        return null;
     }
 
     private static double ToDouble(Rational rational)
