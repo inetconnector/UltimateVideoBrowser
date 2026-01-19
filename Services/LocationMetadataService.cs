@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;
@@ -237,12 +239,38 @@ public sealed class LocationMetadataService
             case SignedRational[] signedRationals:
                 result = ConvertSignedRationalsToDegrees(signedRationals);
                 return true;
+            case double[] doubles:
+                result = ConvertDoubleArrayToDegrees(doubles);
+                return true;
+            case float[] floats:
+                result = ConvertDoubleArrayToDegrees(floats.Select(v => (double)v).ToArray());
+                return true;
+            case int[] ints:
+                result = ConvertDoubleArrayToDegrees(ints.Select(v => (double)v).ToArray());
+                return true;
+            case long[] longs:
+                result = ConvertDoubleArrayToDegrees(longs.Select(v => (double)v).ToArray());
+                return true;
             case Rational rational:
                 result = ToDouble(rational);
                 return true;
             case SignedRational signedRational:
                 result = ToDouble(signedRational);
                 return true;
+            case double d:
+                result = d;
+                return true;
+            case float f:
+                result = f;
+                return true;
+            case int i:
+                result = i;
+                return true;
+            case long l:
+                result = l;
+                return true;
+            case string s:
+                return TryParseGpsString(s, out result);
             default:
                 return false;
         }
@@ -268,6 +296,77 @@ public sealed class LocationMetadataService
         var min = values.Count > 1 ? ToDouble(values[1]) : 0;
         var sec = values.Count > 2 ? ToDouble(values[2]) : 0;
         return deg + min / 60.0 + sec / 3600.0;
+    }
+
+    private static double ConvertDoubleArrayToDegrees(IReadOnlyList<double> values)
+    {
+        if (values.Count == 0)
+            return 0;
+
+        if (values.Count == 1)
+            return values[0];
+
+        var deg = values[0];
+        var min = values.Count > 1 ? values[1] : 0;
+        var sec = values.Count > 2 ? values[2] : 0;
+        return deg + min / 60.0 + sec / 3600.0;
+    }
+
+    private static bool TryParseGpsString(string value, out double result)
+    {
+        result = 0;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var trimmed = value.Trim();
+        if (double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+        {
+            result = parsed;
+            return true;
+        }
+
+        var tokens = trimmed
+            .Replace("°", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace("'", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace("\"", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace(",", " ", StringComparison.OrdinalIgnoreCase)
+            .Replace(":", " ", StringComparison.OrdinalIgnoreCase)
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (tokens.Length == 0)
+            return false;
+
+        var parts = new List<double>(tokens.Length);
+        foreach (var token in tokens)
+        {
+            if (!TryParseRationalToken(token, out var part))
+                return false;
+            parts.Add(part);
+        }
+
+        result = ConvertDoubleArrayToDegrees(parts);
+        return true;
+    }
+
+    private static bool TryParseRationalToken(string token, out double result)
+    {
+        result = 0;
+        if (string.IsNullOrWhiteSpace(token))
+            return false;
+
+        var split = token.Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (split.Length == 2)
+        {
+            if (!double.TryParse(split[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var numerator))
+                return false;
+            if (!double.TryParse(split[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var denominator) ||
+                Math.Abs(denominator) < double.Epsilon)
+                return false;
+            result = numerator / denominator;
+            return true;
+        }
+
+        return double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
     }
 
     private static double ToDouble(Rational rational)

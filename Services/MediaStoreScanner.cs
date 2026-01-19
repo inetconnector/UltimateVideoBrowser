@@ -247,17 +247,21 @@ public sealed class MediaStoreScanner
         {
             ModelMediaType.Videos when indexedTypes.HasFlag(ModelMediaType.Videos) => ModelMediaType.Videos,
             ModelMediaType.Documents when indexedTypes.HasFlag(ModelMediaType.Documents) => ModelMediaType.Documents,
-            ModelMediaType.Photos => ResolveImageMediaType(path, indexedTypes, sizeBytes),
+            ModelMediaType.Photos => ResolveImageMediaType(path, name, indexedTypes, sizeBytes),
             _ => ModelMediaType.None
         };
     }
 
-    private static ModelMediaType ResolveImageMediaType(string path, ModelMediaType indexedTypes, long? sizeBytes)
+    private static ModelMediaType ResolveImageMediaType(string path, string? name, ModelMediaType indexedTypes,
+        long? sizeBytes)
     {
         var wantsPhotos = indexedTypes.HasFlag(ModelMediaType.Photos);
         var wantsGraphics = indexedTypes.HasFlag(ModelMediaType.Graphics);
         if (!wantsPhotos && !wantsGraphics)
             return ModelMediaType.None;
+
+        if (IsScreenshotPath(path, name))
+            return wantsGraphics ? ModelMediaType.Graphics : ModelMediaType.None;
 
         var contentSize = sizeBytes ?? TryGetFileSizeBytes(path);
         if (contentSize.HasValue && contentSize.Value <= 0)
@@ -280,6 +284,33 @@ public sealed class MediaStoreScanner
             return ModelMediaType.Photos;
 
         return ModelMediaType.Graphics;
+    }
+
+    private static bool IsScreenshotPath(string? path, string? name)
+    {
+        var fileName = name;
+        if (string.IsNullOrWhiteSpace(fileName))
+            fileName = IOPath.GetFileName(path ?? string.Empty);
+
+        if (!string.IsNullOrWhiteSpace(fileName) && ContainsScreenshotToken(fileName))
+            return true;
+
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        var normalized = path.Replace('\\', '/');
+        return ContainsScreenshotToken(normalized);
+    }
+
+    private static bool ContainsScreenshotToken(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return value.Contains("screenshot", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("screen_shot", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("screen-shot", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("screen shot", StringComparison.OrdinalIgnoreCase);
     }
 
     private static ModelMediaType GetMediaTypeFromMimeType(string? mimeType)
