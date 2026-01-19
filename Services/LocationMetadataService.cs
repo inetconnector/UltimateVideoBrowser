@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using UltimateVideoBrowser.Models;

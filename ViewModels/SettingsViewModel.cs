@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Helpers;
@@ -139,6 +138,7 @@ public partial class SettingsViewModel : ObservableObject
     public IReadOnlyList<SortOption> SortOptions { get; }
     public string ErrorLogPath => ErrorLog.LogPath;
     public string ScanLogPath => ScanLog.LogPath;
+
     public bool IsScanLogVisible
     {
         get

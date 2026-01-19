@@ -3,9 +3,11 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using UltimateVideoBrowser.Models;
-using UltimateVideoBrowser.Services;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 
+#if WINDOWS
+using Windows.Storage;
+#endif
 namespace UltimateVideoBrowser.Services.Faces;
 
 public sealed class PeopleRecognitionService
@@ -65,7 +67,8 @@ public sealed class PeopleRecognitionService
 
     public async Task<IReadOnlyList<FaceMatch>> EnsurePeopleTagsForMediaAsync(MediaItem item, CancellationToken ct)
     {
-        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) || string.IsNullOrWhiteSpace(item.Path))
+        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) ||
+            string.IsNullOrWhiteSpace(item.Path))
             return Array.Empty<FaceMatch>();
 
         Debug.WriteLine($"[PeopleRecognition] EnsurePeopleTagsForMediaAsync: {item.Path}");
@@ -283,7 +286,8 @@ public sealed class PeopleRecognitionService
 
     public async Task RenamePeopleForMediaAsync(MediaItem item, IReadOnlyList<string> names, CancellationToken ct)
     {
-        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) || string.IsNullOrWhiteSpace(item.Path))
+        if (item == null || item.MediaType is not (MediaType.Photos or MediaType.Graphics) ||
+            string.IsNullOrWhiteSpace(item.Path))
             return;
 
         await db.EnsureInitializedAsync().ConfigureAwait(false);
@@ -343,7 +347,8 @@ public sealed class PeopleRecognitionService
         CancellationToken ct)
     {
         var list = items
-            .Where(item => (item.MediaType is MediaType.Photos or MediaType.Graphics) && !string.IsNullOrWhiteSpace(item.Path))
+            .Where(item => item.MediaType is MediaType.Photos or MediaType.Graphics &&
+                           !string.IsNullOrWhiteSpace(item.Path))
             .ToList();
 
         var total = list.Count;
@@ -385,7 +390,7 @@ public sealed class PeopleRecognitionService
                 //        .CalibrateFromReferenceImageAsync(referenceImage, expectedFaces: 6, ct)
                 //        .ConfigureAwait(false);
                 //} 
- 
+
                 // Otherwise: let the detector pick dynamic defaults (BuildAutoTuning).
                 faces = await faceDetector.DetectFacesAsync(image, tuning, ct).ConfigureAwait(false);
             }
@@ -433,7 +438,8 @@ public sealed class PeopleRecognitionService
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
+                    Debug.WriteLine(
+                        $"[PeopleRecognition] EnsureFaceThumbnailAsync FAILED (face {i}) for '{path}': {ex}");
                 }
 
                 embeddings.Add(new FaceEmbedding
@@ -733,7 +739,6 @@ public sealed class PeopleRecognitionService
     }
 
 
-
     private async Task<Image<Rgba32>?> TryLoadOrientedRgbaImageAsync(string path, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -805,7 +810,6 @@ public sealed class PeopleRecognitionService
         {
             // First try direct file access.
             if (File.Exists(normalized))
-            {
                 try
                 {
                     return File.OpenRead(normalized);
@@ -814,10 +818,9 @@ public sealed class PeopleRecognitionService
                 {
                     // Fall back to brokered access below.
                 }
-            }
 
             // Windows: try brokered access (helps when the file is outside direct access).
-            var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(normalized);
+            var file = await StorageFile.GetFileFromPathAsync(normalized);
             var s = await file.OpenStreamForReadAsync().ConfigureAwait(false);
             return s;
         }

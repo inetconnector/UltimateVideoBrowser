@@ -854,7 +854,8 @@ public sealed class IndexService
 
             try
             {
-                var hasLocation = await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false);
+                var hasLocation =
+                    await locationMetadataService.TryPopulateLocationAsync(item, ct).ConfigureAwait(false);
                 if (!hasLocation)
                     continue;
 

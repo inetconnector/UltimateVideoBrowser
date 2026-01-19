@@ -1021,7 +1021,7 @@ public sealed class YuNetFaceDetector : IDisposable
             MinAspect: 0.35f,
             MinScore: 0.45f,
             MinSizeFrac: 0.05f,
-            NmsIou:.45f);
+            NmsIou: .45f);
     }
 
     // ---------------------------

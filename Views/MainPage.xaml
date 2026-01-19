@@ -297,7 +297,8 @@
                                                        HasShadow="False"
                                                        IsVisible="{Binding HasDuration}">
                                                     <HorizontalStackLayout Spacing="6">
-                                                        <Image Source="chip_clock.svg" HeightRequest="12" WidthRequest="12" />
+                                                        <Image Source="chip_clock.svg" HeightRequest="12"
+                                                               WidthRequest="12" />
                                                         <Label Text="{Binding DurationText}"
                                                                TextColor="{DynamicResource OnSurfaceMuted}"
                                                                FontSize="11" />
@@ -351,9 +352,11 @@
                                                MinimumWidthRequest="210"
                                                MinimumHeightRequest="200">
                                             <Frame.Triggers>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                             Value="True">
                                                     <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                    <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                                    <Setter Property="BackgroundColor"
+                                                            Value="{DynamicResource Surface2}" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
 
@@ -433,9 +436,11 @@
                                                MinimumWidthRequest="210"
                                                MinimumHeightRequest="200">
                                             <Frame.Triggers>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}" Value="True">
+                                                <DataTrigger TargetType="Frame" Binding="{Binding IsMarked}"
+                                                             Value="True">
                                                     <Setter Property="BorderColor" Value="{DynamicResource Accent}" />
-                                                    <Setter Property="BackgroundColor" Value="{DynamicResource Surface2}" />
+                                                    <Setter Property="BackgroundColor"
+                                                            Value="{DynamicResource Surface2}" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
 

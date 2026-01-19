@@ -21,6 +21,7 @@ public sealed record FaceTagInfo(
 
 public sealed class PeopleDataService
 {
+    private const string TagPrefix = "tag:";
     private readonly AppDb db;
     private readonly PeopleRecognitionService recognitionService;
 
@@ -279,7 +280,7 @@ public sealed class PeopleDataService
 
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         ct.ThrowIfCancellationRequested();
-          
+
         var paths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var faceRows = await db.Db.QueryAsync<MediaPathRow>(
@@ -287,10 +288,8 @@ public sealed class PeopleDataService
                 personId)
             .ConfigureAwait(false);
         foreach (var row in faceRows)
-        {
             if (!string.IsNullOrWhiteSpace(row.MediaPath))
                 paths.Add(row.MediaPath);
-        }
 
         var profile = await db.Db.Table<PersonProfile>()
             .Where(p => p.Id == personId)
@@ -508,42 +507,6 @@ public sealed class PeopleDataService
         await db.Db.UpdateAsync(profile).ConfigureAwait(false);
     }
 
-    private sealed class MediaTagRow
-    {
-        public string Path { get; } = string.Empty;
-        public string PeopleTagsSummary { get; } = string.Empty;
-    }
-
-    private sealed class MediaSummaryRow
-    {
-        public string Path { get; } = string.Empty;
-        public string PeopleTagsSummary { get; } = string.Empty;
-        public long DateAddedSeconds { get; set; }
-        public int MediaType { get; set; }
-    }
-
-    private sealed class TagCoverRow
-    {
-        public string PersonName { get; } = string.Empty;
-        public string Path { get; } = string.Empty;
-        public long DateAddedSeconds { get; set; }
-        public int MediaType { get; set; }
-    }
-
-    private sealed class TagCoverInfo
-    {
-        public TagCoverInfo(string path, MediaType mediaType)
-        {
-            Path = path;
-            MediaType = mediaType;
-        }
-
-        public string Path { get; }
-        public MediaType MediaType { get; }
-    }
-
-    private const string TagPrefix = "tag:";
-
     private static string? TryExtractTagName(string personId)
     {
         if (string.IsNullOrWhiteSpace(personId))
@@ -677,10 +640,8 @@ public sealed class PeopleDataService
 
         var paths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var row in results)
-        {
             if (!string.IsNullOrWhiteSpace(row.MediaPath))
                 paths.Add(row.MediaPath);
-        }
 
         var summaryRows = await db.Db.QueryAsync<MediaTagRow>(
                 "SELECT Path, PeopleTagsSummary FROM MediaItem " +
@@ -742,20 +703,54 @@ public sealed class PeopleDataService
         return $"Unknown {shortId}";
     }
 
+    private sealed class MediaTagRow
+    {
+        public string Path { get; } = string.Empty;
+        public string PeopleTagsSummary { get; } = string.Empty;
+    }
+
+    private sealed class MediaSummaryRow
+    {
+        public string Path { get; } = string.Empty;
+        public string PeopleTagsSummary { get; } = string.Empty;
+        public long DateAddedSeconds { get; set; }
+        public int MediaType { get; set; }
+    }
+
+    private sealed class TagCoverRow
+    {
+        public string PersonName { get; } = string.Empty;
+        public string Path { get; } = string.Empty;
+        public long DateAddedSeconds { get; set; }
+        public int MediaType { get; set; }
+    }
+
+    private sealed class TagCoverInfo
+    {
+        public TagCoverInfo(string path, MediaType mediaType)
+        {
+            Path = path;
+            MediaType = mediaType;
+        }
+
+        public string Path { get; }
+        public MediaType MediaType { get; }
+    }
+
     private sealed class PersonCountRow
     {
-        public string PersonId { get; set; } = string.Empty;
+        public string PersonId { get; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class TagCountRow
     {
-        public string PersonName { get; set; } = string.Empty;
+        public string PersonName { get; } = string.Empty;
         public int Cnt { get; set; }
     }
 
     private sealed class MediaPathRow
     {
-        public string MediaPath { get; set; } = string.Empty;
+        public string MediaPath { get; } = string.Empty;
     }
 }

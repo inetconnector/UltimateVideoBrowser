@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Text;
-using System.Threading;
 using SQLite;
+using SQLitePCL;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 
@@ -9,9 +9,9 @@ namespace UltimateVideoBrowser.Services;
 
 public sealed class AppDb
 {
+    private static int sqliteInitialized;
     private readonly SemaphoreSlim initLock = new(1, 1);
     private bool isInitialized;
-    private static int sqliteInitialized;
 
     public AppDb()
     {
@@ -29,7 +29,7 @@ public sealed class AppDb
         if (Interlocked.Exchange(ref sqliteInitialized, 1) == 1)
             return;
 
-        SQLitePCL.Batteries_V2.Init();
+        Batteries_V2.Init();
     }
 
     private static SQLiteAsyncConnection CreateConnectionSafe(string databasePath)
@@ -192,13 +192,8 @@ public sealed class AppDb
         try
         {
             if (File.Exists(source))
-            {
                 File.Move(source, target, true);
-            }
-            else if (File.Exists(target))
-            {
-                File.Delete(target);
-            }
+            else if (File.Exists(target)) File.Delete(target);
         }
         catch
         {
@@ -722,7 +717,7 @@ public sealed class AppDb
     {
         // Property name must match PRAGMA output column name.
         // ReSharper disable once InconsistentNaming
-        public string name { get; set; } = string.Empty;
+        public string name { get; } = string.Empty;
     }
 
     private sealed class WalCheckpointResult

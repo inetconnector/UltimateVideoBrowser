@@ -1,6 +1,7 @@
 using System.Globalization;
-#if ANDROID && !WINDOWS
-using Uri = Android.Net.Uri;
+
+#if ANDROID
+using AndroidUri = Android.Net.Uri;
 #endif
 
 namespace UltimateVideoBrowser.Converters;
@@ -17,8 +18,7 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
 
         var text = raw.Trim();
 
-        // 1) Android content:// URIs (scoped storage). Use a stream so MAUI can render it.
-#if ANDROID && !WINDOWS
+#if ANDROID
         if (text.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
         {
             try
@@ -26,28 +26,26 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
                 var ctx = Platform.AppContext;
                 if (ctx != null)
                 {
-                    var uri = Uri.Parse(text);
+                    var uri = AndroidUri.Parse(text);
                     return ImageSource.FromStream(() => ctx.ContentResolver?.OpenInputStream(uri) ?? Stream.Null);
                 }
             }
             catch
             {
-                // Best-effort.
             }
 
             return fallback;
         }
 #endif
 
-        // 2) file:// URIs -> local file path (works across platforms).
-        if (System.Uri.TryCreate(text, UriKind.Absolute, out var u) && u.IsFile)
+        // file:// URIs -> local file path
+        if (global::System.Uri.TryCreate(text, global::System.UriKind.Absolute, out var u) && u.IsFile)
         {
             var local = u.LocalPath;
             if (!string.IsNullOrWhiteSpace(local))
                 text = local;
         }
 
-        // 3) Regular file path.
         if (File.Exists(text))
             return text;
 
@@ -58,8 +56,4 @@ public sealed class StringNullOrEmptyToFallbackConverter : IValueConverter
     {
         return value ?? string.Empty;
     }
-
-    // NOTE: We intentionally do not validate image bytes here.
-    // Thumbnails are written to a temp file and moved into place atomically.
-    // Any stricter validation can cause false negatives and empty tiles.
 }

@@ -54,7 +54,8 @@ public partial class MapViewModel : ObservableObject
             itemLookup.Clear();
             SelectedItem = null;
 
-            var mediaTypes = settingsService.VisibleMediaTypes & (MediaType.Photos | MediaType.Graphics | MediaType.Videos);
+            var mediaTypes = settingsService.VisibleMediaTypes &
+                             (MediaType.Photos | MediaType.Graphics | MediaType.Videos);
             if (mediaTypes == MediaType.None)
                 mediaTypes = MediaType.Photos | MediaType.Graphics | MediaType.Videos;
 
@@ -67,6 +68,7 @@ public partial class MapViewModel : ObservableObject
                     .ConfigureAwait(false);
                 items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
             }
+
             foreach (var item in items)
             {
                 Items.Add(item);

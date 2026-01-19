@@ -81,12 +81,12 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool isInternalPlayerEnabled;
     private bool isLoadingMoreMediaItems;
     [ObservableProperty] private bool isLocationEnabled;
+    private int isLocationsCountRefreshRunning;
     [ObservableProperty] private bool isPeopleTaggingEnabled;
     [ObservableProperty] private bool isPlayerFullscreen;
     [ObservableProperty] private bool isRefreshing;
     [ObservableProperty] private bool isSourceSwitching;
     private bool isSyncingFilterOptions;
-    private int isLocationsCountRefreshRunning;
     [ObservableProperty] private int locationsCount;
     [ObservableProperty] private int markedCount;
     [ObservableProperty] private int mediaCount;
@@ -644,7 +644,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         if (IsPeopleTaggingEnabled)
-            StartPeopleAutoScanInBackground(refreshMediaAfterScan: false, rerunIfBusy: false);
+            StartPeopleAutoScanInBackground(false, false);
 
         IsIndexing = true;
         IndexedCount = 0;
@@ -710,7 +710,7 @@ public partial class MainViewModel : ObservableObject
         // Kick off automatic people recognition after indexing so the People browser is populated.
         // This is best-effort and runs in the background to keep the UI responsive.
         if (completed && IsPeopleTaggingEnabled)
-            StartPeopleAutoScanInBackground(refreshMediaAfterScan: true, rerunIfBusy: true);
+            StartPeopleAutoScanInBackground(true, true);
     }
 
     private void StartPeopleAutoScanInBackground(bool refreshMediaAfterScan = true, bool rerunIfBusy = false)
@@ -723,6 +723,7 @@ public partial class MainViewModel : ObservableObject
                 peopleAutoScanRerunRequested = true;
                 peopleAutoScanRefreshAfterRun |= refreshMediaAfterScan;
             }
+
             return;
         }
 
@@ -774,7 +775,6 @@ public partial class MainViewModel : ObservableObject
                 _ = RefreshTaggedPeopleCountAsync();
 
                 if (refreshMediaAfterScan && !IsIndexing)
-                {
                     // Refresh UI once after the scan to populate People/Tag counts.
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
@@ -787,7 +787,6 @@ public partial class MainViewModel : ObservableObject
                             /* keep UI resilient */
                         }
                     });
-                }
             }
             catch
             {
@@ -799,7 +798,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     var refreshAfterRerun = peopleAutoScanRefreshAfterRun;
                     peopleAutoScanRerunRequested = false;
-                    StartPeopleAutoScanInBackground(refreshAfterRerun, rerunIfBusy: false);
+                    StartPeopleAutoScanInBackground(refreshAfterRerun, false);
                 }
             }
         }, ct);
@@ -1156,7 +1155,8 @@ public partial class MainViewModel : ObservableObject
                     return;
 
                 var photos = await indexService
-                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null, MediaType.Photos | MediaType.Graphics)
+                    .QueryAsync(string.Empty, SearchScope.All, sourceId, "name", null, null,
+                        MediaType.Photos | MediaType.Graphics)
                     .ConfigureAwait(false);
                 await peopleRecognitionService.ScanAndTagAsync(photos, null, cts.Token).ConfigureAwait(false);
             }
@@ -2376,7 +2376,8 @@ public partial class MainViewModel : ObservableObject
         if (progress.LocationsDone > indexLastLocationsRefreshDone)
         {
             var now = Environment.TickCount64;
-            if (progress.LocationsDone - indexLastLocationsRefreshDone >= 20 || now - indexLastLocationsRefreshMs >= 2000)
+            if (progress.LocationsDone - indexLastLocationsRefreshDone >= 20 ||
+                now - indexLastLocationsRefreshMs >= 2000)
             {
                 indexLastLocationsRefreshDone = progress.LocationsDone;
                 indexLastLocationsRefreshMs = now;

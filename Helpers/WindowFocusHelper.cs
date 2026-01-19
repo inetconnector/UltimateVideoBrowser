@@ -2,6 +2,10 @@ using Window = Microsoft.Maui.Controls.Window;
 
 #if WINDOWS
 using System.Runtime.InteropServices;
+using Windows.Graphics;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
 #endif
 
 #if ANDROID
@@ -43,17 +47,17 @@ internal static class WindowFocusHelper
         if (window.Handler.PlatformView is not Microsoft.UI.Xaml.Window xamlWindow)
             return;
 
-        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(xamlWindow);
+        var hwnd = WindowNative.GetWindowHandle(xamlWindow);
         if (hwnd == IntPtr.Zero)
             return;
 
         // Ensure size/position requests are applied (MAUI may ignore Width/Height on first open).
         try
         {
-            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
-            var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
 
-            var density = Microsoft.Maui.Devices.DeviceDisplay.MainDisplayInfo.Density;
+            var density = DeviceDisplay.MainDisplayInfo.Density;
             if (density <= 0)
                 density = 1;
 
@@ -62,7 +66,7 @@ internal static class WindowFocusHelper
             var x = (int)Math.Round(Math.Max(0, window.X) * density);
             var y = (int)Math.Round(Math.Max(0, window.Y) * density);
 
-            appWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, w, h));
+            appWindow.MoveAndResize(new RectInt32(x, y, w, h));
         }
         catch
         {

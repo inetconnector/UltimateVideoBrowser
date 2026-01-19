@@ -10,7 +10,6 @@ using Android.Graphics;
 using Android.Media;
 using Uri = Android.Net.Uri;
 using SysStream = System.IO.Stream;
-
 #elif WINDOWS
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -196,10 +195,7 @@ public sealed class ThumbnailService
                     }
                 }
 
-                if (file == null)
-                {
-                    return null;
-                }
+                if (file == null) return null;
 
                 using var thumb =
                     await file.GetThumbnailAsync(GetThumbnailMode(item.MediaType), ThumbMaxSize,
@@ -438,7 +434,8 @@ public sealed class ThumbnailService
         }
     }
 
-    private static async Task<bool> TryWritePhotoThumbnailStreamAsync(Stream input, string tmpPath, CancellationToken ct)
+    private static async Task<bool> TryWritePhotoThumbnailStreamAsync(Stream input, string tmpPath,
+        CancellationToken ct)
     {
         try
         {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 #if ANDROID && !WINDOWS
 using Android.Content;
 using Android.Database;
@@ -8,15 +9,13 @@ using Uri = Android.Net.Uri;
 #elif WINDOWS
 using Windows.Storage;
 using Windows.Storage.AccessCache;
-using Windows.Storage.Search;
+using Windows.Storage.Search; 
 #endif
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UltimateVideoBrowser.Helpers;
 using UltimateVideoBrowser.Models;
 using IOPath = System.IO.Path;
 #if !ANDROID || WINDOWS
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using ImageSharpImage = SixLabors.ImageSharp.Image;
 #endif
@@ -55,9 +54,9 @@ public sealed class MediaStoreScanner
 #elif WINDOWS
         if (string.IsNullOrWhiteSpace(rootPath))
             foreach (var defaultRoot in GetWindowsDefaultRoots(indexedTypes))
-                await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
-                                   extensions, knownFiles, ct))
-                    yield return item;
+            await foreach (var item in ScanWindowsAsync(defaultRoot, sourceId, source.AccessToken, indexedTypes,
+                               extensions, knownFiles, ct))
+                yield return item;
         else
             await foreach (var item in ScanWindowsAsync(rootPath, sourceId, source.AccessToken, indexedTypes,
                                extensions, knownFiles, ct))
@@ -508,7 +507,8 @@ public sealed class MediaStoreScanner
 
         if (Directory.Exists(root))
         {
-            await foreach (var item in ScanWindowsFileSystemAsync(root, sourceId, indexedTypes, extensions, knownFiles, ct))
+            await foreach (var item in ScanWindowsFileSystemAsync(root, sourceId, indexedTypes, extensions, knownFiles,
+                               ct))
                 yield return item;
             yield break;
         }
@@ -524,10 +524,9 @@ public sealed class MediaStoreScanner
         }
 
         if (folder != null)
-        {
-            await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, indexedTypes, extensions, knownFiles, ct))
+            await foreach (var item in ScanWindowsFolderAsync(folder, sourceId, indexedTypes, extensions, knownFiles,
+                               ct))
                 yield return item;
-        }
     }
 
     private static async Task<int> CountWindowsAsync(string? rootPath, string? accessToken,
@@ -745,7 +744,7 @@ public sealed class MediaStoreScanner
                 }
 
                 var mediaType =
- ResolveMediaTypeFromPath(path, file.Name, indexedTypes, extensions, sizeBytes: sizeBytes);
+                    ResolveMediaTypeFromPath(path, file.Name, indexedTypes, extensions, sizeBytes: sizeBytes);
                 if (mediaType == ModelMediaType.None)
                 {
                     LogScanEntry(path, file.Name, "Windows.StorageFolder", "Skipped: media type filtered",
@@ -912,11 +911,11 @@ public sealed class MediaStoreScanner
                 try
                 {
                     await foreach (var path in fileChannel.Reader.ReadAllAsync(ct).ConfigureAwait(false))
-                    {
                         try
                         {
                             var item =
-                                await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions, knownFiles, ct)
+                                await BuildMediaItemFromPathWindowsAsync(path, sourceId, indexedTypes, extensions,
+                                        knownFiles, ct)
                                     .ConfigureAwait(false);
                             if (item != null)
                                 await itemChannel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
@@ -929,7 +928,6 @@ public sealed class MediaStoreScanner
                         {
                             ErrorLog.LogException(ex, "MediaStoreScanner.ScanWindowsFileSystemAsync", $"Path={path}");
                         }
-                    }
                 }
                 catch (OperationCanceledException)
                 {

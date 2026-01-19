@@ -1,17 +1,19 @@
-#if WINDOWS
-using Microsoft.Maui.LifecycleEvents;
-using Microsoft.UI.Windowing;
-using WinRT.Interop;
-#endif
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using UltimateVideoBrowser.Services;
 using UltimateVideoBrowser.Services.Faces;
 using UltimateVideoBrowser.ViewModels;
 using UltimateVideoBrowser.Views;
+
+#if WINDOWS
+using Microsoft.UI;
+using Microsoft.Maui.LifecycleEvents;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
+#endif
+
 #if ANDROID
 using UltimateVideoBrowser.Platforms.Android;
-
 #elif WINDOWS
 using UltimateVideoBrowser.Platforms.Windows;
 #endif
@@ -42,22 +44,22 @@ public static class MauiProgram
                 {
                     try
                     {
-	                    // Only maximize the FIRST window (main window). Auxiliary windows (e.g. indexing progress)
-	                    // must stay as sized popup windows.
-	                    if (_mainWindowMaximized)
-	                        return;
+                        // Only maximize the FIRST window (main window). Auxiliary windows (e.g. indexing progress)
+                        // must stay as sized popup windows.
+                        if (_mainWindowMaximized)
+                            return;
 
-	                    // In MAUI's Windows lifecycle events, the window parameter is a WinUI window.
-	                    // Avoid MAUI handler APIs here to keep this compiling across target frameworks.
-	                    var hwnd = WindowNative.GetWindowHandle(window);
-	                    var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
-	                    var appWindow = AppWindow.GetFromWindowId(windowId);
+                        // In MAUI's Windows lifecycle events, the window parameter is a WinUI window.
+                        // Avoid MAUI handler APIs here to keep this compiling across target frameworks.
+                        var hwnd = WindowNative.GetWindowHandle(window);
+                        var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+                        var appWindow = AppWindow.GetFromWindowId(windowId);
 
-	                    appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
-	                    if (appWindow.Presenter is OverlappedPresenter presenter)
-	                        presenter.Maximize();
+                        appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
+                        if (appWindow.Presenter is OverlappedPresenter presenter)
+                            presenter.Maximize();
 
-	                    _mainWindowMaximized = true;
+                        _mainWindowMaximized = true;
                     }
                     catch
                     {

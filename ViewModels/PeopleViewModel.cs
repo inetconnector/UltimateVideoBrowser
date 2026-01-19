@@ -65,7 +65,6 @@ public sealed partial class PeopleViewModel : ObservableObject
 
                 if (coverPath == null && p.CoverFace == null && !string.IsNullOrWhiteSpace(p.CoverMediaPath) &&
                     p.CoverMediaType.HasValue)
-                {
                     try
                     {
                         coverPath = await thumbnails
@@ -76,7 +75,6 @@ public sealed partial class PeopleViewModel : ObservableObject
                     {
                         coverPath = null;
                     }
-                }
 
                 items.Add(new PersonListItemViewModel(p.Id, p.Name, p.PhotoCount, p.QualityScore, coverPath,
                     p.IsIgnored));

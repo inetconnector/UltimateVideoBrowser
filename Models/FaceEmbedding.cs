@@ -23,7 +23,7 @@ public sealed class FaceEmbedding
 
     // The dimensions of the auto-oriented image at the time of detection.
     public int ImageWidth { get; set; }
-    public int ImageHeight { get; set; } 
+    public int ImageHeight { get; set; }
     public byte[] Embedding { get; set; } = Array.Empty<byte>();
 
     // Model keys used to create this row. These are used to skip work when models haven't changed.

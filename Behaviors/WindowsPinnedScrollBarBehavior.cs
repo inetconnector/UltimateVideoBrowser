@@ -1,9 +1,7 @@
-using Microsoft.Maui.Controls;
 using MauiItemsView = Microsoft.Maui.Controls.ItemsView;
 
 #if WINDOWS
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 using WinScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility;
 using WinThickness = Microsoft.UI.Xaml.Thickness;
 #endif
