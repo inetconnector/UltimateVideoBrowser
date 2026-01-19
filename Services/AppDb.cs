@@ -17,7 +17,7 @@ public sealed class AppDb
     {
         EnsureSqliteInitialized();
         DatabasePath = Path.Combine(AppDataPaths.Root, "ultimatevideobrowser.db");
-        Db = new SQLiteAsyncConnection(DatabasePath);
+        Db = CreateConnectionSafe(DatabasePath);
     }
 
     public SQLiteAsyncConnection Db { get; private set; }
@@ -30,6 +30,52 @@ public sealed class AppDb
             return;
 
         SQLitePCL.Batteries_V2.Init();
+    }
+
+    private static SQLiteAsyncConnection CreateConnectionSafe(string databasePath)
+    {
+        try
+        {
+            return new SQLiteAsyncConnection(databasePath);
+        }
+        catch (SQLiteException ex)
+        {
+            ErrorLog.LogException(ex, "AppDb.CreateConnectionSafe",
+                $"DatabasePath={databasePath}");
+
+            if (TryBackupCorruptDatabase(databasePath, ex))
+                return new SQLiteAsyncConnection(databasePath);
+
+            throw;
+        }
+    }
+
+    private static bool TryBackupCorruptDatabase(string databasePath, Exception ex)
+    {
+        var backupRoot = Path.Combine(AppDataPaths.Root, "db_backups");
+        var stamp = DateTimeOffset.UtcNow.ToString("yyyyMMdd_HHmmss");
+        var backupPath = Path.Combine(backupRoot, $"ultimatevideobrowser_openfail_{stamp}.db");
+
+        try
+        {
+            Directory.CreateDirectory(backupRoot);
+
+            if (File.Exists(databasePath))
+                File.Move(databasePath, backupPath, true);
+
+            MoveSidecarIfExists(databasePath + "-wal", backupPath + "-wal");
+            MoveSidecarIfExists(databasePath + "-shm", backupPath + "-shm");
+
+            ErrorLog.LogMessage(
+                $"Database moved after open failure ({ex.GetType().Name}). Previous DB moved to {backupPath}.",
+                "AppDb.TryBackupCorruptDatabase");
+            return true;
+        }
+        catch (Exception moveEx)
+        {
+            ErrorLog.LogException(moveEx, "AppDb.TryBackupCorruptDatabase", "Failed to move database files.");
+            return false;
+        }
     }
 
     public async Task EnsureInitializedAsync()
