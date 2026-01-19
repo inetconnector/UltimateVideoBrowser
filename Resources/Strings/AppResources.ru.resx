@@ -1186,4 +1186,963 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Хотите переиндексировать всё сейчас? Это может занять некоторое время в зависимости от размера вашей библиотеки.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Резервная копия базы</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Экспорт/импорт локальной базы данных, включая настройки и миниатюры.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Экспортировать резервную копию</value></data><data name="BackupImportButton" xml:space="preserve"><value>Импортировать резервную копию</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Резервная копия экспортирована</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Резервная копия успешно экспортирована.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Не удалось экспортировать</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Не удалось создать или сохранить резервную копию.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Выберите ZIP‑резервную копию</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Восстановить из копии?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Текущие база, настройки и миниатюры будут перезаписаны. Продолжить?</value></data><data name="RestoreButton" xml:space="preserve"><value>Восстановить</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Идёт индексация</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Остановите индексацию перед восстановлением.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Восстановление не удалось</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Не удалось восстановить резервную копию.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>В этой копии нет файла базы данных.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Восстановление завершено</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Резервная копия восстановлена. Возможно, потребуется перезапустить приложение.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Повернуть влево</value></data><data name="RotateRightAction" xml:space="preserve"><value>Повернуть вправо</value></data><data name="MirrorAction" xml:space="preserve"><value>Отразить по горизонтали</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Резервная копия базы</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Экспорт/импорт локальной базы данных, включая настройки и миниатюры.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Экспортировать резервную копию</value></data><data name="BackupImportButton" xml:space="preserve"><value>Импортировать резервную копию</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Резервная копия экспортирована</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Резервная копия успешно экспортирована.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Не удалось экспортировать</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Не удалось создать или сохранить резервную копию.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Выберите ZIP‑резервную копию</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Восстановить из копии?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Текущие база, настройки и миниатюры будут перезаписаны. Продолжить?</value></data><data name="RestoreButton" xml:space="preserve"><value>Восстановить</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Идёт индексация</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Остановите индексацию перед восстановлением.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Восстановление не удалось</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Не удалось восстановить резервную копию.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>В этой копии нет файла базы данных.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Восстановление завершено</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Резервная копия восстановлена. Возможно, потребуется перезапустить приложение.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Повернуть влево</value></data><data name="RotateRightAction" xml:space="preserve"><value>Повернуть вправо</value></data><data name="MirrorAction" xml:space="preserve"><value>Отразить по горизонтали</value></data>
+  <data name="ActionsButton" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+
+  <data name="SearchScopeTitle" xml:space="preserve">
+    <value>Search in</value>
+  </data>
+
+  <data name="SearchScopeName" xml:space="preserve">
+    <value>Titles</value>
+  </data>
+
+  <data name="SearchScopePeople" xml:space="preserve">
+    <value>People/Tags</value>
+  </data>
+
+  <data name="SearchScopeAlbums" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+
+  <data name="IndexStatusRunningTitle" xml:space="preserve">
+    <value>Index running</value>
+  </data>
+
+  <data name="IndexStatusRunningMessage" xml:space="preserve">
+    <value>Your library is being indexed. Progress details are available.</value>
+  </data>
+
+  <data name="IndexStatusReadyTitle" xml:space="preserve">
+    <value>Index up to date</value>
+  </data>
+
+  <data name="IndexStatusReadyMessage" xml:space="preserve">
+    <value>No indexing is needed right now.</value>
+  </data>
+
+  <data name="IndexStatusNeededTitle" xml:space="preserve">
+    <value>Index needs update</value>
+  </data>
+
+  <data name="IndexStatusNeededMessage" xml:space="preserve">
+    <value>Sources changed. Run indexing to refresh your library.</value>
+  </data>
+
+  <data name="IndexStatusActionStart" xml:space="preserve">
+    <value>Start indexing</value>
+  </data>
+
+  <data name="LoadingMedia" xml:space="preserve">
+    <value>Loading media...</value>
+  </data>
+
+  <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
+    <value>People tagged</value>
+  </data>
+
+  <data name="HighlightsLocationsLabel" xml:space="preserve">
+    <value>Places</value>
+  </data>
+
+  <data name="HighlightsLocationsHint" xml:space="preserve">
+    <value>View where your photos were taken on the map.</value>
+  </data>
+
+  <data name="ErrorLogCopyButton" xml:space="preserve">
+    <value>Copy log</value>
+  </data>
+
+  <data name="ErrorLogEmptyMessage" xml:space="preserve">
+    <value>No errors logged yet.</value>
+  </data>
+
+  <data name="ErrorLogCopiedMessage" xml:space="preserve">
+    <value>Error log copied.</value>
+  </data>
+
+  <data name="ErrorLogShareTitle" xml:space="preserve">
+    <value>Share error log</value>
+  </data>
+
+  <data name="ErrorLogClearedMessage" xml:space="preserve">
+    <value>The error log has been cleared.</value>
+  </data>
+
+  <data name="ScanLogTitle" xml:space="preserve">
+    <value>Scan log</value>
+  </data>
+
+  <data name="ScanLogHint" xml:space="preserve">
+    <value>Share this log if your library isn't indexing as expected.</value>
+  </data>
+
+  <data name="ScanLogShowButton" xml:space="preserve">
+    <value>Show log</value>
+  </data>
+
+  <data name="ScanLogCopyButton" xml:space="preserve">
+    <value>Copy log</value>
+  </data>
+
+  <data name="ScanLogShareButton" xml:space="preserve">
+    <value>Share log</value>
+  </data>
+
+  <data name="ScanLogClearButton" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+
+  <data name="ScanLogEmptyMessage" xml:space="preserve">
+    <value>No scan entries yet.</value>
+  </data>
+
+  <data name="ScanLogShareTitle" xml:space="preserve">
+    <value>Share scan log</value>
+  </data>
+
+  <data name="ScanLogCopiedMessage" xml:space="preserve">
+    <value>Scan log copied.</value>
+  </data>
+
+  <data name="ScanLogCopyFailedMessage" xml:space="preserve">
+    <value>Could not copy the scan log to the clipboard. Please try again.</value>
+  </data>
+
+  <data name="ScanLogClearedMessage" xml:space="preserve">
+    <value>The scan log has been cleared.</value>
+  </data>
+
+  <data name="RenameAction" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+
+  <data name="RenameTitle" xml:space="preserve">
+    <value>Rename file</value>
+  </data>
+
+  <data name="RenameMessage" xml:space="preserve">
+    <value>Enter a new name for this file.</value>
+  </data>
+
+  <data name="RenamePlaceholder" xml:space="preserve">
+    <value>File name</value>
+  </data>
+
+  <data name="RenameFailedTitle" xml:space="preserve">
+    <value>Rename failed</value>
+  </data>
+
+  <data name="RenameFailedMessage" xml:space="preserve">
+    <value>We couldn't rename this file. Please try again.</value>
+  </data>
+
+  <data name="RenameNotSupportedMessage" xml:space="preserve">
+    <value>Renaming isn't supported on this device.</value>
+  </data>
+
+  <data name="RenameExistsMessage" xml:space="preserve">
+    <value>A file with that name already exists in this folder.</value>
+  </data>
+
+  <data name="OpenFolderAction" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+
+  <data name="OpenLocationAction" xml:space="preserve">
+    <value>Location</value>
+  </data>
+
+  <data name="OpenFolderFailedTitle" xml:space="preserve">
+    <value>Open folder failed</value>
+  </data>
+
+  <data name="OpenFolderFailedMessage" xml:space="preserve">
+    <value>We couldn't open this folder. Please try again.</value>
+  </data>
+
+  <data name="OpenFolderNotSupportedMessage" xml:space="preserve">
+    <value>Opening folders isn't supported on this device.</value>
+  </data>
+
+  <data name="OpenLocationFailedTitle" xml:space="preserve">
+    <value>Open location failed</value>
+  </data>
+
+  <data name="OpenLocationFailedMessage" xml:space="preserve">
+    <value>We couldn't open this location. Please try again.</value>
+  </data>
+
+  <data name="OpenLocationNotSupportedMessage" xml:space="preserve">
+    <value>Opening locations isn't supported on this device.</value>
+  </data>
+
+  <data name="MarkedCountFormat" xml:space="preserve">
+    <value>Marked: {0}</value>
+  </data>
+
+  <data name="CopyMarkedAction" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+
+  <data name="HideAction" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+
+  <data name="UnhideAction" xml:space="preserve">
+    <value>Unhide</value>
+  </data>
+
+  <data name="ShowHiddenAction" xml:space="preserve">
+    <value>Show hidden</value>
+  </data>
+
+  <data name="HideHiddenAction" xml:space="preserve">
+    <value>Hide hidden</value>
+  </data>
+
+  <data name="MoveMarkedAction" xml:space="preserve">
+    <value>Move</value>
+  </data>
+
+  <data name="ClearMarkedAction" xml:space="preserve">
+    <value>Clear selection</value>
+  </data>
+
+  <data name="DeleteMarkedAction" xml:space="preserve">
+    <value>Delete permanently</value>
+  </data>
+
+  <data name="DeleteConfirmTitle" xml:space="preserve">
+    <value>Delete from disk?</value>
+  </data>
+
+  <data name="DeleteConfirmMessageFormat" xml:space="preserve">
+    <value>Delete {0} item(s) permanently? This cannot be undone.</value>
+  </data>
+
+  <data name="DeleteCompletedTitle" xml:space="preserve">
+    <value>Delete completed</value>
+  </data>
+
+  <data name="DeleteCompletedMessageFormat" xml:space="preserve">
+    <value>Deleted: {0}, failed: {1}.</value>
+  </data>
+
+  <data name="DeleteFailedTitle" xml:space="preserve">
+    <value>Delete failed</value>
+  </data>
+
+  <data name="DeleteNotSupportedMessage" xml:space="preserve">
+    <value>Permanent delete isn't supported on this device.</value>
+  </data>
+
+  <data name="TransferFolderTitle" xml:space="preserve">
+    <value>Create destination folder</value>
+  </data>
+
+  <data name="TransferFolderMessage" xml:space="preserve">
+    <value>Choose a name for the new folder.</value>
+  </data>
+
+  <data name="TransferFolderPlaceholder" xml:space="preserve">
+    <value>Folder name</value>
+  </data>
+
+  <data name="CreateButton" xml:space="preserve">
+    <value>Create</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+
+  <data name="TransferFailedTitle" xml:space="preserve">
+    <value>Transfer failed</value>
+  </data>
+
+  <data name="TransferFailedMessage" xml:space="preserve">
+    <value>We couldn't copy or move the selected files.</value>
+  </data>
+
+  <data name="TransferNotSupportedMessage" xml:space="preserve">
+    <value>Copy or move isn't supported on this device.</value>
+  </data>
+
+  <data name="TransferCopyCompletedTitle" xml:space="preserve">
+    <value>Copy complete</value>
+  </data>
+
+  <data name="TransferMoveCompletedTitle" xml:space="preserve">
+    <value>Move complete</value>
+  </data>
+
+  <data name="TransferCompletedMessageFormat" xml:space="preserve">
+    <value>Successful: {0}, skipped: {1}, failed: {2}.</value>
+  </data>
+
+  <data name="SettingsDuplicatesTitle" xml:space="preserve">
+    <value>Duplicates</value>
+  </data>
+
+  <data name="SettingsDuplicatesHint" xml:space="preserve">
+    <value>Albums always show all items.</value>
+  </data>
+
+  <data name="SettingsDuplicatesLabel" xml:space="preserve">
+    <value>Hide duplicate files (keep oldest)</value>
+  </data>
+
+  <data name="SettingsDatabaseResetConfirmTitle" xml:space="preserve">
+    <value>Delete database?</value>
+  </data>
+
+  <data name="SettingsDatabaseResetConfirmMessage" xml:space="preserve">
+    <value>This removes all indexed data and tags. The app will rescan your sources.</value>
+  </data>
+
+  <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+
+  <data name="SettingsDatabaseResetKeepSourcesTitle" xml:space="preserve">
+    <value>Keep sources?</value>
+  </data>
+
+  <data name="SettingsDatabaseResetKeepSourcesMessage" xml:space="preserve">
+    <value>Do you want to keep your current sources for the rescan?</value>
+  </data>
+
+  <data name="SettingsDatabaseResetKeepSourcesAccept" xml:space="preserve">
+    <value>Keep sources</value>
+  </data>
+
+  <data name="SettingsDatabaseResetKeepSourcesRemove" xml:space="preserve">
+    <value>Remove sources</value>
+  </data>
+
+  <data name="SettingsDatabaseResetCompletedTitle" xml:space="preserve">
+    <value>Database deleted</value>
+  </data>
+
+  <data name="SettingsDatabaseResetCompletedMessage" xml:space="preserve">
+    <value>Rescanning has started and the database will be rebuilt.</value>
+  </data>
+
+  <data name="SettingsDatabaseResetFailedTitle" xml:space="preserve">
+    <value>Delete failed</value>
+  </data>
+
+  <data name="SettingsDatabaseResetFailedMessage" xml:space="preserve">
+    <value>The database could not be rebuilt. Please try again.</value>
+  </data>
+
+  <data name="LocationOptInTitle" xml:space="preserve">
+    <value>Enable location data?</value>
+  </data>
+
+  <data name="LocationOptInMessage" xml:space="preserve">
+    <value>When enabled, the app reads GPS coordinates from EXIF metadata in your photos and videos. The map view loads tiles from external servers, which may receive request data (such as your IP address). Location data is stored locally on this device. By continuing, you accept that third-party services have their own terms and privacy policies.</value>
+  </data>
+
+  <data name="LocationOptInAccept" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+
+  <data name="LocationOptInDecline" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+
+  <data name="SettingsPeopleModelsStatusReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+
+  <data name="SettingsPeopleModelsStatusMissing" xml:space="preserve">
+    <value>Missing</value>
+  </data>
+
+  <data name="SettingsPeopleModelsStatusDownloading" xml:space="preserve">
+    <value>Downloading…</value>
+  </data>
+
+  <data name="SettingsPeopleModelsFolderFormat" xml:space="preserve">
+    <value>Models folder: {0}</value>
+  </data>
+
+  <data name="SettingsPeopleModelsMissingDetailFormat" xml:space="preserve">
+    <value>Automatic face recognition is unavailable until the models are present.
+
+Place the files into:
+{0}
+
+Missing:
+{1}</value>
+  </data>
+
+  <data name="SettingsPeopleModelsFileFormat" xml:space="preserve">
+    <value>- {0}{1}</value>
+  </data>
+
+  <data name="TagPeopleAction" xml:space="preserve">
+    <value>Tag people</value>
+  </data>
+
+  <data name="TagPeopleNoFacesAction" xml:space="preserve">
+    <value>Tag image</value>
+  </data>
+
+  <data name="TagPeopleTitle" xml:space="preserve">
+    <value>Tag people</value>
+  </data>
+
+  <data name="TagPeopleMessage" xml:space="preserve">
+    <value>Enter names separated by commas.</value>
+  </data>
+
+  <data name="TagPeoplePlaceholder" xml:space="preserve">
+    <value>e.g. Alex, Sam, Priya</value>
+  </data>
+
+  <data name="PeopleButton" xml:space="preserve">
+    <value>People</value>
+  </data>
+
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <data name="OpenButton" xml:space="preserve">
+    <value>Open</value>
+  </data>
+
+  <data name="PeoplePageTitle" xml:space="preserve">
+    <value>People</value>
+  </data>
+
+  <data name="PeoplePageHeader" xml:space="preserve">
+    <value>People</value>
+  </data>
+
+  <data name="PeopleSearchPlaceholder" xml:space="preserve">
+    <value>Search people...</value>
+  </data>
+
+  <data name="PeopleEmptyHint" xml:space="preserve">
+    <value>No people yet. Enable people tagging and index photos to see them here.</value>
+  </data>
+
+  <data name="TaggedPhotosButton" xml:space="preserve">
+    <value>Tagged photos</value>
+  </data>
+
+  <data name="TaggedPhotosPageTitle" xml:space="preserve">
+    <value>Tagged photos</value>
+  </data>
+
+  <data name="TaggedPhotosPageHeader" xml:space="preserve">
+    <value>Tagged photos</value>
+  </data>
+
+  <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
+    <value>Search by person name...</value>
+  </data>
+
+  <data name="TaggedPhotosEmptyHint" xml:space="preserve">
+    <value>No tagged photos yet. Tag people in a photo to see it here.</value>
+  </data>
+
+  <data name="PersonPageTitle" xml:space="preserve">
+    <value>Person</value>
+  </data>
+
+  <data name="PersonNamePlaceholder" xml:space="preserve">
+    <value>Name</value>
+  </data>
+
+  <data name="PersonEmptyHint" xml:space="preserve">
+    <value>No photos yet.</value>
+  </data>
+
+  <data name="IgnorePersonTitle" xml:space="preserve">
+    <value>Ignore person</value>
+  </data>
+
+  <data name="IgnorePersonDescription" xml:space="preserve">
+    <value>Ignored people are hidden from automatic people tags.</value>
+  </data>
+
+  <data name="IgnorePersonAction" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+
+  <data name="UnignorePersonAction" xml:space="preserve">
+    <value>Stop ignoring</value>
+  </data>
+
+  <data name="IgnoredPersonBadge" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
+
+  <data name="TagPeopleEditorTitle" xml:space="preserve">
+    <value>Tag people</value>
+  </data>
+
+  <data name="TagPeopleEditorHeader" xml:space="preserve">
+    <value>Name faces</value>
+  </data>
+
+  <data name="TagPeopleEditorTagsLabel" xml:space="preserve">
+    <value>People tags</value>
+  </data>
+
+  <data name="TagPeopleEditorTagsPlaceholder" xml:space="preserve">
+    <value>Add names, separated by commas...</value>
+  </data>
+
+  <data name="TagPeopleEditorTagsHint" xml:space="preserve">
+    <value>Tip: You can tag a photo even if no faces were detected.</value>
+  </data>
+
+  <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
+    <value>No faces detected for this photo.</value>
+  </data>
+
+  <data name="TagImageEditorTitle" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+
+  <data name="TagImageEditorHeader" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+
+  <data name="TagImageEditorTagsLabel" xml:space="preserve">
+    <value>Image tags</value>
+  </data>
+
+  <data name="TagImageEditorTagsPlaceholder" xml:space="preserve">
+    <value>Add tags, separated by commas...</value>
+  </data>
+
+  <data name="TagImageEditorTagsHint" xml:space="preserve">
+    <value>Tip: You can tag an image even if no automatic tags were detected.</value>
+  </data>
+
+  <data name="TagImageEditorEmptyHint" xml:space="preserve">
+    <value>No image tags detected for this photo.</value>
+  </data>
+
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+
+  <data name="PreviewEmptyMessage" xml:space="preserve">
+    <value>Select a file to preview it here.</value>
+  </data>
+
+  <data name="MediaTypeFilterTitle" xml:space="preserve">
+    <value>Media types</value>
+  </data>
+
+  <data name="MapButton" xml:space="preserve">
+    <value>Map</value>
+  </data>
+
+  <data name="MapPageTitle" xml:space="preserve">
+    <value>Map</value>
+  </data>
+
+  <data name="MapEmptyTitle" xml:space="preserve">
+    <value>No locations found</value>
+  </data>
+
+  <data name="MapEmptyMessage" xml:space="preserve">
+    <value>Enable locations and reindex to see photos and videos on the map.</value>
+  </data>
+
+  <data name="OpenAction" xml:space="preserve">
+    <value>Open</value>
+  </data>
+
+  <data name="RenameConfirmTitle" xml:space="preserve">
+    <value>Confirm rename</value>
+  </data>
+
+  <data name="RenameConfirmMessage" xml:space="preserve">
+    <value>Rename "{0}" to "{1}"?</value>
+  </data>
+
+
+  <data name="AlbumsButton" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+
+  <data name="SettingsSourcesAlbumsTitle" xml:space="preserve">
+    <value>Sources / Albums</value>
+  </data>
+
+  <data name="SettingsSourcesAlbumsLocationsTitle" xml:space="preserve">
+    <value>Sources / Albums / Places</value>
+  </data>
+
+  <data name="AlbumsHeader" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+
+  <data name="ManageAlbumsButton" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+
+  <data name="AlbumsPageTitle" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+
+  <data name="AlbumsPageHeader" xml:space="preserve">
+    <value>Manage albums</value>
+  </data>
+
+  <data name="AddAlbumButton" xml:space="preserve">
+    <value>Add album</value>
+  </data>
+
+  <data name="AlbumItemCountFormat" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+
+  <data name="AllAlbumsTab" xml:space="preserve">
+    <value>All media</value>
+  </data>
+
+  <data name="AddToAlbumAction" xml:space="preserve">
+    <value>Add to album</value>
+  </data>
+
+  <data name="NewAlbumAction" xml:space="preserve">
+    <value>New album…</value>
+  </data>
+
+  <data name="NewAlbumTitle" xml:space="preserve">
+    <value>New album</value>
+  </data>
+
+  <data name="NewAlbumPrompt" xml:space="preserve">
+    <value>Enter a name for the album.</value>
+  </data>
+
+  <data name="NewAlbumConfirm" xml:space="preserve">
+    <value>Create</value>
+  </data>
+
+  <data name="NewAlbumPlaceholder" xml:space="preserve">
+    <value>Album name</value>
+  </data>
+
+  <data name="AlbumExistsTitle" xml:space="preserve">
+    <value>Album already exists</value>
+  </data>
+
+  <data name="AlbumExistsMessage" xml:space="preserve">
+    <value>An album named "{0}" already exists.</value>
+  </data>
+
+  <data name="RenameAlbumTitle" xml:space="preserve">
+    <value>Rename album</value>
+  </data>
+
+  <data name="RenameAlbumPrompt" xml:space="preserve">
+    <value>Choose a new name for this album.</value>
+  </data>
+
+  <data name="RenameAlbumConfirm" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+
+  <data name="RenameAlbumAction" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+
+  <data name="DeleteAlbumTitle" xml:space="preserve">
+    <value>Delete album</value>
+  </data>
+
+  <data name="DeleteAlbumMessage" xml:space="preserve">
+    <value>Delete the album "{0}"? The media items remain in your library.</value>
+  </data>
+
+  <data name="DeleteAlbumConfirm" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+
+  <data name="DeleteAlbumAction" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+
+  <data name="SettingsProStatusFreeTitle" xml:space="preserve">
+    <value>Free</value>
+  </data>
+
+  <data name="SettingsProStatusUnlockedTitle" xml:space="preserve">
+    <value>Pro unlocked</value>
+  </data>
+
+  <data name="SettingsProFreeMessage" xml:space="preserve">
+    <value>Unlock unlimited face recognition and automation.</value>
+  </data>
+
+  <data name="SettingsProUnlockedMessage" xml:space="preserve">
+    <value>Thanks for supporting local-first photo organization.</value>
+  </data>
+
+  <data name="SettingsProPriceFormat" xml:space="preserve">
+    <value>One-time PayPal checkout: {0} (via license server)</value>
+  </data>
+
+  <data name="SettingsProPriceFallback" xml:space="preserve">
+    <value>3,92 €</value>
+  </data>
+
+  <data name="SettingsProLimitReachedMessage" xml:space="preserve">
+    <value>Free limit reached ({0} people). Upgrade to Pro for unlimited.</value>
+  </data>
+
+  <data name="SettingsProPurchaseSuccessTitle" xml:space="preserve">
+    <value>Pro unlocked</value>
+  </data>
+
+  <data name="SettingsProPurchaseSuccessMessage" xml:space="preserve">
+    <value>Pro features are now enabled.</value>
+  </data>
+
+  <data name="SettingsProPurchasePendingTitle" xml:space="preserve">
+    <value>Checkout opened</value>
+  </data>
+
+  <data name="SettingsProPurchasePendingMessage" xml:space="preserve">
+    <value>Complete the PayPal payment and enter your license key using Restore purchase.</value>
+  </data>
+
+  <data name="SettingsProPurchaseCancelledTitle" xml:space="preserve">
+    <value>Purchase cancelled</value>
+  </data>
+
+  <data name="SettingsProPurchaseCancelledMessage" xml:space="preserve">
+    <value>No changes were made.</value>
+  </data>
+
+  <data name="SettingsProPurchaseFailedTitle" xml:space="preserve">
+    <value>Purchase failed</value>
+  </data>
+
+  <data name="SettingsProPurchaseFailedMessage" xml:space="preserve">
+    <value>Please try again or restore your purchase later.</value>
+  </data>
+
+  <data name="SettingsProRestoreSuccessMessage" xml:space="preserve">
+    <value>Your Pro purchase has been restored.</value>
+  </data>
+
+  <data name="SettingsProRestoreFailedMessage" xml:space="preserve">
+    <value>No Pro purchase was found for this account.</value>
+  </data>
+
+  <data name="SettingsProActivateTitle" xml:space="preserve">
+    <value>Activate license</value>
+  </data>
+
+  <data name="SettingsProActivateMessage" xml:space="preserve">
+    <value>Enter the license key you received after checkout.</value>
+  </data>
+
+  <data name="SettingsProActivateAccept" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+
+  <data name="SettingsProActivatePlaceholder" xml:space="preserve">
+    <value>License key</value>
+  </data>
+
+  <data name="SettingsProNotSupportedTitle" xml:space="preserve">
+    <value>Not supported</value>
+  </data>
+
+  <data name="SettingsProNotSupportedMessage" xml:space="preserve">
+    <value>Purchases are handled via the licensing server.</value>
+  </data>
+
+  <data name="HelpSectionTitle" xml:space="preserve">
+    <value>Help</value>
+  </data>
+
+  <data name="HelpSectionHint" xml:space="preserve">
+    <value>About the app and license information.</value>
+  </data>
+
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About</value>
+  </data>
+
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Version details and license information.</value>
+  </data>
+
+  <data name="AboutLicenseStatusFormat" xml:space="preserve">
+    <value>License: {0}</value>
+  </data>
+
+  <data name="AboutVersionFormat" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+
+  <data name="AboutLicensesButton" xml:space="preserve">
+    <value>License information</value>
+  </data>
+
+  <data name="LicenseInfoTitle" xml:space="preserve">
+    <value>License information</value>
+  </data>
+
+  <data name="MarkedActionsMenuButton" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+
+  <data name="LegalSectionTitle" xml:space="preserve">
+    <value>Legal</value>
+  </data>
+
+  <data name="LegalSectionHint" xml:space="preserve">
+    <value>Imprint, privacy policy, terms, and withdrawal information.</value>
+  </data>
+
+  <data name="LegalImprintTitle" xml:space="preserve">
+    <value>Imprint</value>
+  </data>
+
+  <data name="LegalPrivacyTitle" xml:space="preserve">
+    <value>Privacy policy</value>
+  </data>
+
+  <data name="LegalTermsTitle" xml:space="preserve">
+    <value>Terms &amp; conditions</value>
+  </data>
+
+  <data name="LegalWithdrawalTitle" xml:space="preserve">
+    <value>Withdrawal</value>
+  </data>
+
+  <data name="LegalPrivacyBody" xml:space="preserve">
+    <value>1. Data we process
+- Email address, PayPal payer ID / transaction ID, payment amount, IP address
+- License data (license ID, activation token, device fingerprint, platform)
+- Timestamp of purchase and activation
+
+2. Purpose of processing
+- Contract fulfillment (license issuance, activation, support)
+- Fraud prevention and abuse protection
+
+3. Legal basis
+Art. 6(1)(b) GDPR (performance of a contract).
+
+4. Recipients
+PayPal (Europe) S.à r.l. et Cie, S.C.A. as payment processor, and hosting providers for the license server.
+
+5. Storage period
+As long as necessary for the contract and statutory retention obligations.
+
+6. Your rights
+Access, rectification, erasure, restriction, data portability, objection, and complaint to a supervisory authority.</value>
+  </data>
+
+  <data name="LegalTermsBody" xml:space="preserve">
+    <value>1. Scope
+These terms apply to the purchase of UltimateVideoBrowser Pro.
+
+2. License
+The license is non-transferable and valid for one device (max devices per license). Activation requires an online check; offline use is provided via a time-limited activation token.
+
+3. Payment
+One-time payment via PayPal. No subscription fees.
+
+4. Updates and availability
+There is no entitlement to future features or continued availability of services, unless legally required.
+
+5. Liability
+We are liable for intent and gross negligence. For simple negligence, liability is limited to foreseeable, typical damages, unless mandatory law applies.
+
+6. Support and refunds
+Support contact: [support@example.com]. Refunds follow the statutory withdrawal rules for digital content.</value>
+  </data>
+
+  <data name="LegalWithdrawalBody" xml:space="preserve">
+    <value>Right of withdrawal (digital content)
+You have the right to withdraw from this contract within 14 days without giving any reason.
+
+Exception: The right of withdrawal expires if you expressly agree that the execution of the contract begins before the withdrawal period ends and you acknowledge that you lose your right of withdrawal.
+
+To exercise the right of withdrawal, contact: [support@example.com].</value>
+  </data>
+
+  <data name="LegalConsentTitle" xml:space="preserve">
+    <value>Purchase confirmation</value>
+  </data>
+
+  <data name="LegalConsentHeader" xml:space="preserve">
+    <value>Confirm your purchase</value>
+  </data>
+
+  <data name="LegalConsentIntro" xml:space="preserve">
+    <value>Please review the legal information below before proceeding to PayPal checkout.</value>
+  </data>
+
+  <data name="LegalConsentProductTitle" xml:space="preserve">
+    <value>UltimateVideoBrowser Pro</value>
+  </data>
+
+  <data name="LegalConsentProductScope" xml:space="preserve">
+    <value>Non-transferable license for one device. Includes Pro features (face recognition &amp; automation). No subscription.</value>
+  </data>
+
+  <data name="LegalConsentPriceFormat" xml:space="preserve">
+    <value>Final price (incl. VAT): {0} – one-time payment</value>
+  </data>
+
+  <data name="LegalConsentPaymentHint" xml:space="preserve">
+    <value>Payment is processed by PayPal. The license is issued by the license server after successful payment.</value>
+  </data>
+
+  <data name="LegalConsentWithdrawalTitle" xml:space="preserve">
+    <value>Withdrawal waiver (required)</value>
+  </data>
+
+  <data name="LegalConsentWithdrawalCheckbox" xml:space="preserve">
+    <value>I expressly agree that the execution of the contract begins before the withdrawal period ends and acknowledge that I lose my right of withdrawal.</value>
+  </data>
+
+  <data name="LegalConsentWithdrawalHint" xml:space="preserve">
+    <value>Without this consent, the purchase cannot be completed for digital content.</value>
+  </data>
+
+  <data name="LegalConsentDocumentsTitle" xml:space="preserve">
+    <value>Legal documents</value>
+  </data>
+
+  <data name="LegalConsentDocumentsHint" xml:space="preserve">
+    <value>Imprint, privacy policy, terms, and withdrawal information are available here.</value>
+  </data>
+
+  <data name="LegalConsentConfirmButton" xml:space="preserve">
+    <value>Proceed to PayPal</value>
+  </data>
+
+  <data name="LegalConsentMissingTitle" xml:space="preserve">
+    <value>Consent required</value>
+  </data>
+
+  <data name="LegalConsentMissingMessage" xml:space="preserve">
+    <value>Please confirm the withdrawal waiver to continue.</value>
+  </data>
+</root>
