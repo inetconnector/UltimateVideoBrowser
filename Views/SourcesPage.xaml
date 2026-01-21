@@ -9,16 +9,23 @@
 
     <Grid RowDefinitions="Auto,Auto,*"
           Padding="{OnPlatform Android='12,32,12,12', iOS='12,24,12,12', Default='12'}">
-        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+        <Grid ColumnDefinitions="Auto,*,Auto"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="12">
             <Button Text="{x:Static strings:AppResources.BackButton}"
                     Clicked="OnBackClicked" />
             <Label Grid.Column="1"
+                   Grid.Row="0"
                    Text="{x:Static strings:AppResources.SourcesPageHeader}"
                    TextColor="{DynamicResource OnSurface}"
                    FontAttributes="Bold"
                    FontSize="16" />
-            <Button Grid.Column="2"
+            <Button Grid.Row="{OnPlatform Android=1, Default=0}"
+                    Grid.Column="{OnPlatform Android=0, Default=2}"
+                    Grid.ColumnSpan="{OnPlatform Android=3, Default=1}"
                     Text="{x:Static strings:AppResources.AddSourceButton}"
+                    Margin="{OnPlatform Android='0,8,0,0', Default='0'}"
+                    HorizontalOptions="{OnPlatform Android=Fill, Default=End}"
                     Command="{Binding AddSourceCommand}"
                     IsVisible="{Binding SupportsManualPath, Converter={StaticResource InverseBoolConverter}}" />
         </Grid>
