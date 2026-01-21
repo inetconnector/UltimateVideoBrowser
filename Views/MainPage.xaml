@@ -12,6 +12,14 @@
              BackgroundColor="{DynamicResource AppBg}"
              Title="{x:Static strings:AppResources.MainPageTitle}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="⚙"
+                     Order="Primary"
+                     Priority="0"
+                     Command="{Binding OpenSettingsCommand}"
+                     AutomationProperties.Name="Open settings" />
+    </ContentPage.ToolbarItems>
+
     <Grid RowDefinitions="*,Auto">
         <!-- Browser grid -->
         <Grid Grid.Row="0"
