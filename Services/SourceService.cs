@@ -121,6 +121,8 @@ public sealed class SourceService : ISourceService
             Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads)?.AbsolutePath);
         AddSourceIfExists(sources, "android_documents", "Documents",
             Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDocuments)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_whatsapp_media", "WhatsApp",
+            CombineIfParent(Environment.ExternalStorageDirectory?.AbsolutePath, Path.Combine("WhatsApp", "Media")));
 
         return sources;
     }
