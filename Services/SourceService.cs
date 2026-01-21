@@ -1,3 +1,4 @@
+using System.Linq;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
 #if ANDROID && !WINDOWS
@@ -28,22 +29,28 @@ public sealed class SourceService : ISourceService
     public async Task EnsureDefaultSourceAsync()
     {
         await db.EnsureInitializedAsync();
-        var existing = await db.Db.Table<MediaSource>().FirstOrDefaultAsync();
-        if (existing != null)
-            return;
-
 #if ANDROID && !WINDOWS
-        var defaults = GetAndroidDefaultSources();
-        if (defaults.Count == 0)
+        var existingSources = await db.Db.Table<MediaSource>().ToListAsync();
+        var hasAllDeviceSource = existingSources.Any(s => s.Id == "device_all");
+
+        if (existingSources.Count == 0)
         {
             await db.Db.InsertAsync(BuildAllDeviceSource());
+
+            var defaults = GetAndroidDefaultSources();
+            foreach (var src in defaults)
+                await db.Db.InsertAsync(src);
             return;
         }
 
-        foreach (var src in defaults)
-            await db.Db.InsertAsync(src);
+        if (!hasAllDeviceSource)
+            await db.Db.InsertAsync(BuildAllDeviceSource());
+
         return;
 #endif
+        var existing = await db.Db.Table<MediaSource>().FirstOrDefaultAsync();
+        if (existing != null)
+            return;
 
         // Default "All device media" virtual source (empty path = MediaStore)
         await db.Db.InsertAsync(BuildAllDeviceSource());
