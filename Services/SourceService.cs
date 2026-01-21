@@ -1,10 +1,9 @@
-using System.IO;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
-using Environment = Android.OS.Environment;
 #if ANDROID && !WINDOWS
-using Android.OS;
+using Environment = Android.OS.Environment;
 #endif
+
 #if WINDOWS
 using Windows.Storage.AccessCache;
 #endif
@@ -80,7 +79,8 @@ public sealed class SourceService : ISourceService
     }
 
     private static MediaSource BuildAllDeviceSource()
-        => new()
+    {
+        return new MediaSource
         {
             Id = "device_all",
             DisplayName = AppResources.AllDeviceVideos,
@@ -88,6 +88,7 @@ public sealed class SourceService : ISourceService
             IsEnabled = true,
             LastIndexedUtcSeconds = 0
         };
+    }
 
 #if ANDROID && !WINDOWS
     private static List<MediaSource> GetAndroidDefaultSources()
