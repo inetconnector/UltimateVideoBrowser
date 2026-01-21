@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Szeretnéd most újraindexelni mindent? Ez eltarthat egy ideig a könyvtár méretétől függően.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Adatbázis-mentés</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exportálja vagy importálja a helyi adatbázist a beállításokkal és bélyegképekkel együtt.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Mentés exportálása</value></data><data name="BackupImportButton" xml:space="preserve"><value>Mentés importálása</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Mentés exportálva</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>A mentés sikeresen exportálva.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Export sikertelen</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>A mentés nem hozható létre vagy menthető.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Válassz mentés ZIP-et</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Visszaállítod a mentést?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Ez felülírja a jelenlegi adatbázist, beállításokat és bélyegképeket. Folytatod?</value></data><data name="RestoreButton" xml:space="preserve"><value>Visszaállítás</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexelés folyamatban</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Állítsd le az indexelést a mentés visszaállítása előtt.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Visszaállítás sikertelen</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>A mentést nem sikerült visszaállítani.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>A mentés nem tartalmaz adatbázisfájlt.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Visszaállítás kész</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Mentés visszaállítva. Lehet, hogy újra kell indítani az 앱-ot a változásokhoz.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Forgatás balra</value></data><data name="RotateRightAction" xml:space="preserve"><value>Forgatás jobbra</value></data><data name="MirrorAction" xml:space="preserve"><value>Vízszintes tükrözés</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Adatbázis-mentés</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exportálja vagy importálja a helyi adatbázist a beállításokkal és bélyegképekkel együtt.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Mentés exportálása</value></data><data name="BackupImportButton" xml:space="preserve"><value>Mentés importálása</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Mentés exportálva</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>A mentés sikeresen exportálva.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Export sikertelen</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>A mentés nem hozható létre vagy menthető.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Válassz mentés ZIP-et</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Visszaállítod a mentést?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Ez felülírja a jelenlegi adatbázist, beállításokat és bélyegképeket. Folytatod?</value></data><data name="RestoreButton" xml:space="preserve"><value>Visszaállítás</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexelés folyamatban</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Állítsd le az indexelést a mentés visszaállítása előtt.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Visszaállítás sikertelen</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>A mentést nem sikerült visszaállítani.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>A mentés nem tartalmaz adatbázisfájlt.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Visszaállítás kész</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Mentés visszaállítva. Lehet, hogy újra kell indítani az 앱-ot a változásokhoz.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Forgatás balra</value></data><data name="RotateRightAction" xml:space="preserve"><value>Forgatás jobbra</value></data><data name="MirrorAction" xml:space="preserve"><value>Vízszintes tükrözés</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>

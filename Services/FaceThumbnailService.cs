@@ -254,7 +254,6 @@ public sealed class FaceThumbnailService
 
 #if ANDROID && !WINDOWS
         if (mediaPath.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
-        {
             try
             {
                 var resolver = Platform.AppContext?.ContentResolver;
@@ -268,7 +267,6 @@ public sealed class FaceThumbnailService
             {
                 return null;
             }
-        }
 #endif
 
 #if WINDOWS

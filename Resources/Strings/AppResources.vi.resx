@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>Bạn có muốn lập chỉ mục lại mọi thứ ngay bây giờ không? Việc này có thể mất một lúc tùy theo kích thước thư viện của bạn.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Sao lưu cơ sở dữ liệu</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Xuất hoặc nhập cơ sở dữ liệu cục bộ, gồm cài đặt và hình thu nhỏ.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Xuất bản sao lưu</value></data><data name="BackupImportButton" xml:space="preserve"><value>Nhập bản sao lưu</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Đã xuất bản sao lưu</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Bản sao lưu đã được xuất thành công.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Xuất thất bại</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Không thể tạo hoặc lưu bản sao lưu.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Chọn tệp ZIP sao lưu</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Khôi phục bản sao lưu?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Thao tác này sẽ ghi đè cơ sở dữ liệu, cài đặt và hình thu nhỏ hiện tại. Tiếp tục?</value></data><data name="RestoreButton" xml:space="preserve"><value>Khôi phục</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Đang lập chỉ mục</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Hãy dừng lập chỉ mục trước khi khôi phục bản sao lưu.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Khôi phục thất bại</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Không thể khôi phục bản sao lưu.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Bản sao lưu này không có tệp cơ sở dữ liệu.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Đã khôi phục xong</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Đã khôi phục bản sao lưu. Bạn có thể cần mở lại ứng dụng để thấy đầy đủ thay đổi.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Xoay trái</value></data><data name="RotateRightAction" xml:space="preserve"><value>Xoay phải</value></data><data name="MirrorAction" xml:space="preserve"><value>Lật ngang</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Sao lưu cơ sở dữ liệu</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Xuất hoặc nhập cơ sở dữ liệu cục bộ, gồm cài đặt và hình thu nhỏ.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Xuất bản sao lưu</value></data><data name="BackupImportButton" xml:space="preserve"><value>Nhập bản sao lưu</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Đã xuất bản sao lưu</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Bản sao lưu đã được xuất thành công.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Xuất thất bại</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Không thể tạo hoặc lưu bản sao lưu.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Chọn tệp ZIP sao lưu</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Khôi phục bản sao lưu?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Thao tác này sẽ ghi đè cơ sở dữ liệu, cài đặt và hình thu nhỏ hiện tại. Tiếp tục?</value></data><data name="RestoreButton" xml:space="preserve"><value>Khôi phục</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Đang lập chỉ mục</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Hãy dừng lập chỉ mục trước khi khôi phục bản sao lưu.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Khôi phục thất bại</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Không thể khôi phục bản sao lưu.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Bản sao lưu này không có tệp cơ sở dữ liệu.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Đã khôi phục xong</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Đã khôi phục bản sao lưu. Bạn có thể cần mở lại ứng dụng để thấy đầy đủ thay đổi.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Xoay trái</value></data><data name="RotateRightAction" xml:space="preserve"><value>Xoay phải</value></data><data name="MirrorAction" xml:space="preserve"><value>Lật ngang</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>

@@ -22,6 +22,8 @@ public sealed class SourcesViewModelTests
 
         try
         {
+            var credentialStore = new NetworkShareCredentialStore();
+            var networkShareScanner = new NetworkShareScanner();
             var sourceService = new FakeSourceService();
             var folderPicker = new FakeFolderPickerService(new FolderPickResult(tempPath, "Videos"));
             var dialogService = new FakeDialogService(null);
@@ -34,7 +36,7 @@ public sealed class SourcesViewModelTests
                 new PermissionService(),
                 folderPicker,
                 dialogService,
-                settingsService);
+                settingsService, credentialStore, networkShareScanner);
 
             await viewModel.AddSourceAsync();
 

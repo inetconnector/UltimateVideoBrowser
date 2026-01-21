@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>क्या आप अभी सब कुछ फिर से इंडेक्स करना चाहते हैं? आपकी लाइब्रेरी के आकार के आधार पर इसमें कुछ समय लग सकता है।</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>डेटाबेस बैकअप</value></data><data name="BackupSectionHint" xml:space="preserve"><value>सेटिंग्स और थंबनेल सहित स्थानीय डेटाबेस निर्यात/आयात करें।</value></data><data name="BackupExportButton" xml:space="preserve"><value>बैकअप निर्यात करें</value></data><data name="BackupImportButton" xml:space="preserve"><value>बैकअप आयात करें</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>बैकअप निर्यात हो गया</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>बैकअप सफलतापूर्वक निर्यात हो गया।</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>बैकअप निर्यात विफल</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>बैकअप बनाया या सहेजा नहीं जा सका।</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>बैकअप ZIP चुनें</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>बैकअप पुनर्स्थापित करें?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>यह आपके वर्तमान डेटाबेस, सेटिंग्स और थंबनेल को ओवरराइट करेगा। जारी रखें?</value></data><data name="RestoreButton" xml:space="preserve"><value>पुनर्स्थापित करें</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>इंडेक्सिंग चल रही है</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित करने से पहले इंडेक्सिंग रोकें।</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>पुनर्स्थापना विफल</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित नहीं हो सका।</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>इस बैकअप में डेटाबेस फ़ाइल नहीं है।</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>पुनर्स्थापना पूर्ण</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित हो गया। सभी बदलाव देखने के लिए ऐप दोबारा खोलना पड़ सकता है।</value></data><data name="RotateLeftAction" xml:space="preserve"><value>बाएँ घुमाएँ</value></data><data name="RotateRightAction" xml:space="preserve"><value>दाएँ घुमाएँ</value></data><data name="MirrorAction" xml:space="preserve"><value>क्षैतिज रूप से पलटें</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>डेटाबेस बैकअप</value></data><data name="BackupSectionHint" xml:space="preserve"><value>सेटिंग्स और थंबनेल सहित स्थानीय डेटाबेस निर्यात/आयात करें।</value></data><data name="BackupExportButton" xml:space="preserve"><value>बैकअप निर्यात करें</value></data><data name="BackupImportButton" xml:space="preserve"><value>बैकअप आयात करें</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>बैकअप निर्यात हो गया</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>बैकअप सफलतापूर्वक निर्यात हो गया।</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>बैकअप निर्यात विफल</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>बैकअप बनाया या सहेजा नहीं जा सका।</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>बैकअप ZIP चुनें</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>बैकअप पुनर्स्थापित करें?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>यह आपके वर्तमान डेटाबेस, सेटिंग्स और थंबनेल को ओवरराइट करेगा। जारी रखें?</value></data><data name="RestoreButton" xml:space="preserve"><value>पुनर्स्थापित करें</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>इंडेक्सिंग चल रही है</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित करने से पहले इंडेक्सिंग रोकें।</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>पुनर्स्थापना विफल</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित नहीं हो सका।</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>इस बैकअप में डेटाबेस फ़ाइल नहीं है।</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>पुनर्स्थापना पूर्ण</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>बैकअप पुनर्स्थापित हो गया। सभी बदलाव देखने के लिए ऐप दोबारा खोलना पड़ सकता है।</value></data><data name="RotateLeftAction" xml:space="preserve"><value>बाएँ घुमाएँ</value></data><data name="RotateRightAction" xml:space="preserve"><value>दाएँ घुमाएँ</value></data><data name="MirrorAction" xml:space="preserve"><value>क्षैतिज रूप से पलटें</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>

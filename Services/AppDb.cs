@@ -721,7 +721,7 @@ public sealed class AppDb
     {
         // Property name must match PRAGMA output column name.
         // ReSharper disable once InconsistentNaming
-        public string name { get; } = string.Empty;
+        public string name { get; set; } = string.Empty;
     }
 
     private sealed class WalCheckpointResult

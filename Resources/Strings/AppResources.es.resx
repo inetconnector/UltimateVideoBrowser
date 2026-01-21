@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>¿Quieres reindexarlo todo ahora? Esto puede tardar un tiempo según el tamaño de tu biblioteca.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Copia de seguridad de la base</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exporta o importa la base local, incluidos ajustes y miniaturas.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Exportar copia</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importar copia</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Copia exportada</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Tu copia se exportó correctamente.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Error al exportar</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>No se pudo crear o guardar la copia.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Selecciona un ZIP de copia</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>¿Restaurar copia?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Esto reemplazará tu base, ajustes y miniaturas actuales. ¿Continuar?</value></data><data name="RestoreButton" xml:space="preserve"><value>Restaurar</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexación en curso</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Detén la indexación antes de restaurar una copia.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Restauración fallida</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>No se pudo restaurar la copia.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Esta copia no contiene un archivo de base de datos.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Restauración completada</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Copia restaurada. Puede que debas reabrir la app para ver todos los cambios.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Girar a la izquierda</value></data><data name="RotateRightAction" xml:space="preserve"><value>Girar a la derecha</value></data><data name="MirrorAction" xml:space="preserve"><value>Voltear horizontalmente</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Copia de seguridad de la base</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exporta o importa la base local, incluidos ajustes y miniaturas.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Exportar copia</value></data><data name="BackupImportButton" xml:space="preserve"><value>Importar copia</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Copia exportada</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Tu copia se exportó correctamente.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Error al exportar</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>No se pudo crear o guardar la copia.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Selecciona un ZIP de copia</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>¿Restaurar copia?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Esto reemplazará tu base, ajustes y miniaturas actuales. ¿Continuar?</value></data><data name="RestoreButton" xml:space="preserve"><value>Restaurar</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indexación en curso</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Detén la indexación antes de restaurar una copia.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Restauración fallida</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>No se pudo restaurar la copia.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Esta copia no contiene un archivo de base de datos.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Restauración completada</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Copia restaurada. Puede que debas reabrir la app para ver todos los cambios.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Girar a la izquierda</value></data><data name="RotateRightAction" xml:space="preserve"><value>Girar a la derecha</value></data><data name="MirrorAction" xml:space="preserve"><value>Voltear horizontalmente</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>

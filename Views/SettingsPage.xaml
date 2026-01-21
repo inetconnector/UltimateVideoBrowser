@@ -34,27 +34,27 @@
                                FontAttributes="Bold"
                                TextColor="{DynamicResource OnSurface}"
                                IsVisible="{Binding IsLocationEnabled}" />
-                        <HorizontalStackLayout Spacing="12">
+                        <VerticalStackLayout Spacing="8">
                             <Button Text="{x:Static strings:AppResources.SourcesButton}"
                                     Clicked="OnSourcesClicked"
                                     Style="{StaticResource OverlayButtonStyle}"
                                     CornerRadius="6"
-                                    HorizontalOptions="Start"
+                                    HorizontalOptions="Fill"
                                     Padding="12,6" />
                             <Button Text="{x:Static strings:AppResources.AlbumsButton}"
                                     Clicked="OnAlbumsClicked"
                                     Style="{StaticResource OverlayButtonStyle}"
                                     CornerRadius="6"
-                                    HorizontalOptions="Start"
+                                    HorizontalOptions="Fill"
                                     Padding="12,6" />
                             <Button Text="{x:Static strings:AppResources.HighlightsLocationsLabel}"
                                     Clicked="OnLocationsClicked"
                                     IsVisible="{Binding IsLocationEnabled}"
                                     Style="{StaticResource OverlayButtonStyle}"
                                     CornerRadius="6"
-                                    HorizontalOptions="Start"
+                                    HorizontalOptions="Fill"
                                     Padding="12,6" />
-                        </HorizontalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Frame>
 

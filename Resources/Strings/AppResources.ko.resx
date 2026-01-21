@@ -1186,4 +1186,61 @@
   <data name="ReindexPrompt" xml:space="preserve">
     <value>지금 모든 항목을 다시 인덱싱할까요? 라이브러리 크기에 따라 시간이 걸릴 수 있습니다.</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>데이터베이스 백업</value></data><data name="BackupSectionHint" xml:space="preserve"><value>설정과 썸네일을 포함한 로컬 데이터베이스를 내보내거나 가져옵니다.</value></data><data name="BackupExportButton" xml:space="preserve"><value>백업 내보내기</value></data><data name="BackupImportButton" xml:space="preserve"><value>백업 가져오기</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>백업이 내보내졌습니다</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>백업을 성공적으로 내보냈습니다.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>내보내기 실패</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>백업을 만들거나 저장할 수 없습니다.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>백업 ZIP 선택</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>백업을 복원할까요?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>현재 데이터베이스, 설정, 썸네일이 덮어써집니다. 계속할까요?</value></data><data name="RestoreButton" xml:space="preserve"><value>복원</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>인덱싱 진행 중</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>복원하기 전에 인덱싱을 중지하세요.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>복원 실패</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>백업을 복원할 수 없습니다.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>이 백업에는 데이터베이스 파일이 없습니다.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>복원 완료</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>백업이 복원되었습니다. 모든 변경사항을 보려면 앱을 다시 열어야 할 수 있습니다.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>왼쪽으로 회전</value></data><data name="RotateRightAction" xml:space="preserve"><value>오른쪽으로 회전</value></data><data name="MirrorAction" xml:space="preserve"><value>가로로 뒤집기</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>데이터베이스 백업</value></data><data name="BackupSectionHint" xml:space="preserve"><value>설정과 썸네일을 포함한 로컬 데이터베이스를 내보내거나 가져옵니다.</value></data><data name="BackupExportButton" xml:space="preserve"><value>백업 내보내기</value></data><data name="BackupImportButton" xml:space="preserve"><value>백업 가져오기</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>백업이 내보내졌습니다</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>백업을 성공적으로 내보냈습니다.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>내보내기 실패</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>백업을 만들거나 저장할 수 없습니다.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>백업 ZIP 선택</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>백업을 복원할까요?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>현재 데이터베이스, 설정, 썸네일이 덮어써집니다. 계속할까요?</value></data><data name="RestoreButton" xml:space="preserve"><value>복원</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>인덱싱 진행 중</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>복원하기 전에 인덱싱을 중지하세요.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>복원 실패</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>백업을 복원할 수 없습니다.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>이 백업에는 데이터베이스 파일이 없습니다.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>복원 완료</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>백업이 복원되었습니다. 모든 변경사항을 보려면 앱을 다시 열어야 할 수 있습니다.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>왼쪽으로 회전</value></data><data name="RotateRightAction" xml:space="preserve"><value>오른쪽으로 회전</value></data><data name="MirrorAction" xml:space="preserve"><value>가로로 뒤집기</value></data>  <data name="AddSourceActionTitle" xml:space="preserve">
+    <value>Add source</value>
+  </data>
+  <data name="AddSourceLocalOption" xml:space="preserve">
+    <value>Local folder</value>
+  </data>
+  <data name="AddSourceNetworkOption" xml:space="preserve">
+    <value>Network share (SMB)</value>
+  </data>
+  <data name="EditNetworkCredentialsAction" xml:space="preserve">
+    <value>Edit access</value>
+  </data>
+  <data name="NetworkShareAddTitle" xml:space="preserve">
+    <value>Add network share</value>
+  </data>
+  <data name="NetworkShareScanOption" xml:space="preserve">
+    <value>Scan network</value>
+  </data>
+  <data name="NetworkShareManualOption" xml:space="preserve">
+    <value>Enter server</value>
+  </data>
+  <data name="NetworkShareScanEmptyTitle" xml:space="preserve">
+    <value>No servers found</value>
+  </data>
+  <data name="NetworkShareScanEmptyMessage" xml:space="preserve">
+    <value>We couldn't find any servers on your network.</value>
+  </data>
+  <data name="NetworkShareScanPickTitle" xml:space="preserve">
+    <value>Select a server</value>
+  </data>
+  <data name="NetworkShareServerTitle" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="NetworkShareServerPrompt" xml:space="preserve">
+    <value>Enter the server name or IP address.</value>
+  </data>
+  <data name="NetworkShareNameTitle" xml:space="preserve">
+    <value>Share name</value>
+  </data>
+  <data name="NetworkShareNamePrompt" xml:space="preserve">
+    <value>Enter the share name.</value>
+  </data>
+  <data name="NetworkShareCredentialsTitle" xml:space="preserve">
+    <value>Access details</value>
+  </data>
+  <data name="NetworkShareUsernamePrompt" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NetworkSharePasswordPrompt" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="NetworkShareSaveFailedTitle" xml:space="preserve">
+    <value>Couldn't save access</value>
+  </data>
+  <data name="NetworkShareSaveFailedMessage" xml:space="preserve">
+    <value>Please check your device security settings and try again.</value>
+  </data>
+</root>
