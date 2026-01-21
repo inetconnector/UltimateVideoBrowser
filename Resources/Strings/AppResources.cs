@@ -695,6 +695,12 @@ public static class AppResources
     public static string NetworkShareNameTitle =>
         GetString(nameof(NetworkShareNameTitle), "Share name");
 
+    public static string NetworkShareNamePickTitle =>
+        GetString(nameof(NetworkShareNamePickTitle), "Select a share");
+
+    public static string NetworkShareNameManualOption =>
+        GetString(nameof(NetworkShareNameManualOption), "Enter share name");
+
     public static string NetworkShareNamePrompt =>
         GetString(nameof(NetworkShareNamePrompt), "Enter the share name.");
 

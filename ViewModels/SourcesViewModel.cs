@@ -17,6 +17,7 @@ public partial class SourcesViewModel : ObservableObject
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     [ObservableProperty] private bool hasMediaPermission;
+    [ObservableProperty] private bool isNetworkScanRunning;
 
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private bool supportsManualPath;
@@ -242,7 +243,16 @@ public partial class SourcesViewModel : ObservableObject
         string? server = null;
         if (string.Equals(choice, AppResources.NetworkShareScanOption, StringComparison.Ordinal))
         {
-            var servers = await networkShareScanner.ScanAsync();
+            List<NetworkServerInfo> servers;
+            IsNetworkScanRunning = true;
+            try
+            {
+                servers = await networkShareScanner.ScanAsync();
+            }
+            finally
+            {
+                IsNetworkScanRunning = false;
+            }
             if (servers.Count == 0)
             {
                 await dialogService.DisplayAlertAsync(
@@ -276,14 +286,7 @@ public partial class SourcesViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(server))
             return;
 
-        var share = await dialogService.DisplayPromptAsync(
-            AppResources.NetworkShareNameTitle,
-            AppResources.NetworkShareNamePrompt,
-            AppResources.NewSourceConfirm,
-            AppResources.NewSourceCancel,
-            "Videos",
-            80,
-            Keyboard.Text);
+        var share = await PromptForNetworkShareAsync(server.Trim());
 
         if (string.IsNullOrWhiteSpace(share))
             return;
@@ -300,6 +303,92 @@ public partial class SourcesViewModel : ObservableObject
             return;
 
         await EnsureNetworkCredentialsAsync(src, null);
+    }
+
+    private async Task<string?> PromptForNetworkShareAsync(string server)
+    {
+        var knownShares = await GetKnownSharesAsync(server);
+        if (knownShares.Count > 0)
+        {
+            var options = knownShares.Concat(new[] { AppResources.NetworkShareNameManualOption }).ToArray();
+            var selection = await dialogService.DisplayActionSheetAsync(
+                AppResources.NetworkShareNamePickTitle,
+                AppResources.NewSourceCancel,
+                null,
+                options);
+
+            if (string.IsNullOrWhiteSpace(selection) ||
+                string.Equals(selection, AppResources.NewSourceCancel, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            if (!string.Equals(selection, AppResources.NetworkShareNameManualOption, StringComparison.Ordinal))
+                return selection;
+        }
+
+        return await dialogService.DisplayPromptAsync(
+            AppResources.NetworkShareNameTitle,
+            AppResources.NetworkShareNamePrompt,
+            AppResources.NewSourceConfirm,
+            AppResources.NewSourceCancel,
+            "Videos",
+            80,
+            Keyboard.Text);
+    }
+
+    private async Task<IReadOnlyList<string>> GetKnownSharesAsync(string server)
+    {
+        var sources = await sourceService.GetSourcesAsync();
+        var shares = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var source in sources)
+        {
+            if (!TryParseNetworkShare(source.LocalFolderPath, out var parsedServer, out var share))
+                continue;
+
+            if (string.Equals(parsedServer, server, StringComparison.OrdinalIgnoreCase))
+                shares.Add(share);
+        }
+
+        return shares
+            .OrderBy(share => share, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static bool TryParseNetworkShare(string path, out string server, out string share)
+    {
+        server = string.Empty;
+        share = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        if (path.StartsWith("smb://", StringComparison.OrdinalIgnoreCase))
+        {
+            var trimmed = path["smb://".Length..].Trim('/');
+            var parts = trimmed.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
+            {
+                server = parts[0];
+                share = parts[1];
+                return true;
+            }
+        }
+
+        if (path.StartsWith("\\\\", StringComparison.OrdinalIgnoreCase))
+        {
+            var trimmed = path.TrimStart('\\');
+            var parts = trimmed.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
+            {
+                server = parts[0];
+                share = parts[1];
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private async Task EnsureNetworkCredentialsAsync(MediaSource src, NetworkShareCredentials? existing)
