@@ -247,7 +247,7 @@ public partial class SourcesViewModel : ObservableObject
             IsNetworkScanRunning = true;
             try
             {
-                servers = (List<NetworkServerInfo>)await networkShareScanner.ScanAsync();
+                servers = (await networkShareScanner.ScanAsync()).ToList();
             }
             finally
             {
