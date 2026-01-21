@@ -10,6 +10,7 @@
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
             <Button x:Name="BackButton"
                     Text="{x:Static strings:AppResources.BackButton}"
+                    IsVisible="{OnPlatform Android=False, Default=True}"
                     Clicked="OnBackClicked" />
             <Label x:Name="DocumentTitleLabel"
                    Grid.Column="1"
