@@ -40,6 +40,7 @@
                     FontSize="14"
                     FontAttributes="Bold"
                     HeightRequest="32"
+                    MinimumWidthRequest="{OnPlatform Android=64, Default=0}"
                     Padding="0"
                     HorizontalOptions="End"
                     Style="{StaticResource OverlayButtonStyle}"
