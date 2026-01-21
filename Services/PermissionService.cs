@@ -2,7 +2,7 @@
 #if ANDROID && !WINDOWS
 using Android;
 using Android.Content;
-using Uri = Android.Net.Uri; 
+using Android.Net;
 using Android.OS;
 using Android.Provider;
 using System.Runtime.Versioning;
@@ -65,11 +65,52 @@ public sealed class PermissionService
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
             var mediaStatus = await Permissions.RequestAsync<MediaLibraryPermission>();
-            return mediaStatus == PermissionStatus.Granted;
+            if (mediaStatus == PermissionStatus.Granted)
+                return true;
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                RequestAllFilesAccess();
+
+            return false;
         }
 
         var status = await Permissions.RequestAsync<Permissions.StorageRead>();
-        return status == PermissionStatus.Granted;
+        if (status == PermissionStatus.Granted)
+            return true;
+
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+            RequestAllFilesAccess();
+
+        return false;
+    }
+
+    private static bool RequestAllFilesAccess()
+    {
+        var activity = Platform.CurrentActivity;
+        if (activity == null)
+            return false;
+
+        try
+        {
+            var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
+            intent.SetData(Uri.Parse($"package:{activity.PackageName}"));
+            activity.StartActivity(intent);
+            return Android.OS.Environment.IsExternalStorageManager;
+        }
+        catch (ActivityNotFoundException)
+        {
+            try
+            {
+                var intent = new Intent(Settings.ActionManageAllFilesAccessPermission);
+                activity.StartActivity(intent);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        return Android.OS.Environment.IsExternalStorageManager;
     }
 
     private static bool RequestAllFilesAccess()
