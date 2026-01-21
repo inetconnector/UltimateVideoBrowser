@@ -1,6 +1,9 @@
 #if ANDROID && !WINDOWS
 using Android;
+using Android.Content;
+using Android.Net;
 using Android.OS;
+using Android.Provider;
 using System.Runtime.Versioning;
 #endif
 
@@ -32,6 +35,10 @@ public sealed class PermissionService
 #if ANDROID && !WINDOWS
     private static async Task<bool> IsMediaPermissionGrantedAsync()
     {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.R &&
+            Android.OS.Environment.IsExternalStorageManager)
+            return true;
+
         var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
         if (status == PermissionStatus.Granted)
             return true;
@@ -47,6 +54,13 @@ public sealed class PermissionService
 
     private static async Task<bool> RequestMediaPermissionAsync()
     {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.R &&
+            !Android.OS.Environment.IsExternalStorageManager)
+        {
+            if (RequestAllFilesAccess())
+                return true;
+        }
+
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
             var mediaStatus = await Permissions.RequestAsync<MediaLibraryPermission>();
@@ -55,6 +69,35 @@ public sealed class PermissionService
 
         var status = await Permissions.RequestAsync<Permissions.StorageRead>();
         return status == PermissionStatus.Granted;
+    }
+
+    private static bool RequestAllFilesAccess()
+    {
+        var activity = Platform.CurrentActivity;
+        if (activity == null)
+            return false;
+
+        try
+        {
+            var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
+            intent.SetData(Uri.Parse($"package:{activity.PackageName}"));
+            activity.StartActivity(intent);
+            return Android.OS.Environment.IsExternalStorageManager;
+        }
+        catch (ActivityNotFoundException)
+        {
+            try
+            {
+                var intent = new Intent(Settings.ActionManageAllFilesAccessPermission);
+                activity.StartActivity(intent);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        return Android.OS.Environment.IsExternalStorageManager;
     }
 
     [SupportedOSPlatform("android33.0")]

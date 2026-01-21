@@ -121,6 +121,15 @@ public sealed class SourceService : ISourceService
             Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads)?.AbsolutePath);
         AddSourceIfExists(sources, "android_documents", "Documents",
             Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDocuments)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_instagram_media", "Instagram",
+            CombineIfParent(Environment.ExternalStorageDirectory?.AbsolutePath,
+                Path.Combine("Android", "media", "com.instagram.android")));
+        AddSourceIfExists(sources, "android_telegram_media", "Telegram",
+            CombineIfParent(Environment.ExternalStorageDirectory?.AbsolutePath,
+                Path.Combine("Android", "media", "org.telegram.messenger", "Telegram")));
+        AddSourceIfExists(sources, "android_whatsapp_media", "WhatsApp",
+            CombineIfParent(Environment.ExternalStorageDirectory?.AbsolutePath,
+                Path.Combine("Android", "media", "com.whatsapp", "WhatsApp", "Media")));
 
         return sources;
     }
