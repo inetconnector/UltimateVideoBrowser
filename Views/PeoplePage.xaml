@@ -13,6 +13,7 @@
 
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
             <Button Text="{x:Static strings:AppResources.BackButton}"
+                    IsVisible="{OnPlatform Android=False, Default=True}"
                     Clicked="OnBackClicked" />
 
             <Label Grid.Column="1"
