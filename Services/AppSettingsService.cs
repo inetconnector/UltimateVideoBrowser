@@ -30,6 +30,7 @@ public sealed class AppSettingsService
     private const string ProActivationTokenKey = "pro_activation_token";
     private const string ProActivationValidUntilKey = "pro_activation_valid_until";
     private const string LicenseServerBaseUrlKey = "license_server_base_url";
+    private const string DeviceMediaChildEnabledKey = "device_media_child_enabled";
 
     private const string PreviewDockExpandedKey = "ui_preview_dock_expanded";
     private const string FiltersDockExpandedKey = "ui_filters_dock_expanded";
@@ -232,6 +233,23 @@ public sealed class AppSettingsService
     {
         get => store.GetBool(PeopleTaggingTrialHintShownKey, false);
         set => store.SetBool(PeopleTaggingTrialHintShownKey, value);
+    }
+
+    public IReadOnlyList<string> DeviceMediaChildEnabledIds
+    {
+        get
+        {
+            var raw = store.GetString(DeviceMediaChildEnabledKey, string.Empty);
+            if (string.IsNullOrWhiteSpace(raw))
+                return Array.Empty<string>();
+
+            return raw.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        }
+        set
+        {
+            var serialized = value == null ? string.Empty : string.Join("|", value);
+            store.SetString(DeviceMediaChildEnabledKey, serialized);
+        }
     }
 
     public bool IsPeopleTaggingTrialExpired

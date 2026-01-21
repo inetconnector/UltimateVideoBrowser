@@ -13,6 +13,7 @@ public partial class SourcesViewModel : ObservableObject
     private readonly PermissionService permissionService;
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
+    private List<MediaSource> allSources = new();
     [ObservableProperty] private bool hasMediaPermission;
 
     [ObservableProperty] private List<MediaSource> sources = new();
@@ -36,12 +37,19 @@ public partial class SourcesViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         HasMediaPermission = await permissionService.CheckMediaReadAsync();
-        Sources = await sourceService.GetSourcesAsync();
+        allSources = await sourceService.GetSourcesAsync();
+        ApplySystemSourceVisibility();
     }
 
     [RelayCommand]
     public async Task ToggleAsync(MediaSource src)
     {
+        if (src.IsSystemSource)
+        {
+            await ToggleSystemSourceAsync(src);
+            return;
+        }
+
         src.IsEnabled = !src.IsEnabled;
         await sourceService.UpsertAsync(src);
         settingsService.NeedsReindex = true;
@@ -170,5 +178,66 @@ public partial class SourcesViewModel : ObservableObject
         await sourceService.DeleteAsync(src);
         settingsService.NeedsReindex = true;
         await InitializeAsync();
+    }
+
+    private async Task ToggleSystemSourceAsync(MediaSource src)
+    {
+        var isEnabling = !src.IsEnabled;
+        src.IsEnabled = isEnabling;
+        await sourceService.UpsertAsync(src);
+
+        var sources = await sourceService.GetSourcesAsync();
+        if (isEnabling)
+        {
+            var storedEnabledIds = settingsService.DeviceMediaChildEnabledIds;
+            if (storedEnabledIds.Count > 0)
+            {
+                var enabledSet = new HashSet<string>(storedEnabledIds, StringComparer.OrdinalIgnoreCase);
+                foreach (var child in sources.Where(source => !source.IsSystemSource))
+                {
+                    var shouldEnable = enabledSet.Contains(child.Id);
+                    if (child.IsEnabled == shouldEnable)
+                        continue;
+
+                    child.IsEnabled = shouldEnable;
+                    await sourceService.UpsertAsync(child);
+                }
+            }
+
+            settingsService.DeviceMediaChildEnabledIds = Array.Empty<string>();
+        }
+        else
+        {
+            var enabledIds = sources
+                .Where(source => !source.IsSystemSource && source.IsEnabled)
+                .Select(source => source.Id)
+                .ToList();
+
+            settingsService.DeviceMediaChildEnabledIds = enabledIds;
+
+            foreach (var child in sources.Where(source => !source.IsSystemSource))
+            {
+                if (!child.IsEnabled)
+                    continue;
+
+                child.IsEnabled = false;
+                await sourceService.UpsertAsync(child);
+            }
+        }
+
+        settingsService.NeedsReindex = true;
+        await InitializeAsync();
+    }
+
+    private void ApplySystemSourceVisibility()
+    {
+        var systemSource = allSources.FirstOrDefault(source => source.IsSystemSource);
+        if (systemSource is { IsEnabled: false })
+        {
+            Sources = new List<MediaSource> { systemSource };
+            return;
+        }
+
+        Sources = allSources;
     }
 }
