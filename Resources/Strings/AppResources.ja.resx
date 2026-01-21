@@ -1225,6 +1225,12 @@
   <data name="NetworkShareNameTitle" xml:space="preserve">
     <value>Share name</value>
   </data>
+  <data name="NetworkShareNamePickTitle" xml:space="preserve">
+    <value>共有を選択</value>
+  </data>
+  <data name="NetworkShareNameManualOption" xml:space="preserve">
+    <value>共有名を入力</value>
+  </data>
   <data name="NetworkShareNamePrompt" xml:space="preserve">
     <value>Enter the share name.</value>
   </data>
