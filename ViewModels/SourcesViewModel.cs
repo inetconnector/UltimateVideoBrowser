@@ -17,6 +17,7 @@ public partial class SourcesViewModel : ObservableObject
     private readonly AppSettingsService settingsService;
     private readonly ISourceService sourceService;
     [ObservableProperty] private bool hasMediaPermission;
+    [ObservableProperty] private bool isNetworkScanRunning;
 
     [ObservableProperty] private List<MediaSource> sources = new();
     [ObservableProperty] private bool supportsManualPath;
@@ -242,7 +243,16 @@ public partial class SourcesViewModel : ObservableObject
         string? server = null;
         if (string.Equals(choice, AppResources.NetworkShareScanOption, StringComparison.Ordinal))
         {
-            var servers = await networkShareScanner.ScanAsync();
+            List<NetworkServerInfo> servers;
+            IsNetworkScanRunning = true;
+            try
+            {
+                servers = await networkShareScanner.ScanAsync();
+            }
+            finally
+            {
+                IsNetworkScanRunning = false;
+            }
             if (servers.Count == 0)
             {
                 await dialogService.DisplayAlertAsync(

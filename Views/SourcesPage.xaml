@@ -106,5 +106,16 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Grid Grid.RowSpan="3"
+              BackgroundColor="{DynamicResource AppBg}"
+              Opacity="0.6"
+              IsVisible="{Binding IsNetworkScanRunning}"
+              ZIndex="10">
+            <ActivityIndicator IsRunning="{Binding IsNetworkScanRunning}"
+                               Color="{DynamicResource Accent}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+        </Grid>
     </Grid>
 </ContentPage>
