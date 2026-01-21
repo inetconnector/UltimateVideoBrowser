@@ -1,7 +1,8 @@
+
 #if ANDROID && !WINDOWS
 using Android;
 using Android.Content;
-using Android.Net;
+using Uri = Android.Net.Uri; 
 using Android.OS;
 using Android.Provider;
 using System.Runtime.Versioning;
