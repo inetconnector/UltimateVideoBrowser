@@ -2115,6 +2115,22 @@ Fehlend:
   
   </data>
 
+  <data name="NetworkShareNamePickTitle" xml:space="preserve">
+    
+    
+    <value>Freigabe auswählen</value>
+    
+  
+  </data>
+
+  <data name="NetworkShareNameManualOption" xml:space="preserve">
+    
+    
+    <value>Freigabename eingeben</value>
+    
+  
+  </data>
+
   <data name="NetworkShareNamePrompt" xml:space="preserve">
     
     

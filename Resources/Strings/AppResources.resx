@@ -759,6 +759,12 @@ Missing:
   <data name="NetworkShareNameTitle" xml:space="preserve">
     <value>Share name</value>
   </data>
+  <data name="NetworkShareNamePickTitle" xml:space="preserve">
+    <value>Select a share</value>
+  </data>
+  <data name="NetworkShareNameManualOption" xml:space="preserve">
+    <value>Enter share name</value>
+  </data>
   <data name="NetworkShareNamePrompt" xml:space="preserve">
     <value>Enter the share name.</value>
   </data>
