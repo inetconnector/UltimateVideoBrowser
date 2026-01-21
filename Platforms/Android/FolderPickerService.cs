@@ -27,6 +27,7 @@ public sealed class FolderPickerService : IFolderPickerService
         });
 
         var intent = new Intent(Intent.ActionOpenDocumentTree);
+        intent.PutExtra(Intent.ExtraAllowMultiple, true);
         intent.AddFlags(ActivityFlags.GrantReadUriPermission |
                         ActivityFlags.GrantPersistableUriPermission |
                         ActivityFlags.GrantPrefixUriPermission);
@@ -46,18 +47,41 @@ public sealed class FolderPickerService : IFolderPickerService
         if (tcs == null)
             return;
 
-        if (resultCode != Result.Ok || data?.Data == null)
+        if (resultCode != Result.Ok || data == null)
         {
             tcs.TrySetResult(Array.Empty<FolderPickResult>());
             return;
         }
 
-        var uri = data.Data;
         var activity = Platform.CurrentActivity;
+        var flags = data.Flags &
+                    (ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantPersistableUriPermission);
+        var results = new List<FolderPickResult>();
+        if (data.ClipData != null)
+        {
+            for (var i = 0; i < data.ClipData.ItemCount; i++)
+            {
+                var uri = data.ClipData.GetItemAt(i)?.Uri;
+                if (uri != null)
+                    AddPickResult(results, activity, uri, flags);
+            }
+        }
+        else if (data.Data != null)
+        {
+            AddPickResult(results, activity, data.Data, flags);
+        }
+
+        tcs.TrySetResult(results);
+    }
+
+    private static void AddPickResult(
+        ICollection<FolderPickResult> results,
+        Activity? activity,
+        Android.Net.Uri uri,
+        ActivityFlags flags)
+    {
         if (activity != null)
         {
-            var flags = data.Flags &
-                        (ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantPersistableUriPermission);
             try
             {
                 activity.ContentResolver?.TakePersistableUriPermission(uri, flags);
@@ -71,6 +95,6 @@ public sealed class FolderPickerService : IFolderPickerService
         var name = activity == null
             ? uri.LastPathSegment ?? "Folder"
             : DocumentFile.FromTreeUri(activity, uri)?.Name ?? uri.LastPathSegment ?? "Folder";
-        tcs.TrySetResult(new[] { new FolderPickResult(uri.ToString() ?? string.Empty, name) });
+        results.Add(new FolderPickResult(uri.ToString() ?? string.Empty, name));
     }
 }
