@@ -1,5 +1,9 @@
+using System.IO;
 using UltimateVideoBrowser.Models;
 using UltimateVideoBrowser.Resources.Strings;
+#if ANDROID && !WINDOWS
+using Android.OS;
+#endif
 #if WINDOWS
 using Windows.Storage.AccessCache;
 #endif
@@ -28,16 +32,21 @@ public sealed class SourceService : ISourceService
         if (existing != null)
             return;
 
-        // Default "All device media" virtual source (empty path = MediaStore)
-        var src = new MediaSource
+#if ANDROID && !WINDOWS
+        var defaults = GetAndroidDefaultSources();
+        if (defaults.Count == 0)
         {
-            Id = "device_all",
-            DisplayName = AppResources.AllDeviceVideos,
-            LocalFolderPath = "",
-            IsEnabled = true,
-            LastIndexedUtcSeconds = 0
-        };
-        await db.Db.InsertAsync(src);
+            await db.Db.InsertAsync(BuildAllDeviceSource());
+            return;
+        }
+
+        foreach (var src in defaults)
+            await db.Db.InsertAsync(src);
+        return;
+#endif
+
+        // Default "All device media" virtual source (empty path = MediaStore)
+        await db.Db.InsertAsync(BuildAllDeviceSource());
     }
 
     public async Task UpsertAsync(MediaSource src)
@@ -68,4 +77,68 @@ public sealed class SourceService : ISourceService
             }
 #endif
     }
+
+    private static MediaSource BuildAllDeviceSource()
+        => new()
+        {
+            Id = "device_all",
+            DisplayName = AppResources.AllDeviceVideos,
+            LocalFolderPath = "",
+            IsEnabled = true,
+            LastIndexedUtcSeconds = 0
+        };
+
+#if ANDROID && !WINDOWS
+    private static List<MediaSource> GetAndroidDefaultSources()
+    {
+        var sources = new List<MediaSource>();
+
+        AddSourceIfExists(sources, "android_dcim", "DCIM",
+            Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_dcim_camera", "Camera",
+            CombineIfParent(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim)?.AbsolutePath,
+                "Camera"));
+        AddSourceIfExists(sources, "android_pictures", "Pictures",
+            Environment.GetExternalStoragePublicDirectory(Environment.DirectoryPictures)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_pictures_screenshots", "Screenshots",
+            CombineIfParent(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryPictures)?.AbsolutePath,
+                "Screenshots"));
+        AddSourceIfExists(sources, "android_dcim_screenshots", "DCIM Screenshots",
+            CombineIfParent(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim)?.AbsolutePath,
+                "Screenshots"));
+        AddSourceIfExists(sources, "android_movies", "Movies",
+            Environment.GetExternalStoragePublicDirectory(Environment.DirectoryMovies)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_downloads", "Downloads",
+            Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads)?.AbsolutePath);
+        AddSourceIfExists(sources, "android_documents", "Documents",
+            Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDocuments)?.AbsolutePath);
+
+        return sources;
+    }
+
+    private static void AddSourceIfExists(List<MediaSource> sources, string id, string displayName, string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+        if (!Directory.Exists(path))
+            return;
+
+        sources.Add(new MediaSource
+        {
+            Id = id,
+            DisplayName = displayName,
+            LocalFolderPath = path,
+            IsEnabled = true,
+            LastIndexedUtcSeconds = 0
+        });
+    }
+
+    private static string? CombineIfParent(string? parent, string child)
+    {
+        if (string.IsNullOrWhiteSpace(parent))
+            return null;
+
+        return Path.Combine(parent, child);
+    }
+#endif
 }

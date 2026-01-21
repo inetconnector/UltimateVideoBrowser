@@ -3262,4 +3262,48 @@ Zur Ausübung des Widerrufs kontaktiere: [support@example.com].</value>
   <data name="OpenAction" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-<data name="BackupSectionTitle" xml:space="preserve"><value>Datenbank-Backup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exportiere oder importiere die lokale Datenbank inkl. Einstellungen und Thumbnails.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Backup exportieren</value></data><data name="BackupImportButton" xml:space="preserve"><value>Backup importieren</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup exportiert</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Dein Backup wurde erfolgreich exportiert.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Backup-Export fehlgeschlagen</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht erstellt oder gespeichert werden.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Backup-ZIP auswählen</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Backup wiederherstellen?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dadurch werden aktuelle Datenbank, Einstellungen und Thumbnails überschrieben. Fortfahren?</value></data><data name="RestoreButton" xml:space="preserve"><value>Wiederherstellen</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indizierung läuft</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stoppe die Indizierung, bevor du ein Backup wiederherstellst.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Wiederherstellung fehlgeschlagen</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht wiederhergestellt werden.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Dieses Backup enthält keine Datenbankdatei.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Wiederherstellung abgeschlossen</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup wiederhergestellt. Öffne die App ggf. neu, um alle Änderungen zu sehen.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Nach links drehen</value></data><data name="RotateRightAction" xml:space="preserve"><value>Nach rechts drehen</value></data><data name="MirrorAction" xml:space="preserve"><value>Horizontal spiegeln</value></data></root>
+<data name="BackupSectionTitle" xml:space="preserve"><value>Datenbank-Backup</value></data><data name="BackupSectionHint" xml:space="preserve"><value>Exportiere oder importiere die lokale Datenbank inkl. Einstellungen und Thumbnails.</value></data><data name="BackupExportButton" xml:space="preserve"><value>Backup exportieren</value></data><data name="BackupImportButton" xml:space="preserve"><value>Backup importieren</value></data><data name="BackupExportSuccessTitle" xml:space="preserve"><value>Backup exportiert</value></data><data name="BackupExportSuccessMessage" xml:space="preserve"><value>Dein Backup wurde erfolgreich exportiert.</value></data><data name="BackupExportFailedTitle" xml:space="preserve"><value>Backup-Export fehlgeschlagen</value></data><data name="BackupExportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht erstellt oder gespeichert werden.</value></data><data name="BackupImportPickerTitle" xml:space="preserve"><value>Backup-ZIP auswählen</value></data><data name="BackupImportConfirmTitle" xml:space="preserve"><value>Backup wiederherstellen?</value></data><data name="BackupImportConfirmMessage" xml:space="preserve"><value>Dadurch werden aktuelle Datenbank, Einstellungen und Thumbnails überschrieben. Fortfahren?</value></data><data name="RestoreButton" xml:space="preserve"><value>Wiederherstellen</value></data><data name="BackupImportNotAllowedTitle" xml:space="preserve"><value>Indizierung läuft</value></data><data name="BackupImportNotAllowedMessage" xml:space="preserve"><value>Stoppe die Indizierung, bevor du ein Backup wiederherstellst.</value></data><data name="BackupImportFailedTitle" xml:space="preserve"><value>Wiederherstellung fehlgeschlagen</value></data><data name="BackupImportFailedMessage" xml:space="preserve"><value>Das Backup konnte nicht wiederhergestellt werden.</value></data><data name="BackupImportMissingDbMessage" xml:space="preserve"><value>Dieses Backup enthält keine Datenbankdatei.</value></data><data name="BackupImportSuccessTitle" xml:space="preserve"><value>Wiederherstellung abgeschlossen</value></data><data name="BackupImportSuccessMessage" xml:space="preserve"><value>Backup wiederhergestellt. Öffne die App ggf. neu, um alle Änderungen zu sehen.</value></data><data name="RotateLeftAction" xml:space="preserve"><value>Nach links drehen</value></data><data name="RotateRightAction" xml:space="preserve"><value>Nach rechts drehen</value></data><data name="MirrorAction" xml:space="preserve"><value>Horizontal spiegeln</value></data>
+  <data name="ScanLogTitle" xml:space="preserve">
+    <value>Scan log</value>
+  </data>
+
+  <data name="ScanLogHint" xml:space="preserve">
+    <value>Share this log if your library isn't indexing as expected.</value>
+  </data>
+
+  <data name="ScanLogShowButton" xml:space="preserve">
+    <value>Show log</value>
+  </data>
+
+  <data name="ScanLogCopyButton" xml:space="preserve">
+    <value>Copy log</value>
+  </data>
+
+  <data name="ScanLogShareButton" xml:space="preserve">
+    <value>Share log</value>
+  </data>
+
+  <data name="ScanLogClearButton" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+
+  <data name="ScanLogEmptyMessage" xml:space="preserve">
+    <value>No scan entries yet.</value>
+  </data>
+
+  <data name="ScanLogShareTitle" xml:space="preserve">
+    <value>Share scan log</value>
+  </data>
+
+  <data name="ScanLogCopiedMessage" xml:space="preserve">
+    <value>Scan log copied.</value>
+  </data>
+
+  <data name="ScanLogCopyFailedMessage" xml:space="preserve">
+    <value>Could not copy the scan log to the clipboard. Please try again.</value>
+  </data>
+
+  <data name="ScanLogClearedMessage" xml:space="preserve">
+    <value>The scan log has been cleared.</value>
+  </data>
+</root>
