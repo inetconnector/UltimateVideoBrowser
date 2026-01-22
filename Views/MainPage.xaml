@@ -285,7 +285,6 @@
                                          Span="{Binding GridSpan}" />
                     </CollectionView.ItemsLayout>
 
-                    <!-- IMPORTANT: only ONE ItemTemplate, platform-specific here -->
                     <CollectionView.ItemTemplate>
                         <OnPlatform x:TypeArguments="DataTemplate">
 
@@ -385,7 +384,8 @@
 
                                             <Frame.Behaviors>
                                                 <toolkit:TouchBehavior
-                                                    LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenItemMenuCommand}"
+                                                    BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
+                                                    LongPressCommand="{Binding OpenItemMenuCommand}"
                                                     LongPressCommandParameter="{Binding .}" />
                                             </Frame.Behaviors>
 

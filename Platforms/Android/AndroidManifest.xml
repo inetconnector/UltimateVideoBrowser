@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.inetconnector.ultimatevideobrowser">
 
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <!-- Android 12 and below -->
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+  <!-- Android 13+ -->
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
   <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-  <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.INTERNET" />
 
@@ -17,7 +19,6 @@
                android:supportsRtl="true"
                android:theme="@style/Maui.MainTheme"
                android:usesCleartextTraffic="false">
-    <!-- Entfernen der handgeschriebenen MainActivity beim Merge -->
     <activity android:name=".MainActivity" />
   </application>
 </manifest>

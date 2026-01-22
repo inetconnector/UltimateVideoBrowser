@@ -1,12 +1,8 @@
-
 #if ANDROID && !WINDOWS
 using Android;
-using Environment = Android.OS.Environment;
-using Uri = Android.Net.Uri;
 using Android.OS;
-using Android.Content;
-using Android.Provider;
-using System.Runtime.Versioning; 
+using System.Runtime.Versioning;
+using UltimateVideoBrowser.Models;
 #endif
 
 namespace UltimateVideoBrowser.Services;
@@ -16,7 +12,7 @@ public sealed class PermissionService
     public Task<bool> CheckMediaReadAsync()
     {
 #if ANDROID && !WINDOWS
-        return IsMediaPermissionGrantedAsync();
+        return IsGrantedAsync(GetAndroidMediaPermissionTypes());
 #else
         return Task.FromResult(true);
 #endif
@@ -25,10 +21,12 @@ public sealed class PermissionService
     public async Task<bool> EnsureMediaReadAsync()
     {
 #if ANDROID && !WINDOWS
-        if (await IsMediaPermissionGrantedAsync())
+        var types = GetAndroidMediaPermissionTypes();
+
+        if (await IsGrantedAsync(types).ConfigureAwait(false))
             return true;
 
-        return await RequestMediaPermissionAsync();
+        return await RequestAsync(types).ConfigureAwait(false);
 #else
         return true;
 #endif
@@ -40,87 +38,77 @@ public sealed class PermissionService
     }
 
 #if ANDROID && !WINDOWS
-    private static async Task<bool> IsMediaPermissionGrantedAsync()
-    {
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.R &&
-            Environment.IsExternalStorageManager)
-            return true;
+    private static MediaType GetAndroidMediaPermissionTypes()
+        => MediaType.Photos | MediaType.Graphics | MediaType.Videos;
 
-        var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-        if (status == PermissionStatus.Granted)
-            return true;
-
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
-        {
-            var mediaStatus = await Permissions.CheckStatusAsync<MediaLibraryPermission>();
-            return mediaStatus == PermissionStatus.Granted;
-        }
-
-        return false;
-    }
-
-    private static async Task<bool> RequestMediaPermissionAsync()
+    // Summary: Checks runtime permissions required for MediaStore access based on requested media types.
+    private static async Task<bool> IsGrantedAsync(MediaType types)
     {
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
-            var mediaStatus = await Permissions.RequestAsync<MediaLibraryPermission>();
-            if (mediaStatus == PermissionStatus.Granted)
-                return true;
+            var ok = true;
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
-                RequestAllFilesAccess();
+            if (types.HasFlag(MediaType.Photos) || types.HasFlag(MediaType.Graphics))
+            {
+                var s = await Permissions.CheckStatusAsync<ReadImagesPermission>().ConfigureAwait(false);
+                ok &= s == PermissionStatus.Granted;
+            }
 
-            return false;
+            if (types.HasFlag(MediaType.Videos))
+            {
+                var s = await Permissions.CheckStatusAsync<ReadVideosPermission>().ConfigureAwait(false);
+                ok &= s == PermissionStatus.Granted;
+            }
+
+            return ok;
         }
 
-        var status = await Permissions.RequestAsync<Permissions.StorageRead>();
-        if (status == PermissionStatus.Granted)
-            return true;
-
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
-            RequestAllFilesAccess();
-
-        return false;
+        var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>().ConfigureAwait(false);
+        return status == PermissionStatus.Granted;
     }
 
-    private static bool RequestAllFilesAccess()
+    // Summary: Requests runtime permissions required for MediaStore access based on requested media types.
+    private static async Task<bool> RequestAsync(MediaType types)
     {
-        var activity = Platform.CurrentActivity;
-        if (activity == null)
-            return false;
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+        {
+            var ok = true;
 
-        try
-        {
-            var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
-            intent.SetData(Uri.Parse($"package:{activity.PackageName}"));
-            activity.StartActivity(intent);
-            return Environment.IsExternalStorageManager;
-        }
-        catch (ActivityNotFoundException)
-        {
-            try
+            if (types.HasFlag(MediaType.Photos) || types.HasFlag(MediaType.Graphics))
             {
-                var intent = new Intent(Settings.ActionManageAllFilesAccessPermission);
-                activity.StartActivity(intent);
+                var s = await MainThread.InvokeOnMainThreadAsync(
+                    () => Permissions.RequestAsync<ReadImagesPermission>()).ConfigureAwait(false);
+                ok &= s == PermissionStatus.Granted;
             }
-            catch
+
+            if (types.HasFlag(MediaType.Videos))
             {
-                return false;
+                var s = await MainThread.InvokeOnMainThreadAsync(
+                    () => Permissions.RequestAsync<ReadVideosPermission>()).ConfigureAwait(false);
+                ok &= s == PermissionStatus.Granted;
             }
+
+            return ok;
         }
 
-        return Environment.IsExternalStorageManager;
+        var legacy = await MainThread.InvokeOnMainThreadAsync(
+            () => Permissions.RequestAsync<Permissions.StorageRead>()).ConfigureAwait(false);
+
+        return legacy == PermissionStatus.Granted;
     }
 
     [SupportedOSPlatform("android33.0")]
-    private sealed class MediaLibraryPermission : Permissions.BasePlatformPermission
+    private sealed class ReadImagesPermission : Permissions.BasePlatformPermission
     {
         public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
-            new[]
-            {
-                (Manifest.Permission.ReadMediaVideo, true),
-                (Manifest.Permission.ReadMediaImages, true)
-            };
+            new[] { (Manifest.Permission.ReadMediaImages, true) };
+    }
+
+    [SupportedOSPlatform("android33.0")]
+    private sealed class ReadVideosPermission : Permissions.BasePlatformPermission
+    {
+        public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
+            new[] { (Manifest.Permission.ReadMediaVideo, true) };
     }
 #endif
 }
