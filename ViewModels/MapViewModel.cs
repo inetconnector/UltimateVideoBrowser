@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -15,6 +16,7 @@ public partial class MapViewModel : ObservableObject
 {
     private readonly IFileExportService fileExportService;
     private readonly IndexService indexService;
+    private readonly ISourceService sourceService;
     private readonly Dictionary<string, MediaItem> itemLookup = new(StringComparer.OrdinalIgnoreCase);
     private readonly PlaybackService playbackService;
     private readonly AppSettingsService settingsService;
@@ -27,11 +29,13 @@ public partial class MapViewModel : ObservableObject
 
     public MapViewModel(
         IndexService indexService,
+        ISourceService sourceService,
         AppSettingsService settingsService,
         PlaybackService playbackService,
         IFileExportService fileExportService)
     {
         this.indexService = indexService;
+        this.sourceService = sourceService;
         this.settingsService = settingsService;
         this.playbackService = playbackService;
         this.fileExportService = fileExportService;
@@ -60,7 +64,9 @@ public partial class MapViewModel : ObservableObject
             if (mediaTypes == MediaType.None)
                 mediaTypes = MediaType.Photos | MediaType.Graphics | MediaType.Videos;
 
-            var items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
+            var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
+            var exclusions = GetAndroidChildSourceExclusions(sources);
+            var items = await indexService.QueryLocationsAsync(mediaTypes, exclusions).ConfigureAwait(false);
 
             if (settingsService.LocationsEnabled)
             {
@@ -68,7 +74,7 @@ public partial class MapViewModel : ObservableObject
                 var updated = await indexService.BackfillLocationsAsync(mediaTypes, 600, CancellationToken.None)
                     .ConfigureAwait(false);
                 if (updated > 0)
-                    items = await indexService.QueryLocationsAsync(mediaTypes).ConfigureAwait(false);
+                    items = await indexService.QueryLocationsAsync(mediaTypes, exclusions).ConfigureAwait(false);
             }
 
             foreach (var item in items)
@@ -259,6 +265,29 @@ public partial class MapViewModel : ObservableObject
             return new Uri(previewPath).AbsoluteUri;
 
         return previewPath;
+    }
+
+    private static IReadOnlyCollection<string> GetAndroidChildSourceExclusions(IReadOnlyCollection<MediaSource> sources)
+    {
+#if ANDROID && !WINDOWS
+        var allDeviceSource = sources.FirstOrDefault(source =>
+            string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase));
+        if (allDeviceSource is { IsEnabled: false })
+        {
+            return sources
+                .Where(source => IsAndroidChildSource(source))
+                .Select(source => source.Id)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .ToList();
+        }
+#endif
+        return Array.Empty<string>();
+    }
+
+    private static bool IsAndroidChildSource(MediaSource source)
+    {
+        return !string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase)
+               && source.Id.StartsWith("android_", StringComparison.OrdinalIgnoreCase);
     }
 
     private sealed record MapItem(string Path, string Name, double Lat, double Lon, string Preview);
