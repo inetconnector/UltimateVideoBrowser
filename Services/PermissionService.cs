@@ -1,11 +1,12 @@
 
 #if ANDROID && !WINDOWS
 using Android;
-using Android.Content;
-using Android.Net;
+using Environment = Android.OS.Environment;
+using Uri = Android.Net.Uri;
 using Android.OS;
+using Android.Content;
 using Android.Provider;
-using System.Runtime.Versioning;
+using System.Runtime.Versioning; 
 #endif
 
 namespace UltimateVideoBrowser.Services;
@@ -42,7 +43,7 @@ public sealed class PermissionService
     private static async Task<bool> IsMediaPermissionGrantedAsync()
     {
         if (Build.VERSION.SdkInt >= BuildVersionCodes.R &&
-            Android.OS.Environment.IsExternalStorageManager)
+            Environment.IsExternalStorageManager)
             return true;
 
         var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
@@ -93,7 +94,7 @@ public sealed class PermissionService
             var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
             intent.SetData(Uri.Parse($"package:{activity.PackageName}"));
             activity.StartActivity(intent);
-            return Android.OS.Environment.IsExternalStorageManager;
+            return Environment.IsExternalStorageManager;
         }
         catch (ActivityNotFoundException)
         {
@@ -108,7 +109,7 @@ public sealed class PermissionService
             }
         }
 
-        return Android.OS.Environment.IsExternalStorageManager;
+        return Environment.IsExternalStorageManager;
     }
 
     [SupportedOSPlatform("android33.0")]
