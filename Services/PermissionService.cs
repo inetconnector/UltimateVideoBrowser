@@ -33,6 +33,11 @@ public sealed class PermissionService
 #endif
     }
 
+    public void OpenAppSettings()
+    {
+        AppInfo.ShowSettingsUI();
+    }
+
 #if ANDROID && !WINDOWS
     private static async Task<bool> IsMediaPermissionGrantedAsync()
     {
@@ -55,13 +60,6 @@ public sealed class PermissionService
 
     private static async Task<bool> RequestMediaPermissionAsync()
     {
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.R &&
-            !Android.OS.Environment.IsExternalStorageManager)
-        {
-            if (RequestAllFilesAccess())
-                return true;
-        }
-
         if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
         {
             var mediaStatus = await Permissions.RequestAsync<MediaLibraryPermission>();
@@ -82,35 +80,6 @@ public sealed class PermissionService
             RequestAllFilesAccess();
 
         return false;
-    }
-
-    private static bool RequestAllFilesAccess()
-    {
-        var activity = Platform.CurrentActivity;
-        if (activity == null)
-            return false;
-
-        try
-        {
-            var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
-            intent.SetData(Uri.Parse($"package:{activity.PackageName}"));
-            activity.StartActivity(intent);
-            return Android.OS.Environment.IsExternalStorageManager;
-        }
-        catch (ActivityNotFoundException)
-        {
-            try
-            {
-                var intent = new Intent(Settings.ActionManageAllFilesAccessPermission);
-                activity.StartActivity(intent);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        return Android.OS.Environment.IsExternalStorageManager;
     }
 
     private static bool RequestAllFilesAccess()
