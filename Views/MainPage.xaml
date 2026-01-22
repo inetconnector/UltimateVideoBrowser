@@ -361,7 +361,7 @@
                                         <SwipeView.RightItems>
                                             <SwipeItems Mode="Reveal">
                                                 <SwipeItem Text="{x:Static strings:AppResources.ShareAction}"
-                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShareCommand}"
+                                                           Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ShareCommand}"
                                                            CommandParameter="{Binding .}" />
                                             </SwipeItems>
                                         </SwipeView.RightItems>
@@ -384,10 +384,10 @@
 
                                             <Frame.Behaviors>
                                                 <toolkit:TouchBehavior
-                                                    BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
-                                                    LongPressCommand="{Binding OpenItemMenuCommand}"
+                                                    LongPressCommand="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenItemMenuCommand}"
                                                     LongPressCommandParameter="{Binding .}" />
                                             </Frame.Behaviors>
+
 
                                             <Grid RowDefinitions="150,Auto" Padding="10">
                                                 <Grid>
@@ -431,7 +431,7 @@
                                             <Frame.GestureRecognizers>
                                                 <TapGestureRecognizer
                                                     NumberOfTapsRequired="2"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayCommand}"
+                                                    Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.PlayCommand}"
                                                     CommandParameter="{Binding .}" />
                                             </Frame.GestureRecognizers>
                                         </Frame>
