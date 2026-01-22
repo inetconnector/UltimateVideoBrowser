@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UltimateVideoBrowser.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -45,7 +46,8 @@ public partial class SourcesViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         HasMediaPermission = await permissionService.CheckMediaReadAsync();
-        Sources = await sourceService.GetSourcesAsync();
+        var allSources = await sourceService.GetSourcesAsync();
+        Sources = FilterSourcesForDisplay(allSources);
     }
 
     [RelayCommand]
@@ -459,5 +461,22 @@ public partial class SourcesViewModel : ObservableObject
         var normalizedServer = server.Trim().Trim('/');
         var normalizedShare = share.Trim().Trim('/');
         return $"smb://{normalizedServer}/{normalizedShare}";
+    }
+
+    private static List<MediaSource> FilterSourcesForDisplay(List<MediaSource> allSources)
+    {
+#if ANDROID && !WINDOWS
+        var allDeviceSource = allSources.FirstOrDefault(source =>
+            string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase));
+        if (allDeviceSource is { IsEnabled: false })
+            return allSources.Where(source => !IsAndroidChildSource(source)).ToList();
+#endif
+        return allSources;
+    }
+
+    private static bool IsAndroidChildSource(MediaSource source)
+    {
+        return !string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase)
+               && source.Id.StartsWith("android_", StringComparison.OrdinalIgnoreCase);
     }
 }

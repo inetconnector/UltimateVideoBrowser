@@ -110,6 +110,7 @@ public partial class MainViewModel : ObservableObject
     private Task? peopleAutoScanTask;
     private long peopleCountRefreshMs;
     private int peopleCountRefreshProcessed;
+    private IReadOnlyList<string> excludedSourceIds = Array.Empty<string>();
     [ObservableProperty] private string peopleModelsStatusText = string.Empty;
     [ObservableProperty] private string searchText = "";
     [ObservableProperty] private AlbumListItem? selectedAlbum;
@@ -290,21 +291,23 @@ public partial class MainViewModel : ObservableObject
             await sourceService.EnsureDefaultSourceAsync().ConfigureAwait(false);
 
             var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
-            var normalizedSourceId = NormalizeActiveSourceId(sources, activeSourceId);
-            var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+            var filteredSources = FilterAndroidChildSourcesIfNeeded(sources, out var sourceExclusions);
+            var normalizedSourceId = NormalizeActiveSourceId(filteredSources, activeSourceId);
+            var enabledSources = filteredSources.Where(s => s.IsEnabled).ToList();
             var hasPermission = await permissionService.CheckMediaReadAsync().ConfigureAwait(false);
 
-            var total = await indexService.CountAsync(selectedMediaTypes).ConfigureAwait(false);
+            var total = await indexService.CountAsync(selectedMediaTypes, sourceExclusions).ConfigureAwait(false);
 
-            return (sources, enabledSources, normalizedSourceId, hasPermission, total);
+            return (filteredSources, enabledSources, normalizedSourceId, hasPermission, total, sourceExclusions);
         }).ConfigureAwait(false);
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             ActiveSourceId = initResult.normalizedSourceId;
             Sources = BuildSourceTabs(initResult.enabledSources);
-            _ = UpdateSourceStatsAsync(initResult.sources);
+            _ = UpdateSourceStatsAsync(initResult.filteredSources);
             HasMediaPermission = initResult.hasPermission;
+            excludedSourceIds = initResult.sourceExclusions;
         });
 
         if (!initResult.hasPermission)
@@ -436,7 +439,8 @@ public partial class MainViewModel : ObservableObject
                 var result = await Task.Run(async () =>
                 {
                     var sources = await sourceService.GetSourcesAsync().ConfigureAwait(false);
-                    var normalizedSourceId = NormalizeActiveSourceId(sources, ActiveSourceId);
+                    var filteredSources = FilterAndroidChildSourcesIfNeeded(sources, out var sourceExclusions);
+                    var normalizedSourceId = NormalizeActiveSourceId(filteredSources, ActiveSourceId);
                     var albumSummaries = await albumService.GetAlbumSummariesAsync().ConfigureAwait(false);
                     var normalizedAlbumId = NormalizeActiveAlbumId(albumSummaries, ActiveAlbumId);
                     var albumTabs = BuildAlbumTabs(albumSummaries);
@@ -457,28 +461,28 @@ public partial class MainViewModel : ObservableObject
                         ? hideDuplicates
                             ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
                                     querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize,
-                                    includeHidden)
+                                    includeHidden, sourceExclusions)
                                 .ConfigureAwait(false)
                             : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
-                                    dateFrom, dateTo, SelectedMediaTypes, 0, PageSize, includeHidden)
+                                    dateFrom, dateTo, SelectedMediaTypes, 0, PageSize, includeHidden, sourceExclusions)
                                 .ConfigureAwait(false)
                         : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText, SelectedSearchScope,
                                 querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, 0, PageSize,
-                                includeHidden)
+                                includeHidden, sourceExclusions)
                             .ConfigureAwait(false);
                     var filteredCount = string.IsNullOrWhiteSpace(normalizedAlbumId)
                         ? hideDuplicates
                             ? await indexService
                                 .CountQueryUniqueAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
-                                    SelectedMediaTypes, includeHidden)
+                                    SelectedMediaTypes, includeHidden, sourceExclusions)
                                 .ConfigureAwait(false)
                             : await indexService
                                 .CountQueryAsync(SearchText, SelectedSearchScope, querySourceId, dateFrom, dateTo,
-                                    SelectedMediaTypes, includeHidden)
+                                    SelectedMediaTypes, includeHidden, sourceExclusions)
                                 .ConfigureAwait(false)
                         : await albumService
                             .CountAlbumItemsAsync(normalizedAlbumId, SearchText, SelectedSearchScope, querySourceId,
-                                dateFrom, dateTo, SelectedMediaTypes, includeHidden)
+                                dateFrom, dateTo, SelectedMediaTypes, includeHidden, sourceExclusions)
                             .ConfigureAwait(false);
 
                     if (items.Count < filteredCount && items.Count < initialLoadTarget)
@@ -491,15 +495,15 @@ public partial class MainViewModel : ObservableObject
                                 ? hideDuplicates
                                     ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope,
                                             querySourceId, sortKey, dateFrom, dateTo, SelectedMediaTypes, offset,
-                                            PageSize, includeHidden)
+                                            PageSize, includeHidden, sourceExclusions)
                                         .ConfigureAwait(false)
                                     : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId,
                                             sortKey, dateFrom, dateTo, SelectedMediaTypes, offset, PageSize,
-                                            includeHidden)
+                                            includeHidden, sourceExclusions)
                                         .ConfigureAwait(false)
                                 : await albumService.QueryAlbumPageAsync(normalizedAlbumId, SearchText,
                                         SelectedSearchScope, querySourceId, sortKey, dateFrom, dateTo,
-                                        SelectedMediaTypes, offset, PageSize, includeHidden)
+                                        SelectedMediaTypes, offset, PageSize, includeHidden, sourceExclusions)
                                     .ConfigureAwait(false);
 
                             if (nextItems.Count == 0)
@@ -514,24 +518,26 @@ public partial class MainViewModel : ObservableObject
                         items = expanded;
                     }
 
-                    var totalCount = await indexService.CountAsync(SelectedMediaTypes).ConfigureAwait(false);
-                    var enabledSources = sources.Where(s => s.IsEnabled).ToList();
+                    var totalCount =
+                        await indexService.CountAsync(SelectedMediaTypes, sourceExclusions).ConfigureAwait(false);
+                    var enabledSources = filteredSources.Where(s => s.IsEnabled).ToList();
                     var hiddenCount = string.IsNullOrWhiteSpace(querySourceId)
                         ? 0
                         : string.IsNullOrWhiteSpace(normalizedAlbumId)
                             ? hideDuplicates
                                 ? await indexService.CountHiddenUniqueAsync(SearchText, SelectedSearchScope,
-                                        querySourceId, dateFrom, dateTo, SelectedMediaTypes)
+                                        querySourceId, dateFrom, dateTo, SelectedMediaTypes, sourceExclusions)
                                     .ConfigureAwait(false)
                                 : await indexService.CountHiddenAsync(SearchText, SelectedSearchScope, querySourceId,
-                                        dateFrom, dateTo, SelectedMediaTypes)
+                                        dateFrom, dateTo, SelectedMediaTypes, sourceExclusions)
                                     .ConfigureAwait(false)
                             : await albumService.CountHiddenAlbumItemsAsync(normalizedAlbumId, SearchText,
-                                    SelectedSearchScope, querySourceId, dateFrom, dateTo, SelectedMediaTypes)
+                                    SelectedSearchScope, querySourceId, dateFrom, dateTo, SelectedMediaTypes,
+                                    sourceExclusions)
                                 .ConfigureAwait(false);
 
-                    return (sources, enabledSources, items, totalCount, filteredCount, normalizedSourceId,
-                        normalizedAlbumId, albumTabs, refreshVersion, hiddenCount);
+                    return (filteredSources, enabledSources, items, totalCount, filteredCount, normalizedSourceId,
+                        normalizedAlbumId, albumTabs, refreshVersion, hiddenCount, sourceExclusions);
                 });
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -543,7 +549,7 @@ public partial class MainViewModel : ObservableObject
                     ActiveAlbumId = result.normalizedAlbumId;
                     Sources = BuildSourceTabs(result.enabledSources);
                     AlbumTabs = result.albumTabs;
-                    _ = UpdateSourceStatsAsync(result.sources);
+                    _ = UpdateSourceStatsAsync(result.filteredSources);
                     MediaItems.ReplaceRange(result.items);
                     IndexedMediaCount = result.totalCount;
                     mediaItemsOffset = result.items.Count;
@@ -551,6 +557,7 @@ public partial class MainViewModel : ObservableObject
                     hasMoreMediaItems = result.items.Count < result.filteredCount;
                     isLoadingMoreMediaItems = false;
                     HasHiddenItemsInFolder = result.hiddenCount > 0;
+                    excludedSourceIds = result.sourceExclusions;
                 });
 
                 _ = RefreshTaggedPeopleCountAsync();
@@ -582,23 +589,26 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
-        var sortKey = SelectedSortOption?.Key ?? "name";
-        var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
-        var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
-        var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
-        var hideDuplicates = SettingsService.HideDuplicateFilesEnabled && string.IsNullOrWhiteSpace(ActiveAlbumId);
-        var includeHidden = ShowHiddenInFolder && !string.IsNullOrWhiteSpace(querySourceId);
-        var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
-            ? hideDuplicates
-                ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope, querySourceId,
-                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
-                    .ConfigureAwait(false)
-                : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
-                        dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
-                    .ConfigureAwait(false)
-            : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
-                    sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden)
-                .ConfigureAwait(false);
+            var sortKey = SelectedSortOption?.Key ?? "name";
+            var dateFrom = IsDateFilterEnabled ? DateFilterFrom : (DateTime?)null;
+            var dateTo = IsDateFilterEnabled ? DateFilterTo : (DateTime?)null;
+            var querySourceId = string.IsNullOrWhiteSpace(ActiveSourceId) ? null : ActiveSourceId;
+            var hideDuplicates = SettingsService.HideDuplicateFilesEnabled && string.IsNullOrWhiteSpace(ActiveAlbumId);
+            var includeHidden = ShowHiddenInFolder && !string.IsNullOrWhiteSpace(querySourceId);
+            var nextItems = string.IsNullOrWhiteSpace(ActiveAlbumId)
+                ? hideDuplicates
+                    ? await indexService.QueryPageUniqueOldestAsync(SearchText, SelectedSearchScope, querySourceId,
+                            sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden,
+                            excludedSourceIds)
+                        .ConfigureAwait(false)
+                    : await indexService.QueryPageAsync(SearchText, SelectedSearchScope, querySourceId, sortKey,
+                            dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden,
+                            excludedSourceIds)
+                        .ConfigureAwait(false)
+                : await albumService.QueryAlbumPageAsync(ActiveAlbumId, SearchText, SelectedSearchScope, querySourceId,
+                        sortKey, dateFrom, dateTo, SelectedMediaTypes, mediaItemsOffset, PageSize, includeHidden,
+                        excludedSourceIds)
+                    .ConfigureAwait(false);
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -687,9 +697,11 @@ public partial class MainViewModel : ObservableObject
         var completed = false;
         try
         {
-            indexStartingCount = await indexService.CountAsync(SelectedMediaTypes);
+            var sources = await sourceService.GetSourcesAsync();
+            var filteredSources = FilterAndroidChildSourcesIfNeeded(sources, out var sourceExclusions);
+            indexStartingCount = await indexService.CountAsync(SelectedMediaTypes, sourceExclusions);
             await MainThread.InvokeOnMainThreadAsync(() => IndexedMediaCount = indexStartingCount);
-            var sources = (await sourceService.GetSourcesAsync()).Where(s => s.IsEnabled).ToList();
+            var enabledSources = filteredSources.Where(s => s.IsEnabled).ToList();
             indexLastInserted = 0;
             var progress = new Progress<IndexProgress>(p =>
             {
@@ -701,7 +713,10 @@ public partial class MainViewModel : ObservableObject
 
             var indexedTypes = SettingsService.IndexedMediaTypes;
             await Task.Run(
-                async () => { await indexService.IndexSourcesAsync(sources, indexedTypes, progress, indexCts.Token); },
+                async () =>
+                {
+                    await indexService.IndexSourcesAsync(enabledSources, indexedTypes, progress, indexCts.Token);
+                },
                 indexCts.Token);
             completed = true;
         }
@@ -1962,7 +1977,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            var count = await indexService.CountLocationsAsync(MediaType.All).ConfigureAwait(false);
+            var count = await indexService.CountLocationsAsync(MediaType.All, excludedSourceIds).ConfigureAwait(false);
             MainThread.BeginInvokeOnMainThread(() => LocationsCount = count);
         }
         catch
@@ -1978,7 +1993,9 @@ public partial class MainViewModel : ObservableObject
     private async Task UpdateSourceStatsAsync()
     {
         var sources = await sourceService.GetSourcesAsync();
-        await UpdateSourceStatsAsync(sources);
+        var filteredSources = FilterAndroidChildSourcesIfNeeded(sources, out var sourceExclusions);
+        await UpdateSourceStatsAsync(filteredSources);
+        excludedSourceIds = sourceExclusions;
     }
 
     private Task UpdateSourceStatsAsync(List<MediaSource> sources)
@@ -2043,6 +2060,32 @@ public partial class MainViewModel : ObservableObject
         CurrentMediaName = "";
         CurrentMediaType = MediaType.None;
         IsPlayerFullscreen = false;
+    }
+
+    private static List<MediaSource> FilterAndroidChildSourcesIfNeeded(List<MediaSource> sources,
+        out List<string> excludedSourceIds)
+    {
+        excludedSourceIds = new List<string>();
+#if ANDROID && !WINDOWS
+        var allDeviceSource = sources.FirstOrDefault(source =>
+            string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase));
+        if (allDeviceSource is { IsEnabled: false })
+        {
+            var childSources = sources.Where(IsAndroidChildSource).ToList();
+            excludedSourceIds = childSources
+                .Select(source => source.Id)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .ToList();
+            return sources.Where(source => !IsAndroidChildSource(source)).ToList();
+        }
+#endif
+        return sources;
+    }
+
+    private static bool IsAndroidChildSource(MediaSource source)
+    {
+        return !string.Equals(source.Id, "device_all", StringComparison.OrdinalIgnoreCase)
+               && source.Id.StartsWith("android_", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string NormalizeActiveSourceId(List<MediaSource> sources, string activeSourceId)
