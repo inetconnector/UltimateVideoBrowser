@@ -134,11 +134,12 @@ public sealed class AlbumService
         DateTime? from,
         DateTime? to,
         MediaType mediaTypes,
-        bool includeHidden)
+        bool includeHidden,
+        IReadOnlyCollection<string>? excludedSourceIds = null)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, "name", null,
-            null, true, includeHidden ? null : false);
+            null, true, includeHidden ? null : false, excludedSourceIds);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -149,11 +150,12 @@ public sealed class AlbumService
         string? sourceId,
         DateTime? from,
         DateTime? to,
-        MediaType mediaTypes)
+        MediaType mediaTypes,
+        IReadOnlyCollection<string>? excludedSourceIds = null)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) = BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, "name", null,
-            null, true, true);
+            null, true, true, excludedSourceIds);
         return await db.Db.ExecuteScalarAsync<int>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -168,12 +170,13 @@ public sealed class AlbumService
         MediaType mediaTypes,
         int offset,
         int limit,
-        bool includeHidden)
+        bool includeHidden,
+        IReadOnlyCollection<string>? excludedSourceIds = null)
     {
         await db.EnsureInitializedAsync().ConfigureAwait(false);
         var (sql, args) =
             BuildAlbumQuery(albumId, search, searchScope, sourceId, from, to, mediaTypes, sortKey, offset, limit,
-                false, includeHidden ? null : false);
+                false, includeHidden ? null : false, excludedSourceIds);
         return await db.Db.QueryAsync<MediaItem>(sql, args.ToArray()).ConfigureAwait(false);
     }
 
@@ -189,7 +192,8 @@ public sealed class AlbumService
         int? offset,
         int? limit,
         bool countOnly,
-        bool? isHidden)
+        bool? isHidden,
+        IReadOnlyCollection<string>? excludedSourceIds)
     {
         var args = new List<object>();
         var filters = new List<string>
@@ -202,6 +206,13 @@ public sealed class AlbumService
         {
             filters.Add("MediaItem.SourceId = ?");
             args.Add(sourceId);
+        }
+
+        if (excludedSourceIds is { Count: > 0 })
+        {
+            var placeholders = string.Join(",", excludedSourceIds.Select(_ => "?"));
+            filters.Add($"(MediaItem.SourceId IS NULL OR MediaItem.SourceId NOT IN ({placeholders}))");
+            args.AddRange(excludedSourceIds);
         }
 
         var allowedTypes = BuildAllowedTypes(mediaTypes);
