@@ -274,7 +274,13 @@ public sealed class MediaStoreScanner
         var hasCameraExif = HasCameraExif(path);
 
         if (wantsPhotos && !wantsGraphics)
+        {
+#if ANDROID && !WINDOWS
+            if (!hasCameraExif && path.StartsWith("content://", StringComparison.OrdinalIgnoreCase))
+                return ModelMediaType.Photos;
+#endif
             return hasCameraExif ? ModelMediaType.Photos : ModelMediaType.None;
+        }
 
         if (!wantsPhotos && wantsGraphics)
             return ModelMediaType.Graphics;
