@@ -234,10 +234,29 @@ public partial class SourcesViewModel : ObservableObject
         var systemSource = allSources.FirstOrDefault(source => source.IsSystemSource);
         if (systemSource is { IsEnabled: false })
         {
-            Sources = new List<MediaSource> { systemSource };
+            Sources = allSources
+                .Where(source => source.IsSystemSource || !IsDeviceLocalSource(source))
+                .ToList();
             return;
         }
 
         Sources = allSources;
+    }
+
+    private static bool IsDeviceLocalSource(MediaSource source)
+    {
+        if (source.IsSystemSource)
+            return false;
+
+        var path = source.LocalFolderPath ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+            return path.StartsWith("content://", StringComparison.OrdinalIgnoreCase) ||
+                   path.StartsWith("/storage", StringComparison.OrdinalIgnoreCase) ||
+                   path.StartsWith("/sdcard", StringComparison.OrdinalIgnoreCase);
+
+        return false;
     }
 }
