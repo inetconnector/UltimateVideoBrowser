@@ -5,9 +5,10 @@
              xmlns:strings="clr-namespace:UltimateVideoBrowser.Resources.Strings"
              x:Class="UltimateVideoBrowser.Views.Components.MainHeaderView">
     <Grid Padding="20,16"
-          ColumnDefinitions="*,Auto"
+          ColumnDefinitions="*"
+          RowDefinitions="Auto,Auto"
           BackgroundColor="{DynamicResource AppBg}">
-        <HorizontalStackLayout Grid.Column="0"
+        <HorizontalStackLayout Grid.Row="0"
                                Spacing="12"
                                VerticalOptions="Center">
             <Frame Style="{StaticResource IconBadgeStyle}"
@@ -32,8 +33,9 @@
             </VerticalStackLayout>
         </HorizontalStackLayout>
 
-        <HorizontalStackLayout Grid.Column="1"
+        <HorizontalStackLayout Grid.Row="1"
                                Spacing="10"
+                               Margin="0,8,0,0"
                                VerticalOptions="Center"
                                HorizontalOptions="End">
             <Button Text="⚙"

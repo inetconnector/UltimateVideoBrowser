@@ -1,4 +1,5 @@
 using System.Linq;
+using UltimateVideoBrowser.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UltimateVideoBrowser.Models;
@@ -60,6 +61,16 @@ public partial class SourcesViewModel : ObservableObject
     public async Task RequestPermissionAsync()
     {
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        if (!HasMediaPermission)
+        {
+            var openSettings = await dialogService.DisplayAlertAsync(
+                AppResources.PermissionTitle,
+                AppResources.PermissionMessage,
+                AppResources.PermissionOk,
+                AppResources.OkButton);
+            if (openSettings)
+                permissionService.OpenAppSettings();
+        }
     }
 
     [RelayCommand]
@@ -248,6 +259,15 @@ public partial class SourcesViewModel : ObservableObject
             try
             {
                 servers = (await networkShareScanner.ScanAsync()).ToList();
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.LogException(ex, "SourcesViewModel.AddNetworkShareAsync", "Network scan failed");
+                await dialogService.DisplayAlertAsync(
+                    AppResources.NetworkShareScanEmptyTitle,
+                    AppResources.NetworkShareScanEmptyMessage,
+                    AppResources.OkButton);
+                return;
             }
             finally
             {

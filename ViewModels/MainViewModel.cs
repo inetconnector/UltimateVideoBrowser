@@ -660,11 +660,14 @@ public partial class MainViewModel : ObservableObject
             IsIndexing = false;
             IndexStatus = "";
             IndexRatio = 0;
-            await MainThread.InvokeOnMainThreadAsync(() =>
+            var openSettings = await MainThread.InvokeOnMainThreadAsync(() =>
                 Shell.Current?.DisplayAlertAsync(
                     AppResources.PermissionTitle,
                     AppResources.PermissionMessage,
-                    AppResources.OkButton) ?? Task.CompletedTask);
+                    AppResources.PermissionOk,
+                    AppResources.OkButton) ?? Task.FromResult(false));
+            if (openSettings)
+                permissionService.OpenAppSettings();
             return;
         }
 
@@ -1673,6 +1676,16 @@ public partial class MainViewModel : ObservableObject
     public async Task RequestPermissionAsync()
     {
         HasMediaPermission = await permissionService.EnsureMediaReadAsync();
+        if (!HasMediaPermission)
+        {
+            var openSettings = await dialogService.DisplayAlertAsync(
+                AppResources.PermissionTitle,
+                AppResources.PermissionMessage,
+                AppResources.PermissionOk,
+                AppResources.OkButton);
+            if (openSettings)
+                permissionService.OpenAppSettings();
+        }
         if (HasMediaPermission)
             await RunIndexAsync();
     }
