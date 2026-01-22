@@ -305,7 +305,7 @@ public partial class MainViewModel : ObservableObject
         {
             ActiveSourceId = initResult.normalizedSourceId;
             Sources = BuildSourceTabs(initResult.enabledSources);
-            _ = UpdateSourceStatsAsync(initResult.sources);
+            _ = UpdateSourceStatsAsync(initResult.filteredSources);
             HasMediaPermission = initResult.hasPermission;
             excludedSourceIds = initResult.sourceExclusions;
         });
@@ -549,7 +549,7 @@ public partial class MainViewModel : ObservableObject
                     ActiveAlbumId = result.normalizedAlbumId;
                     Sources = BuildSourceTabs(result.enabledSources);
                     AlbumTabs = result.albumTabs;
-                    _ = UpdateSourceStatsAsync(result.sources);
+                    _ = UpdateSourceStatsAsync(result.filteredSources);
                     MediaItems.ReplaceRange(result.items);
                     IndexedMediaCount = result.totalCount;
                     mediaItemsOffset = result.items.Count;
