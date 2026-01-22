@@ -1289,7 +1289,7 @@
     <value>Loading media...</value>
   </data>
   <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
-    <value>People tagged</value>
+    <value>אנשים מתויגים</value>
   </data>
   <data name="HighlightsLocationsLabel" xml:space="preserve">
     <value>Places</value>
@@ -1484,7 +1484,7 @@
     <value>Delete database?</value>
   </data>
   <data name="SettingsDatabaseResetConfirmMessage" xml:space="preserve">
-    <value>This removes all indexed data and tags. The app will rescan your sources.</value>
+    <value>פעולה זו מסירה את כל הנתונים והתגיות שנוספו לאינדקס. האפליקציה תסרוק מחדש את המקורות שלך.</value>
   </data>
   <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
     <value>Delete</value>
@@ -1550,19 +1550,19 @@ Missing:
     <value>- {0}{1}</value>
   </data>
   <data name="TagPeopleAction" xml:space="preserve">
-    <value>Tag people</value>
+    <value>תייג אנשים</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>Tag image</value>
+    <value>תייג תמונה</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
-    <value>Tag people</value>
+    <value>תייג אנשים</value>
   </data>
   <data name="TagPeopleMessage" xml:space="preserve">
-    <value>Enter names separated by commas.</value>
+    <value>הזן שמות מופרדים בפסיקים.</value>
   </data>
   <data name="TagPeoplePlaceholder" xml:space="preserve">
-    <value>e.g. Alex, Sam, Priya</value>
+    <value>לדוגמה: אלכס, סם, פריה</value>
   </data>
   <data name="PeopleButton" xml:space="preserve">
     <value>People</value>
@@ -1586,22 +1586,22 @@ Missing:
     <value>Search people...</value>
   </data>
   <data name="PeopleEmptyHint" xml:space="preserve">
-    <value>No people yet. Enable people tagging and index photos to see them here.</value>
+    <value>עדיין אין אנשים. הפעילו תיוג אנשים והוסיפו תמונות לאינדקס כדי לראות אותן כאן.</value>
   </data>
   <data name="TaggedPhotosButton" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>תמונות מתויגות</value>
   </data>
   <data name="TaggedPhotosPageTitle" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>תמונות מתויגות</value>
   </data>
   <data name="TaggedPhotosPageHeader" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>תמונות מתויגות</value>
   </data>
   <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
-    <value>Search by person name...</value>
+    <value>חפש לפי שם אדם...</value>
   </data>
   <data name="TaggedPhotosEmptyHint" xml:space="preserve">
-    <value>No tagged photos yet. Tag people in a photo to see it here.</value>
+    <value>עדיין אין תמונות מתויגות. תייגו אנשים בתמונה כדי לראות אותה כאן.</value>
   </data>
   <data name="PersonPageTitle" xml:space="preserve">
     <value>Person</value>
@@ -1616,7 +1616,7 @@ Missing:
     <value>Ignore person</value>
   </data>
   <data name="IgnorePersonDescription" xml:space="preserve">
-    <value>Ignored people are hidden from automatic people tags.</value>
+    <value>אנשים שהתעלמת מהם מוסתרים מתגיות אנשים אוטומטיות.</value>
   </data>
   <data name="IgnorePersonAction" xml:space="preserve">
     <value>Ignore</value>
@@ -1628,40 +1628,40 @@ Missing:
     <value>Ignored</value>
   </data>
   <data name="TagPeopleEditorTitle" xml:space="preserve">
-    <value>Tag people</value>
+    <value>תייג אנשים</value>
   </data>
   <data name="TagPeopleEditorHeader" xml:space="preserve">
-    <value>Name faces</value>
+    <value>תן שמות לפנים</value>
   </data>
   <data name="TagPeopleEditorTagsLabel" xml:space="preserve">
-    <value>People tags</value>
+    <value>תגיות אנשים</value>
   </data>
   <data name="TagPeopleEditorTagsPlaceholder" xml:space="preserve">
-    <value>Add names, separated by commas...</value>
+    <value>הוסף שמות, מופרדים בפסיקים...</value>
   </data>
   <data name="TagPeopleEditorTagsHint" xml:space="preserve">
-    <value>Tip: You can tag a photo even if no faces were detected.</value>
+    <value>טיפ: ניתן לתייג תמונה גם אם לא זוהו פנים.</value>
   </data>
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
-    <value>No faces detected for this photo.</value>
+    <value>לא זוהו פנים בתמונה זו.</value>
   </data>
   <data name="TagImageEditorTitle" xml:space="preserve">
-    <value>Image tags</value>
+    <value>תגיות תמונה</value>
   </data>
   <data name="TagImageEditorHeader" xml:space="preserve">
-    <value>Image tags</value>
+    <value>תגיות תמונה</value>
   </data>
   <data name="TagImageEditorTagsLabel" xml:space="preserve">
-    <value>Image tags</value>
+    <value>תגיות תמונה</value>
   </data>
   <data name="TagImageEditorTagsPlaceholder" xml:space="preserve">
-    <value>Add tags, separated by commas...</value>
+    <value>הוסף תגיות, מופרדות בפסיקים...</value>
   </data>
   <data name="TagImageEditorTagsHint" xml:space="preserve">
-    <value>Tip: You can tag an image even if no automatic tags were detected.</value>
+    <value>טיפ: ניתן לתייג תמונה גם אם לא זוהו תגיות אוטומטיות.</value>
   </data>
   <data name="TagImageEditorEmptyHint" xml:space="preserve">
-    <value>No image tags detected for this photo.</value>
+    <value>לא זוהו תגיות תמונה עבור תמונה זו.</value>
   </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Preview</value>
