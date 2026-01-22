@@ -1227,7 +1227,7 @@
     <value>Loading media...</value>
   </data>
   <data name="HighlightsPeopleTaggedLabel" xml:space="preserve">
-    <value>People tagged</value>
+    <value>Taggede personer</value>
   </data>
   <data name="HighlightsLocationsLabel" xml:space="preserve">
     <value>Places</value>
@@ -1422,7 +1422,7 @@
     <value>Delete database?</value>
   </data>
   <data name="SettingsDatabaseResetConfirmMessage" xml:space="preserve">
-    <value>This removes all indexed data and tags. The app will rescan your sources.</value>
+    <value>Dette fjerner alle indekserede data og tags. Appen vil scanne dine kilder igen.</value>
   </data>
   <data name="SettingsDatabaseResetConfirmAccept" xml:space="preserve">
     <value>Delete</value>
@@ -1488,19 +1488,19 @@ Missing:
     <value>- {0}{1}</value>
   </data>
   <data name="TagPeopleAction" xml:space="preserve">
-    <value>Tag people</value>
+    <value>Tag personer</value>
   </data>
   <data name="TagPeopleNoFacesAction" xml:space="preserve">
-    <value>Tag image</value>
+    <value>Tag billede</value>
   </data>
   <data name="TagPeopleTitle" xml:space="preserve">
-    <value>Tag people</value>
+    <value>Tag personer</value>
   </data>
   <data name="TagPeopleMessage" xml:space="preserve">
-    <value>Enter names separated by commas.</value>
+    <value>Indtast navne adskilt af kommaer.</value>
   </data>
   <data name="TagPeoplePlaceholder" xml:space="preserve">
-    <value>e.g. Alex, Sam, Priya</value>
+    <value>f.eks. Alex, Sam, Priya</value>
   </data>
   <data name="PeopleButton" xml:space="preserve">
     <value>People</value>
@@ -1524,22 +1524,22 @@ Missing:
     <value>Search people...</value>
   </data>
   <data name="PeopleEmptyHint" xml:space="preserve">
-    <value>No people yet. Enable people tagging and index photos to see them here.</value>
+    <value>Ingen personer endnu. Aktivér persontagging og indeksér fotos for at se dem her.</value>
   </data>
   <data name="TaggedPhotosButton" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>Taggede fotos</value>
   </data>
   <data name="TaggedPhotosPageTitle" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>Taggede fotos</value>
   </data>
   <data name="TaggedPhotosPageHeader" xml:space="preserve">
-    <value>Tagged photos</value>
+    <value>Taggede fotos</value>
   </data>
   <data name="TaggedPhotosSearchPlaceholder" xml:space="preserve">
-    <value>Search by person name...</value>
+    <value>Søg efter personnavn...</value>
   </data>
   <data name="TaggedPhotosEmptyHint" xml:space="preserve">
-    <value>No tagged photos yet. Tag people in a photo to see it here.</value>
+    <value>Ingen taggede fotos endnu. Tag personer i et foto for at se det her.</value>
   </data>
   <data name="PersonPageTitle" xml:space="preserve">
     <value>Person</value>
@@ -1554,7 +1554,7 @@ Missing:
     <value>Ignore person</value>
   </data>
   <data name="IgnorePersonDescription" xml:space="preserve">
-    <value>Ignored people are hidden from automatic people tags.</value>
+    <value>Ignorerede personer skjules fra automatiske persontags.</value>
   </data>
   <data name="IgnorePersonAction" xml:space="preserve">
     <value>Ignore</value>
@@ -1566,40 +1566,40 @@ Missing:
     <value>Ignored</value>
   </data>
   <data name="TagPeopleEditorTitle" xml:space="preserve">
-    <value>Tag people</value>
+    <value>Tag personer</value>
   </data>
   <data name="TagPeopleEditorHeader" xml:space="preserve">
-    <value>Name faces</value>
+    <value>Navngiv ansigter</value>
   </data>
   <data name="TagPeopleEditorTagsLabel" xml:space="preserve">
-    <value>People tags</value>
+    <value>Persontags</value>
   </data>
   <data name="TagPeopleEditorTagsPlaceholder" xml:space="preserve">
-    <value>Add names, separated by commas...</value>
+    <value>Tilføj navne, adskilt af kommaer...</value>
   </data>
   <data name="TagPeopleEditorTagsHint" xml:space="preserve">
-    <value>Tip: You can tag a photo even if no faces were detected.</value>
+    <value>Tip: Du kan tagge et foto, selv om der ikke blev registreret ansigter.</value>
   </data>
   <data name="TagPeopleEditorEmptyHint" xml:space="preserve">
-    <value>No faces detected for this photo.</value>
+    <value>Ingen ansigter fundet på dette foto.</value>
   </data>
   <data name="TagImageEditorTitle" xml:space="preserve">
-    <value>Image tags</value>
+    <value>Billedtags</value>
   </data>
   <data name="TagImageEditorHeader" xml:space="preserve">
-    <value>Image tags</value>
+    <value>Billedtags</value>
   </data>
   <data name="TagImageEditorTagsLabel" xml:space="preserve">
-    <value>Image tags</value>
+    <value>Billedtags</value>
   </data>
   <data name="TagImageEditorTagsPlaceholder" xml:space="preserve">
-    <value>Add tags, separated by commas...</value>
+    <value>Tilføj tags, adskilt af kommaer...</value>
   </data>
   <data name="TagImageEditorTagsHint" xml:space="preserve">
-    <value>Tip: You can tag an image even if no automatic tags were detected.</value>
+    <value>Tip: Du kan tagge et billede, selv om der ikke blev registreret automatiske tags.</value>
   </data>
   <data name="TagImageEditorEmptyHint" xml:space="preserve">
-    <value>No image tags detected for this photo.</value>
+    <value>Ingen billedtags registreret for dette foto.</value>
   </data>
   <data name="PreviewTitle" xml:space="preserve">
     <value>Preview</value>
